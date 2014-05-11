@@ -1,7 +1,13 @@
 /*
- * $Id: Version.java,v 1.7 2005/04/04 20:36:44 cotes Exp $
+ * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Infrastructure Systems Project: Stephan D. Cote' - Enterprise Architecture
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial API and implementation
  */
 package coyote.commons;
 
