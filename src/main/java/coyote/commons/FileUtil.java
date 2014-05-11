@@ -105,10 +105,10 @@ public final class FileUtil {
    * @return TODO Complete Documentation
    */
   public static File validateFileName( final String filename ) {
-    if( filename != null ) {
+    if ( filename != null ) {
       final File tempfile = new File( filename );
 
-      if( tempfile.isAbsolute() && tempfile.exists() && tempfile.canRead() ) {
+      if ( tempfile.isAbsolute() && tempfile.exists() && tempfile.canRead() ) {
         return tempfile;
       } else {
         return null;
@@ -130,10 +130,10 @@ public final class FileUtil {
    * @return TODO Complete Documentation
    */
   public static File validateDirectory( final String directory ) {
-    if( directory != null ) {
+    if ( directory != null ) {
       final File tempfile = new File( directory );
 
-      if( tempfile.exists() && tempfile.isDirectory() && tempfile.canRead() ) {
+      if ( tempfile.exists() && tempfile.isDirectory() && tempfile.canRead() ) {
         return tempfile;
       } else {
         return null;
@@ -173,16 +173,16 @@ public final class FileUtil {
     try {
       final byte[] data = FileUtil.read( file );
 
-      if( data != null ) {
+      if ( data != null ) {
         // Attempt to return the string
         try {
           return new String( data, StringUtil.ISO8859_1 );
-        } catch( final UnsupportedEncodingException uee ) {
+        } catch ( final UnsupportedEncodingException uee ) {
           // Send it back in default encoding
           return new String( data );
         }
       }
-    } catch( final Exception ex ) {}
+    } catch ( final Exception ex ) {}
 
     return null;
   }
@@ -199,14 +199,14 @@ public final class FileUtil {
    * @return boolean whether or not the operation worked
    */
   public static boolean stringToFile( final String text, final String fname ) {
-    if( fname != null ) {
+    if ( fname != null ) {
       final File file = new File( fname );
 
       try {
         FileUtil.write( file, text.getBytes( StringUtil.ISO8859_1 ) );
 
         return true;
-      } catch( final Exception ex ) {}
+      } catch ( final Exception ex ) {}
     }
 
     return false;
@@ -228,7 +228,7 @@ public final class FileUtil {
    * @throws IOException
    */
   public static void cleanDirs( String fileName ) throws IOException {
-    if( !fileName.endsWith( "/" ) ) {
+    if ( !fileName.endsWith( "/" ) ) {
       fileName = fileName + "/";
     }
 
@@ -236,19 +236,19 @@ public final class FileUtil {
     String oneItem = null;
     File oneFile = null;
 
-    for( final Enumeration e = contents.elements(); e.hasMoreElements(); ) {
+    for ( final Enumeration e = contents.elements(); e.hasMoreElements(); ) {
       oneItem = (String)e.nextElement();
       oneFile = new File( fileName + oneItem );
 
-      if( oneFile.isDirectory() ) {
+      if ( oneFile.isDirectory() ) {
         // Try cleaning it
         FileUtil.cleanDirs( fileName + oneItem );
 
         // If it's now empty...
-        if( FileUtil.getDir( fileName + oneItem ).size() == 0 ) {
+        if ( FileUtil.getDir( fileName + oneItem ).size() == 0 ) {
           oneFile = new File( fileName + oneItem );
 
-          if( !oneFile.delete() ) {
+          if ( !oneFile.delete() ) {
             System.err.println( "Unable to delete directory " + oneItem );
           }
         }
@@ -293,25 +293,25 @@ public final class FileUtil {
   public static void copyFile( final File sourceFile, final File destFile ) throws IOException {
     int onechar = 0;
 
-    if( sourceFile == null ) {
+    if ( sourceFile == null ) {
       throw new IOException( "Source file is null - cannot copy." );
     }
 
-    if( destFile == null ) {
+    if ( destFile == null ) {
       throw new IOException( "Destination file is null - cannot copy." );
     }
 
-    if( sourceFile.compareTo( destFile ) == 0 ) {
+    if ( sourceFile.compareTo( destFile ) == 0 ) {
       throw new IOException( "Cannot copy file '" + sourceFile + "' to itself" );
     }
 
     destFile.mkdirs();
 
-    if( destFile.exists() && !destFile.delete() ) {
+    if ( destFile.exists() && !destFile.delete() ) {
       throw new IOException( "Unable to delete existing destination file '" + destFile + "'. Logged in as " + System.getProperty( "user.name" ) );
     }
 
-    if( !sourceFile.exists() ) {
+    if ( !sourceFile.exists() ) {
       throw new IOException( "Source file '" + sourceFile + "' does not exist. Cannot copy. Logged in as " + System.getProperty( "user.name" ) );
     }
 
@@ -321,7 +321,7 @@ public final class FileUtil {
     final BufferedInputStream bin = new BufferedInputStream( fin );
     onechar = bin.read();
 
-    while( onechar != -1 ) {
+    while ( onechar != -1 ) {
       bout.write( onechar );
 
       onechar = bin.read();
@@ -331,7 +331,7 @@ public final class FileUtil {
     bin.close();
     fin.close();
 
-    if( !destFile.exists() ) {
+    if ( !destFile.exists() ) {
       throw new IOException( "File copy failed: destination file '" + destFile + "' does not exist after copy." );
     }
     // The below test is commented out because it does not
@@ -362,7 +362,7 @@ public final class FileUtil {
 
     // Cruise through the string and eat up all the tokens before the last
     // directory delimiter
-    while( stk1.hasMoreTokens() ) {
+    while ( stk1.hasMoreTokens() ) {
       tempName1 = stk1.nextToken();
     }
 
@@ -385,20 +385,20 @@ public final class FileUtil {
   public static Vector getDir( final String dirName ) throws IOException {
     final File dirFile = new File( dirName );
 
-    if( !dirFile.isDirectory() ) {
+    if ( !dirFile.isDirectory() ) {
       throw new IOException( "'" + dirName + "' is not a directory." );
     }
 
     final String[] dir = dirFile.list();
 
-    if( dir == null ) {
+    if ( dir == null ) {
       throw new IOException( "Null array reading directory of " + dirName );
     }
 
     final Vector fileList = new Vector( 1 );
     String oneFileName = null;
 
-    for( int i = 0; i < dir.length; i++ ) {
+    for ( int i = 0; i < dir.length; i++ ) {
       oneFileName = dir[i].trim();
 
       fileList.addElement( oneFileName );
@@ -424,7 +424,7 @@ public final class FileUtil {
     final StringTokenizer stk = new StringTokenizer( tempName, "." );
     stk.nextToken();
 
-    if( stk.hasMoreTokens() ) {
+    if ( stk.hasMoreTokens() ) {
       return stk.nextToken();
     } else {
       return new String( "" );
@@ -442,7 +442,7 @@ public final class FileUtil {
   public final static void touch( final File file ) {
     try {
       FileUtil.append( file, new byte[0], false );
-    } catch( final IOException ioe ) {}
+    } catch ( final IOException ioe ) {}
   }
 
 
@@ -458,12 +458,12 @@ public final class FileUtil {
    * @throws IOException
    */
   public final static void append( final File file, final byte[] data, final boolean backup ) throws IOException {
-    if( !file.exists() || ( file.exists() && file.canWrite() ) ) {
-      if( !file.exists() ) {
-        if( file.getParentFile() != null ) {
+    if ( !file.exists() || ( file.exists() && file.canWrite() ) ) {
+      if ( !file.exists() ) {
+        if ( file.getParentFile() != null ) {
           file.getParentFile().mkdirs();
         }
-      } else if( backup ) {
+      } else if ( backup ) {
         FileUtil.createGenerationalBackup( file );
       }
 
@@ -475,17 +475,17 @@ public final class FileUtil {
         seeker.seek( seeker.length() );
         seeker.write( data );
         file.setLastModified( System.currentTimeMillis() );
-      } catch( final IOException ioe ) {
+      } catch ( final IOException ioe ) {
         throw ioe;
       }
       finally {
         // Attempt to close the data input stream
         try {
           // If it is open, close it
-          if( seeker != null ) {
+          if ( seeker != null ) {
             seeker.close();
           }
-        } catch( final Exception e ) {
+        } catch ( final Exception e ) {
           // Nevermind
         }
         finally {}
@@ -507,7 +507,7 @@ public final class FileUtil {
   public final static String stripPathAndExtension( final String file ) {
     int begin = file.lastIndexOf( FileUtil.FILE_SEPARATOR );
 
-    if( begin < 0 ) {
+    if ( begin < 0 ) {
       begin = 0;
     } else {
       begin++;
@@ -515,7 +515,7 @@ public final class FileUtil {
 
     int end = file.lastIndexOf( "." );
 
-    if( end < 0 ) {
+    if ( end < 0 ) {
       end = file.length();
     }
 
@@ -535,7 +535,7 @@ public final class FileUtil {
    * @return TODO Complete Documentation
    */
   public final static String getJavaPath( final String classname ) {
-    if( classname.endsWith( ".class" ) ) {
+    if ( classname.endsWith( ".class" ) ) {
       return "/" + StringUtil.getJavaPackage( classname.substring( 0, classname.lastIndexOf( '.' ) ) ).replace( '.', '/' );
     }
 
@@ -554,7 +554,7 @@ public final class FileUtil {
    * @return TODO Complete Documentation
    */
   public final static String getJavaFile( final String classname ) {
-    if( classname.endsWith( ".class" ) ) {
+    if ( classname.endsWith( ".class" ) ) {
       return StringUtil.getLocalJavaName( classname.substring( 0, classname.lastIndexOf( '.' ) ) ) + ".class";
     }
 
@@ -581,12 +581,12 @@ public final class FileUtil {
     String base = classname;
 
     // Get the main body of the class name (no extension)
-    if( classname.endsWith( ".class" ) || classname.endsWith( ".java" ) || classname.endsWith( "." ) ) {
+    if ( classname.endsWith( ".class" ) || classname.endsWith( ".java" ) || classname.endsWith( "." ) ) {
       base = classname.substring( 0, classname.lastIndexOf( '.' ) );
     }
 
     // remove any leading dots
-    if( base.charAt( 0 ) == '.' ) {
+    if ( base.charAt( 0 ) == '.' ) {
       base = base.substring( 1 );
     }
 
@@ -627,7 +627,7 @@ public final class FileUtil {
     final String fil = FileUtil.getJavaBasePath( classname ) + ".class";
 
     // Make sure we have a parent directory
-    if( ( dir != null ) && dir.isDirectory() ) {
+    if ( ( dir != null ) && dir.isDirectory() ) {
       retval = new File( dir, fil );
     } else {
       retval = new File( FileUtil.CURRENT_DIR, fil );
@@ -667,7 +667,7 @@ public final class FileUtil {
     final String fil = FileUtil.getJavaBasePath( classname ) + ".java";
 
     // Make sure we have a parent directory
-    if( ( dir != null ) && dir.isDirectory() ) {
+    if ( ( dir != null ) && dir.isDirectory() ) {
       retval = new File( dir, fil );
     } else {
       retval = new File( FileUtil.CURRENT_DIR, fil );
@@ -695,14 +695,14 @@ public final class FileUtil {
   public static String getPath( final String fileName ) {
     final StringBuffer path = new StringBuffer();
 
-    if( fileName.endsWith( "/" ) || fileName.endsWith( "\\" ) ) {
+    if ( fileName.endsWith( "/" ) || fileName.endsWith( "\\" ) ) {
       // Already appears to be a path
       path.append( fileName );
     } else {
-      if( fileName.indexOf( ":" ) > 0 ) {
+      if ( fileName.indexOf( ":" ) > 0 ) {
         // looks like a DOS path with a Drive designator, do not specify root
       } else {
-        if( ( fileName.indexOf( "\\" ) == 0 ) || ( fileName.indexOf( "/" ) == 0 ) ) {
+        if ( ( fileName.indexOf( "\\" ) == 0 ) || ( fileName.indexOf( "/" ) == 0 ) ) {
           // specify fully-qualified from root
           path.append( FileUtil.FILE_SEPARATOR );
         }
@@ -711,10 +711,10 @@ public final class FileUtil {
       String token;
       final StringTokenizer stk = new StringTokenizer( fileName, "/\\" );
 
-      while( stk.hasMoreTokens() ) {
+      while ( stk.hasMoreTokens() ) {
         token = stk.nextToken();
 
-        if( stk.hasMoreTokens() && ( token.length() > 0 ) ) {
+        if ( stk.hasMoreTokens() && ( token.length() > 0 ) ) {
           path.append( token );
           path.append( FileUtil.FILE_SEPARATOR );
         }
@@ -751,22 +751,22 @@ public final class FileUtil {
    * @throws IOException If an I/O error occurs during the copy
    */
   public static void moveFile( final File sourceFile, final File destFile ) throws IOException {
-    if( !sourceFile.canRead() ) {
+    if ( !sourceFile.canRead() ) {
       throw new IOException( "Cannot read source file '" + sourceFile + "'. Logged in as " + System.getProperty( "user.name" ) );
     }
 
-    if( !sourceFile.canWrite() ) {
+    if ( !sourceFile.canWrite() ) {
       throw new IOException( "Cannot write to source file '" + sourceFile + "'. Logged in as " + System.getProperty( "user.name" ) + ". Cannot move without write permission to source file." );
     }
 
-    if( sourceFile.compareTo( destFile ) == 0 ) {
+    if ( sourceFile.compareTo( destFile ) == 0 ) {
       // System.out.println( "Source and destination the same - no move required" );
       return;
     }
 
     FileUtil.copyFile( sourceFile, destFile );
 
-    if( !sourceFile.delete() ) {
+    if ( !sourceFile.delete() ) {
       System.out.println( "Copy completed, but unable to delete source file '" + sourceFile + "'. Logged in as " + System.getProperty( "user.name" ) );
     }
   }
@@ -790,17 +790,17 @@ public final class FileUtil {
     originalPath = originalPath.replace( '\\', '/' );
     prefix = prefix.replace( '\\', '/' );
 
-    if( originalPath.startsWith( "/" ) ) {
+    if ( originalPath.startsWith( "/" ) ) {
       return originalPath;
     }
 
     // Check for a drive specification for windows-type path
-    if( originalPath.substring( 1, 2 ).equals( ":" ) ) {
+    if ( originalPath.substring( 1, 2 ).equals( ":" ) ) {
       return originalPath;
     }
 
     // Otherwise...Make sure the prefix ends with a "/"
-    if( !prefix.endsWith( "/" ) ) {
+    if ( !prefix.endsWith( "/" ) ) {
       prefix = prefix + "/";
     }
 
@@ -825,19 +825,19 @@ public final class FileUtil {
 
     URI retval = null;
 
-    if( chars != null ) {
-      if( chars.length > 1 ) {
+    if ( chars != null ) {
+      if ( chars.length > 1 ) {
         // If there is a drive delimiter ':' in the second position, we assume
         // this is file is on a Windows system which does not return a leading /
-        if( chars[1] == ':' ) {
+        if ( chars[1] == ':' ) {
           buffer.append( "/" );
         }
       }
 
-      for( int i = 0; i < chars.length; i++ ) {
+      for ( int i = 0; i < chars.length; i++ ) {
         final char c = chars[i];
 
-        switch( c ) {
+        switch ( c ) {
 
         // Replace spaces
           case ' ':
@@ -858,7 +858,7 @@ public final class FileUtil {
 
       try {
         retval = new URI( buffer.toString() );
-      } catch( final URISyntaxException e ) {
+      } catch ( final URISyntaxException e ) {
         System.err.println( e.getMessage() );
       }
     }
@@ -880,29 +880,25 @@ public final class FileUtil {
    * @return a list of File objects representing the files in the given path with the given suffix
    */
   public final static List<File> getAllFiles( final String path, final String suffix, boolean recurse ) {
-
     File folder = new File( path );
     File[] listOfFiles = folder.listFiles();
     final List<File> list = new ArrayList<File>( 20 );
 
     String upperSuffix = null;
 
-    if( suffix != null )
+    if ( suffix != null )
       upperSuffix = suffix.toUpperCase();
 
-    for( int i = 0; i < listOfFiles.length; i++ ) {
-      if( listOfFiles[i].isFile() ) {
-        System.out.println( "File " + listOfFiles[i].getName() );
-        if( ( upperSuffix == null ) || listOfFiles[i].getName().toUpperCase().endsWith( upperSuffix ) ) {
+    for ( int i = 0; i < listOfFiles.length; i++ ) {
+      if ( listOfFiles[i].isFile() ) {
+        if ( ( upperSuffix == null ) || listOfFiles[i].getName().toUpperCase().endsWith( upperSuffix ) ) {
           list.add( listOfFiles[i] );
         }
-      } else if( listOfFiles[i].isDirectory() ) {
-
-        if( recurse ) {
+      } else if ( listOfFiles[i].isDirectory() ) {
+        if ( recurse ) {
           try {
-            System.out.println( "Directory " + listOfFiles[i].getName() + " - " + listOfFiles[i].getCanonicalPath() );
             list.addAll( getAllFiles( listOfFiles[i].getCanonicalPath(), suffix, recurse ) );
-          } catch( IOException e ) {
+          } catch ( IOException e ) {
             e.printStackTrace();
           }
         }
@@ -927,9 +923,9 @@ public final class FileUtil {
     final File f = new File( fname );
 
     // only delete a file that exists
-    if( f.exists() ) {
+    if ( f.exists() ) {
       // try the delete. If it fails, complain
-      if( !f.delete() ) {
+      if ( !f.delete() ) {
         throw new IOException( "Could not delete file: '" + fname + "'" );
       }
     }
@@ -951,9 +947,9 @@ public final class FileUtil {
     final File f = new File( dataDir + FileUtil.FILE_SEPARATOR + fname );
 
     // only delete a file that exists
-    if( f.exists() ) {
+    if ( f.exists() ) {
       // try the delete. If it fails, complain
-      if( !f.delete() ) {
+      if ( !f.delete() ) {
         throw new IOException( "Could not delete file: " + dataDir + "/" + fname + "." );
       }
     }
@@ -972,19 +968,19 @@ public final class FileUtil {
   public static final void removeDir( final File dir ) throws IOException {
     final File[] list = dir.listFiles();
 
-    if( null != list ) {
-      for( int ii = 0; ii < list.length; ii++ ) {
-        if( list[ii].isDirectory() ) {
+    if ( null != list ) {
+      for ( int ii = 0; ii < list.length; ii++ ) {
+        if ( list[ii].isDirectory() ) {
           FileUtil.removeDir( list[ii] );
         } else {
-          if( !list[ii].delete() ) {
+          if ( !list[ii].delete() ) {
             throw new IOException( "Unable to delete file " + list[ii].getAbsolutePath() );
           }
         }
       }
     }
 
-    if( !dir.delete() && dir.exists() ) {
+    if ( !dir.delete() && dir.exists() ) {
       throw new IOException( "Unable to delete directory " + dir.getAbsolutePath() );
     }
   }
@@ -1024,17 +1020,17 @@ public final class FileUtil {
 
     try {
       fis = new FileInputStream( fn );
-    } catch( final IOException e ) {
+    } catch ( final IOException e ) {
       return ( dis );
     }
 
     try {
       bis = new BufferedInputStream( fis );
       dis = new DataInputStream( bis );
-    } catch( final Exception e ) {
+    } catch ( final Exception e ) {
       try {
         fis.close();
-      } catch( final IOException e1 ) {}
+      } catch ( final IOException e1 ) {}
 
       dis = null;
 
@@ -1078,10 +1074,10 @@ public final class FileUtil {
     try {
       f = new File( filename );
 
-      if( f.exists() ) {
+      if ( f.exists() ) {
         return f.length();
       }
-    } catch( final Exception e ) {}
+    } catch ( final Exception e ) {}
 
     return -1;
   }
@@ -1125,7 +1121,7 @@ public final class FileUtil {
    * @param clrsub Clear the subdirectories of this directory as well
    */
   public static void clearDir( final File dir, final boolean clrdir, final boolean clrsub ) {
-    if( !dir.isDirectory() ) {
+    if ( !dir.isDirectory() ) {
       return;
     }
 
@@ -1134,18 +1130,18 @@ public final class FileUtil {
       final String[] childlist = dir.list();
 
       // For each child in the directory
-      for( int i = 0; i < childlist.length; i++ ) {
+      for ( int i = 0; i < childlist.length; i++ ) {
         // Create a new file reference
         final File child = new File( dir, childlist[i] );
 
         // If it exists ( which is should )
-        if( child.exists() ) {
+        if ( child.exists() ) {
           // If the child is a file...
-          if( child.isFile() ) {
+          if ( child.isFile() ) {
             // ...delete the file
             child.delete();
           } else {
-            if( clrsub ) {
+            if ( clrsub ) {
               // .. otherwise recursively call this method to delete the
               // directory
               FileUtil.clearDir( child, clrdir, clrsub );
@@ -1162,11 +1158,11 @@ public final class FileUtil {
       }
 
       // After all the contents are deleted, is we are to delete the directory
-      if( clrdir ) {
+      if ( clrdir ) {
         // ...delete the directory itself
         dir.delete();
       }
-    } catch( final Exception e ) {}
+    } catch ( final Exception e ) {}
   }
 
 
@@ -1202,7 +1198,7 @@ public final class FileUtil {
     final BufferedReader ds = new BufferedReader( new InputStreamReader( System.in ) );
 
     try {
-      while( !command.equals( "0" ) ) {
+      while ( !command.equals( "0" ) ) {
         FileUtil.menu();
         System.out.print( "Command==>" );
 
@@ -1211,7 +1207,7 @@ public final class FileUtil {
         System.out.println( "" );
         System.out.println( "Command:" + command );
 
-        if( command.equals( "1" ) ) {
+        if ( command.equals( "1" ) ) {
           System.out.println( "copyFile" );
           System.out.print( "sourceFile:" );
 
@@ -1222,7 +1218,7 @@ public final class FileUtil {
           FileUtil.copyFile( sourceFile, destFile );
           System.out.println( "Copy Complete\n\n" );
         } else {
-          if( command.equals( "2" ) ) {
+          if ( command.equals( "2" ) ) {
             System.out.println( "moveFile" );
             System.out.print( "sourceFile:" );
 
@@ -1233,48 +1229,48 @@ public final class FileUtil {
             FileUtil.moveFile( sourceFile, destFile );
             System.out.println( "Move Complete\n\n" );
           } else {
-            if( command.equals( "3" ) ) {
+            if ( command.equals( "3" ) ) {
               System.out.println( "getPath" );
               System.out.print( "fileName:" );
 
               final String fileName = ds.readLine();
               System.out.println( "Path:'" + FileUtil.getPath( fileName ) + "'\n\n" );
             } else {
-              if( command.equals( "4" ) ) {
+              if ( command.equals( "4" ) ) {
                 System.out.println( "getBase" );
                 System.out.print( "fileName:" );
 
                 final String fileName = ds.readLine();
                 System.out.println( "Base:'" + FileUtil.getBase( fileName ) + "'\n\n" );
               } else {
-                if( command.equals( "5" ) ) {
+                if ( command.equals( "5" ) ) {
                   System.out.println( "getExtension" );
                   System.out.print( "fileName:" );
 
                   final String fileName = ds.readLine();
                   System.out.println( "Extension:'" + FileUtil.getExtension( fileName ) + "'\n\n" );
                 } else {
-                  if( command.equals( "6" ) ) {
+                  if ( command.equals( "6" ) ) {
                     System.out.println( "getDir" );
                     System.out.print( "dirName:" );
 
                     final String dirName = ds.readLine();
                     final Vector v = FileUtil.getDir( dirName );
 
-                    for( final Enumeration e = v.elements(); e.hasMoreElements(); ) {
+                    for ( final Enumeration e = v.elements(); e.hasMoreElements(); ) {
                       System.out.println( "Item:'" + (String)e.nextElement() + "'" );
                     }
 
                     System.out.println( "Directory Complete" );
                   } else {
-                    if( command.equals( "7" ) ) {
+                    if ( command.equals( "7" ) ) {
                       System.out.println( "cleanDirs" );
                       System.out.println( "dirName:" );
 
                       final String dirName = ds.readLine();
                       FileUtil.cleanDirs( dirName );
                     } else {
-                      if( command.equals( "8" ) ) {
+                      if ( command.equals( "8" ) ) {
                         System.out.println( "prefix:" );
 
                         final String prefix = ds.readLine();
@@ -1283,7 +1279,7 @@ public final class FileUtil {
                         final String fileName = ds.readLine();
                         System.out.println( "Converted name:" + FileUtil.makeAbsolutePath( prefix, fileName ) );
                       } else {
-                        if( !command.equals( "0" ) ) {
+                        if ( !command.equals( "0" ) ) {
                           System.out.println( "Unknown command:" + command );
                         }
                       }
@@ -1295,7 +1291,7 @@ public final class FileUtil {
           }
         }
       }
-    } catch( final Exception e ) {
+    } catch ( final Exception e ) {
       e.printStackTrace( System.out );
     }
   }
@@ -1312,7 +1308,7 @@ public final class FileUtil {
    */
   public static void createGenerationalBackup( final File file ) throws IOException {
     int i = 0;
-    for( i = 0; new File( file.getAbsolutePath() + "." + i ).exists(); i++ ) {
+    for ( i = 0; new File( file.getAbsolutePath() + "." + i ).exists(); i++ ) {
       ;
     }
 
@@ -1350,24 +1346,24 @@ public final class FileUtil {
    *         involved with writing the data
    */
   public static void write( final File file, final byte[] data, final boolean backup ) throws IOException {
-    if( file == null ) {
+    if ( file == null ) {
       throw new IOException( "File reference was null" );
     }
 
-    if( !file.exists() || ( file.exists() && file.canWrite() ) ) {
+    if ( !file.exists() || ( file.exists() && file.canWrite() ) ) {
       DataOutputStream dos = null;
 
       try {
-        if( file.exists() && backup ) {
+        if ( file.exists() && backup ) {
           FileUtil.createGenerationalBackup( file );
         }
 
         // Make sure the parent directories are present
-        if( file.getParent() != null ) {
+        if ( file.getParent() != null ) {
           file.getParentFile().mkdirs();
         }
 
-        if( data.length > 0 ) {
+        if ( data.length > 0 ) {
           // Create an output stream
           dos = new DataOutputStream( new FileOutputStream( file ) );
 
@@ -1380,15 +1376,15 @@ public final class FileUtil {
           FileUtil.touch( file );
         }
 
-      } catch( final EOFException eof ) {}
+      } catch ( final EOFException eof ) {}
       finally {
         // Attempt to close the data input stream
         try {
           // If it is open, close it
-          if( dos != null ) {
+          if ( dos != null ) {
             dos.close();
           }
-        } catch( final Exception e ) {
+        } catch ( final Exception e ) {
           // Nevermind
         }
         finally {}
@@ -1407,17 +1403,17 @@ public final class FileUtil {
    * @throws IOException
    */
   public static void makeDirectory( final File file ) throws IOException {
-    if( file == null ) {
+    if ( file == null ) {
       throw new IOException( "File reference was null" );
     }
 
-    if( !file.exists() || ( file.exists() && file.isFile() ) ) {
+    if ( !file.exists() || ( file.exists() && file.isFile() ) ) {
       // Make sure the parent directories are present
-      if( file.getParent() != null ) {
+      if ( file.getParent() != null ) {
         file.getParentFile().mkdirs();
       }
 
-      if( !file.mkdir() ) {
+      if ( !file.mkdir() ) {
         throw new IOException( "Could not make directory" );
       }
     }
@@ -1440,14 +1436,14 @@ public final class FileUtil {
   public static File makeDirectory( final String name ) {
     File retval = null;
 
-    if( ( name != null ) && ( name.length() > 0 ) ) {
+    if ( ( name != null ) && ( name.length() > 0 ) ) {
       final File tempfile = new File( FileUtil.normalizePath( name ) );
 
       try {
         FileUtil.makeDirectory( tempfile );
 
         retval = tempfile;
-      } catch( final Exception e ) {
+      } catch ( final Exception e ) {
         retval = null;
       }
     }
@@ -1468,11 +1464,11 @@ public final class FileUtil {
    * @throws IOException If problems occur.
    */
   public static byte[] read( final File file ) throws IOException {
-    if( file == null ) {
+    if ( file == null ) {
       throw new IOException( "File reference was null" );
     }
 
-    if( file.exists() && file.canRead() ) {
+    if ( file.exists() && file.canRead() ) {
       DataInputStream dis = null;
       final byte[] bytes = new byte[new Long( file.length() ).intValue()];
 
@@ -1482,14 +1478,14 @@ public final class FileUtil {
         dis.readFully( bytes );
 
         return bytes;
-      } catch( final Exception ignore ) {}
+      } catch ( final Exception ignore ) {}
       finally {
         // Attempt to close the data input stream
         try {
-          if( dis != null ) {
+          if ( dis != null ) {
             dis.close();
           }
-        } catch( final Exception ignore ) {}
+        } catch ( final Exception ignore ) {}
       }
     }
 
@@ -1544,7 +1540,7 @@ public final class FileUtil {
     // make sure we are dealing with an absolute path
     final int colon = path.indexOf( ":" );
 
-    if( !path.startsWith( File.separator ) && ( colon == -1 ) ) {
+    if ( !path.startsWith( File.separator ) && ( colon == -1 ) ) {
       final String msg = path + " is not an absolute path";
       throw new ChainedRuntimeException( msg );
     }
@@ -1552,10 +1548,10 @@ public final class FileUtil {
     final boolean dosWithDrive = false;
     String root = null;
     // Eliminate consecutive slashes after the drive spec
-    if( path.length() == 1 ) {
+    if ( path.length() == 1 ) {
       root = File.separator;
       path = "";
-    } else if( path.charAt( 1 ) == File.separatorChar ) {
+    } else if ( path.charAt( 1 ) == File.separatorChar ) {
       // UNC drive
       root = File.separator + File.separator;
       path = path.substring( 2 );
@@ -1569,13 +1565,13 @@ public final class FileUtil {
 
     final StringTokenizer tok = new StringTokenizer( path, File.separator );
 
-    while( tok.hasMoreTokens() ) {
+    while ( tok.hasMoreTokens() ) {
       final String thisToken = tok.nextToken();
 
-      if( ".".equals( thisToken ) ) {
+      if ( ".".equals( thisToken ) ) {
         continue;
-      } else if( "..".equals( thisToken ) ) {
-        if( s.size() < 2 ) {
+      } else if ( "..".equals( thisToken ) ) {
+        if ( s.size() < 2 ) {
           throw new ChainedRuntimeException( "Cannot resolve path " + orig );
         } else {
           s.pop();
@@ -1588,8 +1584,8 @@ public final class FileUtil {
 
     final StringBuffer sb = new StringBuffer();
 
-    for( int i = 0; i < s.size(); i++ ) {
-      if( i > 1 ) {
+    for ( int i = 0; i < s.size(); i++ ) {
+      if ( i > 1 ) {
         // not before the filesystem root and not after it, since root
         // already contains one
         sb.append( File.separatorChar );
@@ -1600,7 +1596,7 @@ public final class FileUtil {
 
     path = sb.toString();
 
-    if( dosWithDrive ) {
+    if ( dosWithDrive ) {
       path = path.replace( '/', '\\' );
     }
 
@@ -1637,7 +1633,7 @@ public final class FileUtil {
    * @return TODO Complete Documentation
    */
   public static String normalizeSlashes( String path ) {
-    if( path == null ) {
+    if ( path == null ) {
       return null;
     } else {
       path = path.replace( '/', File.separatorChar );
@@ -1662,9 +1658,9 @@ public final class FileUtil {
    * @return The representative path without the dots
    */
   public static String removeRelations( final String path ) {
-    if( path == null ) {
+    if ( path == null ) {
       return null;
-    } else if( path.length() == 0 ) {
+    } else if ( path.length() == 0 ) {
       return path;
     } else {
       // Break the path into tokens and skip any '.' tokens
@@ -1673,14 +1669,14 @@ public final class FileUtil {
 
       int i = 0;
 
-      while( st.hasMoreTokens() ) {
+      while ( st.hasMoreTokens() ) {
         final String token = st.nextToken();
 
-        if( ( token != null ) && ( token.length() > 0 ) && !token.equals( "." ) ) {
+        if ( ( token != null ) && ( token.length() > 0 ) && !token.equals( "." ) ) {
           // if there is a reference to the parent, then just move back to the
           // previous token in the list, which is this tokens parent
-          if( token.equals( ".." ) ) {
-            if( i > 0 ) {
+          if ( token.equals( ".." ) ) {
+            if ( i > 0 ) {
               tokens[--i] = null;
             }
           } else {
@@ -1694,26 +1690,26 @@ public final class FileUtil {
 
       // If the original path started with a file separator, then make sure the
       // return value starts the same way
-      if( ( path.charAt( 0 ) == '/' ) || ( path.charAt( 0 ) == '\\' ) ) {
+      if ( ( path.charAt( 0 ) == '/' ) || ( path.charAt( 0 ) == '\\' ) ) {
         retval.append( File.separatorChar );
       }
 
       // For each token in the path
-      if( tokens.length > 0 ) {
-        for( i = 0; i < tokens.length; i++ ) {
-          if( tokens[i] != null ) {
+      if ( tokens.length > 0 ) {
+        for ( i = 0; i < tokens.length; i++ ) {
+          if ( tokens[i] != null ) {
             retval.append( tokens[i] );
           }
 
           // if there is another token on the list, use the platform-specific
           // file separator as a delimiter in the return value
-          if( ( i + 1 < tokens.length ) && ( tokens[i + 1] != null ) ) {
+          if ( ( i + 1 < tokens.length ) && ( tokens[i + 1] != null ) ) {
             retval.append( File.separatorChar );
           }
         }
       }
 
-      if( ( path.charAt( path.length() - 1 ) == '/' ) || ( ( path.charAt( path.length() - 1 ) == '\\' ) && ( retval.charAt( retval.length() - 1 ) != File.separatorChar ) ) ) {
+      if ( ( path.charAt( path.length() - 1 ) == '/' ) || ( ( path.charAt( path.length() - 1 ) == '\\' ) && ( retval.charAt( retval.length() - 1 ) != File.separatorChar ) ) ) {
         retval.append( File.separatorChar );
       }
 
@@ -1741,21 +1737,21 @@ public final class FileUtil {
       final byte[] buf = new byte[4096];
       int bytes_read;
 
-      while( ( bytes_read = in.read( buf ) ) != -1 ) {
+      while ( ( bytes_read = in.read( buf ) ) != -1 ) {
         out.write( buf, 0, bytes_read );
       }
     }
     finally {
-      if( in != null ) {
+      if ( in != null ) {
         try {
           in.close();
-        } catch( final IOException e ) {}
+        } catch ( final IOException e ) {}
       }
 
-      if( out != null ) {
+      if ( out != null ) {
         try {
           out.close();
-        } catch( final IOException e ) {}
+        } catch ( final IOException e ) {}
       }
     }
   }
@@ -1775,16 +1771,16 @@ public final class FileUtil {
     String text;
     double divider;
 
-    if( size < FileUtil.ONE_KB ) {
+    if ( size < FileUtil.ONE_KB ) {
       text = "bytes";
       divider = 1.0;
-    } else if( size < FileUtil.ONE_MB ) {
+    } else if ( size < FileUtil.ONE_MB ) {
       text = "KB";
       divider = FileUtil.ONE_KB;
-    } else if( size < FileUtil.ONE_GB ) {
+    } else if ( size < FileUtil.ONE_GB ) {
       text = "MB";
       divider = FileUtil.ONE_MB;
-    } else if( size < FileUtil.ONE_TB ) {
+    } else if ( size < FileUtil.ONE_TB ) {
       text = "GB";
       divider = FileUtil.ONE_GB;
     } else {
@@ -1836,29 +1832,29 @@ public final class FileUtil {
 
     // deal with absolute files
     final int colon = filename.indexOf( ":" );
-    if( filename.startsWith( File.separator ) || ( colon > -1 ) ) {
+    if ( filename.startsWith( File.separator ) || ( colon > -1 ) ) {
       return FileUtil.normalize( filename );
     }
 
-    if( baseDir == null ) {
+    if ( baseDir == null ) {
       return new File( filename );
     }
 
     File helpFile = new File( baseDir.getAbsolutePath() );
     final StringTokenizer tok = new StringTokenizer( filename, File.separator );
 
-    while( tok.hasMoreTokens() ) {
+    while ( tok.hasMoreTokens() ) {
       final String part = tok.nextToken();
 
-      if( part.equals( ".." ) ) {
+      if ( part.equals( ".." ) ) {
         helpFile = helpFile.getParentFile();
 
-        if( helpFile == null ) {
+        if ( helpFile == null ) {
           final String msg = "The file or path you specified (" + filename + ") is invalid relative to " + baseDir.getPath();
 
           throw new ChainedRuntimeException( msg );
         }
-      } else if( part.equals( "." ) ) {
+      } else if ( part.equals( "." ) ) {
         // Do nothing here
       } else {
         helpFile = new File( helpFile, part );
@@ -1890,18 +1886,18 @@ public final class FileUtil {
    *         last accessed, or -1 if the file does not exist ir is null.
    */
   public static long getFileAge( final File file ) {
-    if( ( file != null ) && file.exists() ) {
-      if( file.isDirectory() ) {
+    if ( ( file != null ) && file.exists() ) {
+      if ( file.isDirectory() ) {
         long lastModified = file.lastModified();
 
         final String[] paths = file.list();
 
-        if( paths != null ) {
-          for( int i = 0; i < paths.length; i++ ) {
+        if ( paths != null ) {
+          for ( int i = 0; i < paths.length; i++ ) {
             final File fil = new File( file, paths[i] );
             final long age = FileUtil.getFileAge( fil );
 
-            if( age > lastModified ) {
+            if ( age > lastModified ) {
               lastModified = age;
             }
           } // for each path in directory
@@ -1927,20 +1923,20 @@ public final class FileUtil {
     try {
       fin = new FileInputStream( file );
       final BufferedReader myInput = new BufferedReader( new InputStreamReader( fin ) );
-      while( ( line = myInput.readLine() ) != null ) {
+      while ( ( line = myInput.readLine() ) != null ) {
         array.add( line );
       }
-    } catch( final Exception e ) {
+    } catch ( final Exception e ) {
       e.printStackTrace();
     }
     finally {
       try {
         fin.close();
-      } catch( final Exception e ) {}
+      } catch ( final Exception e ) {}
     }
 
     final String[] retval = new String[array.size()];
-    for( int x = 0; x < retval.length; retval[x] = (String)array.get( x++ ) ) {
+    for ( int x = 0; x < retval.length; retval[x] = (String)array.get( x++ ) ) {
       ;
     }
 
