@@ -32,6 +32,7 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -176,14 +177,12 @@ public final class FileUtil {
         // Attempt to return the string
         try {
           return new String( data, StringUtil.ISO8859_1 );
-        }
-        catch( final UnsupportedEncodingException uee ) {
+        } catch( final UnsupportedEncodingException uee ) {
           // Send it back in default encoding
           return new String( data );
         }
       }
-    }
-    catch( final Exception ex ) {}
+    } catch( final Exception ex ) {}
 
     return null;
   }
@@ -207,8 +206,7 @@ public final class FileUtil {
         FileUtil.write( file, text.getBytes( StringUtil.ISO8859_1 ) );
 
         return true;
-      }
-      catch( final Exception ex ) {}
+      } catch( final Exception ex ) {}
     }
 
     return false;
@@ -444,8 +442,7 @@ public final class FileUtil {
   public final static void touch( final File file ) {
     try {
       FileUtil.append( file, new byte[0], false );
-    }
-    catch( final IOException ioe ) {}
+    } catch( final IOException ioe ) {}
   }
 
 
@@ -478,8 +475,7 @@ public final class FileUtil {
         seeker.seek( seeker.length() );
         seeker.write( data );
         file.setLastModified( System.currentTimeMillis() );
-      }
-      catch( final IOException ioe ) {
+      } catch( final IOException ioe ) {
         throw ioe;
       }
       finally {
@@ -489,8 +485,7 @@ public final class FileUtil {
           if( seeker != null ) {
             seeker.close();
           }
-        }
-        catch( final Exception e ) {
+        } catch( final Exception e ) {
           // Nevermind
         }
         finally {}
@@ -863,8 +858,7 @@ public final class FileUtil {
 
       try {
         retval = new URI( buffer.toString() );
-      }
-      catch( final URISyntaxException e ) {
+      } catch( final URISyntaxException e ) {
         System.err.println( e.getMessage() );
       }
     }
@@ -879,89 +873,43 @@ public final class FileUtil {
    * Scan the given directory for files containing the substrMatch
    * Small case extensions '.dbf' are recognized and returned as '.DBF'
    *
-   * @param path eg "/usr/local/dbase"
+   * @param path eg "/usr/local/metrics"
    * @param suffix Case insensitive: eg ".DBF"
+   * @param recurse set to true to recurse into all the child sub directories.
    *
-   * @return TODO Complete Documentation
+   * @return a list of File objects representing the files in the given path with the given suffix
    */
-  public final static Vector getAllFiles( final String path, final String suffix ) {
+  public final static List<File> getAllFiles( final String path, final String suffix, boolean recurse ) {
 
-    /**
-     * Inner Class MyDir
-     */
-    class MyDir extends javax.swing.filechooser.FileSystemView {
+    File folder = new File( path );
+    File[] listOfFiles = folder.listFiles();
+    final List<File> list = new ArrayList<File>( 20 );
 
-      /**
-       * Method createNewFolder
-       *
-       * @param containingDir
-       *
-       * @return TODO Complete Documentation
-       */
-      public File createNewFolder( final File containingDir ) {
-        return null;
-      }
-
-
-
-
-      /**
-       * Method getRoots
-       *
-       * @return TODO Complete Documentation
-       */
-      public File[] getRoots() {
-        return null;
-      }
-
-
-
-
-      /**
-       * Method isHiddenFile
-       *
-       * @param f
-       *
-       * @return TODO Complete Documentation
-       */
-      public boolean isHiddenFile( final File f ) {
-        return false;
-      }
-
-
-
-
-      /**
-       * Method isRoot
-       *
-       * @param f
-       *
-       * @return TODO Complete Documentation
-       */
-      public boolean isRoot( final File f ) {
-        return false;
-      }
-    }
-
-    final MyDir view = new MyDir();
-    final Vector vec = new Vector( 20 );
-    final File dir = view.createFileObject( path );
-    final File[] ff = view.getFiles( dir, false );
     String upperSuffix = null;
 
-    if( suffix != null ) {
+    if( suffix != null )
       upperSuffix = suffix.toUpperCase();
-    }
 
-    for( int ii = 0; ii < ff.length; ii++ ) {
-      final String file = ff[ii].toString().toUpperCase();
+    for( int i = 0; i < listOfFiles.length; i++ ) {
+      if( listOfFiles[i].isFile() ) {
+        System.out.println( "File " + listOfFiles[i].getName() );
+        if( ( upperSuffix == null ) || listOfFiles[i].getName().toUpperCase().endsWith( upperSuffix ) ) {
+          list.add( listOfFiles[i] );
+        }
+      } else if( listOfFiles[i].isDirectory() ) {
 
-      if( ( upperSuffix == null ) || file.endsWith( upperSuffix ) ) {
-        vec.addElement( ff[ii] );
+        if( recurse ) {
+          try {
+            System.out.println( "Directory " + listOfFiles[i].getName() + " - " + listOfFiles[i].getCanonicalPath() );
+            list.addAll( getAllFiles( listOfFiles[i].getCanonicalPath(), suffix, recurse ) );
+          } catch( IOException e ) {
+            e.printStackTrace();
+          }
+        }
+
       }
     }
-
-    return vec;
+    return list;
   }
 
 
@@ -1076,20 +1024,17 @@ public final class FileUtil {
 
     try {
       fis = new FileInputStream( fn );
-    }
-    catch( final IOException e ) {
+    } catch( final IOException e ) {
       return ( dis );
     }
 
     try {
       bis = new BufferedInputStream( fis );
       dis = new DataInputStream( bis );
-    }
-    catch( final Exception e ) {
+    } catch( final Exception e ) {
       try {
         fis.close();
-      }
-      catch( final IOException e1 ) {}
+      } catch( final IOException e1 ) {}
 
       dis = null;
 
@@ -1136,8 +1081,7 @@ public final class FileUtil {
       if( f.exists() ) {
         return f.length();
       }
-    }
-    catch( final Exception e ) {}
+    } catch( final Exception e ) {}
 
     return -1;
   }
@@ -1222,8 +1166,7 @@ public final class FileUtil {
         // ...delete the directory itself
         dir.delete();
       }
-    }
-    catch( final Exception e ) {}
+    } catch( final Exception e ) {}
   }
 
 
@@ -1352,8 +1295,7 @@ public final class FileUtil {
           }
         }
       }
-    }
-    catch( final Exception e ) {
+    } catch( final Exception e ) {
       e.printStackTrace( System.out );
     }
   }
@@ -1438,8 +1380,7 @@ public final class FileUtil {
           FileUtil.touch( file );
         }
 
-      }
-      catch( final EOFException eof ) {}
+      } catch( final EOFException eof ) {}
       finally {
         // Attempt to close the data input stream
         try {
@@ -1447,8 +1388,7 @@ public final class FileUtil {
           if( dos != null ) {
             dos.close();
           }
-        }
-        catch( final Exception e ) {
+        } catch( final Exception e ) {
           // Nevermind
         }
         finally {}
@@ -1507,8 +1447,7 @@ public final class FileUtil {
         FileUtil.makeDirectory( tempfile );
 
         retval = tempfile;
-      }
-      catch( final Exception e ) {
+      } catch( final Exception e ) {
         retval = null;
       }
     }
@@ -1543,16 +1482,14 @@ public final class FileUtil {
         dis.readFully( bytes );
 
         return bytes;
-      }
-      catch( final Exception ignore ) {}
+      } catch( final Exception ignore ) {}
       finally {
         // Attempt to close the data input stream
         try {
           if( dis != null ) {
             dis.close();
           }
-        }
-        catch( final Exception ignore ) {}
+        } catch( final Exception ignore ) {}
       }
     }
 
@@ -1812,15 +1749,13 @@ public final class FileUtil {
       if( in != null ) {
         try {
           in.close();
-        }
-        catch( final IOException e ) {}
+        } catch( final IOException e ) {}
       }
 
       if( out != null ) {
         try {
           out.close();
-        }
-        catch( final IOException e ) {}
+        } catch( final IOException e ) {}
       }
     }
   }
@@ -1995,15 +1930,13 @@ public final class FileUtil {
       while( ( line = myInput.readLine() ) != null ) {
         array.add( line );
       }
-    }
-    catch( final Exception e ) {
+    } catch( final Exception e ) {
       e.printStackTrace();
     }
     finally {
       try {
         fin.close();
-      }
-      catch( final Exception e ) {}
+      } catch( final Exception e ) {}
     }
 
     final String[] retval = new String[array.size()];

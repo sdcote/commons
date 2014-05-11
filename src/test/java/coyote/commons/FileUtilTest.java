@@ -5,8 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -74,24 +73,39 @@ public class FileUtilTest {
 
 
   /**
-   * Method XtestGetAllFiles
-   * 
-   * Does not work on all platforms; CI builds on drone.io fails
+   * Method testGetAllFiles
    */
-  //@Test
-  public void XtestGetAllFiles() {
-    try {
-      Vector list = FileUtil.getAllFiles( ".", "java" );
-      System.out.println( "Found " + list.size() + " files:" );
+  @Test
+  public void testGetAllFiles() {
 
-      for( Iterator i = list.iterator(); i.hasNext(); ) {
-        File file = (File)i.next();
-        System.out.println( ">" + file.getAbsolutePath() );
-      }
+    // Should return no files in the current directory with .JAVA extension
+    try {
+      List<File> list = FileUtil.getAllFiles( ".", "java", false );
+      assertTrue( list.size() == 0 );
     }
     catch( Exception e ) {
       fail( "getAllFiles: " + e.getMessage() );
     }
+
+    // Should return all the files in the current directory
+    try {
+      List<File> list = FileUtil.getAllFiles( ".", null, false );
+      assertTrue( list.size() > 5 );
+    }
+    catch( Exception e ) {
+      fail( "getAllFiles: " + e.getMessage() );
+    }
+
+    // Should return many files in the current directory with .JAVA extension as recurse is set to true
+    try {
+      List<File> list = FileUtil.getAllFiles( ".", "java", true );
+      assertTrue( list.size() > 200 );
+      //for( File file : list ) System.out.println( ">" + file.getAbsolutePath() );
+    }
+    catch( Exception e ) {
+      fail( "getAllFiles: " + e.getMessage() );
+    }
+
   }
 
 
