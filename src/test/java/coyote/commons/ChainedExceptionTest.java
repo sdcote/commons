@@ -1,8 +1,3 @@
-/*
- * $Id:$
- *
- * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
- */
 package coyote.commons;
 
 //import static org.junit.Assert.*;
