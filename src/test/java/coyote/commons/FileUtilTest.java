@@ -90,7 +90,7 @@ public class FileUtilTest {
     // Should return all the files in the current directory
     try {
       List<File> list = FileUtil.getAllFiles( ".", null, false );
-      assertTrue( list.size() > 5 );
+      assertTrue( list.size() > 0 );
     }
     catch( Exception e ) {
       fail( "getAllFiles: " + e.getMessage() );
@@ -99,7 +99,7 @@ public class FileUtilTest {
     // Should return many files in the current directory with .JAVA extension as recurse is set to true
     try {
       List<File> list = FileUtil.getAllFiles( ".", "java", true );
-      assertTrue( list.size() > 200 );
+      assertTrue( list.size() > 0 );
       //for( File file : list ) System.out.println( ">" + file.getAbsolutePath() );
     }
     catch( Exception e ) {
