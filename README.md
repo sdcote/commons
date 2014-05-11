@@ -1,3 +1,5 @@
+[![Build Status](https://drone.io/github.com/sdcote/commons/status.png)](https://drone.io/github.com/sdcote/commons/latest)
+
 Coyote Commons
 ==============
 
