@@ -89,8 +89,8 @@ bintray {
 	publications = ['mavenJava']
 	pkg {
 		repo = 'maven'
-		name = 'commons'
-		desc = 'A collection of useful utility classes.'
+		name = 'Commons'
+		desc = 'A collection of useful utility classes common to many different projects.'
 		licenses = ['MIT']
 		labels = ['Java', 'util', 'commons']
 	}
