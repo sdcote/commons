@@ -105,26 +105,26 @@ public final class StringUtil {
   public static final String tokenSubst( final String[] tokens, final String string, final boolean fromStart ) {
     String temps = ( string == null ) ? "" : string;
 
-    if( temps.length() > 0 ) {
+    if ( temps.length() > 0 ) {
       final int delta = ( fromStart ) ? 2 : -2;
       int i_old = ( fromStart ) ? 0 : tokens.length - 1;
       int i_new = i_old + delta / 2;
       final int num_to_do = tokens.length / 2;
       int cnt;
 
-      for( cnt = 0; cnt < num_to_do; ++cnt ) {
+      for ( cnt = 0; cnt < num_to_do; ++cnt ) {
         StringBuffer buf = null;
         int last_pos = 0;
         final String tok_string = tokens[i_old];
         final int tok_len = tok_string.length();
         int tok_pos = temps.indexOf( tok_string, last_pos );
 
-        while( tok_pos >= 0 ) {
-          if( buf == null ) {
+        while ( tok_pos >= 0 ) {
+          if ( buf == null ) {
             buf = new StringBuffer();
           }
 
-          if( last_pos != tok_pos ) {
+          if ( last_pos != tok_pos ) {
             buf.append( temps.substring( last_pos, tok_pos ) );
           }
 
@@ -134,11 +134,11 @@ public final class StringUtil {
           tok_pos = temps.indexOf( tok_string, last_pos );
         }
 
-        if( ( last_pos < temps.length() ) && ( buf != null ) ) {
+        if ( ( last_pos < temps.length() ) && ( buf != null ) ) {
           buf.append( temps.substring( last_pos ) );
         }
 
-        if( buf != null ) {
+        if ( buf != null ) {
           temps = buf.toString();
         }
 
@@ -165,8 +165,8 @@ public final class StringUtil {
   public static final String charSubst( final char fromChar, final char toChar, final String string ) {
     final StringBuffer buf = new StringBuffer( ( string == null ) ? "" : string );
 
-    for( int indx = buf.length() - 1; indx >= 0; --indx ) {
-      if( buf.charAt( indx ) == fromChar ) {
+    for ( int indx = buf.length() - 1; indx >= 0; --indx ) {
+      if ( buf.charAt( indx ) == fromChar ) {
         buf.setCharAt( indx, toChar );
       }
     }
@@ -237,11 +237,11 @@ public final class StringUtil {
    * @param message the message to send back if the string is null or empty
    */
   public static final void assertNotBlank( final String arg, final String message ) {
-    if( arg == null ) {
+    if ( arg == null ) {
       throw new IllegalArgumentException( "Null argument not allowed: " + message );
     }
 
-    if( arg.trim().equals( "" ) ) {
+    if ( arg.trim().equals( "" ) ) {
       throw new IllegalArgumentException( "Blank argument not allowed: " + message );
     }
   }
@@ -258,7 +258,7 @@ public final class StringUtil {
    * @return TODO Complete Documentation
    */
   public static final String notNull( final String arg ) {
-    if( arg == null ) {
+    if ( arg == null ) {
       return new String( "" );
     }
 
@@ -282,17 +282,17 @@ public final class StringUtil {
    * @param upperCaseFlag
    * @return java.lang.String representing the character
    *
-   * @throws Exception
+   * @throws IllegalArgumentException if the number is out of range (1-26)
    */
   public static final String numberToLetter( final int number, final boolean upperCaseFlag ) throws Exception {
     // add nine to bring the numbers into the right range (in java, a= 10, z = 35)
-    if( ( number < 1 ) || ( number > 26 ) ) {
-      throw new Exception( "StringUtil.numberToLetter:The number is out of the proper range (1 to 26) to be converted to a letter." );
+    if ( ( number < 1 ) || ( number > 26 ) ) {
+      throw new IllegalArgumentException( "StringUtil.numberToLetter:The number is out of the proper range (1 to 26) to be converted to a letter." );
     }
 
     final int modnumber = number + 9;
     char thechar = Character.forDigit( modnumber, 36 );
-    if( upperCaseFlag ) {
+    if ( upperCaseFlag ) {
       thechar = Character.toUpperCase( thechar );
     }
 
@@ -306,28 +306,28 @@ public final class StringUtil {
    * replace substrings within string.
    *
    * @param text the text to scan
-   * @param sub
-   * @param with
+   * @param target the string to replace in the text
+   * @param desired the string to put in place of the text
    *
-   * @return TODO Complete Documentation
+   * @return a string with all the occurrences of the target strings replaced with the desired strings
    */
-  public static final String replace( final String text, final String sub, final String with ) {
+  public static final String replace( final String text, final String target, final String desired ) {
     int ch = 0;
-    int indx = text.indexOf( sub, ch );
-    if( indx == -1 ) {
+    int indx = text.indexOf( target, ch );
+    if ( indx == -1 ) {
       return text;
     }
 
-    final StringBuffer buf = new StringBuffer( text.length() + with.length() );
+    final StringBuffer buf = new StringBuffer( text.length() + desired.length() );
     do {
       buf.append( text.substring( ch, indx ) );
-      buf.append( with );
+      buf.append( desired );
 
-      ch = indx + sub.length();
+      ch = indx + target.length();
     }
-    while( ( indx = text.indexOf( sub, ch ) ) != -1 );
+    while ( ( indx = text.indexOf( target, ch ) ) != -1 );
 
-    if( ch < text.length() ) {
+    if ( ch < text.length() ) {
       buf.append( text.substring( ch, text.length() ) );
     }
 
@@ -341,20 +341,17 @@ public final class StringUtil {
    * Return if a string is numeric by trying to parse it.
    *
    * <p>The goal of this method is to give a simple test for whole numbers that
-   * are used as identifiers. Note that while technically &quot;15.3&quot; is a
-   * numeric, it is not a whole number and will return false when passed to this
-   * method.</p>
+   * are used as identifiers.</p>
    *
-   * @param string
+   * @param string the string to check
+   * 
    * @return True if the string is a parsable numeric (number) False otherwise.
    */
   public static final boolean isNumeric( final String string ) {
     try {
       Double.parseDouble( string );
-
       return true;
-    }
-    catch( final Exception ex ) {
+    } catch ( final Exception ex ) {
       return false;
     }
   }
@@ -363,25 +360,26 @@ public final class StringUtil {
 
 
   /**
-   * Cut or padd the string to the given size
+   * Cut or pad the string to the given size
    *
    * @param str
    * @param size the wanted length
    * @param padByte char to use for padding
-   * @return the string with correct lenght, padded with pad if necessary
+   * 
+   * @return the string with correct length, padded with pad if necessary
    *
    * @throws java.io.UnsupportedEncodingException
    */
   public static final byte[] forceToSize( final String str, final int size, final byte padByte ) throws java.io.UnsupportedEncodingException {
     // If the sizes match, return the string unchanged
-    if( ( str != null ) && ( str.length() == size ) ) {
+    if ( ( str != null ) && ( str.length() == size ) ) {
       return str.getBytes();
     }
 
     final byte[] result = new byte[size];
     // It null, pad the whole thing
-    if( str == null ) {
-      for( int ii = 0; ii < size; ii++ ) {
+    if ( str == null ) {
+      for ( int ii = 0; ii < size; ii++ ) {
         result[ii] = padByte;
       }
 
@@ -389,18 +387,18 @@ public final class StringUtil {
     }
 
     // Do some cutting
-    if( str.length() > size ) {
+    if ( str.length() > size ) {
       return str.substring( 0, size ).getBytes();
     }
 
     // Do some padding
     final byte[] tmp = str.getBytes();
 
-    for( int jj = 0; jj < tmp.length; jj++ ) {
+    for ( int jj = 0; jj < tmp.length; jj++ ) {
       result[jj] = tmp[jj];
     }
 
-    for( int kk = tmp.length; kk < size; kk++ ) {
+    for ( int kk = tmp.length; kk < size; kk++ ) {
       result[kk] = padByte;
     }
 
@@ -413,15 +411,15 @@ public final class StringUtil {
   /**
    * This maps a character to a soundex code.
    *
-   * @param ch
+   * @param ch the character to lookup
    *
-   * @return TODO Complete Documentation
+   * @return the soundex character for the given character.
    */
   private static char getSoundexMappingCode( final char ch ) {
-    if( Character.isLetter( ch ) ) {
+    if ( Character.isLetter( ch ) ) {
       final int idx = Character.toUpperCase( ch ) - 'A';
 
-      if( ( 0 <= idx ) && ( idx < StringUtil.soundex_map.length ) ) {
+      if ( ( 0 <= idx ) && ( idx < StringUtil.soundex_map.length ) ) {
         return StringUtil.soundex_map[idx];
       }
     }
@@ -434,13 +432,15 @@ public final class StringUtil {
 
   /**
    * This will return a 6-character soundex code for the given string.
+   * 
+   * <p>This is useful in detecting alternate spellings of the same name, helping to detect duplicates.</p>
    *
-   * String string[]={ "Stephan", "Steven", "Stevens", "getSoundexMappingCode" };
-   * for ( int indx = 0; indx < string.length; indx++ ) System.out.println( string[indx] + " = " + StringUtil.soundex( string[indx] ) );
+   * <p><pre>String string[]={ "Stephan", "Steven", "Stevens", "getSoundexMappingCode" };
+   * for ( int indx = 0; indx < string.length; indx++ ) System.out.println( string[indx] + " = " + StringUtil.soundex( string[indx] ) );</pre></p>
    *
-   * @param in
+   * @param in The string from which the code is to be generated.
    *
-   * @return TODO Complete Documentation
+   * @return the soundex string
    */
   public static String soundex( final String in ) {
     final char out[] = { '0', '0', '0', '0', '0', '0' };
@@ -450,8 +450,8 @@ public final class StringUtil {
     out[0] = Character.toUpperCase( in.charAt( 0 ) );
     last = StringUtil.getSoundexMappingCode( in.charAt( 0 ) );
 
-    while( ( incount < in.length() ) && ( ( mapped = StringUtil.getSoundexMappingCode( in.charAt( incount++ ) ) ) != 0 ) && ( count < out.length ) ) {
-      if( ( mapped != '0' ) && ( mapped != last ) ) {
+    while ( ( incount < in.length() ) && ( ( mapped = StringUtil.getSoundexMappingCode( in.charAt( incount++ ) ) ) != 0 ) && ( count < out.length ) ) {
+      if ( ( mapped != '0' ) && ( mapped != last ) ) {
         out[count++] = mapped;
       }
 
@@ -467,19 +467,17 @@ public final class StringUtil {
   /**
    * Build a string with the specified number of spaces.
    *
-   * @param num
+   * @param num the number of spaces to return
+   * 
    * @return A string with the specified number of spaces.
    */
   public static final String getSpaces( int num ) {
-    // just in case preallocation works poorly with a non-positive number
-    if( num < 1 ) {
+    if ( num < 1 )
       return "";
-    }
 
-    // preallocate the correct size!
     final StringBuffer sb = new StringBuffer( num );
 
-    while( num-- > 0 ) {
+    while ( num-- > 0 ) {
       sb.append( " " );
     }
 
@@ -492,16 +490,16 @@ public final class StringUtil {
   /**
    * Justify a string to a certain width.
    *
-   * <p>The string is never trunctaed.</p>
+   * <p>The string is never truncated.</p>
    *
    * @param width
    * @param string
-   * @param method
+   * @param method 0 = left justified, 1 = center justified, 2 = right justified
    *
    * @return String justified as specified in a particular width field.
    */
   static public final String justifyString( final int width, String string, final int method ) {
-    if( string == null ) {
+    if ( string == null ) {
       string = "";
     }
 
@@ -509,11 +507,11 @@ public final class StringUtil {
     int right = 0;
     final int extra = width - string.length();
 
-    if( extra > 0 ) {
-      if( method == 0 ) {
+    if ( extra > 0 ) {
+      if ( method == 0 ) {
         left = extra;
       } else {
-        if( method == 1 ) {
+        if ( method == 1 ) {
           left = extra / 2;
           right = extra - left;
         } else {
@@ -531,8 +529,10 @@ public final class StringUtil {
   /**
    * Center-justify a string to a certain width.
    *
-   * @param width
-   * @param text
+   * <p>The string is never truncated.</p>
+   * 
+   * @param width the number of characters wide the string should be
+   * @param text the original text
    *
    * @return String justified as specified in a particular width field.
    */
@@ -546,8 +546,10 @@ public final class StringUtil {
   /**
    * Left-justify a string to a certain width.
    *
-   * @param width
-   * @param text
+   * <p>The string is never truncated.</p>
+   * 
+   * @param width the number of characters wide the string should be
+   * @param text the original text
    *
    * @return String justified as specified in a particular width field.
    */
@@ -559,10 +561,12 @@ public final class StringUtil {
 
 
   /**
-   * Right-justify a string to a certain width.
+   * Right-justify a string to a certain width. Useful in generating column labels.
    *
-   * @param width
-   * @param text
+   * <p>The string is never truncated.</p>
+   * 
+   * @param width the number of characters wide the string should be
+   * @param text the original text
    *
    * @return String justified as specified in a particular width field.
    */
@@ -574,21 +578,24 @@ public final class StringUtil {
 
 
   /**
-   * Safely get a value from a string array.
+   * Safely get an indexed value from a string array returning the default 
+   * indexed value if the original index is out of bounds.
+   * 
+   *  <p>It is safe insofar as it will not throu an index out of bounds exception.</p>
    *
-   * @param search_int
-   * @param array
-   * @param default_value
+   * @param index the index of the string to return
+   * @param array the array of strings serving as the source of strings
+   * @param defaultIndex the default index of the string to return if the index is out of bounds
    *
-   * @return TODO Complete Documentation
+   * @return The string from the array at the given index or the default index or null if both indexes were out of bounds.
    */
-  public static final String safeGetStringFromArray( final int search_int, final String[] array, final int default_value ) {
-    if( ( 0 <= search_int ) && ( search_int < array.length ) ) {
-      return array[search_int];
+  public static final String safeGetStringFromArray( final int index, final String[] array, final int defaultIndex ) {
+    if ( ( 0 <= index ) && ( index < array.length ) ) {
+      return array[index];
     }
 
-    if( ( 0 <= default_value ) && ( default_value < array.length ) ) {
-      return array[default_value];
+    if ( ( 0 <= defaultIndex ) && ( defaultIndex < array.length ) ) {
+      return array[defaultIndex];
     }
 
     return ( array.length != 0 ) ? array[0] : null;
@@ -610,9 +617,9 @@ public final class StringUtil {
   public static final int findStringInArray( final String search_str, final String[] array, final int default_loc ) {
     int x = default_loc;
 
-    if( search_str != null ) {
-      for( int indx = 0; indx < array.length; ++indx ) {
-        if( search_str.equalsIgnoreCase( array[indx] ) ) {
+    if ( search_str != null ) {
+      for ( int indx = 0; indx < array.length; ++indx ) {
+        if ( search_str.equalsIgnoreCase( array[indx] ) ) {
           x = indx;
 
           break;
@@ -620,7 +627,7 @@ public final class StringUtil {
       }
     }
 
-    if( ( x < 0 ) || ( array.length <= x ) ) {
+    if ( ( x < 0 ) || ( array.length <= x ) ) {
       x = default_loc;
     }
 
@@ -631,19 +638,20 @@ public final class StringUtil {
 
 
   /**
-   * Method stringsEqual
+   * Performs a null safe check of string equality, useful when comparing two 
+   * user controlled string variables, either of which might be null.
    *
-   * @param s1
-   * @param s2
+   * @param s1 one of the strings to check
+   * @param s2 the other string to check
    *
-   * @return TODO Complete Documentation
+   * @return true if both strings are null, empty or equivaliant.
    */
   public static final boolean stringsEqual( final String s1, final String s2 ) {
-    if( ( s1 == null ) || ( s1.length() == 0 ) ) {
+    if ( ( s1 == null ) || ( s1.length() == 0 ) ) {
       return ( s2 == null ) || ( s2.length() == 0 );
     }
 
-    if( s2 == null ) {
+    if ( s2 == null ) {
       return false;
     }
 
@@ -658,15 +666,14 @@ public final class StringUtil {
   public static String ISO8859_1;
   static {
     final String iso = System.getProperty( "ISO_8859_1" );
-    if( iso != null ) {
+    if ( iso != null ) {
       StringUtil.ISO8859_1 = iso;
     } else {
       try {
         new String( new byte[] { (byte)20 }, "ISO-8859-1" );
 
         StringUtil.ISO8859_1 = "ISO-8859-1";
-      }
-      catch( final java.io.UnsupportedEncodingException e ) {
+      } catch ( final java.io.UnsupportedEncodingException e ) {
         StringUtil.ISO8859_1 = "ISO8859_1";
       }
     }
@@ -687,8 +694,8 @@ public final class StringUtil {
   public static final String asciiToLowerCase( final String string ) {
     final char[] ch = string.toCharArray();
 
-    for( int indx = ch.length; indx-- > 0; ) {
-      if( ch[indx] <= 127 ) {
+    for ( int indx = ch.length; indx-- > 0; ) {
+      if ( ch[indx] <= 127 ) {
         ch[indx] = StringUtil.LOWERCASES[ch[indx]];
       }
     }
@@ -708,8 +715,8 @@ public final class StringUtil {
    * @return TODO Complete Documentation
    */
   public static final int indexFrom( final String string, final String chars ) {
-    for( int indx = 0; indx < string.length(); indx++ ) {
-      if( chars.indexOf( string.charAt( indx ) ) >= 0 ) {
+    for ( int indx = 0; indx < string.length(); indx++ ) {
+      if ( chars.indexOf( string.charAt( indx ) ) >= 0 ) {
         return indx;
       }
     }
@@ -727,7 +734,7 @@ public final class StringUtil {
    * @return string
    */
   public static final String unquote( final String string ) {
-    if( ( string.startsWith( "\"" ) && string.endsWith( "\"" ) ) || ( string.startsWith( "'" ) && string.endsWith( "'" ) ) ) {
+    if ( ( string.startsWith( "\"" ) && string.endsWith( "\"" ) ) || ( string.startsWith( "'" ) && string.endsWith( "'" ) ) ) {
       return string.substring( 1, string.length() - 1 );
     }
 
@@ -754,15 +761,15 @@ public final class StringUtil {
     String outstr;
     char cr;
 
-    for( indx = startloc; indx >= 0; indx-- ) {
+    for ( indx = startloc; indx >= 0; indx-- ) {
       cr = indata.charAt( indx );
 
-      if( cr == '\n' ) {
+      if ( cr == '\n' ) {
         break;
       }
     }
 
-    if( indx < 0 ) {
+    if ( indx < 0 ) {
       indx = 0;
     }
 
@@ -775,7 +782,7 @@ public final class StringUtil {
 
 
   /**
-   * Backup to an occurent of a string return all the data acter that occurence.
+   * Backup to an occurence of a string return all the data acter that occurence.
    *
    * @param indata look for the lookfor string in here
    * @param startloc location to start in the indata string
@@ -788,13 +795,13 @@ public final class StringUtil {
     final int len = lookfor.length();
     String outstr;
 
-    for( indx = startloc; indx >= 0; indx-- ) {
-      if( indata.regionMatches( true, indx, lookfor, 0, len ) ) {
+    for ( indx = startloc; indx >= 0; indx-- ) {
+      if ( indata.regionMatches( true, indx, lookfor, 0, len ) ) {
         break;
       }
     }
 
-    if( indx < 0 ) {
+    if ( indx < 0 ) {
       outstr = null;
     } else {
       outstr = new String( indata.substring( indx ) );
@@ -818,7 +825,7 @@ public final class StringUtil {
   final static int skipSpace( final char[] str, int pos ) {
     final int len = str.length;
 
-    while( ( pos < len ) && Character.isWhitespace( str[pos] ) ) {
+    while ( ( pos < len ) && Character.isWhitespace( str[pos] ) ) {
       pos++;
     }
 
@@ -841,7 +848,7 @@ public final class StringUtil {
   final static int findSpace( final char[] str, int pos ) {
     final int len = str.length;
 
-    while( ( pos < len ) && !Character.isWhitespace( str[pos] ) ) {
+    while ( ( pos < len ) && !Character.isWhitespace( str[pos] ) ) {
       pos++;
     }
 
@@ -863,7 +870,7 @@ public final class StringUtil {
   public static int findInteger( final String string, final String startTag, final String endTag ) {
     final long l = StringUtil.findLong( string, startTag, endTag );
 
-    if( l <= Integer.MAX_VALUE ) {
+    if ( l <= Integer.MAX_VALUE ) {
       return (int)l;
     } else {
       return -1;
@@ -885,30 +892,30 @@ public final class StringUtil {
   public static long findLong( final String string, final String startTag, final String endTag ) {
     int indx = string.indexOf( startTag );
 
-    if( indx < 0 ) {
+    if ( indx < 0 ) {
       return -1L;
     }
 
-    for( indx += startTag.length(); indx < string.length(); indx++ ) {
-      if( Character.isDigit( string.charAt( indx ) ) ) {
+    for ( indx += startTag.length(); indx < string.length(); indx++ ) {
+      if ( Character.isDigit( string.charAt( indx ) ) ) {
         break;
       }
     }
 
-    if( indx == string.length() ) {
+    if ( indx == string.length() ) {
       return -1L;
     }
 
     long retval = -1L;
 
-    for( ; indx < string.length(); indx++ ) {
+    for ( ; indx < string.length(); indx++ ) {
       final char ch = string.charAt( indx );
 
-      if( !Character.isDigit( ch ) ) {
+      if ( !Character.isDigit( ch ) ) {
         break;
       }
 
-      if( retval > 0L ) {
+      if ( retval > 0L ) {
         retval *= 10L;
       } else {
         retval = 0L;
@@ -917,10 +924,10 @@ public final class StringUtil {
       retval += Character.digit( ch, 10 );
     }
 
-    if( ( endTag != null ) && ( indx < string.length() ) ) {
+    if ( ( endTag != null ) && ( indx < string.length() ) ) {
       final int j = string.indexOf( endTag, indx );
 
-      if( j < 0 ) {
+      if ( j < 0 ) {
         retval = -1L;
       }
     }
@@ -945,16 +952,16 @@ public final class StringUtil {
   public static String arrayToCommaList( final Object[] array ) {
     final StringBuffer sb = new StringBuffer();
 
-    for( int indx = 0; indx < array.length; indx++ ) {
-      if( ( indx > 0 ) && ( indx < array.length - 1 ) ) {
+    for ( int indx = 0; indx < array.length; indx++ ) {
+      if ( ( indx > 0 ) && ( indx < array.length - 1 ) ) {
         sb.append( ',' );
       }
 
-      if( indx > 0 ) {
+      if ( indx > 0 ) {
         sb.append( ' ' );
       }
 
-      if( indx == ( array.length - 1 ) ) {
+      if ( indx == ( array.length - 1 ) ) {
         sb.append( "and " );
       }
 
@@ -977,7 +984,7 @@ public final class StringUtil {
    * @return TODO Complete Documentation
    */
   public static String getString( final String string, final String as[], final int indx ) {
-    if( indx >= as.length ) {
+    if ( indx >= as.length ) {
       throw new IllegalArgumentException( "missing argument to -".concat( String.valueOf( string ) ) );
     } else {
       return as[indx];
@@ -997,10 +1004,10 @@ public final class StringUtil {
   public static String asJavaName( final String text ) {
     final StringBuffer retval = new StringBuffer();
 
-    for( int indx = 0; indx < text.length(); indx++ ) {
+    for ( int indx = 0; indx < text.length(); indx++ ) {
       final char ch = text.charAt( indx );
 
-      if( ( ( indx == 0 ) && Character.isJavaIdentifierStart( ch ) ) || Character.isJavaIdentifierPart( ch ) ) {
+      if ( ( ( indx == 0 ) && Character.isJavaIdentifierStart( ch ) ) || Character.isJavaIdentifierPart( ch ) ) {
         retval.append( ch );
       }
     }
@@ -1024,14 +1031,14 @@ public final class StringUtil {
     final String text = string.trim();
     boolean toUpper = flag;
 
-    for( int indx = 0; indx < text.length(); indx++ ) {
+    for ( int indx = 0; indx < text.length(); indx++ ) {
       final char ch = text.charAt( indx );
 
-      if( ch == ' ' ) {
+      if ( ch == ' ' ) {
         toUpper = true;
       } else {
-        if( ( ( indx == 0 ) && Character.isJavaIdentifierStart( ch ) ) || Character.isJavaIdentifierPart( ch ) ) {
-          if( toUpper ) {
+        if ( ( ( indx == 0 ) && Character.isJavaIdentifierStart( ch ) ) || Character.isJavaIdentifierPart( ch ) ) {
+          if ( toUpper ) {
             retval.append( Character.toUpperCase( ch ) );
 
             toUpper = false;
@@ -1049,18 +1056,18 @@ public final class StringUtil {
 
 
   /**
-   * Returns the given sentance as a valid Java identifier, using camel
+   * Returns the given sentence as a valid Java identifier, using camel
    * notation.
    *
-   * <p>All charactes of the name are lowercase unless they are preceeded by a
+   * <p>All characters of the name are lowercase unless they are preceded by a
    * space, in which case the space will be removed and the next character will
-   * be converted to uppercase. This should make the sentance into a standard
+   * be converted to uppercase. This should make the sentence into a standard
    * Java identifier suitable for JavaBean naming.</p>
    *
    * @param string the sentence to convert
    *
    * @return the sentence with all non-java identifier characters removed and
-   *         calitalized as required.
+   *         Capitalized as required.
    */
   public static String asCamelNotation( final String string ) {
     return StringUtil.asCamelNotation( string, false );
@@ -1070,10 +1077,10 @@ public final class StringUtil {
 
 
   /**
-   * Returns the given sentance as a valid Java identifier, using camel
+   * Returns the given sentence as a valid Java identifier, using camel
    * notation.
    *
-   * <p>All charactes of the name are lowercase unless the character is the
+   * <p>All characters of the name are lowercase unless the character is the
    * first character in the sequence or is preceeded by a space, in which case
    * the space will be removed and the next character will be converted to
    * uppercase.</p>
@@ -1081,7 +1088,7 @@ public final class StringUtil {
    * @param string the sentence to convert
    *
    * @return the sentence with all non-java identifier characters removed and
-   *         calitalized as required.
+   *         capitalized as required.
    */
   public static String asInitNotation( final String string ) {
     return StringUtil.asCamelNotation( string, true );
@@ -1091,7 +1098,7 @@ public final class StringUtil {
 
 
   /**
-   * When given a fully qualified class name (without the .class extenstion)
+   * When given a fully qualified class name (without the .class extension)
    * this will return the package portion of the class name.
    *
    * @param classname
@@ -1142,7 +1149,7 @@ public final class StringUtil {
    * @return TODO Complete Documentation
    */
   public static boolean isUTF16( final byte abyte0[] ) {
-    if( abyte0.length < 2 ) {
+    if ( abyte0.length < 2 ) {
       return false;
     } else {
       return ( ( abyte0[0] == -1 ) && ( abyte0[1] == -2 ) ) || ( ( abyte0[0] == -2 ) && ( abyte0[1] == -1 ) );
@@ -1213,7 +1220,7 @@ public final class StringUtil {
 
 
   /**
-   * Return the string after the last occurance of the given character in the
+   * Return the string after the last occurrence of the given character in the
    * given string.
    *
    * <p>Useful for getting extensions from filenames. Also used to retrieve the
@@ -1233,7 +1240,7 @@ public final class StringUtil {
 
 
   /**
-   * Return the string before the last occurance of the given character in the
+   * Return the string before the last occurrence of the given character in the
    * given string.
    *
    * <p>Useful for getting the body of a filename.</p>
@@ -1254,7 +1261,7 @@ public final class StringUtil {
   /**
    * Appends the node to the path with the &quot;/&quot; delimiter
    *
-   * <p>Usefult for adding a directory or filename to the end of a directory
+   * <p>Useful for adding a directory or filename to the end of a directory
    * path.</p>
    *
    * @param path
@@ -1263,19 +1270,19 @@ public final class StringUtil {
    * @return the path with the node appended delimited with &quot;/&quot;
    */
   public static String splice( final String path, final String node ) {
-    if( node.length() == 0 ) {
+    if ( node.length() == 0 ) {
       return path;
     }
 
-    if( path.endsWith( "/" ) && node.startsWith( "/" ) ) {
+    if ( path.endsWith( "/" ) && node.startsWith( "/" ) ) {
       return path + node.substring( 1 );
     }
 
-    if( path.endsWith( "/" ) || node.startsWith( "/" ) ) {
+    if ( path.endsWith( "/" ) || node.startsWith( "/" ) ) {
       return path + node;
     }
 
-    if( path.length() > 0 ) {
+    if ( path.length() > 0 ) {
       return String.valueOf( ( new StringBuffer( String.valueOf( path ) ) ).append( "/" ).append( node ) );
     } else {
       return node;
@@ -1295,15 +1302,15 @@ public final class StringUtil {
   public static String arrayToString( final Object array ) {
     final int indx = Array.getLength( array );
 
-    if( indx == 0 ) {
+    if ( indx == 0 ) {
       return "()";
     }
 
     final StringBuffer stringbuffer = new StringBuffer();
     stringbuffer.append( "( " );
 
-    for( int j = 0; j < indx; j++ ) {
-      if( j > 0 ) {
+    for ( int j = 0; j < indx; j++ ) {
+      if ( j > 0 ) {
         stringbuffer.append( ", " );
       }
 
@@ -1317,7 +1324,7 @@ public final class StringUtil {
 
 
   /**
-   * Get the string after the last occurence of &quot;/&quot;
+   * Get the string after the last occurrence of &quot;/&quot;
    *
    * @param uri
    *
@@ -1332,7 +1339,7 @@ public final class StringUtil {
 
 
   /**
-   * Get everything up to the last occurence of &quot;/&quot; but if there is
+   * Get everything up to the last occurrence of &quot;/&quot; but if there is
    * no &quot;/&quot; in the string, retun an empty string NOT a null.
    *
    * <p>This is useful in determining the endpoints or servlet contexts in URI
@@ -1362,17 +1369,17 @@ public final class StringUtil {
     long l = -1L;
     final StringBuffer stringbuffer = new StringBuffer();
 
-    for( final int j = string.length(); indx < j; ) {
+    for ( final int j = string.length(); indx < j; ) {
       final char ch = string.charAt( indx++ );
 
-      if( !Character.isDigit( ch ) ) {
+      if ( !Character.isDigit( ch ) ) {
         break;
       }
 
       stringbuffer.append( ch );
     }
 
-    if( stringbuffer.length() > 0 ) {
+    if ( stringbuffer.length() > 0 ) {
       l = Long.valueOf( stringbuffer.toString() ).longValue();
     }
 
@@ -1393,11 +1400,11 @@ public final class StringUtil {
   public static String readColumn( final String text, final int col ) {
     final StringTokenizer stringtokenizer = new StringTokenizer( text );
 
-    if( stringtokenizer.countTokens() >= col ) {
-      for( int indx = 1; indx <= col; indx++ ) {
+    if ( stringtokenizer.countTokens() >= col ) {
+      for ( int indx = 1; indx <= col; indx++ ) {
         final String retval = stringtokenizer.nextToken();
 
-        if( indx == col ) {
+        if ( indx == col ) {
           return retval;
         }
       }
@@ -1419,10 +1426,10 @@ public final class StringUtil {
   public static String toFilename( final String string ) {
     final StringBuffer stringbuffer = new StringBuffer();
 
-    for( int indx = 0; indx < string.length(); indx++ ) {
+    for ( int indx = 0; indx < string.length(); indx++ ) {
       final char ch = string.charAt( indx );
 
-      if( Character.isLetterOrDigit( ch ) || ( ch == '.' ) ) {
+      if ( Character.isLetterOrDigit( ch ) || ( ch == '.' ) ) {
         stringbuffer.append( ch );
       } else {
         stringbuffer.append( '_' );
@@ -1447,7 +1454,7 @@ public final class StringUtil {
   public static String fromFilename( final String string ) {
     final int indx = string.indexOf( '_' );
 
-    if( indx == -1 ) {
+    if ( indx == -1 ) {
       return string;
     } else {
       final int j = string.indexOf( '_', indx + 1 );
@@ -1470,10 +1477,10 @@ public final class StringUtil {
   public static void substitute( final String as[][], final String as1[][] ) throws IOException {
     top:
 
-    for( int indx = 0; indx < as.length; indx++ ) {
+    for ( int indx = 0; indx < as.length; indx++ ) {
       final String string = as[indx][1];
 
-      if( ( string.length() <= 0 ) || ( string.charAt( 0 ) != '$' ) ) {
+      if ( ( string.length() <= 0 ) || ( string.charAt( 0 ) != '$' ) ) {
         continue;
       }
 
@@ -1481,11 +1488,11 @@ public final class StringUtil {
       int j = 0;
 
       do {
-        if( j >= as1.length ) {
+        if ( j >= as1.length ) {
           continue top;
         }
 
-        if( as1[j][0].equals( tmp ) ) {
+        if ( as1[j][0].equals( tmp ) ) {
           as[indx][1] = as1[j][1];
 
           continue top;
@@ -1493,7 +1500,7 @@ public final class StringUtil {
 
         j++;
       }
-      while( true );
+      while ( true );
     }
   }
 
@@ -1555,12 +1562,12 @@ public final class StringUtil {
   public static String zeropad( final long num, final int size ) {
     final String value = Long.toString( num );
 
-    if( value.length() >= size ) {
+    if ( value.length() >= size ) {
       return value;
     }
 
     final StringBuffer buf = new StringBuffer( size );
-    for( int indx = 0; indx++ < ( size - value.length() ); buf.append( '0' ) ) {
+    for ( int indx = 0; indx++ < ( size - value.length() ); buf.append( '0' ) ) {
       ;
     }
 
@@ -1581,24 +1588,24 @@ public final class StringUtil {
    * 
    * @return a list of Strings
    */
-  public static List split( final String str, final String delim ) {
-    List splitList = null;
+  public static List<String> split( final String str, final String delim ) {
+    List<String> splitList = null;
     StringTokenizer st = null;
 
-    if( str == null ) {
+    if ( str == null ) {
       return splitList;
     }
 
-    if( delim != null ) {
+    if ( delim != null ) {
       st = new StringTokenizer( str, delim );
     } else {
       st = new StringTokenizer( str );
     }
 
-    if( ( st != null ) && st.hasMoreTokens() ) {
-      splitList = new ArrayList();
+    if ( ( st != null ) && st.hasMoreTokens() ) {
+      splitList = new ArrayList<String>();
 
-      while( st.hasMoreTokens() ) {
+      while ( st.hasMoreTokens() ) {
         splitList.add( st.nextToken() );
       }
     }
@@ -1619,20 +1626,20 @@ public final class StringUtil {
    */
   public static final String removeWhitespace( final String text ) {
     String retval = null;
-    if( text != null ) {
+    if ( text != null ) {
       final char[] chars = new char[text.length()];
       int mrk = 0;
 
-      for( int i = 0; i < text.length(); i++ ) {
+      for ( int i = 0; i < text.length(); i++ ) {
         final char c = text.charAt( i );
-        if( !Character.isWhitespace( c ) ) {
+        if ( !Character.isWhitespace( c ) ) {
           chars[mrk++] = c;
         }
       }
 
-      if( mrk > 0 ) {
+      if ( mrk > 0 ) {
         final char[] data = new char[mrk];
-        for( int i = 0; i < mrk; data[i] = chars[i++] ) {
+        for ( int i = 0; i < mrk; data[i] = chars[i++] ) {
           ;
         }
 
@@ -1657,7 +1664,7 @@ public final class StringUtil {
    */
   public static String hexByte( final byte b ) {
     int pos = b;
-    if( pos < 0 ) {
+    if ( pos < 0 ) {
       pos += 256;
     }
 
@@ -1681,14 +1688,14 @@ public final class StringUtil {
   public static String getHex( final byte theByte ) {
     int b = theByte;
 
-    if( b < 0 ) {
+    if ( b < 0 ) {
       b += 256;
     }
 
     String returnString = new String( Integer.toHexString( b ) );
 
     // add leading 0 if needed
-    if( returnString.length() % 2 == 1 ) {
+    if ( returnString.length() % 2 == 1 ) {
       returnString = "0" + returnString;
     }
 
