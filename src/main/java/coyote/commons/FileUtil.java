@@ -1973,7 +1973,7 @@ public final class FileUtil {
 	 * Return the age of the given file or directory based on time last modified.
 	 *
 	 * <p>If the file is a directory, then the returned age will be the latest
-	 * modified time of all its childern. The reasoning is if a subdirectory has
+	 * modified time of all its children. The reasoning is if a subdirectory has
 	 * a file that was last modified 10 seconds ago, then the parent directory
 	 * has been logically modified (if only through its path) the same 10 seconds
 	 * ago.</p>
