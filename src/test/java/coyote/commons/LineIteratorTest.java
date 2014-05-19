@@ -24,8 +24,21 @@ import org.junit.Test;
  */
 public class LineIteratorTest {
 
+	/**
+	 * Basic usage pattern for a LineIterator:<pre>
+	 * File file = new File("somefile.txt");
+	 * LineIterator it = FileUtil.lineIterator(file);
+	 * try {
+	 *   while (it.hasNext()) {
+	 *     String line = it.nextLine();
+	 *     // process the line
+	 *   }
+	 * } finally {
+	 *  it.close();
+	 * }</pre>
+	 */
 	@Test
-	public void test() {
+	public void testLineIterator() {
 		// Create a reference to a file to read ; the source of LineIterator
 		File file = new File("src/main/java/coyote/commons/LineIterator.java");
 		if (file.exists()) {
