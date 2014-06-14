@@ -11,13 +11,10 @@
  */
 package coyote.commons.network;
 
-import coyote.commons.ChainedException;
-
-
 /**
  * Exception thrown when there is a problem with IP Address operations.
  */
-public final class IpAddressException extends ChainedException {
+public final class IpAddressException extends Exception {
 
   /**
    * Constructor

@@ -1562,7 +1562,7 @@ public final class FileUtil {
 
 		if (!path.startsWith(File.separator) && (colon == -1)) {
 			final String msg = path + " is not an absolute path";
-			throw new ChainedRuntimeException(msg);
+			throw new RuntimeException(msg);
 		}
 
 		final boolean dosWithDrive = false;
@@ -1592,7 +1592,7 @@ public final class FileUtil {
 				continue;
 			} else if ("..".equals(thisToken)) {
 				if (s.size() < 2) {
-					throw new ChainedRuntimeException("Cannot resolve path " + orig);
+					throw new RuntimeException("Cannot resolve path " + orig);
 				} else {
 					s.pop();
 				}
@@ -1954,7 +1954,7 @@ public final class FileUtil {
 				if (helpFile == null) {
 					final String msg = "The file or path you specified (" + filename + ") is invalid relative to " + baseDir.getPath();
 
-					throw new ChainedRuntimeException(msg);
+					throw new RuntimeException(msg);
 				}
 			} else if (part.equals(".")) {
 				// Do nothing here

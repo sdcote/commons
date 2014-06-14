@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import coyote.commons.ChainedException;
-
 
 /**
  * The ConfigUtil class models a static fixture that holds a map of strings and 
@@ -62,7 +60,7 @@ public class ConfigUtil {
   public static String getString( String key ) {
     Object obj = resources.get( key );
 
-    if( obj != null ) {
+    if ( obj != null ) {
       return obj.toString();
     }
 
@@ -83,7 +81,7 @@ public class ConfigUtil {
   public static String getString( String key, String dflt ) {
     Object obj = resources.get( key );
 
-    if( obj != null ) {
+    if ( obj != null ) {
       return obj.toString();
     }
 
@@ -100,9 +98,9 @@ public class ConfigUtil {
    * @param bundle The resource bundle to merge into our own.
    */
   public static void merge( ResourceBundle bundle ) {
-    if( bundle != null ) {
+    if ( bundle != null ) {
       synchronized( resources ) {
-        for( Enumeration bundleKeys = bundle.getKeys(); bundleKeys.hasMoreElements(); ) {
+        for ( Enumeration bundleKeys = bundle.getKeys(); bundleKeys.hasMoreElements(); ) {
           String key = (String)bundleKeys.nextElement();
           String value = bundle.getString( key );
           resources.put( key, value );
@@ -151,10 +149,9 @@ public class ConfigUtil {
 
     try {
       value = MessageFormat.format( getString( key ), obj );
-    }
-    catch( MissingResourceException exp ) {}
+    } catch ( MissingResourceException exp ) {}
 
-    if( value == null ) {
+    if ( value == null ) {
       value = key;
     }
 
@@ -173,9 +170,9 @@ public class ConfigUtil {
    * 
    * @throws ChainedException If the working directory could not be created
    */
-  public static File initHomeWorkDirectory( String dirname ) throws ChainedException {
+  public static File initHomeWorkDirectory( String dirname ) throws ConfigException {
     // if the name was null, create a directory named "work"
-    if( dirname == null ) {
+    if ( dirname == null ) {
       dirname = "wrk";
     }
 
@@ -196,9 +193,9 @@ public class ConfigUtil {
    * 
    * @throws ChainedException if the directory could not be made.
    */
-  public static File validateWorkDirectory( String dirname ) throws ChainedException {
+  public static File validateWorkDirectory( String dirname ) throws ConfigException {
     // if the name was null, create a directory named "work"
-    if( dirname == null ) {
+    if ( dirname == null ) {
       return null;
     }
 
@@ -206,22 +203,22 @@ public class ConfigUtil {
     File retval = new File( dirname );
 
     // If the given directory name is not absolute...
-    if( !retval.isAbsolute() ) {
+    if ( !retval.isAbsolute() ) {
       // ...prepend the current directory
       retval = new File( System.getProperty( "user.dir" ) + System.getProperty( "file.separator" ) + dirname );
     }
 
     // If the directory does not exist, create it
-    if( !retval.exists() ) {
-      if( !retval.mkdirs() ) {
+    if ( !retval.exists() ) {
+      if ( !retval.mkdirs() ) {
         retval = null;
 
-        throw new ChainedException( "Could not create\"" + retval + "\" as our working directory" );
+        throw new ConfigException( "Could not create\"" + retval + "\" as our working directory" );
       }
     }
 
     // Make sure we can write to it
-    if( retval.isDirectory() && retval.canWrite() ) {
+    if ( retval.isDirectory() && retval.canWrite() ) {
       return retval;
     } else {
       return null;

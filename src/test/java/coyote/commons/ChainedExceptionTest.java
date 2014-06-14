@@ -23,38 +23,13 @@ public class ChainedExceptionTest {
     String NESTED = "Nested";
     String TOP = "Top";
 
-    ChainedException root = new ChainedException( ROOT );
-    ChainedException nested = new ChainedException( NESTED, root );
-    ChainedException ex = new ChainedException( TOP, nested );
+    Exception root = new Exception( ROOT );
+    Exception nested = new Exception( NESTED, root );
+    Exception ex = new Exception( TOP, nested );
 
-    assertTrue( ROOT.equals( ex.getRootMessage() ) );
-    assertTrue( ROOT.equals( nested.getRootMessage() ) );
-    assertTrue( ROOT.equals( root.getRootMessage() ) );
+    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( ex ) ) );
+    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( nested ) ) );
+    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( root ) ) );
   }
 
-
-
-
-  /**
-   * Method testGetCauseMessage
-   */
-  @Test
-  public void testGetCauseMessage() {
-    String ROOT = "Root";
-    String NESTED = "Nested";
-    String TOP = "Top";
-
-    ChainedException root = new ChainedException( ROOT );
-    ChainedException nested = new ChainedException( NESTED, root );
-    ChainedException ex = new ChainedException( TOP, nested );
-
-    System.out.println();
-    System.out.println( "ex=" + ex.getCauseMessage() );
-    System.out.println( "nested=" + nested.getCauseMessage() );
-    System.out.println( "root=" + root.getCauseMessage() );
-
-    assertTrue( NESTED.equals( ex.getCauseMessage() ) );
-    assertTrue( ROOT.equals( nested.getCauseMessage() ) );
-    assertTrue( ROOT.equals( root.getCauseMessage() ) );
-  }
 }
