@@ -19,7 +19,7 @@ defaultTasks 'clean', 'build', 'jacocoTestReport'
 
 
 group = 'coyote'
-version = '0.0.1'
+version = '0.0.2'
 
 
 ext {
@@ -58,7 +58,11 @@ repositories {
 
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+	testCompile group: 'junit', name: 'junit', version: '4.11'
+	testCompile group: 'com.h2database', name: 'h2', version: '1.4.177'
+	testCompile group: 'javax', name: 'javaee-api', version: '6.0'
+	
+    
 }
 
 
