@@ -35,20 +35,19 @@ public class Ip6Address {
   public static boolean isValidIPv6( String address ) {
     StringTokenizer labels = new StringTokenizer( address, ":" );
     String thisLabel;
-    int labelCount = 0, value;
+    int labelCount = 0;
     boolean nonHexCharFound = false;
 
-    while( labels.hasMoreTokens() && !nonHexCharFound ) {
+    while ( labels.hasMoreTokens() && !nonHexCharFound ) {
       thisLabel = labels.nextToken();
 
       labelCount++;
 
       try {
-        if( !thisLabel.equals( null ) && ( thisLabel.length() > 0 ) ) {
-          value = Integer.parseInt( thisLabel, 16 );
+        if ( !thisLabel.equals( null ) && ( thisLabel.length() > 0 ) ) {
+          Integer.parseInt( thisLabel, 16 );
         }
-      }
-      catch( NumberFormatException ex ) {
+      } catch ( NumberFormatException ex ) {
         nonHexCharFound = true;
       }
     }
@@ -77,15 +76,14 @@ public class Ip6Address {
     StringTokenizer labels = new StringTokenizer( address, ":" );
     String thisLabel;
     String retnValue = "";
-    int tokenLength;
     int value;
 
-    while( labels.hasMoreTokens() ) {
+    while ( labels.hasMoreTokens() ) {
       thisLabel = labels.nextToken();
       value = Integer.parseInt( thisLabel, 16 );
       thisLabel = Integer.toHexString( value );
 
-      if( retnValue.equals( "" ) ) {
+      if ( retnValue.equals( "" ) ) {
         retnValue = thisLabel;
       } else {
         retnValue = thisLabel + ":" + retnValue;
@@ -118,15 +116,15 @@ public class Ip6Address {
     String retnValue = "";
     int tokenLength;
 
-    while( labels.hasMoreTokens() ) {
+    while ( labels.hasMoreTokens() ) {
       thisLabel = labels.nextToken();
       tokenLength = thisLabel.length();
 
-      for( int i = 0; i < 4 - tokenLength; i++ ) {
+      for ( int i = 0; i < 4 - tokenLength; i++ ) {
         thisLabel = "0" + thisLabel;
       }
 
-      if( retnValue.equals( "" ) ) {
+      if ( retnValue.equals( "" ) ) {
         retnValue = thisLabel;
       } else {
         retnValue = thisLabel + ":" + retnValue;
@@ -152,16 +150,16 @@ public class Ip6Address {
    * @return A string representing a reverse lookup of the address passed in.
    */
   public static String IPv6ptrQueryString( String address ) {
-    if( isValidIPv6( address ) ) {
+    if ( isValidIPv6( address ) ) {
       String fullAddress = addIPv6LeadZeros( address );
       StringTokenizer labels = new StringTokenizer( fullAddress, ":" );
       String thisLabel;
       String retnValue = "ip6.int";
 
-      while( labels.hasMoreTokens() ) {
+      while ( labels.hasMoreTokens() ) {
         thisLabel = labels.nextToken();
 
-        for( int i = 0; i < 4; i++ ) {
+        for ( int i = 0; i < 4; i++ ) {
           retnValue = thisLabel.charAt( i ) + "." + retnValue;
         }
       }

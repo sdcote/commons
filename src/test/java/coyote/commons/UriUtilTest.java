@@ -30,8 +30,7 @@ public class UriUtilTest {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net/" );
       assertTrue( uri.getScheme().equalsIgnoreCase( "blp" ) );
-    }
-    catch( Exception ex ) {}
+    } catch ( Exception ex ) {}
   }
 
 
@@ -45,8 +44,7 @@ public class UriUtilTest {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net/" );
       assertTrue( uri.getHost().equalsIgnoreCase( "linkage.bralyn.net" ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -62,8 +60,7 @@ public class UriUtilTest {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net/" );
       assertTrue( uri.getPort() == -1 );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -79,8 +76,7 @@ public class UriUtilTest {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net:5529/root/home/stuff" );
       assertTrue( uri.getPort() == 5529 );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -96,26 +92,8 @@ public class UriUtilTest {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net:5529/root/home/stuff" );
       assertTrue( uri.getPath().equalsIgnoreCase( "/root/home/stuff" ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
-    }
-  }
-
-
-
-
-  /**
-   * Method testGetReference
-   */
-  //@Test
-  public void testGetReference() {
-    try {
-      URI uri = new URI( "blp://linkage.bralyn.net:5529/root/home/stuff#Junk" );
-      //assertTrue( uri.getReference().equalsIgnoreCase( "Junk" ) );
-    }
-    catch( Exception e ) {
-      e.printStackTrace();
     }
   }
 
@@ -129,10 +107,8 @@ public class UriUtilTest {
   public void testGetQuery() {
     try {
       URI uri = new URI( "blp://linkage.bralyn.net:5529/root/home/stuff#Junk?name=bob&job=coder" );
-      //assertTrue( uri.getReference().equalsIgnoreCase( "Junk" ) );
       assertTrue( uri.getQuery().equalsIgnoreCase( "name=bob&job=coder" ) );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
   }
@@ -149,12 +125,10 @@ public class UriUtilTest {
       URI uri = new URI( "blp://linkage.bralyn.net:5529/root/home/stuff#MoreJunk?name=bob&job=coder" );
       assertTrue( uri.getPort() == 5529 );
       assertTrue( uri.getPath().equalsIgnoreCase( "/root/home/stuff" ) );
-      //assertTrue( uri.getReference().equalsIgnoreCase( "MoreJunk" ) );
       //assertTrue( uri.getQueryParamenter( "name" ).equals( "bob" ) );
       //assertTrue( uri.getQueryParamenter( "job" ).equals( "coder" ) );
       //assertTrue( uri.getQueryParamenter( "age" ) == null );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
   }
@@ -170,8 +144,7 @@ public class UriUtilTest {
     try {
       String encoded = UriUtil.encodeString( "This has spaces, hyphens(-) and other punctuation." );
       assertTrue( encoded.equals( "This+has+spaces%2C+hyphens%28%2D%29+and+other+punctuation%2E" ) );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
   }
@@ -200,8 +173,7 @@ public class UriUtilTest {
       URI uri = new URI( "file://config/node3.xml" );
       assertTrue( uri.getScheme().equals( "file" ) );
       assertTrue( "Not proper path", UriUtil.getFilePath( uri ).equals( "config" + fs + "node3.xml" ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -218,8 +190,7 @@ public class UriUtilTest {
       URI uri = new URI( "file:///C:/Documents%20and%20Settings/CoteS/EXML-7.0b2.zip" );
       assertTrue( uri.getScheme().equals( "file" ) );
       assertTrue( "Not proper path", UriUtil.getFilePath( uri ).equals( "C:" + fs + "Documents and Settings" + fs + "CoteS" + fs + "EXML-7.0b2.zip" ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -239,9 +210,8 @@ public class UriUtilTest {
       //System.err.println( "File to URI path = " + FileUtil.getFileURI( homedir ).getFilePath() );
       System.err.flush();
 
-      URI home = new URI( FileUtil.getFileURI( homedir ).toString() );
-    }
-    catch( Exception e ) {
+      new URI( FileUtil.getFileURI( homedir ).toString() );
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
   }
@@ -260,8 +230,7 @@ public class UriUtilTest {
 
       File file = UriUtil.getFile( homeuri );
       assertTrue( System.getProperty( "user.home" ).equals( file.getAbsolutePath() ) );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( e.getMessage() );
     }
   }
@@ -279,14 +248,13 @@ public class UriUtilTest {
       String path = "log" + fs + "test.log";
       String expected = System.getProperty( "user.home" ) + fs + path;
 
-      URI homeuri = FileUtil.getFileURI( homedir );
+      FileUtil.getFileURI( homedir );
       File dir = new File( homedir, path );
       URI uri = FileUtil.getFileURI( dir );
       File file = UriUtil.getFile( uri );
 
       assertTrue( file.getAbsolutePath().equals( expected ) );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( e.getMessage() );
     }
   }
@@ -310,8 +278,7 @@ public class UriUtilTest {
       File file = UriUtil.getFile( uri );
 
       assertTrue( file.getAbsolutePath().equals( expected ) );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( e.getMessage() );
     }
   }
@@ -330,8 +297,7 @@ public class UriUtilTest {
       String user = UriUtil.getUser( uri );
 
       assertTrue( user.equals( expected ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -350,8 +316,7 @@ public class UriUtilTest {
       String user = UriUtil.getUser( uri );
 
       assertTrue( user.equals( expected ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -370,8 +335,7 @@ public class UriUtilTest {
       // System.out.println( "User='" + user + "'" );
 
       assertTrue( user == null );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -390,8 +354,7 @@ public class UriUtilTest {
       String password = UriUtil.getPassword( uri );
 
       assertTrue( password.equals( expected ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -409,8 +372,7 @@ public class UriUtilTest {
       String password = UriUtil.getPassword( uri );
 
       assertTrue( password == null );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -432,8 +394,7 @@ public class UriUtilTest {
       assertTrue( uri.getHost().equals( "linkage.bralyn.net" ) );
       assertTrue( uri.getPort() == 5529 );
       assertTrue( uri.getPath().equals( "/root/home/stuff" ) );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -450,8 +411,7 @@ public class UriUtilTest {
       URI uri = new URI( "jar:file:/c:/almanac/my.jar!/com/mycompany/MyClass.class" );
       String path = UriUtil.getFilePath( uri );
       System.out.println( "Jar filepath 1 = '" + path + "'" );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -468,8 +428,7 @@ public class UriUtilTest {
       URI uri = new URI( "jar:file:/c:/almanac/my.jar!/" );
       String path = UriUtil.getFilePath( uri );
       System.out.println( "Jar filepath 2 = '" + path + "'" );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -486,8 +445,7 @@ public class UriUtilTest {
       URI uri = new URI( "jar:/c:/almanac/my.jar!/" );
       String path = UriUtil.getFilePath( uri );
       System.out.println( "Jar filepath 3 = '" + path + "'" );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }
@@ -504,8 +462,7 @@ public class UriUtilTest {
       URI uri = new URI( "jar://c:/almanac/my.jar" );
       String path = UriUtil.getFilePath( uri );
       System.out.println( "Jar filepath 4 = '" + path + "'" );
-    }
-    catch( URISyntaxException e ) {
+    } catch ( URISyntaxException e ) {
       fail( e.getMessage() );
     }
   }

@@ -69,7 +69,7 @@ public class IpAddress {
    * @throws IpAddressException if there is a problem parsing the address string
    */
   public IpAddress( String addr ) throws IpAddressException {
-    if( addr == null )
+    if ( addr == null )
       throw new IpAddressException( "Null argument to constructor" );
 
     octets = getOctets( addr.trim() );
@@ -86,10 +86,10 @@ public class IpAddress {
    * @throws IpAddressException if the InetAddress reference is null
    */
   public IpAddress( InetAddress addr ) throws IpAddressException {
-    if( addr != null ) {
+    if ( addr != null ) {
       byte[] bytes = addr.getAddress();
       octets = new short[bytes.length];
-      for( int i = 0; i < bytes.length; octets[i] = fixByte( bytes[i++] ) );
+      for ( int i = 0; i < bytes.length; octets[i] = fixByte( bytes[i++] ) );
     } else {
       throw new IpAddressException( "address reference was null" );
     }
@@ -99,17 +99,17 @@ public class IpAddress {
 
 
   public IpAddress( byte[] data ) throws IpAddressException {
-    if( data == null )
+    if ( data == null )
       throw new IpAddressException( "Null argument in constructor" );
 
-    if( data.length == 0 )
+    if ( data.length == 0 )
       throw new IpAddressException( "No data in constructor array argument" );
 
-    if( ( data.length % 2 ) != 0 )
+    if ( ( data.length % 2 ) != 0 )
       throw new IpAddressException( "Odd number of bytes in constructor array argument" );
 
     octets = new short[data.length];
-    for( int i = 0; i < data.length; octets[i] = fixByte( data[i++] ) );
+    for ( int i = 0; i < data.length; octets[i] = fixByte( data[i++] ) );
   }
 
 
@@ -124,7 +124,7 @@ public class IpAddress {
     short[] aMaster = master.getOctets();
     octets = new short[aMaster.length];
 
-    for( int i = 0; i < aMaster.length; i++ ) {
+    for ( int i = 0; i < aMaster.length; i++ ) {
       octets[i] = aMaster[i];
     }
   }
@@ -176,7 +176,7 @@ public class IpAddress {
    * @return
    */
   public boolean equals( IpAddress addr ) {
-    if( addr == null ) {
+    if ( addr == null ) {
       return false;
     }
 
@@ -184,9 +184,9 @@ public class IpAddress {
     boolean retval = ( addrOctets.length == octets.length );
 
     // If the lengths match
-    if( retval ) {
+    if ( retval ) {
       // ...perform a byte-by-byte check
-      for( int i = 0; retval && ( i < octets.length ); i++ ) {
+      for ( int i = 0; retval && ( i < octets.length ); i++ ) {
         retval &= ( octets[i] == addrOctets[i] );
       }
     }
@@ -217,10 +217,10 @@ public class IpAddress {
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
-    for( int i = 0; i < octets.length; i++ ) {
+    for ( int i = 0; i < octets.length; i++ ) {
       sb.append( octets[i] );
 
-      if( i < ( octets.length - 1 ) ) {
+      if ( i < ( octets.length - 1 ) ) {
         sb.append( '.' );
       }
     }
@@ -238,10 +238,10 @@ public class IpAddress {
   public String toNSFormat() {
     StringBuffer sb = new StringBuffer();
 
-    for( int i = ( octets.length - 1 ); i > -1; i-- ) {
+    for ( int i = ( octets.length - 1 ); i > -1; i-- ) {
       sb.append( octets[i] );
 
-      if( i > ( 0 ) ) {
+      if ( i > ( 0 ) ) {
         sb.append( '.' );
       }
     }
@@ -253,7 +253,7 @@ public class IpAddress {
 
 
   public InetAddress toInetAddress() {
-    if( netAddress == null ) {
+    if ( netAddress == null ) {
       netAddress = toInetAddress( this );
     }
     return netAddress;
@@ -263,11 +263,10 @@ public class IpAddress {
 
 
   public static InetAddress toInetAddress( IpAddress addr ) {
-    if( addr != null ) {
+    if ( addr != null ) {
       try {
         return InetAddress.getByAddress( addr.getBytes() );
-      }
-      catch( UnknownHostException e ) {}
+      } catch ( UnknownHostException e ) {}
     }
 
     return null;
@@ -279,7 +278,7 @@ public class IpAddress {
   public byte[] getBytes() {
     byte[] bytes = new byte[octets.length];
 
-    for( int i = 0; i < octets.length; i++ ) {
+    for ( int i = 0; i < octets.length; i++ ) {
       bytes[i] = (byte)octets[i];
     }
     return bytes;
@@ -302,7 +301,7 @@ public class IpAddress {
     int digit = 0;
     short[] temp = new short[IP4_OCTETS];
 
-    if( addr.length() > 15 ) {
+    if ( addr.length() > 15 ) {
       temp = new short[IP6_OCTETS];
     }
 
@@ -314,16 +313,15 @@ public class IpAddress {
 
     // goofy for loop to make sure we parse everything, delimiting on both the
     // '.' character and the end of the array
-    for( int i = 0; i <= chars.length; i++ ) {
-      if( ( i == chars.length ) || ( chars[i] == '.' ) ) {
+    for ( int i = 0; i <= chars.length; i++ ) {
+      if ( ( i == chars.length ) || ( chars[i] == '.' ) ) {
         try {
           digit = Integer.parseInt( buf.toString() );
-        }
-        catch( NumberFormatException nfe ) {
+        } catch ( NumberFormatException nfe ) {
           throw new IpAddressException( "Segment '" + buf.toString() + "' is not a number at position (" + i + ")" );
         }
 
-        if( ( digit < 0 ) || ( digit > 255 ) ) {
+        if ( ( digit < 0 ) || ( digit > 255 ) ) {
           throw new IpAddressException( "Segment '" + digit + "' out of range" );
         }
 
@@ -334,7 +332,7 @@ public class IpAddress {
         octetCount++;
 
         // avoid over-runs
-        if( i == chars.length ) {
+        if ( i == chars.length ) {
           break;
         }
       } else {
@@ -344,11 +342,11 @@ public class IpAddress {
     }
 
     // If we did not parse anything...
-    if( octetCount == 0 ) {
+    if ( octetCount == 0 ) {
       throw new IpAddressException( "Invalid address" );
-    } else if( octetCount < temp.length ) {
+    } else if ( octetCount < temp.length ) {
       // fillup the rest of the array
-      for( int i = octetCount; i < temp.length; i++ ) {
+      for ( int i = octetCount; i < temp.length; i++ ) {
         temp[i] = 0;
       }
     }
@@ -398,7 +396,7 @@ public class IpAddress {
     short[] retval;
     retval = netmask.getOctets();
 
-    for( int i = 0; i < octets.length; i++ ) {
+    for ( int i = 0; i < octets.length; i++ ) {
       octets[i] &= retval[i];
     }
 
@@ -423,9 +421,9 @@ public class IpAddress {
    *         null if the address is not valid or in DNS or the hosts resolver.
    */
   public String getDnsName() {
-    if( dnsName == null ) {
+    if ( dnsName == null ) {
       InetAddress ina = toInetAddress();
-      if( ina != null ) {
+      if ( ina != null ) {
         dnsName = ina.getHostName().toLowerCase();
       }
     }
@@ -441,16 +439,16 @@ public class IpAddress {
   public String getDomain() {
     String hostname = getDnsName();
 
-    if( hostname != null ) {
+    if ( hostname != null ) {
       hostname = hostname.toLowerCase();
 
       int indx = hostname.indexOf( '.' );
 
-      if( indx > 0 ) {
+      if ( indx > 0 ) {
         String retval = hostname.substring( indx + 1 );
 
         // we should have a DOMAIN.COM type string
-        if( retval.indexOf( '.' ) > 0 ) {
+        if ( retval.indexOf( '.' ) > 0 ) {
           return retval;
         } else {
           // No domain...how odd is that?
@@ -475,18 +473,17 @@ public class IpAddress {
 
     String hostname = getDnsName();
 
-    if( hostname != null ) {
+    if ( hostname != null ) {
       int pt = hostname.indexOf( '.' );
-      if( pt > 0 ) {
+      if ( pt > 0 ) {
         retval = hostname.substring( 0, pt );
 
-        if( retval.length() < 3 ) {
+        if ( retval.length() < 3 ) {
           try {
             // Uh-Oh, this may be a number, if it is return the whole name
-            int num = Integer.parseInt( retval );
+            Integer.parseInt( retval );
             return hostname;
-          }
-          catch( NumberFormatException e ) {}
+          } catch ( NumberFormatException e ) {}
 
         } // len<3
 
@@ -511,7 +508,7 @@ public class IpAddress {
   * @return the byte encoded as an unsigned value
   */
   public final static short fixByte( final byte b ) {
-    if( b < 0 ) {
+    if ( b < 0 ) {
       return (short)( b + 256 );
     }
 

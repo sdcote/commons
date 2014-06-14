@@ -48,7 +48,7 @@ public class IpInterface {
   static String[] outArray = new String[0];
   static String[] errArray = new String[0];
 
-  private static final ArrayList interfaces = new ArrayList();
+  private static final ArrayList<IpInterface> interfaces = new ArrayList<IpInterface>();
 
   /** Flag indicating the interfaces have been populated for the platform. */
   private static boolean initializedFlag = false;
@@ -56,8 +56,7 @@ public class IpInterface {
   static {
     try {
       DEFAULT_NETMASK = new IpAddress( "0.0.0.0" );
-    }
-    catch( IpAddressException e1 ) {}
+    } catch ( IpAddressException e1 ) {}
   }
 
 
@@ -86,8 +85,8 @@ public class IpInterface {
 
     // Prime the list if interfaces with the results of the runtime calls
     try {
-      Enumeration e = NetworkInterface.getNetworkInterfaces();
-      while( e.hasMoreElements() ) {
+      Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+      while ( e.hasMoreElements() ) {
         NetworkInterface netface = (NetworkInterface)e.nextElement();
 
         IpInterface ipi = new IpInterface();
@@ -95,15 +94,14 @@ public class IpInterface {
         ipi.setDisplayName( netface.getDisplayName() );
         ipi.setNetmask( DEFAULT_NETMASK );
 
-        Enumeration e2 = netface.getInetAddresses();
-        while( e2.hasMoreElements() ) {
+        Enumeration<InetAddress> e2 = netface.getInetAddresses();
+        while ( e2.hasMoreElements() ) {
           InetAddress ip = (InetAddress)e2.nextElement();
 
-          if( ipi.getAddress() == null ) {
+          if ( ipi.getAddress() == null ) {
             try {
               ipi.setAddress( new IpAddress( ip ) );
-            }
-            catch( IpAddressException e1 ) {
+            } catch ( IpAddressException e1 ) {
               e1.printStackTrace();
             }
 
@@ -114,53 +112,50 @@ public class IpInterface {
           } // ipaddr null check
         } // while more ip addresses
       } // while more interfaces
-    }
-    catch( SocketException e ) {
+    } catch ( SocketException e ) {
       e.printStackTrace();
     }
 
     String opsys = System.getProperty( "os.name" ).toUpperCase( Locale.US );
 
-    if( opsys.startsWith( "WINDOWS" ) ) {
+    if ( opsys.startsWith( "WINDOWS" ) ) {
       exec( "ipconfig /all" );
 
       String line = null;
       int mrk = 0;
-      for( int i = 0; i < outArray.length; i++ ) {
+      for ( int i = 0; i < outArray.length; i++ ) {
         line = outArray[i].toUpperCase().trim();
         mrk = line.indexOf( "IP ADDRESS" );
-        if( mrk > -1 ) {
+        if ( mrk > -1 ) {
           mrk = line.indexOf( ':', mrk );
-          if( mrk > -1 ) {
+          if ( mrk > -1 ) {
             try {
               IpAddress ipa = new IpAddress( line.substring( mrk + 1 ) );
 
               IpInterface ipi = getInterface( ipa );
 
-              if( ipi == null ) {
+              if ( ipi == null ) {
                 ipi = new IpInterface();
                 ipi.address = ipa;
                 interfaces.add( ipi );
               }
 
-              while( line.length() > 0 && i < outArray.length ) {
+              while ( line.length() > 0 && i < outArray.length ) {
                 line = outArray[i++].toUpperCase().trim();
                 mrk = line.indexOf( "SUBNET MASK" );
-                if( mrk > -1 ) {
+                if ( mrk > -1 ) {
                   mrk = line.indexOf( ':', mrk );
-                  if( mrk > -1 ) {
+                  if ( mrk > -1 ) {
                     try {
                       ipi.setNetmask( new IpAddress( line.substring( mrk + 1 ) ) );
                       break;
-                    }
-                    catch( Exception ex ) {
+                    } catch ( Exception ex ) {
                       ex.printStackTrace();
                     }
                   } // if value
                 }// if mask tag
               } // while still in interface section
-            }
-            catch( IpAddressException e ) {
+            } catch ( IpAddressException e ) {
               System.out.println( "PROBLEMS PARSING '" + line.substring( mrk + 1 ) + "'" );
               e.printStackTrace();
             }
@@ -173,15 +168,14 @@ public class IpInterface {
       // setup the loopback interface to 255.0.0.0
       try {
         IpInterface ipi = getInterface( new IpAddress( "127.0.0.1" ) );
-        if( ipi != null && DEFAULT_NETMASK.equals( ipi.getNetmask() ) ) {
+        if ( ipi != null && DEFAULT_NETMASK.equals( ipi.getNetmask() ) ) {
           ipi.netmask = new IpAddress( "255.0.0.0" );
         }
-      }
-      catch( IpAddressException e ) {
+      } catch ( IpAddressException e ) {
         // should always work
         e.printStackTrace();
       }
-    } else if( opsys.equals( "SOLARIS" ) || opsys.equals( "SUNOS" ) ) {
+    } else if ( opsys.equals( "SOLARIS" ) || opsys.equals( "SUNOS" ) ) {
       // lo0: flags=1000849<UP,LOOPBACK,RUNNING,MULTICAST,IPv4> mtu 8232 index 1
       //         inet 127.0.0.1 netmask ff000000
       // hme0: flags=1000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4> mtu 1500 index 2
@@ -194,24 +188,24 @@ public class IpInterface {
 
       // for( int x = 0; x < outArray.length; System.out.println( outArray[x++] ) );
 
-      for( int i = 0; i < outArray.length; i++ ) {
+      for ( int i = 0; i < outArray.length; i++ ) {
         line = outArray[i];
         // System.out.println( "Parsing[" + i + "]:'" + line + "'" );
 
-        if( !Character.isWhitespace( ( line.charAt( 0 ) ) ) ) {
+        if ( !Character.isWhitespace( ( line.charAt( 0 ) ) ) ) {
           mrk = line.lastIndexOf( ":" );
-          if( mrk > -1 ) {
+          if ( mrk > -1 ) {
             String name = line.substring( 0, mrk ).trim();
             String addr = null;
             String mask = null;
 
             // System.out.println( "  Intrfc:'" + name + "'" );
 
-            while( addr == null || mask == null ) {
-              if( i + 1 < outArray.length ) {
+            while ( addr == null || mask == null ) {
+              if ( i + 1 < outArray.length ) {
                 line = outArray[++i];
 
-                if( !Character.isWhitespace( ( line.charAt( 0 ) ) ) ) {
+                if ( !Character.isWhitespace( ( line.charAt( 0 ) ) ) ) {
                   i--;
                   break;
                 }
@@ -219,12 +213,12 @@ public class IpInterface {
                 // System.out.println( "  ck[" + i + "]:'" + line + "'" );
 
                 StringTokenizer st = new StringTokenizer( line.trim(), " \t" );
-                while( st.hasMoreTokens() ) {
+                while ( st.hasMoreTokens() ) {
                   String token = st.nextToken();
 
-                  if( "inet".equalsIgnoreCase( token ) ) {
+                  if ( "inet".equalsIgnoreCase( token ) ) {
                     addr = st.nextToken();
-                  } else if( "netmask".equalsIgnoreCase( token ) ) {
+                  } else if ( "netmask".equalsIgnoreCase( token ) ) {
                     mask = st.nextToken();
                   }
                 } // for each token
@@ -237,7 +231,7 @@ public class IpInterface {
               IpAddress ipa = new IpAddress( addr );
               IpInterface ipi = getInterface( ipa );
 
-              if( ipi == null ) {
+              if ( ipi == null ) {
                 ipi = new IpInterface();
                 ipi.address = ipa;
                 interfaces.add( ipi );
@@ -245,17 +239,16 @@ public class IpInterface {
 
               ipi.setDisplayName( name );
 
-              if( ipi.getName() == null )
+              if ( ipi.getName() == null )
                 ipi.setName( name );
 
-              if( mask != null )
+              if ( mask != null )
                 ipi.setNetmask( new IpAddress( NetUtil.hexToBytes( mask ) ) );
 
               // System.out.println( ipi.toString() );
 
               addr = mask = null;
-            }
-            catch( Exception e ) {
+            } catch ( Exception e ) {
               e.printStackTrace();
             }
           }// another line available
@@ -263,35 +256,35 @@ public class IpInterface {
         } // if line starts with a character
 
       } // for each line
-    } else if( opsys.equals( "HP-UX" ) ) {
+    } else if ( opsys.equals( "HP-UX" ) ) {
       exec( "/usr/bin/netstat -i" );
 
-      ArrayList list = new ArrayList();
+      ArrayList<String> list = new ArrayList<String>();
 
       String line = null;
       int mrk = 0;
       String name = null;
-      for( int i = 0; i < outArray.length; i++ ) {
+      for ( int i = 0; i < outArray.length; i++ ) {
         line = outArray[i].trim();
-        if( line.length() > 0 ) {
+        if ( line.length() > 0 ) {
           mrk = line.indexOf( " " );
-          if( mrk > -1 ) {
+          if ( mrk > -1 ) {
             name = line.substring( 0, mrk );
           } else {
             mrk = line.indexOf( "\t" );
-            if( mrk > -1 ) {
+            if ( mrk > -1 ) {
               name = line.substring( 0, mrk );
             }
           }
 
-          if( name != null && !name.equalsIgnoreCase( "Name" ) ) {
+          if ( name != null && !name.equalsIgnoreCase( "Name" ) ) {
             list.add( name );
           }
         }
       }
 
       // should have a list of all the interfaces
-      for( int y = 0; y < list.size(); y++ ) {
+      for ( int y = 0; y < list.size(); y++ ) {
         name = (String)list.get( y );
 
         String addr = null;
@@ -299,17 +292,17 @@ public class IpInterface {
 
         // /usr/sbin/ifconfig lan13
         exec( "/usr/sbin/ifconfig " + name );
-        for( int i = 0; i < outArray.length; i++ ) {
+        for ( int i = 0; i < outArray.length; i++ ) {
           line = outArray[i].trim();
 
-          if( line.length() > 0 ) {
+          if ( line.length() > 0 ) {
             StringTokenizer st = new StringTokenizer( line, " \t" );
-            while( st.hasMoreTokens() ) {
+            while ( st.hasMoreTokens() ) {
               String token = st.nextToken();
 
-              if( "inet".equalsIgnoreCase( token ) ) {
+              if ( "inet".equalsIgnoreCase( token ) ) {
                 addr = st.nextToken();
-              } else if( "netmask".equalsIgnoreCase( token ) ) {
+              } else if ( "netmask".equalsIgnoreCase( token ) ) {
                 mask = st.nextToken();
               }
             }
@@ -321,7 +314,7 @@ public class IpInterface {
           IpAddress ipa = new IpAddress( addr );
           IpInterface ipi = getInterface( name );
 
-          if( ipi == null ) {
+          if ( ipi == null ) {
             ipi = new IpInterface();
             ipi.address = ipa;
             interfaces.add( ipi );
@@ -329,12 +322,11 @@ public class IpInterface {
 
           ipi.setDisplayName( name );
 
-          if( ipi.getName() == null )
+          if ( ipi.getName() == null )
             ipi.setName( name );
 
           ipi.setNetmask( new IpAddress( NetUtil.hexToBytes( mask ) ) );
-        }
-        catch( IpAddressException e ) {
+        } catch ( IpAddressException e ) {
           e.printStackTrace();
         }
 
@@ -342,7 +334,7 @@ public class IpInterface {
         mask = null;
       }
 
-    } else if( opsys.equals( "LINUX" ) ) {
+    } else if ( opsys.equals( "LINUX" ) ) {
       //eth0      Link encap:Ethernet  HWaddr 00:04:75:17:CC:D0
       //          inet addr:192.168.2.56  Bcast:192.168.2.255  Mask:255.255.255.0
       //          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
@@ -368,28 +360,27 @@ public class IpInterface {
       String mask = null;
       String token = null;
 
-      for( int i = 0; i < outArray.length; i++ ) {
+      for ( int i = 0; i < outArray.length; i++ ) {
         line = outArray[i].trim().toUpperCase();
 
-        if( line.length() != 0 ) {
-          if( name != null && addr != null ) {
+        if ( line.length() != 0 ) {
+          if ( name != null && addr != null ) {
             try {
               IpAddress ipa = new IpAddress( addr );
               IpInterface ipi = getInterface( ipa );
 
-              if( ipi == null ) {
+              if ( ipi == null ) {
                 ipi = new IpInterface();
                 ipi.address = ipa;
                 interfaces.add( ipi );
                 ipi.setDisplayName( name );
               }
 
-              if( ipi.getName() == null )
+              if ( ipi.getName() == null )
                 ipi.setName( name );
 
               ipi.setNetmask( new IpAddress( mask ) );
-            }
-            catch( IpAddressException e ) {
+            } catch ( IpAddressException e ) {
               e.printStackTrace();
             }
 
@@ -400,19 +391,19 @@ public class IpInterface {
         }
 
         mrk = line.indexOf( "LINK ENCAP" );
-        if( mrk > -1 ) {
+        if ( mrk > -1 ) {
           // we have a line that contains the name of the link
           name = line.substring( 0, line.indexOf( ' ' ) );
         }
 
         mrk = line.indexOf( "INET ADDR" );
-        if( mrk > -1 ) {
+        if ( mrk > -1 ) {
           token = line.substring( mrk + 9 );
           mrk = token.indexOf( ' ' );
-          if( mrk > -1 )
+          if ( mrk > -1 )
             token = token.substring( 0, mrk );
 
-          if( token.charAt( 0 ) == ':' )
+          if ( token.charAt( 0 ) == ':' )
             token = token.substring( 1 );
 
           addr = token;
@@ -420,13 +411,13 @@ public class IpInterface {
         }
 
         mrk = line.indexOf( "MASK" );
-        if( mrk > -1 ) {
+        if ( mrk > -1 ) {
           token = line.substring( mrk + 4 );
           mrk = token.indexOf( ' ' );
-          if( mrk > -1 )
+          if ( mrk > -1 )
             token = token.substring( 0, mrk );
 
-          if( token.charAt( 0 ) == ':' )
+          if ( token.charAt( 0 ) == ':' )
             token = token.substring( 1 );
 
           mask = token;
@@ -436,24 +427,23 @@ public class IpInterface {
       } // for each line
 
       // finish up the last one
-      if( name != null && addr != null ) {
+      if ( name != null && addr != null ) {
         try {
           IpAddress ipa = new IpAddress( addr );
           IpInterface ipi = getInterface( ipa );
 
-          if( ipi == null ) {
+          if ( ipi == null ) {
             ipi = new IpInterface();
             ipi.address = ipa;
             interfaces.add( ipi );
             ipi.setDisplayName( name );
           }
 
-          if( ipi.getName() == null )
+          if ( ipi.getName() == null )
             ipi.setName( name );
 
           ipi.setNetmask( new IpAddress( mask ) );
-        }
-        catch( IpAddressException e ) {
+        } catch ( IpAddressException e ) {
           e.printStackTrace();
         }
 
@@ -479,13 +469,13 @@ public class IpInterface {
    * @return and array of discovered IP interfaces on this host.
    */
   public static IpInterface[] getIpInterfaces() {
-    if( !initializedFlag ) {
+    if ( !initializedFlag ) {
       initialize();
     }
 
     IpInterface[] retval = new IpInterface[interfaces.size()];
 
-    for( int x = 0; x < interfaces.size(); retval[x] = (IpInterface)interfaces.get( x++ ) );
+    for ( int x = 0; x < interfaces.size(); retval[x] = (IpInterface)interfaces.get( x++ ) );
 
     return retval;
   }
@@ -504,9 +494,9 @@ public class IpInterface {
   public static IpInterface getInterface( IpAddress addr ) {
     IpInterface retval = null;
 
-    if( addr != null ) {
-      for( int x = 0; x < interfaces.size(); x++ ) {
-        if( addr.equals( ( (IpInterface)interfaces.get( x ) ).address ) ) {
+    if ( addr != null ) {
+      for ( int x = 0; x < interfaces.size(); x++ ) {
+        if ( addr.equals( ( (IpInterface)interfaces.get( x ) ).address ) ) {
           retval = (IpInterface)interfaces.get( x );
           break;
         }
@@ -530,9 +520,9 @@ public class IpInterface {
   public static IpInterface getInterface( String name ) {
     IpInterface retval = null;
 
-    if( name != null && name.length() > 0 ) {
-      for( int x = 0; x < interfaces.size(); x++ ) {
-        if( name.equals( ( (IpInterface)interfaces.get( x ) ).name ) ) {
+    if ( name != null && name.length() > 0 ) {
+      for ( int x = 0; x < interfaces.size(); x++ ) {
+        if ( name.equals( ( (IpInterface)interfaces.get( x ) ).name ) ) {
           retval = (IpInterface)interfaces.get( x );
           break;
         }
@@ -549,8 +539,8 @@ public class IpInterface {
     StringBuffer buffer = new StringBuffer( "-------- [ Runtime Values ] --------\r\n" );
 
     try {
-      Enumeration e = NetworkInterface.getNetworkInterfaces();
-      while( e.hasMoreElements() ) {
+      Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+      while ( e.hasMoreElements() ) {
         NetworkInterface netface = (NetworkInterface)e.nextElement();
         buffer.append( "Net interface: " );
         buffer.append( netface.getName() );
@@ -559,8 +549,8 @@ public class IpInterface {
         buffer.append( netface.getDisplayName() );
         buffer.append( "\r\n" );
 
-        Enumeration e2 = netface.getInetAddresses();
-        while( e2.hasMoreElements() ) {
+        Enumeration<InetAddress> e2 = netface.getInetAddresses();
+        while ( e2.hasMoreElements() ) {
           InetAddress ip = (InetAddress)e2.nextElement();
           buffer.append( "IP address: " + ip.toString() );
           buffer.append( "\r\n" );
@@ -569,14 +559,13 @@ public class IpInterface {
         buffer.append( "\r\n" );
 
       }
-    }
-    catch( SocketException e ) {
+    } catch ( SocketException e ) {
       e.printStackTrace();
     }
     buffer.append( "--------[ IpInterface Values ] --------\r\n" );
 
     IpInterface[] ipifs = IpInterface.getIpInterfaces();
-    for( int x = 0; x < ipifs.length; x++ ) {
+    for ( int x = 0; x < ipifs.length; x++ ) {
       buffer.append( ipifs[x].toString() );
       buffer.append( "\r\n" );
     }
@@ -758,7 +747,7 @@ public class IpInterface {
 
   public static IpInterface getPrimary() {
     // make sure we have a cached value
-    if( primaryInterface == null ) {
+    if ( primaryInterface == null ) {
       IpInterface retval = null;
 
       // make sure the interfaces have been discovered
@@ -768,39 +757,38 @@ public class IpInterface {
         // get the IpAddress by which the rest of the world knows this host
         IpAddress addr = new IpAddress( NetUtil.getLocalAddress() );
 
-        if( !IpAddress.IP4_LOOPBACK.equals( addr.toString() ) ) {
+        if ( !IpAddress.IP4_LOOPBACK.equals( addr.toString() ) ) {
           // Search for the interface that matches that primary host address
-          for( int x = 0; x < interfaces.size(); x++ ) {
+          for ( int x = 0; x < interfaces.size(); x++ ) {
             IpInterface ipi = (IpInterface)interfaces.get( x );
-            if( addr.equals( ipi.getAddress() ) ) {
+            if ( addr.equals( ipi.getAddress() ) ) {
               retval = ipi;
               break;
             }
           }
         } else {
           // if there is only one return that interface
-          if( interfaces.size() == 1 ) {
+          if ( interfaces.size() == 1 ) {
             retval = (IpInterface)interfaces.get( 0 );
-          } else if( interfaces.size() == 2 ) {
+          } else if ( interfaces.size() == 2 ) {
             // if one of interfaces is the loop-back, return the other
-            if( "127.0.0.1".equals( ( (IpInterface)interfaces.get( 0 ) ).getAddress().toString() ) ) {
+            if ( "127.0.0.1".equals( ( (IpInterface)interfaces.get( 0 ) ).getAddress().toString() ) ) {
               retval = (IpInterface)interfaces.get( 1 );
             } else {
               retval = (IpInterface)interfaces.get( 0 );
             }
           } else {
             // find the first non-loopback interface
-            for( int x = 0; x < interfaces.size(); x++ ) {
+            for ( int x = 0; x < interfaces.size(); x++ ) {
               IpInterface ipi = (IpInterface)interfaces.get( x );
-              if( !IpAddress.IP4_LOOPBACK.equals( ipi.getAddress().toString() ) ) {
+              if ( !IpAddress.IP4_LOOPBACK.equals( ipi.getAddress().toString() ) ) {
                 retval = ipi;
                 break;
               }
             }
           }
         }
-      }
-      catch( IpAddressException e ) {
+      } catch ( IpAddressException e ) {
         e.printStackTrace();
       }
 
@@ -827,7 +815,7 @@ public class IpInterface {
   /**
    * @param netntrfc The netInterface to set.
    */
-  private void setNetworkInterface( NetworkInterface netntrfc ) {
+  public void setNetworkInterface( NetworkInterface netntrfc ) {
     this.netInterface = netntrfc;
   }
 
@@ -846,16 +834,12 @@ public class IpInterface {
 
 
   static String[] exec( String command ) {
-    long startTime;
-    // long duration = 0;
-    int exitValue = 0;
 
     // System.out.println( "EXEC (String) called with command \"" + command + "\"" );
 
     Process process = null;
 
     try {
-      startTime = System.currentTimeMillis();
 
       // System.out.println( "EXEC calling runtime exec" );
 
@@ -888,27 +872,25 @@ public class IpInterface {
       do {
         String s1 = readLine( process.getInputStream() );
 
-        if( s1 == null ) {
+        if ( s1 == null ) {
           break;
         }
 
         outArray = (String[])addElement( outArray, s1 );
       }
-      while( true );
+      while ( true );
 
       // System.out.println( "EXEC calling waitFor" );
 
-      exitValue = process.waitFor();
+      process.waitFor();
 
       // System.out.println( "EXEC waitFor returned" );
 
       process = null;
-      //duration = System.currentTimeMillis() - startTime;
 
       // Get our errors from the error collector
       errArray = errreader.collected;
-    }
-    catch( Exception exception ) {
+    } catch ( Exception exception ) {
       // System.out.println( "*** exec Exception" );
       // System.out.println( "  command: " + command );
       // System.out.println( "     exit: " + exitValue );
@@ -918,7 +900,7 @@ public class IpInterface {
     }
     finally {}
 
-    if( process != null ) {
+    if ( process != null ) {
       process.destroy();
     }
 
@@ -957,21 +939,21 @@ public class IpInterface {
     do {
       int i = inputstream.read();
 
-      if( i == -1 ) {
+      if ( i == -1 ) {
         return ( stringbuffer.length() != 0 ) ? stringbuffer.toString() : null;
       }
 
       // line-feeds represent the end of line
-      if( i == 10 ) {
+      if ( i == 10 ) {
         return stringbuffer.toString();
       }
 
       // Ignore carriage returns
-      if( i != 13 ) {
+      if ( i != 13 ) {
         stringbuffer.append( (char)i );
       }
     }
-    while( true );
+    while ( true );
   }
 
 
@@ -1041,17 +1023,16 @@ public class IpInterface {
       try {
         String s;
 
-        while( ( s = stream.readLine() ) != null ) {
+        while ( ( s = stream.readLine() ) != null ) {
           collected = (String[])addElement( collected, s );
 
-          if( collected.length > collectedMax ) {
+          if ( collected.length > collectedMax ) {
             collected = (String[])removeElementAt( collected, 0 );
           }
         }
 
         return;
-      }
-      catch( Exception exception ) {
+      } catch ( Exception exception ) {
         System.out.println( exception );
       }
     }

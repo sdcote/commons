@@ -16,6 +16,11 @@ package coyote.commons.network;
  */
 public final class IpAddressException extends Exception {
 
+  private static final long serialVersionUID = 7815350628254830424L;
+
+
+
+
   /**
    * Constructor
    */
