@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author Stephan D. Cote' - Enterprise Architecture
  * @version $Revision:$
  */
-public class ChainedExceptionTest {
+public class ExceptionUtilTest {
 
   /**
    * Method testGetRootMessage
