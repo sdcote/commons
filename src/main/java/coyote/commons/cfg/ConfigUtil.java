@@ -9,7 +9,7 @@
  *   Stephan D. Cote 
  *      - Initial API and implementation
  */
-package coyote.commons;
+package coyote.commons.cfg;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import coyote.commons.ChainedException;
 
 
 /**
