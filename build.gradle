@@ -99,4 +99,16 @@ bintray {
 		labels = ['Java', 'util', 'commons']
 	}
 }
+
+
+// Used to share projects locally
+uploadArchives {
+    repositories {
+		ivy {
+			url "../local-repo"
+		}
+	}
+}
+
+
  
