@@ -33,7 +33,7 @@ public abstract class CallableStatementProxy implements CallableStatement {
 
 
   public CallableStatementProxy( final CallableStatement callableStatement ) {
-    this._callableStatement = callableStatement;
+    _callableStatement = callableStatement;
   }
 
 

@@ -32,7 +32,7 @@ public abstract class PreparedStatementProxy implements PreparedStatement {
 
 
   public PreparedStatementProxy( final PreparedStatement preparedStatement ) {
-    this._preparedStatement = preparedStatement;
+    _preparedStatement = preparedStatement;
   }
 
 

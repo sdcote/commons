@@ -23,7 +23,7 @@ public class CloseOnCompletionConnection extends ConnectionProxy {
 
   public CloseOnCompletionConnection( final Connection originalConnection ) {
     super( originalConnection );
-    this._originalConnection = originalConnection;
+    _originalConnection = originalConnection;
     _statementsToBeClosed = new ConcurrentLinkedQueue<Statement>();
   }
 

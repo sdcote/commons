@@ -19,16 +19,25 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-
-public abstract class ConnectionProxy implements Connection {
-
-  private final Connection _originalConnection;
+import coyote.commons.Assert;
 
 
+class ReplicationConnection implements Connection {
+
+  private Connection _currentConn;
+  private final Connection _readWriteConn;
+  private final Connection _readOnlyConn;
 
 
-  public ConnectionProxy( final Connection original ) {
-    _originalConnection = original;
+
+
+  public ReplicationConnection( final Connection readWriteConn, final Connection readOnlyConn ) {
+    Assert.argumentIsNotNull( readWriteConn, "Connection cannot be null" );
+    Assert.argumentIsNotNull( readOnlyConn, "Connection cannot be null" );
+
+    _readWriteConn = readWriteConn;
+    _readOnlyConn = readOnlyConn;
+    _currentConn = _readWriteConn;
   }
 
 
@@ -36,7 +45,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void abort( final Executor executor ) throws SQLException {
-    _originalConnection.abort( executor );
+    _currentConn.abort( executor );
   }
 
 
@@ -44,7 +53,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void clearWarnings() throws SQLException {
-    _originalConnection.clearWarnings();
+    _currentConn.clearWarnings();
   }
 
 
@@ -52,7 +61,8 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void close() throws SQLException {
-    _originalConnection.close();
+    _readWriteConn.close();
+    _readOnlyConn.close();
   }
 
 
@@ -60,7 +70,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void commit() throws SQLException {
-    _originalConnection.commit();
+    _currentConn.commit();
   }
 
 
@@ -68,7 +78,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Array createArrayOf( final String typeName, final Object[] elements ) throws SQLException {
-    return _originalConnection.createArrayOf( typeName, elements );
+    return _currentConn.createArrayOf( typeName, elements );
   }
 
 
@@ -76,7 +86,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Blob createBlob() throws SQLException {
-    return _originalConnection.createBlob();
+    return _currentConn.createBlob();
   }
 
 
@@ -84,7 +94,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Clob createClob() throws SQLException {
-    return _originalConnection.createClob();
+    return _currentConn.createClob();
   }
 
 
@@ -92,7 +102,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public NClob createNClob() throws SQLException {
-    return _originalConnection.createNClob();
+    return _currentConn.createNClob();
   }
 
 
@@ -100,7 +110,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public SQLXML createSQLXML() throws SQLException {
-    return _originalConnection.createSQLXML();
+    return _currentConn.createSQLXML();
   }
 
 
@@ -108,7 +118,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Statement createStatement() throws SQLException {
-    return _originalConnection.createStatement();
+    return _currentConn.createStatement();
   }
 
 
@@ -116,7 +126,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Statement createStatement( final int resultSetType, final int resultSetConcurrency ) throws SQLException {
-    return _originalConnection.createStatement( resultSetType, resultSetConcurrency );
+    return _currentConn.createStatement( resultSetType, resultSetConcurrency );
   }
 
 
@@ -124,7 +134,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Statement createStatement( final int resultSetType, final int resultSetConcurrency, final int resultSetHoldability ) throws SQLException {
-    return _originalConnection.createStatement( resultSetType, resultSetConcurrency, resultSetHoldability );
+    return _currentConn.createStatement( resultSetType, resultSetConcurrency, resultSetHoldability );
   }
 
 
@@ -132,7 +142,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Struct createStruct( final String typeName, final Object[] attributes ) throws SQLException {
-    return _originalConnection.createStruct( typeName, attributes );
+    return _currentConn.createStruct( typeName, attributes );
   }
 
 
@@ -140,7 +150,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public boolean getAutoCommit() throws SQLException {
-    return _originalConnection.getAutoCommit();
+    return _currentConn.getAutoCommit();
   }
 
 
@@ -148,7 +158,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public String getCatalog() throws SQLException {
-    return _originalConnection.getCatalog();
+    return _currentConn.getCatalog();
   }
 
 
@@ -156,7 +166,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Properties getClientInfo() throws SQLException {
-    return _originalConnection.getClientInfo();
+    return _currentConn.getClientInfo();
   }
 
 
@@ -164,7 +174,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public String getClientInfo( final String name ) throws SQLException {
-    return _originalConnection.getClientInfo( name );
+    return _currentConn.getClientInfo( name );
   }
 
 
@@ -172,7 +182,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public int getHoldability() throws SQLException {
-    return _originalConnection.getHoldability();
+    return _currentConn.getHoldability();
   }
 
 
@@ -180,7 +190,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public DatabaseMetaData getMetaData() throws SQLException {
-    return _originalConnection.getMetaData();
+    return _currentConn.getMetaData();
   }
 
 
@@ -188,14 +198,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public int getNetworkTimeout() throws SQLException {
-    return _originalConnection.getNetworkTimeout();
-  }
-
-
-
-
-  protected Connection getOriginal() {
-    return _originalConnection;
+    return _currentConn.getNetworkTimeout();
   }
 
 
@@ -203,7 +206,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public String getSchema() throws SQLException {
-    return _originalConnection.getSchema();
+    return _currentConn.getSchema();
   }
 
 
@@ -211,7 +214,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public int getTransactionIsolation() throws SQLException {
-    return _originalConnection.getTransactionIsolation();
+    return _currentConn.getTransactionIsolation();
   }
 
 
@@ -219,7 +222,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Map<String, Class<?>> getTypeMap() throws SQLException {
-    return _originalConnection.getTypeMap();
+    return _currentConn.getTypeMap();
   }
 
 
@@ -227,7 +230,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public SQLWarning getWarnings() throws SQLException {
-    return _originalConnection.getWarnings();
+    return _currentConn.getWarnings();
   }
 
 
@@ -235,7 +238,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public boolean isClosed() throws SQLException {
-    return _originalConnection.isClosed();
+    return _currentConn.isClosed();
   }
 
 
@@ -243,7 +246,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public boolean isReadOnly() throws SQLException {
-    return _originalConnection.isReadOnly();
+    return _currentConn.isReadOnly();
   }
 
 
@@ -251,18 +254,15 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public boolean isValid( final int timeout ) throws SQLException {
-    return _originalConnection.isValid( timeout );
+    return _currentConn.isValid( timeout );
   }
 
 
 
 
   @Override
-  public boolean isWrapperFor( final Class<?> intrfce ) throws SQLException {
-    if ( intrfce == null ) {
-      throw new SQLException( "interface must not be null" );
-    }
-    return intrfce.isInstance( _originalConnection );
+  public boolean isWrapperFor( final Class<?> iface ) throws SQLException {
+    return _currentConn.isWrapperFor( iface );
   }
 
 
@@ -270,7 +270,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public String nativeSQL( final String sql ) throws SQLException {
-    return _originalConnection.nativeSQL( sql );
+    return _currentConn.nativeSQL( sql );
   }
 
 
@@ -278,7 +278,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public CallableStatement prepareCall( final String sql ) throws SQLException {
-    return _originalConnection.prepareCall( sql );
+    return _currentConn.prepareCall( sql );
   }
 
 
@@ -286,7 +286,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public CallableStatement prepareCall( final String sql, final int resultSetType, final int resultSetConcurrency ) throws SQLException {
-    return _originalConnection.prepareCall( sql, resultSetType, resultSetConcurrency );
+    return _currentConn.prepareCall( sql, resultSetType, resultSetConcurrency );
   }
 
 
@@ -294,7 +294,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public CallableStatement prepareCall( final String sql, final int resultSetType, final int resultSetConcurrency, final int resultSetHoldability ) throws SQLException {
-    return _originalConnection.prepareCall( sql, resultSetType, resultSetConcurrency, resultSetHoldability );
+    return _currentConn.prepareCall( sql, resultSetType, resultSetConcurrency, resultSetHoldability );
   }
 
 
@@ -302,7 +302,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql ) throws SQLException {
-    return _originalConnection.prepareStatement( sql );
+    return _currentConn.prepareStatement( sql );
   }
 
 
@@ -310,7 +310,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql, final int autoGeneratedKeys ) throws SQLException {
-    return _originalConnection.prepareStatement( sql, autoGeneratedKeys );
+    return _currentConn.prepareStatement( sql, autoGeneratedKeys );
   }
 
 
@@ -318,7 +318,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql, final int resultSetType, final int resultSetConcurrency ) throws SQLException {
-    return _originalConnection.prepareStatement( sql, resultSetType, resultSetConcurrency );
+    return _currentConn.prepareStatement( sql, resultSetType, resultSetConcurrency );
   }
 
 
@@ -326,7 +326,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql, final int resultSetType, final int resultSetConcurrency, final int resultSetHoldability ) throws SQLException {
-    return _originalConnection.prepareStatement( sql, resultSetType, resultSetConcurrency, resultSetHoldability );
+    return _currentConn.prepareStatement( sql, resultSetType, resultSetConcurrency, resultSetHoldability );
   }
 
 
@@ -334,7 +334,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql, final int[] columnIndexes ) throws SQLException {
-    return _originalConnection.prepareStatement( sql, columnIndexes );
+    return _currentConn.prepareStatement( sql, columnIndexes );
   }
 
 
@@ -342,7 +342,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public PreparedStatement prepareStatement( final String sql, final String[] columnNames ) throws SQLException {
-    return _originalConnection.prepareStatement( sql, columnNames );
+    return _currentConn.prepareStatement( sql, columnNames );
   }
 
 
@@ -350,7 +350,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void releaseSavepoint( final Savepoint savepoint ) throws SQLException {
-    _originalConnection.releaseSavepoint( savepoint );
+    _currentConn.releaseSavepoint( savepoint );
   }
 
 
@@ -358,7 +358,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void rollback() throws SQLException {
-    _originalConnection.rollback();
+    _currentConn.rollback();
   }
 
 
@@ -366,7 +366,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void rollback( final Savepoint savepoint ) throws SQLException {
-    _originalConnection.rollback();
+    _currentConn.rollback();
   }
 
 
@@ -374,7 +374,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setAutoCommit( final boolean autoCommit ) throws SQLException {
-    _originalConnection.setAutoCommit( autoCommit );
+    _currentConn.setAutoCommit( autoCommit );
   }
 
 
@@ -382,7 +382,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setCatalog( final String catalog ) throws SQLException {
-    _originalConnection.setCatalog( catalog );
+    _currentConn.setCatalog( catalog );
   }
 
 
@@ -390,7 +390,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setClientInfo( final Properties properties ) throws SQLClientInfoException {
-    _originalConnection.setClientInfo( properties );
+    _currentConn.setClientInfo( properties );
   }
 
 
@@ -398,7 +398,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setClientInfo( final String name, final String value ) throws SQLClientInfoException {
-    _originalConnection.setClientInfo( name, value );
+    _currentConn.setClientInfo( name, value );
   }
 
 
@@ -406,7 +406,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setHoldability( final int holdability ) throws SQLException {
-    _originalConnection.setHoldability( holdability );
+    _currentConn.setHoldability( holdability );
   }
 
 
@@ -414,7 +414,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setNetworkTimeout( final Executor executor, final int milliseconds ) throws SQLException {
-    _originalConnection.setNetworkTimeout( executor, milliseconds );
+    _currentConn.setNetworkTimeout( executor, milliseconds );
   }
 
 
@@ -422,7 +422,16 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setReadOnly( final boolean readOnly ) throws SQLException {
-    _originalConnection.setReadOnly( readOnly );
+    if ( readOnly ) {
+      if ( _currentConn != _readOnlyConn ) {
+        switchToConnection( _readOnlyConn );
+      }
+    } else {
+      if ( _currentConn != _readWriteConn ) {
+        switchToConnection( _readWriteConn );
+      }
+    }
+    _currentConn.setReadOnly( readOnly );
   }
 
 
@@ -430,7 +439,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Savepoint setSavepoint() throws SQLException {
-    return _originalConnection.setSavepoint();
+    return _currentConn.setSavepoint();
   }
 
 
@@ -438,7 +447,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public Savepoint setSavepoint( final String name ) throws SQLException {
-    return _originalConnection.setSavepoint( name );
+    return _currentConn.setSavepoint( name );
   }
 
 
@@ -446,7 +455,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setSchema( final String schema ) throws SQLException {
-    _originalConnection.setSchema( schema );
+    _currentConn.setSchema( schema );
   }
 
 
@@ -454,7 +463,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setTransactionIsolation( final int level ) throws SQLException {
-    _originalConnection.setTransactionIsolation( level );
+    _currentConn.setTransactionIsolation( level );
   }
 
 
@@ -462,7 +471,17 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   public void setTypeMap( final Map<String, Class<?>> map ) throws SQLException {
-    _originalConnection.setTypeMap( map );
+    _currentConn.setTypeMap( map );
+  }
+
+
+
+
+  private void switchToConnection( final Connection connection ) throws SQLException {
+    connection.setAutoCommit( _currentConn.getAutoCommit() );
+    connection.setCatalog( _currentConn.getCatalog() );
+    connection.setTransactionIsolation( _currentConn.getTransactionIsolation() );
+    _currentConn = connection;
   }
 
 
@@ -470,13 +489,7 @@ public abstract class ConnectionProxy implements Connection {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T> T unwrap( final Class<T> intrfc ) throws SQLException {
-    if ( intrfc == null ) {
-      throw new SQLException( "interface must not be null" );
-    }
-    if ( !intrfc.isInstance( _originalConnection ) ) {
-      throw new SQLException( String.format( "no object found that implements the interface: %s", intrfc ) );
-    }
-    return (T)_originalConnection;
+  public <T> T unwrap( final Class<T> iface ) throws SQLException {
+    return (T)_currentConn;
   }
 }
