@@ -82,7 +82,7 @@ public class JdbcTemplateTest {
 
     List<Employee> tenEmployees = template.query( "SELECT * FROM employees LIMIT ?, ?;", Arrays.<Object> asList( 0, 10 ), employeeDataMapper );
 
-    Employee bob = template.updateOne( "UPDATE employees SET firstName=? WHERE emp_no=?;", Arrays.<Object> asList( "Bob", 1001 ), employeeDataMapper );
+    //Employee bob = template.updateOne( "UPDATE employees SET firstName=? WHERE emp_no=?;", Arrays.<Object> asList( "Bob", 1001 ), employeeDataMapper );
 
   }
 

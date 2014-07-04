@@ -2,10 +2,6 @@ package coyote.commons.jdbc;
 
 public class DataAccessException extends RuntimeException {
 
-
-
-
-
   /**
    * 
    */
