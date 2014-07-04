@@ -118,7 +118,7 @@ public class DateUtil {
   public static String RFC822Format( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -244,17 +244,17 @@ public class DateUtil {
   public static String ISO8601Format( Date date, boolean adjust, TimeZone tz ) {
     Calendar cal = GregorianCalendar.getInstance();
 
-    if( tz != null ) {
+    if ( tz != null ) {
       cal.setTimeZone( tz );
     }
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     } else {
       cal.setTime( new Date() );
     }
 
-    if( adjust ) {
+    if ( adjust ) {
       // Adjust Daylight time to standard time
       cal.add( Calendar.HOUR_OF_DAY, ( cal.get( Calendar.DST_OFFSET ) / ( 60 * 60 * 1000 ) ) * -1 );
     }
@@ -273,10 +273,10 @@ public class DateUtil {
     int hours = offset / ( 60 * 60 );
     int minutes = offset - ( hours * ( 60 * 60 ) );
 
-    if( offset == 0 ) {
+    if ( offset == 0 ) {
       retval.append( "Z" );
     } else {
-      if( offset < 0 ) {
+      if ( offset < 0 ) {
         retval.append( "-" );
 
         hours *= -1;
@@ -305,12 +305,12 @@ public class DateUtil {
   private static String zeropad( int num, int size ) {
     String value = Integer.toString( num );
 
-    if( value.length() >= size ) {
+    if ( value.length() >= size ) {
       return value;
     }
 
     StringBuffer buf = new StringBuffer( size );
-    for( int i = 0; i++ < ( size - value.length() ); buf.append( '0' ) );
+    for ( int i = 0; i++ < ( size - value.length() ); buf.append( '0' ) );
 
     buf.append( value );
 
@@ -443,7 +443,7 @@ public class DateUtil {
   public static String toExtendedGMT( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -495,7 +495,7 @@ public class DateUtil {
   public static String toBasicGMTDate( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -537,7 +537,7 @@ public class DateUtil {
   public static String toExtendedGMTDate( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -580,7 +580,7 @@ public class DateUtil {
   public static String toBasicGMTTime( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -623,7 +623,7 @@ public class DateUtil {
   public static String toExtendedGMTTime( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -669,7 +669,7 @@ public class DateUtil {
   public static String toBasicGMTTimestamp( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -715,7 +715,7 @@ public class DateUtil {
   public static String toExtendedGMTTimestamp( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
 
-    if( date != null ) {
+    if ( date != null ) {
       cal.setTime( date );
     }
 
@@ -901,7 +901,7 @@ public class DateUtil {
   public static java.sql.Date toSqlDate( String date ) {
     java.util.Date newDate = toDate( date, "00:00:00" );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Date( newDate.getTime() );
     } else {
       return null;
@@ -923,7 +923,7 @@ public class DateUtil {
   public static java.sql.Date toSqlDate( String monthStr, String dayStr, String yearStr ) {
     java.util.Date newDate = toDate( monthStr, dayStr, yearStr, "0", "0", "0" );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Date( newDate.getTime() );
     } else {
       return null;
@@ -945,7 +945,7 @@ public class DateUtil {
   public static java.sql.Date toSqlDate( int month, int day, int year ) {
     java.util.Date newDate = toDate( month, day, year, 0, 0, 0 );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Date( newDate.getTime() );
     } else {
       return null;
@@ -965,7 +965,7 @@ public class DateUtil {
   public static java.sql.Time toSqlTime( String time ) {
     java.util.Date newDate = toDate( "1/1/1970", time );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Time( newDate.getTime() );
     } else {
       return null;
@@ -988,7 +988,7 @@ public class DateUtil {
   public static java.sql.Time toSqlTime( String hourStr, String minuteStr, String secondStr ) {
     java.util.Date newDate = toDate( "0", "0", "0", hourStr, minuteStr, secondStr );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Time( newDate.getTime() );
     } else {
       return null;
@@ -1011,7 +1011,7 @@ public class DateUtil {
   public static java.sql.Time toSqlTime( int hour, int minute, int second ) {
     java.util.Date newDate = toDate( 0, 0, 0, hour, minute, second );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Time( newDate.getTime() );
     } else {
       return null;
@@ -1032,7 +1032,7 @@ public class DateUtil {
   public static java.sql.Timestamp toTimestamp( String dateTime ) {
     java.util.Date newDate = toDate( dateTime );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Timestamp( newDate.getTime() );
     } else {
       return null;
@@ -1053,7 +1053,7 @@ public class DateUtil {
   public static java.sql.Timestamp toTimestamp( String date, String time ) {
     java.util.Date newDate = toDate( date, time );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Timestamp( newDate.getTime() );
     } else {
       return null;
@@ -1080,7 +1080,7 @@ public class DateUtil {
   public static java.sql.Timestamp toTimestamp( String monthStr, String dayStr, String yearStr, String hourStr, String minuteStr, String secondStr ) {
     java.util.Date newDate = toDate( monthStr, dayStr, yearStr, hourStr, minuteStr, secondStr );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Timestamp( newDate.getTime() );
     } else {
       return null;
@@ -1107,7 +1107,7 @@ public class DateUtil {
   public static java.sql.Timestamp toTimestamp( int month, int day, int year, int hour, int minute, int second ) {
     java.util.Date newDate = toDate( month, day, year, hour, minute, second );
 
-    if( newDate != null ) {
+    if ( newDate != null ) {
       return new java.sql.Timestamp( newDate.getTime() );
     } else {
       return null;
@@ -1145,7 +1145,7 @@ public class DateUtil {
    * @return A Date made from the date and time Strings
    */
   public static java.util.Date toDate( String date, String time ) {
-    if( ( date == null ) || ( time == null ) ) {
+    if ( ( date == null ) || ( time == null ) ) {
       return null;
     }
 
@@ -1159,14 +1159,14 @@ public class DateUtil {
     int dateSlash1 = date.indexOf( "/" );
     int dateSlash2 = date.lastIndexOf( "/" );
 
-    if( ( dateSlash1 <= 0 ) || ( dateSlash1 == dateSlash2 ) ) {
+    if ( ( dateSlash1 <= 0 ) || ( dateSlash1 == dateSlash2 ) ) {
       return null;
     }
 
     int timeColon1 = time.indexOf( ":" );
     int timeColon2 = time.lastIndexOf( ":" );
 
-    if( timeColon1 <= 0 ) {
+    if ( timeColon1 <= 0 ) {
       return null;
     }
 
@@ -1175,7 +1175,7 @@ public class DateUtil {
     year = date.substring( dateSlash2 + 1 );
     hour = time.substring( 0, timeColon1 );
 
-    if( timeColon1 == timeColon2 ) {
+    if ( timeColon1 == timeColon2 ) {
       minute = time.substring( timeColon1 + 1 );
       second = "0";
     } else {
@@ -1213,8 +1213,7 @@ public class DateUtil {
       hour = Integer.parseInt( hourStr );
       minute = Integer.parseInt( minuteStr );
       second = Integer.parseInt( secondStr );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       return null;
     }
 
@@ -1243,8 +1242,7 @@ public class DateUtil {
 
     try {
       calendar.set( year, month - 1, day, hour, minute, second );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       return null;
     }
 
@@ -1262,7 +1260,7 @@ public class DateUtil {
    * @return A date String in the format MM/DD/YYYY
    */
   public static String toDateString( java.util.Date date ) {
-    if( date == null ) {
+    if ( date == null ) {
       return "";
     }
 
@@ -1277,13 +1275,13 @@ public class DateUtil {
     String dayStr;
     String yearStr;
 
-    if( month < 10 ) {
+    if ( month < 10 ) {
       monthStr = "0" + month;
     } else {
       monthStr = "" + month;
     }
 
-    if( day < 10 ) {
+    if ( day < 10 ) {
       dayStr = "0" + day;
     } else {
       dayStr = "" + day;
@@ -1306,7 +1304,7 @@ public class DateUtil {
    * @return A time String in the format HH:MM:SS or HH:MM
    */
   public static String toTimeString( java.util.Date date ) {
-    if( date == null ) {
+    if ( date == null ) {
       return "";
     }
 
@@ -1337,25 +1335,25 @@ public class DateUtil {
     String minuteStr;
     String secondStr;
 
-    if( hour < 10 ) {
+    if ( hour < 10 ) {
       hourStr = "0" + hour;
     } else {
       hourStr = "" + hour;
     }
 
-    if( minute < 10 ) {
+    if ( minute < 10 ) {
       minuteStr = "0" + minute;
     } else {
       minuteStr = "" + minute;
     }
 
-    if( second < 10 ) {
+    if ( second < 10 ) {
       secondStr = "0" + second;
     } else {
       secondStr = "" + second;
     }
 
-    if( second == 0 ) {
+    if ( second == 0 ) {
       return hourStr + ":" + minuteStr;
     } else {
       return hourStr + ":" + minuteStr + ":" + secondStr;
@@ -1377,14 +1375,14 @@ public class DateUtil {
    *         where the seconds are left off if they are 0.
    */
   public static String toDateTimeString( java.util.Date date ) {
-    if( date == null ) {
+    if ( date == null ) {
       return "";
     }
 
     String dateString = toDateString( date );
     String timeString = toTimeString( date );
 
-    if( ( dateString != null ) && ( timeString != null ) ) {
+    if ( ( dateString != null ) && ( timeString != null ) ) {
       return dateString + " " + timeString;
     } else {
       return "";
@@ -1430,7 +1428,7 @@ public class DateUtil {
     final long days = seconds / 86400;
     StringBuffer buffer = new StringBuffer();
 
-    if( days > 0 ) // Display days and hours
+    if ( days > 0 ) // Display days and hours
     {
       buffer.append( days );
       buffer.append( "d " );
@@ -1442,7 +1440,7 @@ public class DateUtil {
 
     final int hours = (int)( ( seconds / 3600 ) % 24 );
 
-    if( hours > 0 ) // Display hours and minutes
+    if ( hours > 0 ) // Display hours and minutes
     {
       buffer.append( hours );
       buffer.append( "h " );
@@ -1454,7 +1452,7 @@ public class DateUtil {
 
     final int minutes = (int)( ( seconds / 60 ) % 60 );
 
-    if( minutes > 0 ) // Display minutes and seconds
+    if ( minutes > 0 ) // Display minutes and seconds
     {
       buffer.append( minutes );
       buffer.append( "m " );
@@ -1511,7 +1509,7 @@ public class DateUtil {
     int yearInMetonicCycle = ( ( cal.get( Calendar.YEAR ) - 1900 ) % 19 ) + 1;
     int epact = ( 11 * yearInMetonicCycle + 18 ) % 30;
 
-    if( ( ( epact == 25 ) && ( yearInMetonicCycle > 11 ) ) || ( epact == 24 ) ) {
+    if ( ( ( epact == 25 ) && ( yearInMetonicCycle > 11 ) ) || ( epact == 24 ) ) {
       epact++;
     }
 
@@ -1537,22 +1535,22 @@ public class DateUtil {
    *         time represented by argument.
    */
   public static Calendar getCalendar( String time ) {
-    if( time != null ) {
+    if ( time != null ) {
       String text = time.trim();
 
-      if( text.length() > 0 ) {
+      if ( text.length() > 0 ) {
         String hrs;
         String mns;
         String scs = "00";
         int ptr = text.lastIndexOf( ':' );
 
-        if( ptr > -1 ) {
+        if ( ptr > -1 ) {
           mns = text.substring( ptr + 1 );
           hrs = text.substring( 0, ptr );
 
           ptr = hrs.lastIndexOf( ':' );
 
-          if( ptr > -1 ) {
+          if ( ptr > -1 ) {
             scs = mns;
             mns = hrs.substring( ptr + 1 );
             hrs = hrs.substring( 0, ptr );
@@ -1561,19 +1559,19 @@ public class DateUtil {
           try {
             int hours = Integer.parseInt( hrs );
 
-            if( ( hours > 23 ) || ( hours < 0 ) ) {
+            if ( ( hours > 23 ) || ( hours < 0 ) ) {
               throw new IllegalArgumentException( "Hours are out or range" );
             }
 
             int mins = Integer.parseInt( mns );
 
-            if( ( mins > 59 ) || ( mins < 0 ) ) {
+            if ( ( mins > 59 ) || ( mins < 0 ) ) {
               throw new IllegalArgumentException( "Minutes are out or range" );
             }
 
             int secs = Integer.parseInt( scs );
 
-            if( ( secs > 59 ) || ( secs < 0 ) ) {
+            if ( ( secs > 59 ) || ( secs < 0 ) ) {
               throw new IllegalArgumentException( "Seconds are out or range" );
             }
 
@@ -1588,8 +1586,7 @@ public class DateUtil {
 
             // return our calendar
             return cal;
-          }
-          catch( NumberFormatException e ) {
+          } catch ( NumberFormatException e ) {
             throw new IllegalArgumentException( "Time is not in HH:MM format" );
           }
 
@@ -1597,7 +1594,7 @@ public class DateUtil {
           // only seconds
           int secs = Integer.parseInt( text );
 
-          if( ( secs > 59 ) || ( secs < 0 ) ) {
+          if ( ( secs > 59 ) || ( secs < 0 ) ) {
             throw new IllegalArgumentException( "Seconds are out or range" );
           }
 
@@ -1634,9 +1631,9 @@ public class DateUtil {
     Calendar cal = getCalendar( time );
     long now = System.currentTimeMillis();
 
-    if( cal != null ) {
-      if( cal.getTimeInMillis() < now ) {
-        if( time.length() > 2 ) {
+    if ( cal != null ) {
+      if ( cal.getTimeInMillis() < now ) {
+        if ( time.length() > 2 ) {
           cal.add( Calendar.DATE, 1 );
         } else {
           cal.add( Calendar.MINUTE, 1 );
@@ -1663,9 +1660,9 @@ public class DateUtil {
     Calendar cal = getCalendar( time );
     long now = System.currentTimeMillis();
 
-    if( cal != null ) {
-      if( cal.getTimeInMillis() > now ) {
-        if( time.length() > 2 ) {
+    if ( cal != null ) {
+      if ( cal.getTimeInMillis() > now ) {
+        if ( time.length() > 2 ) {
           cal.add( Calendar.DATE, -1 );
         } else {
           cal.add( Calendar.MINUTE, -1 );

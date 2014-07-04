@@ -169,9 +169,9 @@ public final class ArrayUtil {
   public static long[] intersect( long[] primary, long[] secondary ) {
     long[] intersect = new long[0];
 
-    for( int x = 0; x < primary.length; x++ ) {
-      for( int y = 0; y < secondary.length; y++ ) {
-        if( primary[x] == secondary[y] ) {
+    for ( int x = 0; x < primary.length; x++ ) {
+      for ( int y = 0; y < secondary.length; y++ ) {
+        if ( primary[x] == secondary[y] ) {
           long[] newarray = new long[intersect.length + 1];
           System.arraycopy( intersect, 0, newarray, 0, intersect.length );
 
@@ -244,8 +244,8 @@ public final class ArrayUtil {
   public static Object removeElement( Object array, Object element ) {
     int length = Array.getLength( array );
 
-    for( int i = 0; i < length; i++ ) {
-      if( element.equals( Array.get( array, i ) ) ) {
+    for ( int i = 0; i < length; i++ ) {
+      if ( element.equals( Array.get( array, i ) ) ) {
         return removeElementAt( array, i );
       }
     }
@@ -287,8 +287,8 @@ public final class ArrayUtil {
    * @return
    */
   public static int indexOf( int value, int[] array ) {
-    for( int i = 0; i < array.length; i++ ) {
-      if( array[i] == value ) {
+    for ( int i = 0; i < array.length; i++ ) {
+      if ( array[i] == value ) {
         return i;
       }
     }
@@ -310,8 +310,8 @@ public final class ArrayUtil {
    * @return
    */
   public static int indexOf( Object value, Object[] array ) {
-    for( int i = 0; i < array.length; i++ ) {
-      if( equals( array[i], value ) ) {
+    for ( int i = 0; i < array.length; i++ ) {
+      if ( equals( array[i], value ) ) {
         return i;
       }
     }
@@ -347,12 +347,12 @@ public final class ArrayUtil {
    * @return
    */
   public static boolean equals( Object[] array1, Object[] array2 ) {
-    if( array1.length != array2.length ) {
+    if ( array1.length != array2.length ) {
       return false;
     }
 
-    for( int i = 0; i < array1.length; i++ ) {
-      if( !equals( array1[i], array2[i] ) ) {
+    for ( int i = 0; i < array1.length; i++ ) {
+      if ( !equals( array1[i], array2[i] ) ) {
         return false;
       }
     }
@@ -370,9 +370,9 @@ public final class ArrayUtil {
    * @return
    */
   public static boolean equals( Object object1, Object object2 ) {
-    if( ( object1 == null ) && ( object2 == null ) ) {
+    if ( ( object1 == null ) && ( object2 == null ) ) {
       return true;
-    } else if( ( object1 == null ) || ( object2 == null ) ) {
+    } else if ( ( object1 == null ) || ( object2 == null ) ) {
       return false;
     } else {
       return object1.equals( object2 );
@@ -391,15 +391,15 @@ public final class ArrayUtil {
    * @return
    */
   public static boolean equals( byte[] array1, byte[] array2 ) {
-    if( array1.length != array2.length ) {
+    if ( array1.length != array2.length ) {
       return false;
     }
 
-    for( int i = 0; i < array1.length; i++ ) {
+    for ( int i = 0; i < array1.length; i++ ) {
       byte b1 = array1[i];
       byte b2 = array2[i];
 
-      if( b1 != b2 ) {
+      if ( b1 != b2 ) {
         return false;
       }
     }
@@ -427,66 +427,66 @@ public final class ArrayUtil {
    *         was not an array of primitives.
    */
   public static Object[] convertFromPrimitives( Object obj ) {
-    if( obj instanceof byte[] ) {
+    if ( obj instanceof byte[] ) {
       Byte[] retval = new Byte[( (byte[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Byte( ( (byte[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof char[] ) {
+    } else if ( obj instanceof char[] ) {
       Character[] retval = new Character[( (char[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Character( ( (char[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof boolean[] ) {
+    } else if ( obj instanceof boolean[] ) {
       Boolean[] retval = new Boolean[( (boolean[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Boolean( ( (boolean[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof short[] ) {
+    } else if ( obj instanceof short[] ) {
       Short[] retval = new Short[( (short[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Short( ( (short[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof int[] ) {
+    } else if ( obj instanceof int[] ) {
       Integer[] retval = new Integer[( (int[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Integer( ( (int[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof long[] ) {
+    } else if ( obj instanceof long[] ) {
       Long[] retval = new Long[( (long[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Long( ( (long[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof float[] ) {
+    } else if ( obj instanceof float[] ) {
       Float[] retval = new Float[( (float[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Float( ( (float[])obj )[i] );
       }
 
       return retval;
-    } else if( obj instanceof double[] ) {
+    } else if ( obj instanceof double[] ) {
       Double[] retval = new Double[( (double[])obj ).length];
 
-      for( int i = 0; i < retval.length; i++ ) {
+      for ( int i = 0; i < retval.length; i++ ) {
         retval[i] = new Double( ( (double[])obj )[i] );
       }
 

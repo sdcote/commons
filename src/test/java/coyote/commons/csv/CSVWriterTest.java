@@ -222,7 +222,7 @@ public class CSVWriterTest {
 		output = invokeNoEscapeWriter(empty);
 		assertEquals("\n", output);
 
-		// test multiline quoted
+		// test multi-line quoted
 		final String[] multiline = { "This is a \n multiline entry", "so is \n this" };
 		output = invokeNoEscapeWriter(multiline);
 		assertEquals("'This is a \n multiline entry','so is \n this'\n", output);
@@ -245,8 +245,7 @@ public class CSVWriterTest {
 	/**
 	 * Test parsing from to a list.
 	 *
-	 * @throws IOException
-	 *             if the reader fails.
+	 * @throws IOException if the reader fails.
 	 */
 	@Test
 	public void testParseAll() throws IOException {

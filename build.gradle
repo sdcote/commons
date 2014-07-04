@@ -28,7 +28,8 @@ ext {
 
 jar {
     manifest {
-        attributes 'Provider': 'Coyote Codeworks', 'Implementation-Version': version
+        attributes 'Provider': 'Coyote Codeworks', 
+        'Implementation-Version': version
     }
 }
 
