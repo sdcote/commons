@@ -77,7 +77,7 @@ public class BatchUpdater {
 
 
 
-  public <K> List<K> doBatch( final DataMapper<K> keyMapper ) throws DataAccessException {
+  public <K> List<K> doBatch( final ResultMapper<K> keyMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( keyMapper, "keyMapper must not be null" );
 
     try {

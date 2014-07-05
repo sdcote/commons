@@ -11,7 +11,10 @@ import java.util.concurrent.Executor;
 
 
 /**
- *
+ * Used by {@code CloseOnCompletionDataSource} to return connections which will
+ * be closed then the connection is closed. It wraps {@code Connection} objects
+ * which are tracked by the aforementioned datasource and closed when the 
+ * datasource is closed.
  */
 public class CloseOnCompletionConnection extends ConnectionProxy {
 

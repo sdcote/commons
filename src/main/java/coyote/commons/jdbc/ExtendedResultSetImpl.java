@@ -153,4 +153,9 @@ class ExtendedResultSetImpl extends ResultSetWrapper implements ExtendedResultSe
     final short value = getShort( columnLabel );
     return wasNull() ? null : value;
   }
+
+
+
+
+ 
 }

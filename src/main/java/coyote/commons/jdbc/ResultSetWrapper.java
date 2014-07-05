@@ -26,6 +26,8 @@ import java.util.Map;
 /**
  * This is an abstract wrapper class for the standard result set which allows
  * other classes to implement extended functionality into the result set.
+ * 
+ * @see @code ExtendedResultSet} and {@code ExtendedResultSetImpl)
  */
 public abstract class ResultSetWrapper implements ResultSet {
 

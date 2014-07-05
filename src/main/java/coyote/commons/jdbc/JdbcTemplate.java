@@ -116,14 +116,14 @@ public class JdbcTemplate {
 
 
 
-  public <E> List<E> query( final String sql, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
     return query( sql, dataMapper, new LinkedList<E>() );
   }
 
 
 
 
-  public <E> List<E> query( final String sql, final DataMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
     Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
     Assert.argumentIsNotNull( resultList, "resultList must not be null" );
 
@@ -166,7 +166,7 @@ public class JdbcTemplate {
    * <p>By default, the type of the returned list will be
    * {@link java.util.LinkedList}. To specify the desired instance to be 
    * returned, use 
-   * {@link #query(String, java.util.List, DataMapper, java.util.List)} 
+   * {@link #query(String, java.util.List, ResultMapper, java.util.List)} 
    * instead.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
@@ -178,7 +178,7 @@ public class JdbcTemplate {
    * 
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final List<?> parameters, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
     return query( sql, parameters, dataMapper, new LinkedList<E>() );
   }
 
@@ -198,7 +198,7 @@ public class JdbcTemplate {
    * 
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final List<?> parameters, final DataMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
@@ -221,11 +221,11 @@ public class JdbcTemplate {
    *         By default, the type of the returned list will be
    *         {@link java.util.LinkedList}. To specify the desired instance
    *         to be returned, use {@link #query(String, java.util.List,
-   *         DataMapper, java.util.List)} instead.
+   *         ResultMapper, java.util.List)} instead.
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
     return query( sql, setter, dataMapper, new LinkedList<E>() );
   }
 
@@ -250,7 +250,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final DataMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
     Assert.argumentIsNotNull( dataMapper, "dataMapper cannot be null" );
 
@@ -289,7 +289,7 @@ public class JdbcTemplate {
 
 
 
-  public <E> E queryOne( final String sql, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
 
     final Connection connection = getConnection();
@@ -335,7 +335,7 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data
    *                             access of the database
    */
-  public <E> E queryOne( final String sql, final List<?> parameters, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
@@ -361,7 +361,7 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data
    *                             access of the database
    */
-  public <E> E queryOne( final String sql, final PreparedStatementSetter setter, final DataMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
     Assert.argumentIsNotNull( dataMapper, "dataMapper cannot be null" );
 
@@ -453,7 +453,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <K> List<K> update( final String sql, final List<?> parameters, final DataMapper<K> keyMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> keyMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
     Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
 
@@ -517,7 +517,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final DataMapper<K> keyMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> keyMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
     Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
 
@@ -573,7 +573,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <K> K updateOne( final String sql, final List<?> parameters, final DataMapper<K> keyMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> keyMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
     Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
 
@@ -602,7 +602,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data
    *                             access of the database
    */
-  public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final DataMapper<K> keyMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> keyMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
     Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
 
