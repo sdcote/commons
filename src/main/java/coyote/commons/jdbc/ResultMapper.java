@@ -4,9 +4,12 @@ import java.sql.SQLException;
 
 
 /**
+ * This interface defines a contract for an object which will map a 
+ * {@code ResultSet} to an instance of <E>.
+ * 
  * @param <E> the type of the entity object
  */
-public interface DataMapper<E> {
+public interface ResultMapper<E> {
 
   /**
    *
@@ -18,5 +21,5 @@ public interface DataMapper<E> {
    * 
    * @see coyote.commons.jdbc.ExtendedResultSet
    */
-  E map( ExtendedResultSet rs ) throws SQLException;
+  public E map( ExtendedResultSet rs ) throws SQLException;
 }
