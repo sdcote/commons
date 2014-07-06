@@ -21,9 +21,9 @@ import coyote.commons.jdbc.datasource.CloseOnCompletionConnection;
  * placeholders, filling in the missing arguments, executing a query or an
  * update task, and finally transforming the result set returned from the
  * execution into a entity object or a list of entity objects) into just one
- * single method invocation including <code>query(...)</code>,
- * <code>queryOne(...)</code>, <code>update(...)</code> and
- * <code>updateOne(...)</code>.
+ * single method invocation including {@code query(...)},
+ * {@code queryOne(...)}, {@code update(...)} and
+ * {@code updateOne(...)}.
  */
 public class JdbcTemplate {
 
@@ -170,7 +170,7 @@ public class JdbcTemplate {
    * instead.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the sql sequentially
+   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the SQL sequentially
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
    * 
@@ -189,7 +189,7 @@ public class JdbcTemplate {
    * Query for a list of entity of type E
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the sql sequentially
+   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the SQL sequentially
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param resultList the result list to be returned by this method. This is list must not be unmodifiable. Otherwise, an UnsupportedOperationException is likely to be thrown.
    * @param <E> the type of the entity class
@@ -213,7 +213,7 @@ public class JdbcTemplate {
    * @param sql an SQL statement that may contain one or more '?' IN
    *            parameter placeholders
    * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
+   *               placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between
    *                   the result set and the entity object
    * @param <E> the type of the entity class
@@ -237,7 +237,7 @@ public class JdbcTemplate {
    * @param sql an SQL statement that may contain one or more '?' IN
    *            parameter placeholders
    * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
+   *               placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between
    *                   the result set and the entity object
    * @param resultList the result list to be returned by this method. This is
@@ -324,14 +324,14 @@ public class JdbcTemplate {
   /**
    * query only a single entity of type E. If there is multiple results
    * returned from the query, the first one will be returned. If there is no
-   * result, <code>NULL</code> will be returned.
+   * result, {@code NULL} will be returned.
    * @param sql an SQL statement that may contain one or more '?' IN
    *            parameter placeholders
    * @param dataMapper a dataMapper instance which acts as a mapper between
    *                   the result set and the entity object
    * @param <E> the type of the entity class
    * @return the single entity produced by the query. If no result return
-   *         from the query, <code>NULL</code> will be returned.
+   *         from the query, {@code NULL} will be returned.
    * @throws DataAccessException  if any exception occurs during the data
    *                             access of the database
    */
@@ -348,16 +348,16 @@ public class JdbcTemplate {
   /**
    * query only a single entity of type E. If there is multiple results
    * returned from the query, the first one will be returned. If there is no
-   * result, <code>NULL</code> will be returned.
+   * result, {@code NULL} will be returned.
    * @param sql an SQL statement that may contain one or more '?' IN
    *            parameter placeholders
    * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
+   *               placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between
    *                   the result set and the entity object
    * @param <E> the type of the entity class
    * @return the single entity produced by the query. If no result return
-   *         from the query, <code>NULL</code> will be returned.
+   *         from the query, {@code NULL} will be returned.
    * @throws DataAccessException  if any exception occurs during the data
    *                             access of the database
    */
@@ -397,9 +397,9 @@ public class JdbcTemplate {
 
 
   /**
-   * this method is used to rollback a connection if SQLException is thrown
+   * This method is used to rollback a connection if SQLException is thrown
    * during the execution. But when the auto-commit is not disabled
-   * (by default), the <code>connection.rollback()</code> will not be
+   * (by default), the {@code connection.rollback()} will not be
    * executed.
    * @param connection the connection to rollback
    * @throws DataAccessException if SQLException is thrown during the
@@ -419,15 +419,14 @@ public class JdbcTemplate {
 
 
   /**
-   * execute the update with supplied parameters.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param parameters the parameter list to the SQL statement.
-   *                   the parameter will be filled into the sql sequentially
-   * @return either (1) the row count for SQL Data Manipulation Language
-   *         (DML) statements or (2) 0 for SQL statements that return nothing
-   * @throws DataAccessException  if any exception occurs during the data
-   *                             access of the database
+   * Execute the update with supplied parameters.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the SQL sequentially
+   * 
+   * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
+   * 
+   * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public int update( final String sql, final List<?> parameters ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
@@ -440,40 +439,38 @@ public class JdbcTemplate {
 
 
   /**
-   * execute the update with supplied parameters and return a list of
-   * generated keys to this update.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param parameters the parameter list to the SQL statement.
-   *                   the parameter will be filled into the sql sequentially
-   * @param keyMapper the dataMapper instance which acts as a mapper between
-   *                  the result set and the generated key
+   * Execute the update with supplied parameters and return a list of generated 
+   * keys to this update.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the SQL sequentially
+   * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
+   * 
    * @return a list of generated keys to this update.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> keyMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
-    Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
+    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
-    return update( sql, setter, keyMapper );
+    return update( sql, setter, resultMapper );
   }
 
 
 
 
   /**
-   * execute the update with supplied parameters.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
-   * @return either (1) the row count for SQL Data Manipulation Language
-   *         (DML) statements or (2) 0 for SQL statements that return nothing
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * Execute the update with supplied parameters.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * 
+   * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public int update( final String sql, final PreparedStatementSetter setter ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
@@ -504,22 +501,24 @@ public class JdbcTemplate {
 
 
   /**
-   * execute the update with supplied parameters and return a list of
-   * generated keys to this update.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
-   * @param keyMapper the dataMapper instance which acts as a mapper between
-   *                  the result set and the generated key
+   * Execute the update with supplied parameters and return only a single key
+   * object to this update.
+   * 
+   * <p>Not all drivers return keys after an update. Successful updates may 
+   * still return null depending on the driver being used.</p>
+   *  
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
+   * 
    * @return a list of generated keys to this update.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> keyMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
+    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -529,12 +528,12 @@ public class JdbcTemplate {
       try {
         setter.setPreparedStatement( ps );
 
-        final int row = ps.executeUpdate();
-        final List<K> keyList = new ArrayList<K>( row );
+        final int count = ps.executeUpdate();
+        final List<K> keyList = new ArrayList<K>( count );
 
         final ResultSet rs = ps.getGeneratedKeys();
         while ( rs.next() ) {
-          final K key = keyMapper.map( new ExtendedResultSetImpl( rs ) );
+          final K key = resultMapper.map( new ExtendedResultSetImpl( rs ) );
           keyList.add( key );
         }
         rs.close();
@@ -556,55 +555,59 @@ public class JdbcTemplate {
 
 
   /**
-   * execute the update with supplied parameters and return only a single key
-   * object to this update. If there are multiple keys returned after the
-   * update, the first key will be returned. And if there is no key returned,
-   * <code>NULL</code> will be returned.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param parameters the parameter list to the SQL statement.
-   *                   the parameter will be filled into the sql sequentially
-   * @param keyMapper the dataMapper instance which acts as a mapper between
-   *                  the result set and the generated key
+   * Execute the update with supplied parameters and return only a single key
+   * object to this update.
+   * 
+   * <p>Not all drivers return keys after an update. Successful updates may 
+   * still return null depending on the driver being used.</p>
+   *  
+   * <p>If there are multiple keys returned after the update, the first key 
+   * will be returned. And if there is no key returned, {@code NULL} will be 
+   * returned.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param parameters the parameter list to the SQL statement. the parameter will be filled into the SQL sequentially
+   * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
-   * @return only a single key object to this update. If there are multiple
-   * keys returned after the update, the first key will be returned. And if
-   * there is no key returned, <code>NULL</code> will be returned.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @return only a single key object to this update.
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> keyMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
-    Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
+    Assert.argumentIsNotNull( resultMapper, "ResultMapper cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
-    return updateOne( sql, setter, keyMapper );
+    return updateOne( sql, setter, resultMapper );
   }
 
 
 
 
   /**
-   * execute the update with supplied parameters and return only a single key
-   * object to this update. If there are multiple keys returned after the
-   * update, the first key will be returned. And if there is no key returned,
-   * <code>NULL</code> will be returned.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the sql
-   * @param keyMapper the dataMapper instance which acts as a mapper between
-   *                  the result set and the generated key
+   * Execute the update with supplied parameters and return only a single key
+   * object to this update.
+   * 
+   * <p>Not all drivers return keys after an update. Successful updates may 
+   * still return null depending on the driver being used.</p>
+   *  
+   * <p>If there are multiple keys returned after the update, the first key 
+   * will be returned. And if there is no key returned, {@code NULL} will be 
+   * returned.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
-   * @return only a single key object to this update. If there are multiple
-   * keys returned after the update, the first key will be returned. And if
-   * there is no key returned, <code>NULL</code> will be returned.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @return only a single key object to this update.
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
-  public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> keyMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( keyMapper, "keyMapper cannot be null" );
+    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -617,7 +620,7 @@ public class JdbcTemplate {
         ps.executeUpdate();
 
         final ResultSet rs = ps.getGeneratedKeys();
-        final K result = ( rs.next() ) ? keyMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+        final K result = ( rs.next() ) ? resultMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
         rs.close();
         return result;
       }

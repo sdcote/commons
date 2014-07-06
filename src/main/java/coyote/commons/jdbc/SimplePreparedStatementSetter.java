@@ -11,7 +11,8 @@ import java.util.List;
 
 
 /**
- * A class which uses a list of objects
+ * A class which uses a list of objects to use as arguments in 
+ * {@code PreparedStatements}
  */
 public class SimplePreparedStatementSetter implements PreparedStatementSetter {
 
