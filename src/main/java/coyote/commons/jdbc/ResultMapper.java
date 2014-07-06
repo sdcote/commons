@@ -12,10 +12,16 @@ import java.sql.SQLException;
 public interface ResultMapper<E> {
 
   /**
-   *
-   * @param rs
+   * The JdbcTemplate will pass the results of its processing to this interface 
+   * for parsing of rows of returned data into domain objects.
    * 
-   * @return
+   * <p>Some update and insert functions will use this method to create objects 
+   * representing generated keys.  In these cases, domain objects are not 
+   * technically created, but object encapsulating the keys.</p>
+   *   
+   * @param rs The result set proxy which contains extended methods to make working with the Java SQL {@code ResutSet} easier.
+   * 
+   * @return a domain object
    * 
    * @throws SQLException
    * 

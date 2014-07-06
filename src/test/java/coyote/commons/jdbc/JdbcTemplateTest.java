@@ -126,7 +126,7 @@ public class JdbcTemplateTest {
 
 
   @Test
-  public void anotherTest() {
+  public void queryTests() {
 
     ResultMapper<Employee> employeeDataMapper = new ResultMapper<Employee>() {
       @Override

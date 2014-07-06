@@ -16,14 +16,13 @@ import coyote.commons.jdbc.datasource.CloseOnCompletionConnection;
 
 
 /**
- * The JdbcTemplate simplifies the use of the native JDBC (retrieving
- * an available connection from a data source, preparing a statement with
- * placeholders, filling in the missing arguments, executing a query or an
- * update task, and finally transforming the result set returned from the
- * execution into a entity object or a list of entity objects) into just one
- * single method invocation including {@code query(...)},
- * {@code queryOne(...)}, {@code update(...)} and
- * {@code updateOne(...)}.
+ * The JdbcTemplate simplifies the use of JDBC.
+ * 
+ * <p>All the complexities of retrieving an available connection from a data 
+ * source, preparing a statement with placeholders, filling in the arguments, 
+ * executing a query or an update task, and finally transforming the result set 
+ * returned from the execution into a entity object or a list of entity objects 
+ * can be condensed down into just one method call.</p>
  */
 public class JdbcTemplate {
 
@@ -116,50 +115,6 @@ public class JdbcTemplate {
 
 
 
-  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
-    return query( sql, dataMapper, new LinkedList<E>() );
-  }
-
-
-
-
-  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
-    Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
-    Assert.argumentIsNotNull( resultList, "resultList must not be null" );
-
-    final Connection connection = getConnection();
-    try {
-      connection.setReadOnly( true );
-      final Statement stmt = connection.createStatement();
-      try {
-        final ResultSet rs = stmt.executeQuery( sql );
-        try {
-          while ( rs.next() ) {
-            final E entity = dataMapper.map( new ExtendedResultSetImpl( rs ) );
-            resultList.add( entity );
-          }
-        }
-        finally {
-          rs.close();
-        }
-      }
-      finally {
-        stmt.close();
-      }
-
-      return resultList;
-    } catch ( final SQLException ex ) {
-      rollbackConnection( connection );
-      throw new DataAccessException( ex );
-    }
-    finally {
-      closeConnection( connection );
-    }
-  }
-
-
-
-
   /**
    * Query for a list of entity of type E
    * 
@@ -210,20 +165,20 @@ public class JdbcTemplate {
 
   /**
    * Query for a list of entity of type E
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the SQL
-   * @param dataMapper a dataMapper instance which acts as a mapper between
-   *                   the result set and the entity object
+   * 
+   * <p>By default, the type of the returned list will be 
+   * {@link java.util.LinkedList}. To specify the desired instance to be 
+   * returned, use 
+   * {@link #query(String, java.util.List, ResultMapper, java.util.List)} 
+   * instead.</p>
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
+   * 
    * @return a list of entity objects of type E produced by the query.
-   *         By default, the type of the returned list will be
-   *         {@link java.util.LinkedList}. To specify the desired instance
-   *         to be returned, use {@link #query(String, java.util.List,
-   *         ResultMapper, java.util.List)} instead.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
     return query( sql, setter, dataMapper, new LinkedList<E>() );
@@ -233,22 +188,19 @@ public class JdbcTemplate {
 
 
   /**
-   * query for a list of entity of type E
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the SQL
-   * @param dataMapper a dataMapper instance which acts as a mapper between
-   *                   the result set and the entity object
-   * @param resultList the result list to be returned by this method. This is
-   *                   list must not be unmodifiable. Otherwise, an
-   *                   UnsupportedOperationException is likely to be thrown.
+   * Query for a list of entity of type E.
+   * 
+   * <p>TheresultList will contain the entity objects produced by the query.</p>
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
+   * @param resultList the result list to be returned by this method. This is list must not be unmodifiable. Otherwise, an UnsupportedOperationException is likely to be thrown.
    * @param <E> the type of the entity class
-   * @return the resultList which is passed in the parameter list. The
-   *         resultList will contain the entity objects produced by the
-   *         query.
-   * @throws DataAccessException if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @return the resultList which is passed in the parameter list. 
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
@@ -289,8 +241,50 @@ public class JdbcTemplate {
 
 
 
-  public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
+  /**
+   * Query for a list of entity of type E
+   * 
+   * <p>By default, the type of the returned list will be
+   * {@link java.util.LinkedList}. To specify the desired instance to be 
+   * returned, use 
+   * {@link #query(String, java.util.List, ResultMapper, java.util.List)} 
+   * instead.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
+   * @param <E> the type of the entity class
+   * 
+   * @return a list of entity objects of type E produced by the query.
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
+   */
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
+    return query( sql, dataMapper, new LinkedList<E>() );
+  }
+
+
+
+
+  /**
+   * Query for a list of entity of type E
+   * 
+   * <p>By default, the type of the returned list will be
+   * {@link java.util.LinkedList}. To specify the desired instance to be 
+   * returned, use 
+   * {@link #query(String, java.util.List, ResultMapper, java.util.List)} 
+   * instead.
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
+   * @param <E> the type of the entity class
+   * 
+   * @return a list of entity objects of type E produced by the query.
+   * 
+   * @throws DataAccessException if any exception occurs during the data access of the database
+   */
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+    Assert.argumentIsNotNull( dataMapper, "ResultMapper must not be null" );
+    Assert.argumentIsNotNull( resultList, "result list must not be null" );
 
     final Connection connection = getConnection();
     try {
@@ -298,9 +292,11 @@ public class JdbcTemplate {
       final Statement stmt = connection.createStatement();
       try {
         final ResultSet rs = stmt.executeQuery( sql );
-
         try {
-          return ( rs.next() ) ? dataMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+          while ( rs.next() ) {
+            final E entity = dataMapper.map( new ExtendedResultSetImpl( rs ) );
+            resultList.add( entity );
+          }
         }
         finally {
           rs.close();
@@ -309,6 +305,8 @@ public class JdbcTemplate {
       finally {
         stmt.close();
       }
+
+      return resultList;
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
       throw new DataAccessException( ex );
@@ -322,18 +320,20 @@ public class JdbcTemplate {
 
 
   /**
-   * query only a single entity of type E. If there is multiple results
-   * returned from the query, the first one will be returned. If there is no
-   * result, {@code NULL} will be returned.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param dataMapper a dataMapper instance which acts as a mapper between
-   *                   the result set and the entity object
+   * Query only a single entity of type E. 
+   * 
+   * <p>If there is multiple results returned from the query, the first one 
+   * will be returned. If there are no results, {@code NULL} will be 
+   * returned.</p>
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param parameters a list of parameters to fill the placeholders of the SQL
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
-   * @return the single entity produced by the query. If no result return
-   *         from the query, {@code NULL} will be returned.
-   * @throws DataAccessException  if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
+   * 
+   * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
@@ -346,20 +346,20 @@ public class JdbcTemplate {
 
 
   /**
-   * query only a single entity of type E. If there is multiple results
-   * returned from the query, the first one will be returned. If there is no
-   * result, {@code NULL} will be returned.
-   * @param sql an SQL statement that may contain one or more '?' IN
-   *            parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the
-   *               placeholders of the SQL
-   * @param dataMapper a dataMapper instance which acts as a mapper between
-   *                   the result set and the entity object
+   * Query only a single entity of type E. 
+   * 
+   * <p>If there is multiple results returned from the query, the first one 
+   * will be returned. If there are no results, {@code NULL} will be 
+   * returned.</p>
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
-   * @return the single entity produced by the query. If no result return
-   *         from the query, {@code NULL} will be returned.
-   * @throws DataAccessException  if any exception occurs during the data
-   *                             access of the database
+   * 
+   * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
+   * 
+   * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public <E> E queryOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.argumentIsNotNull( setter, "setter cannot be null" );
@@ -397,13 +397,62 @@ public class JdbcTemplate {
 
 
   /**
-   * This method is used to rollback a connection if SQLException is thrown
-   * during the execution. But when the auto-commit is not disabled
-   * (by default), the {@code connection.rollback()} will not be
-   * executed.
+   * Query only a single entity of type E. 
+   * 
+   * <p>If there is multiple results returned from the query, the first one 
+   * will be returned. If there are no results, {@code NULL} will be 
+   * returned.</p>
+   * 
+   * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
+   * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
+   * @param <E> the type of the entity class
+   * 
+   * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
+   * 
+   * @throws DataAccessException  if any exception occurs during the data access of the database
+   */
+  public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
+    Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
+
+    final Connection connection = getConnection();
+    try {
+      connection.setReadOnly( true );
+      final Statement stmt = connection.createStatement();
+      try {
+        final ResultSet rs = stmt.executeQuery( sql );
+
+        try {
+          return ( rs.next() ) ? dataMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+        }
+        finally {
+          rs.close();
+        }
+      }
+      finally {
+        stmt.close();
+      }
+    } catch ( final SQLException ex ) {
+      rollbackConnection( connection );
+      throw new DataAccessException( ex );
+    }
+    finally {
+      closeConnection( connection );
+    }
+  }
+
+
+
+
+  /**
+   * This method is used to rollback a connection if SQLException is thrown 
+   * during the execution.
+   * 
+   * <p>When the auto-commit is not disabled (by default), the {@code 
+   * connection.rollback()} will not be executed.</p>
+   * 
    * @param connection the connection to rollback
-   * @throws DataAccessException if SQLException is thrown during the
-   * rollback
+   * 
+   * @throws DataAccessException if SQLException is thrown during the rollback
    */
   protected void rollbackConnection( final Connection connection ) throws DataAccessException {
     try {

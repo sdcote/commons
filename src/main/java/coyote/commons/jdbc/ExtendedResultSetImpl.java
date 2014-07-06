@@ -154,8 +154,4 @@ class ExtendedResultSetImpl extends ResultSetWrapper implements ExtendedResultSe
     return wasNull() ? null : value;
   }
 
-
-
-
- 
 }
