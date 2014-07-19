@@ -34,7 +34,7 @@ public class Options implements Serializable {
   private final List requiredOpts = new ArrayList();
 
   /** a map of the option groups */
-  private final Map optionGroups = new HashMap();
+  private final Map<Object,OptionGroup> optionGroups = new HashMap<Object,OptionGroup>();
 
 
 
@@ -113,18 +113,17 @@ public class Options implements Serializable {
    * @return the resulting Options instance
    */
   public Options addOptionGroup( final OptionGroup group ) {
-    final Iterator options = group.getOptions().iterator();
+    final Iterator<Option> options = group.getOptions().iterator();
 
     if ( group.isRequired() ) {
       requiredOpts.add( group );
     }
 
     while ( options.hasNext() ) {
-      final Option option = (Option)options.next();
+      final Option option = options.next();
 
-      // an Option cannot be required if it is in an
-      // OptionGroup, either the group is required or
-      // nothing is required
+      // an Option cannot be required if it is in an OptionGroup, either the 
+      //group is required or nothing is required
       option.setRequired( false );
       addOption( option );
 

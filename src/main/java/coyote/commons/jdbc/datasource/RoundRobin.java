@@ -14,7 +14,7 @@ public class RoundRobin implements LoadBalancingStrategy {
 
 
   public RoundRobin( final int maxIndex ) {
-    Assert.argumentIsPositive( maxIndex, "_maxIndex must be a positive number" );
+    Assert.isPositive( maxIndex, "_maxIndex must be a positive number" );
     _maxIndex = maxIndex;
   }
 

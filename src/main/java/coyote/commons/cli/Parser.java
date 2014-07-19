@@ -10,7 +10,7 @@ import java.util.Properties;
 
 
 /**
- * <code>Parser</code> creates {@link CommandLine}s.
+ * {@code Parser} creates {@link CommandLine}s.
  */
 public abstract class Parser implements CommandLineParser {
   /** command-line instance */
@@ -42,13 +42,13 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Subclasses must implement this method to reduce
-   * the <code>arguments</code> that have been passed to the parse method.
+   * Subclasses must implement this method to reduce the {@code arguments} that 
+   * have been passed to the parse method.
    *
    * @param opts The Options to parse the arguments by.
    * @param arguments The arguments that have to be flattened.
-   * @param stopAtNonOption specifies whether to stop
-   * flattening when a non option has been encountered
+   * @param stopAtNonOption specifies whether to stop flattening when a non option has been encountered
+   * 
    * @return a String array of the flattened arguments
    */
   protected abstract String[] flatten( Options opts, String[] arguments, boolean stopAtNonOption );
@@ -71,14 +71,12 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Parses the specified <code>arguments</code> based
-   * on the specified {@link Options}.
+   * Parses the specified {@code arguments} based on the specified {@link Options}.
    *
-   * @param options the <code>Options</code>
-   * @param arguments the <code>arguments</code>
-   * @return the <code>CommandLine</code>
-   * @throws ParseException if an error occurs when parsing the
-   * arguments.
+   * @param options the {@code Options}
+   * @param arguments the {@code arguments}
+   * @return the {@code CommandLine}
+   * @throws ParseException if an error occurs when parsing the arguments.
    */
   @Override
   public CommandLine parse( final Options options, final String[] arguments ) throws ParseException {
@@ -89,15 +87,14 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Parses the specified <code>arguments</code>
-   * based on the specified {@link Options}.
+   * Parses the specified {@code arguments} based on the specified {@link Options}.
    *
-   * @param options         the <code>Options</code>
-   * @param arguments       the <code>arguments</code>
-   * @param stopAtNonOption specifies whether to stop interpreting the
-   *                        arguments when a non option has been encountered
-   *                        and to add them to the CommandLines args list.
-   * @return the <code>CommandLine</code>
+   * @param options the {@code Options}
+   * @param arguments the arguments to parse
+   * @param stopAtNonOption specifies whether to stop interpreting the arguments when a non option has been encountered and to add them to the CommandLines args list.
+   * 
+   * @return the {@code CommandLine}
+   * 
    * @throws ParseException if an error occurs when parsing the arguments.
    */
   @Override
@@ -111,12 +108,13 @@ public abstract class Parser implements CommandLineParser {
   /**
    * Parse the arguments according to the specified options and properties.
    *
-   * @param options    the specified Options
+   * @param options the specified {@code Options}
    * @param arguments  the command line arguments
    * @param properties command line option name-value pairs
+   * 
    * @return the list of atomic option and value tokens
-   * @throws ParseException if there are any problems encountered
-   *                        while parsing the command line tokens.
+   * 
+   * @throws ParseException if there are any problems encountered while parsing the command line tokens.
    */
   public CommandLine parse( final Options options, final String[] arguments, final Properties properties ) throws ParseException {
     return parse( options, arguments, properties, false );
@@ -126,14 +124,12 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Parse the arguments according to the specified options and
-   * properties.
+   * Parse the arguments according to the specified options and properties.
    *
    * @param options the specified Options
    * @param arguments the command line arguments
    * @param properties command line option name-value pairs
-   * @param stopAtNonOption stop parsing the arguments when the first
-   * non option is encountered.
+   * @param stopAtNonOption stop parsing the arguments when the first non option is encountered.
    *
    * @return the list of atomic option and value tokens
    *
@@ -221,16 +217,13 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * <p>Process the argument values for the specified Option
-   * <code>opt</code> using the values retrieved from the
-   * specified iterator <code>iter</code>.
+   * Process the argument values for the specified Option using the values 
+   * retrieved from the specified iterator.
    *
    * @param opt The current Option
-   * @param iter The iterator over the flattened command line
-   * Options.
+   * @param iter The iterator over the flattened command line Options.
    *
-   * @throws ParseException if an argument value is required
-   * and it is has not been found.
+   * @throws ParseException if an argument value is required and it is has not been found.
    */
   public void processArgs( final Option opt, final ListIterator iter ) throws ParseException {
     // loop until an option is found
@@ -261,13 +254,13 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Process the Option specified by <code>arg</code> using the values
-   * retrieved from the specified iterator <code>iter</code>.
+   * Process the Option specified by {@code arg} using the values retrieved 
+   * from the specified iterator {@code iter}.
    *
    * @param arg The String value representing an Option
    * @param iter The iterator over the flattened command line arguments.
    *
-   * @throws ParseException if <code>arg</code> does not represent an Option
+   * @throws ParseException if {@code arg} does not represent an Option
    */
   protected void processOption( final String arg, final ListIterator iter ) throws ParseException {
     final boolean hasOption = getOptions().hasOption( arg );
@@ -311,7 +304,7 @@ public abstract class Parser implements CommandLineParser {
 
 
   /**
-   * Sets the values of Options using the values in <code>properties</code>.
+   * Sets the values of Options using the values in {@code properties}.
    *
    * @param properties The value properties to be processed.
    */
@@ -338,8 +331,8 @@ public abstract class Parser implements CommandLineParser {
             }
           }
         } else if ( !( "yes".equalsIgnoreCase( value ) || "true".equalsIgnoreCase( value ) || "1".equalsIgnoreCase( value ) ) ) {
-          // if the value is not yes, true or 1 then don't add the
-          // option to the CommandLine
+          // if the value is not yes, true or 1 then don't add the option to 
+          // the CommandLine
           break;
         }
 

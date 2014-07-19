@@ -27,7 +27,7 @@ public abstract class RoutingDataSource extends AbstractDataSource {
 
 
   public RoutingDataSource( final Map<?, ? extends DataSource> dataSourcesMap, final DataSource defaultDataSource ) {
-    Assert.mapIsNotNullOrEmpty( dataSourcesMap, "dataSourcesMap must not be null or empty" );
+    Assert.notEmpty( dataSourcesMap, "dataSourcesMap must not be null or empty" );
     _availableDataSourcesMap = Collections.unmodifiableMap( new HashMap<Object, DataSource>( dataSourcesMap ) );
     _defaultDataSource = defaultDataSource;
   }

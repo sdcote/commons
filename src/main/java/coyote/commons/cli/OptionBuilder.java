@@ -38,7 +38,7 @@ public final class OptionBuilder {
    * Create an Option using the current settings
    *
    * @return the Option instance
-   * @throws IllegalArgumentException if <code>longOpt</code> has not been set.
+   * @throws IllegalArgumentException if {@code longOpt} has not been set.
    */
   public static Option create() throws IllegalArgumentException {
     if ( longopt == null ) {
@@ -54,11 +54,11 @@ public final class OptionBuilder {
 
   /**
    * Create an Option using the current settings and with
-   * the specified Option <code>char</code>.
+   * the specified Option {@code char}.
    *
    * @param opt the character representation of the Option
    * @return the Option instance
-   * @throws IllegalArgumentException if <code>opt</code> is not
+   * @throws IllegalArgumentException if {@code opt} is not
    * a valid character.  See Option.
    */
   public static Option create( final char opt ) throws IllegalArgumentException {
@@ -70,12 +70,12 @@ public final class OptionBuilder {
 
   /**
    * Create an Option using the current settings and with
-   * the specified Option <code>char</code>.
+   * the specified Option {@code char}.
    *
-   * @param opt the <code>java.lang.String</code> representation
+   * @param opt the {@code java.lang.String} representation
    * of the Option
    * @return the Option instance
-   * @throws IllegalArgumentException if <code>opt</code> is not
+   * @throws IllegalArgumentException if {@code opt} is not
    * a valid character.  See Option.
    */
   public static Option create( final String opt ) throws IllegalArgumentException {
@@ -121,7 +121,7 @@ public final class OptionBuilder {
 
   /**
    * The next Option created will require an argument value if
-   * <code>hasArg</code> is true.
+   * {@code hasArg} is true.
    *
    * @param hasArg if true then the Option has an argument value
    * @return the OptionBuilder instance
@@ -150,7 +150,7 @@ public final class OptionBuilder {
 
 
   /**
-   * The next Option created can have <code>num</code> argument values.
+   * The next Option created can have {@code num} argument values.
    *
    * @param num the number of args that the option can have
    * @return the OptionBuilder instance
@@ -226,7 +226,7 @@ public final class OptionBuilder {
 
 
   /**
-   * The next Option created will be required if <code>required</code>
+   * The next Option created will be required if {@code required}
    * is true.
    *
    * @param newRequired if true then the Option is required
@@ -294,6 +294,7 @@ public final class OptionBuilder {
    * The next Option created will have the following long option value.
    *
    * @param newLongopt the long option value
+   * 
    * @return the OptionBuilder instance
    */
   public static OptionBuilder withLongOpt( final String newLongopt ) {
@@ -307,7 +308,7 @@ public final class OptionBuilder {
 
   /**
    * The next Option created will have a value that will be an instance
-   * of <code>type</code>.
+   * of {@code type}.
    *
    * @param newType the type of the Options argument value
    * @return the OptionBuilder instance
@@ -322,7 +323,7 @@ public final class OptionBuilder {
 
 
   /**
-   * The next Option created uses '<code>=</code>' as a means to
+   * The next Option created uses '{@code =}' as a means to
    * separate argument values.
    *
    * <b>Example:</b>
@@ -347,7 +348,7 @@ public final class OptionBuilder {
 
 
   /**
-   * The next Option created uses <code>sep</code> as a means to
+   * The next Option created uses {@code sep} as a means to
    * separate argument values.
    *
    * <b>Example:</b>

@@ -18,8 +18,8 @@ public class SubstitutableDataSourceCycle implements Collection<SubstitutableDat
 
 
   public SubstitutableDataSourceCycle( final Collection<? extends DataSource> dataSources ) {
-    Assert.argumentIsNotNull( dataSources, "DataSources cannot be null" );
-    Assert.argumentIsValid( dataSources.size() > 1, "There should be at " + "least one element in dataSources" );
+    Assert.notNull( dataSources, "DataSources cannot be null" );
+    Assert.isTrue( dataSources.size() > 1, "There should be at " + "least one element in dataSources" );
     _substitutableDataSources = new ArrayList<SubstitutableDataSource>( dataSources.size() );
     for ( final DataSource ds : dataSources ) {
       _substitutableDataSources.add( new SubstitutableDataSource( ds ) );

@@ -18,9 +18,9 @@ public class LoadBalancingDataSource extends AbstractDataSource {
 
 
   public LoadBalancingDataSource( final Collection<? extends DataSource> c, final LoadBalancingStrategy strategy ) {
-    Assert.argumentIsNotNull( c, "DataSource collection must not be null" );
-    Assert.argumentIsValid( c.size() > 0, "DataSource collection must contain at least one item" );
-    Assert.argumentIsNotNull( strategy, "Strategy must not be null" );
+    Assert.notNull( c, "DataSource collection must not be null" );
+    Assert.isTrue( c.size() > 0, "DataSource collection must contain at least one item" );
+    Assert.notNull( strategy, "Strategy must not be null" );
     _dataSources = c.toArray( new DataSource[c.size()] );
     _strategy = strategy;
   }

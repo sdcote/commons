@@ -45,8 +45,8 @@ public class BlockingQueuedConnectionPool extends AbstractConnectionPool {
    */
   public BlockingQueuedConnectionPool( final DataSource dataSource, final int size, final boolean defaultAutoCommit, final int defaultTransactionIsolation, final boolean defaultReadOnly, final String defaultCategory ) throws SQLException {
     super( defaultAutoCommit, defaultTransactionIsolation, defaultReadOnly, defaultCategory );
-    Assert.argumentIsNotNull( dataSource, "dataSource must not be null" );
-    Assert.argumentIsValid( size >= 0, "size must not be negative" );
+    Assert.notNull( dataSource, "dataSource must not be null" );
+    Assert.isTrue( size >= 0, "size must not be negative" );
 
     idleConnections = new LinkedBlockingQueue<Connection>( size );
 
@@ -90,7 +90,7 @@ public class BlockingQueuedConnectionPool extends AbstractConnectionPool {
    */
   @Override
   public void returnConnection( final Connection connection ) throws Exception {
-    Assert.argumentIsNotNull( connection, "connection must not be null" );
+    Assert.notNull( connection, "connection must not be null" );
 
     if ( connection.isClosed() ) {
       throw new IllegalStateException( "the connection is already " + "closed" );

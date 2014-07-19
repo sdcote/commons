@@ -39,7 +39,7 @@ public class JdbcTemplate {
    * @throws java.lang.IllegalArgumentException dataSource is null
    */
   public JdbcTemplate( final DataSource dataSource ) {
-    Assert.argumentIsNotNull( dataSource, "dataSource must not be null" );
+    Assert.notNull( dataSource, "dataSource must not be null" );
     this.dataSource = dataSource;
   }
 
@@ -154,7 +154,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return query( sql, setter, dataMapper, resultList );
@@ -203,8 +203,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( dataMapper, "dataMapper cannot be null" );
+    Assert.notNull( setter, "setter cannot be null" );
+    Assert.notNull( dataMapper, "dataMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -283,8 +283,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
-    Assert.argumentIsNotNull( dataMapper, "ResultMapper must not be null" );
-    Assert.argumentIsNotNull( resultList, "result list must not be null" );
+    Assert.notNull( dataMapper, "ResultMapper must not be null" );
+    Assert.notNull( resultList, "result list must not be null" );
 
     final Connection connection = getConnection();
     try {
@@ -336,7 +336,7 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return queryOne( sql, setter, dataMapper );
@@ -362,8 +362,8 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public <E> E queryOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( dataMapper, "dataMapper cannot be null" );
+    Assert.notNull( setter, "setter cannot be null" );
+    Assert.notNull( dataMapper, "dataMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -412,7 +412,7 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( dataMapper, "dataMapper must not be null" );
+    Assert.notNull( dataMapper, "dataMapper must not be null" );
 
     final Connection connection = getConnection();
     try {
@@ -478,7 +478,7 @@ public class JdbcTemplate {
    * @throws DataAccessException  if any exception occurs during the data access of the database
    */
   public int update( final String sql, final List<?> parameters ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return update( sql, setter );
@@ -501,8 +501,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
-    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
+    Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return update( sql, setter, resultMapper );
@@ -522,7 +522,7 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public int update( final String sql, final PreparedStatementSetter setter ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter cannot be null" );
+    Assert.notNull( setter, "setter cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -566,8 +566,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
+    Assert.notNull( setter, "setter cannot be null" );
+    Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {
@@ -624,8 +624,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
-    Assert.argumentIsNotNull( resultMapper, "ResultMapper cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
+    Assert.notNull( resultMapper, "ResultMapper cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return updateOne( sql, setter, resultMapper );
@@ -655,8 +655,8 @@ public class JdbcTemplate {
    * @throws DataAccessException if any exception occurs during the data access of the database
    */
   public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter cannot be null" );
-    Assert.argumentIsNotNull( resultMapper, "resultMapper cannot be null" );
+    Assert.notNull( setter, "setter cannot be null" );
+    Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
     final Connection connection = getConnection();
     try {

@@ -17,7 +17,7 @@ public class BatchUpdater {
 
 
   BatchUpdater( final PreparedStatement ps ) {
-    Assert.argumentIsNotNull( ps, "PreparedStatement must not be null" );
+    Assert.notNull( ps, "PreparedStatement must not be null" );
     this.ps = ps;
   }
 
@@ -25,7 +25,7 @@ public class BatchUpdater {
 
 
   public BatchUpdater addBatch( final List<?> parameters ) throws DataAccessException {
-    Assert.argumentIsNotNull( parameters, "parameters cannot be null" );
+    Assert.notNull( parameters, "parameters cannot be null" );
 
     final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
     return addBatch( setter );
@@ -36,7 +36,7 @@ public class BatchUpdater {
 
 
   public BatchUpdater addBatch( final PreparedStatementSetter setter ) throws DataAccessException {
-    Assert.argumentIsNotNull( setter, "setter must not be null" );
+    Assert.notNull( setter, "setter must not be null" );
 
     try {
       ps.clearParameters();
@@ -78,7 +78,7 @@ public class BatchUpdater {
 
 
   public <K> List<K> doBatch( final ResultMapper<K> keyMapper ) throws DataAccessException {
-    Assert.argumentIsNotNull( keyMapper, "keyMapper must not be null" );
+    Assert.notNull( keyMapper, "keyMapper must not be null" );
 
     try {
       int initArraySize = 0;

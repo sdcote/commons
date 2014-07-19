@@ -63,7 +63,7 @@ public abstract class AbstractDataSource implements DataSource {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T unwrap( final Class<T> iface ) throws SQLException {
-    Assert.argumentIsNotNull( iface, "Argument iface cannot be null." );
+    Assert.notNull( iface, "Argument iface cannot be null." );
     if ( iface.isInstance( this ) ) {
       return (T)this;
     }
