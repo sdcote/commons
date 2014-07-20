@@ -158,7 +158,7 @@ public class CSVParser {
    * 
    * @return the comma delimited list of elements, or null if nextLine is null
    * 
-   * @throws ParseException Un-terminated quoted field at end of CSV line
+   * @throws ArgumentException Un-terminated quoted field at end of CSV line
    */
   private String[] parseLine( final String nextLine, final boolean multi ) throws ParseException {
 

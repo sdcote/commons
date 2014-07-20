@@ -10,31 +10,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import coyote.commons.StringUtil;
+
 
 /**
- * <p>Main entry-point into the library.</p>
+ * A collection of argument list options describing expected input from the 
+ * command line.
  *
- * <p>Options represents a collection of {@link Option} objects, which
- * describe the possible options for a command-line.<p>
- *
- * <p>It may flexibly parse long and short options, with or without
- * values.  Additionally, it may parse only a portion of a commandline,
- * allowing for flexible multi-stage parsing.<p>
+ * <p>It may flexibly parse long and short options, with or without values.  
+ * It can parse only a portion of a command-line, allowing for multi-stage 
+ * parsing.<p>
  */
 public class Options implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /** a map of the options with the character key */
-  private final Map shortOpts = new HashMap();
+  private final Map<String, Option> shortOpts = new HashMap<String, Option>();
 
   /** a map of the options with the long key */
-  private final Map longOpts = new HashMap();
+  private final Map<String, Option> longOpts = new HashMap<String, Option>();
 
   /** a map of the required options */
-  private final List requiredOpts = new ArrayList();
+  private final List<String> requiredOpts = new ArrayList<String>();
 
   /** a map of the option groups */
-  private final Map<Object,OptionGroup> optionGroups = new HashMap<Object,OptionGroup>();
+  private final Map<Object, OptionGroup> optionGroups = new HashMap<Object, OptionGroup>();
 
 
 
@@ -95,6 +95,7 @@ public class Options implements Serializable {
    * @param longOpt Long multi-character name of the option.
    * @param hasArg flag signally if an argument is required after this option
    * @param description Self-documenting description
+   * 
    * @return the resulting Options instance
    */
   public Options addOption( final String opt, final String longOpt, final boolean hasArg, final String description ) {
@@ -110,14 +111,13 @@ public class Options implements Serializable {
    * Add the specified option group.
    *
    * @param group the OptionGroup that is to be added
+   * 
    * @return the resulting Options instance
    */
   public Options addOptionGroup( final OptionGroup group ) {
     final Iterator<Option> options = group.getOptions().iterator();
 
-    if ( group.isRequired() ) {
-      requiredOpts.add( group );
-    }
+    // TODO: if ( group.isRequired() ) { requiredOpts.add( group );  }
 
     while ( options.hasNext() ) {
       final Option option = options.next();
@@ -144,13 +144,13 @@ public class Options implements Serializable {
    * @return the option represented by opt
    */
   public Option getOption( String opt ) {
-    opt = Util.stripLeadingHyphens( opt );
+    opt = StringUtil.stripLeadingHyphens( opt );
 
     if ( shortOpts.containsKey( opt ) ) {
-      return (Option)shortOpts.get( opt );
+      return shortOpts.get( opt );
     }
 
-    return (Option)longOpts.get( opt );
+    return longOpts.get( opt );
   }
 
 
@@ -164,7 +164,7 @@ public class Options implements Serializable {
    * of an OptionGroup, otherwise return null
    */
   public OptionGroup getOptionGroup( final Option opt ) {
-    return (OptionGroup)optionGroups.get( opt.getKey() );
+    return optionGroups.get( opt.getKey() );
   }
 
 
@@ -175,8 +175,8 @@ public class Options implements Serializable {
    *
    * @return a Collection of OptionGroup instances.
    */
-  Collection getOptionGroups() {
-    return new HashSet( optionGroups.values() );
+  Collection<OptionGroup> getOptionGroups() {
+    return new HashSet<OptionGroup>( optionGroups.values() );
   }
 
 
@@ -187,7 +187,7 @@ public class Options implements Serializable {
    *
    * @return read-only Collection of {@link Option} objects in this descriptor
    */
-  public Collection getOptions() {
+  public Collection<Option> getOptions() {
     return Collections.unmodifiableCollection( helpOptions() );
   }
 
@@ -199,7 +199,7 @@ public class Options implements Serializable {
    *
    * @return List of required options
    */
-  public List getRequiredOptions() {
+  public List<String> getRequiredOptions() {
     return requiredOpts;
   }
 
@@ -214,7 +214,7 @@ public class Options implements Serializable {
    * of this {@link Options}
    */
   public boolean hasOption( String opt ) {
-    opt = Util.stripLeadingHyphens( opt );
+    opt = StringUtil.stripLeadingHyphens( opt );
 
     return shortOpts.containsKey( opt ) || longOpts.containsKey( opt );
   }
@@ -227,8 +227,8 @@ public class Options implements Serializable {
    *
    * @return the List of Options
    */
-  List helpOptions() {
-    return new ArrayList( shortOpts.values() );
+  List<Option> helpOptions() {
+    return new ArrayList<Option>( shortOpts.values() );
   }
 
 

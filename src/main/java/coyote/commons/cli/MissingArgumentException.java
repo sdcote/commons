@@ -1,13 +1,9 @@
 package coyote.commons.cli;
 
 /**
- * Thrown when an option requiring an argument
- * is not provided with an argument.
+ * Thrown when an option requiring an argument is not provided with an argument.
  */
-public class MissingArgumentException extends ParseException {
-  /**
-   * 
-   */
+public class MissingArgumentException extends ArgumentException {
   private static final long serialVersionUID = 3409045243535594244L;
 
   /** The option requiring additional arguments */
@@ -17,8 +13,7 @@ public class MissingArgumentException extends ParseException {
 
 
   /**
-   * Construct a new <code>MissingArgumentException</code>
-   * with the specified detail message.
+   * Construct a new {@code MissingArgumentException} with the specified message.
    *
    * @param option the option requiring an argument
    */
@@ -31,13 +26,12 @@ public class MissingArgumentException extends ParseException {
 
 
   /**
-   * Construct a new <code>MissingArgumentException</code>
-   * with the specified detail message.
+   * Construct a new {@code MissingArgumentException} with the specified message.
    *
-   * @param message the detail message
+   * @param msg the detail message
    */
-  public MissingArgumentException( final String message ) {
-    super( message );
+  public MissingArgumentException( final String msg ) {
+    super( msg );
   }
 
 

@@ -3,6 +3,8 @@ package coyote.commons.cli;
 import java.util.ArrayList;
 import java.util.List;
 
+import coyote.commons.StringUtil;
+
 
 /**
  * The class GnuParser provides an implementation of the
@@ -11,24 +13,23 @@ import java.util.List;
 public class GnuParser extends Parser {
   /**
    * This flatten method does so using the following rules:
-   * <ol>
-   *   <li>If an {@link Option} exists for the first character of
-   *   the <code>arguments</code> entry <b>AND</b> an {@link Option}
-   *   does not exist for the whole <code>argument</code> then
-   *   add the first character as an option to the processed tokens
-   *   list e.g. "-D" and add the rest of the entry to the also.</li>
-   *   <li>Otherwise just add the token to the processed tokens list.</li>
-   * </ol>
+   * <ol><li>If an {@link Option} exists for the first character of the 
+   * {@code arguments} entry <b>AND</b> an {@link Option} does not exist for 
+   * the whole {@code argument} then add the first character as an option to 
+   * the processed tokens list e.g. "-D" and add the rest of the entry to it as 
+   * well.</li>
+   * <li>Otherwise just add the token to the processed tokens list.</li></ol>
    *
-   * @param options         The Options to parse the arguments by.
-   * @param arguments       The arguments that have to be flattened.
-   * @param stopAtNonOption specifies whether to stop flattening when
-   *                        a non option has been encountered
+   * @param options The Options to parse the arguments by.
+   * @param arguments The arguments that have to be flattened.
+   * @param stopAtNonOption specifies whether to stop flattening when a non 
+   * option has been encountered
+   * 
    * @return a String array of the flattened arguments
    */
   @Override
   protected String[] flatten( final Options options, final String[] arguments, final boolean stopAtNonOption ) {
-    final List tokens = new ArrayList();
+    final List<String> tokens = new ArrayList<String>();
 
     boolean eatTheRest = false;
 
@@ -41,7 +42,7 @@ public class GnuParser extends Parser {
       } else if ( "-".equals( arg ) ) {
         tokens.add( "-" );
       } else if ( arg.startsWith( "-" ) ) {
-        final String opt = Util.stripLeadingHyphens( arg );
+        final String opt = StringUtil.stripLeadingHyphens( arg );
 
         if ( options.hasOption( opt ) ) {
           tokens.add( arg );
@@ -70,6 +71,6 @@ public class GnuParser extends Parser {
       }
     }
 
-    return (String[])tokens.toArray( new String[tokens.size()] );
+    return tokens.toArray( new String[tokens.size()] );
   }
 }

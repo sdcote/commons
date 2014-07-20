@@ -4,7 +4,7 @@ package coyote.commons.cli;
  * Exception thrown during parsing signaling an unrecognized
  * option was seen.
  */
-public class UnrecognizedOptionException extends ParseException {
+public class UnrecognizedOptionException extends ArgumentException {
   /**
    * 
    */

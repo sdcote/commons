@@ -13,15 +13,47 @@ import org.junit.Test;
  *
  */
 public class OptionTest {
+  private static class DefaultOption extends Option {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7947152607975698810L;
+    private final String defaultValue;
+
+
+
+
+    public DefaultOption( final String opt, final String description, final String defaultValue ) throws IllegalArgumentException {
+      super( opt, true, description );
+      this.defaultValue = defaultValue;
+    }
+
+
+
+
+    @Override
+    public String getValue() {
+      return super.getValue() != null ? super.getValue() : defaultValue;
+    }
+  }
+
   private static class TestOption extends Option {
-    public TestOption( String opt, boolean hasArg, String description ) throws IllegalArgumentException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4341840485935398838L;
+
+
+
+
+    public TestOption( final String opt, final boolean hasArg, final String description ) throws IllegalArgumentException {
       super( opt, hasArg, description );
     }
 
 
 
 
-    public boolean addValue( String value ) {
+    public boolean addValue( final String value ) {
       addValueForProcessing( value );
       return true;
     }
@@ -32,7 +64,7 @@ public class OptionTest {
 
   @Test
   public void testClear() {
-    TestOption option = new TestOption( "x", true, "" );
+    final TestOption option = new TestOption( "x", true, "" );
     assertEquals( 0, option.getValuesList().size() );
     option.addValue( "a" );
     assertEquals( 1, option.getValuesList().size() );
@@ -45,8 +77,8 @@ public class OptionTest {
 
   @Test
   public void testClone() throws CloneNotSupportedException {
-    TestOption a = new TestOption( "a", true, "" );
-    TestOption b = (TestOption)a.clone();
+    final TestOption a = new TestOption( "a", true, "" );
+    final TestOption b = (TestOption)a.clone();
     assertEquals( a, b );
     assertNotSame( a, b );
     a.setDescription( "a" );
@@ -59,34 +91,22 @@ public class OptionTest {
     assertEquals( 2, b.getValues().length );
   }
 
-  private static class DefaultOption extends Option {
-    private final String defaultValue;
-
-
-
-
-    public DefaultOption( String opt, String description, String defaultValue ) throws IllegalArgumentException {
-      super( opt, true, description );
-      this.defaultValue = defaultValue;
-    }
-
-
-
-
-    public String getValue() {
-      return super.getValue() != null ? super.getValue() : defaultValue;
-    }
-  }
-
 
 
 
   @Test
-  public void testSubclass() throws CloneNotSupportedException {
-    Option option = new DefaultOption( "f", "file", "myfile.txt" );
-    Option clone = (Option)option.clone();
-    assertEquals( "myfile.txt", clone.getValue() );
-    assertEquals( DefaultOption.class, clone.getClass() );
+  public void testGetValue() {
+    final Option option = new Option( "f", null );
+    option.setArgs( Option.UNLIMITED_VALUES );
+
+    assertEquals( "default", option.getValue( "default" ) );
+    assertEquals( null, option.getValue( 0 ) );
+
+    option.addValueForProcessing( "foo" );
+
+    assertEquals( "foo", option.getValue() );
+    assertEquals( "foo", option.getValue( 0 ) );
+    assertEquals( "foo", option.getValue( "default" ) );
   }
 
 
@@ -94,7 +114,7 @@ public class OptionTest {
 
   @Test
   public void testHasArgName() {
-    Option option = new Option( "f", null );
+    final Option option = new Option( "f", null );
 
     option.setArgName( null );
     assertFalse( option.hasArgName() );
@@ -111,7 +131,7 @@ public class OptionTest {
 
   @Test
   public void testHasArgs() {
-    Option option = new Option( "f", null );
+    final Option option = new Option( "f", null );
 
     option.setArgs( 0 );
     assertFalse( option.hasArgs() );
@@ -133,17 +153,10 @@ public class OptionTest {
 
 
   @Test
-  public void testGetValue() {
-    Option option = new Option( "f", null );
-    option.setArgs( Option.UNLIMITED_VALUES );
-
-    assertEquals( "default", option.getValue( "default" ) );
-    assertEquals( null, option.getValue( 0 ) );
-
-    option.addValueForProcessing( "foo" );
-
-    assertEquals( "foo", option.getValue() );
-    assertEquals( "foo", option.getValue( 0 ) );
-    assertEquals( "foo", option.getValue( "default" ) );
+  public void testSubclass() throws CloneNotSupportedException {
+    final Option option = new DefaultOption( "f", "file", "myfile.txt" );
+    final Option clone = (Option)option.clone();
+    assertEquals( "myfile.txt", clone.getValue() );
+    assertEquals( DefaultOption.class, clone.getClass() );
   }
 }

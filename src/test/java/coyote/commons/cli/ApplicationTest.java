@@ -22,37 +22,14 @@ import org.junit.Test;
  */
 public class ApplicationTest {
 
-  @Test
-  public void testLs() throws Exception {
-    // create the command line parser
-    CommandLineParser parser = new PosixParser();
-    Options options = new Options();
-    options.addOption( "a", "all", false, "do not hide entries starting with ." );
-    options.addOption( "A", "almost-all", false, "do not list implied . and .." );
-    options.addOption( "b", "escape", false, "print octal escapes for nongraphic characters" );
-    options.addOption( OptionBuilder.withLongOpt( "block-size" ).withDescription( "use SIZE-byte blocks" ).hasArg().withArgName( "SIZE" ).create() );
-    options.addOption( "B", "ignore-backups", false, "do not list implied entried ending with ~" );
-    options.addOption( "c", false, "with -lt: sort by, and show, ctime (time of last modification of file status information) with -l:show ctime and sort by name otherwise: sort by ctime" );
-    options.addOption( "C", false, "list entries by columns" );
-
-    String[] args = new String[] { "--block-size=10" };
-
-    CommandLine line = parser.parse( options, args );
-    assertTrue( line.hasOption( "block-size" ) );
-    assertEquals( line.getOptionValue( "block-size" ), "10" );
-  }
-
-
-
-
   /**
    * Ant test
    */
   @Test
   public void testAnt() throws Exception {
     // use the GNU parser
-    CommandLineParser parser = new GnuParser();
-    Options options = new Options();
+    final CommandLineParser parser = new GnuParser();
+    final Options options = new Options();
     options.addOption( "help", false, "print this message" );
     options.addOption( "projecthelp", false, "print project help information" );
     options.addOption( "version", false, "print the version information and exit" );
@@ -67,12 +44,12 @@ public class ApplicationTest {
     //, null, true, , false, true );
     options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
 
-    String[] args = new String[] { "-buildfile", "mybuild.xml", "-Dproperty=value", "-Dproperty1=value1", "-projecthelp" };
+    final String[] args = new String[] { "-buildfile", "mybuild.xml", "-Dproperty=value", "-Dproperty1=value1", "-projecthelp" };
 
-    CommandLine line = parser.parse( options, args );
+    final ArgumentList line = parser.parse( options, args );
 
     // check multiple values
-    String[] opts = line.getOptionValues( "D" );
+    final String[] opts = line.getOptionValues( "D" );
     assertEquals( "property", opts[0] );
     assertEquals( "value", opts[1] );
     assertEquals( "property1", opts[2] );
@@ -90,7 +67,7 @@ public class ApplicationTest {
 
   @Test
   public void testGroovy() throws Exception {
-    Options options = new Options();
+    final Options options = new Options();
 
     options.addOption( OptionBuilder.withLongOpt( "define" ).withDescription( "define a system property" ).hasArg( true ).withArgName( "name=value" ).create( 'D' ) );
     options.addOption( OptionBuilder.hasArg( false ).withDescription( "usage information" ).withLongOpt( "help" ).create( 'h' ) );
@@ -104,11 +81,34 @@ public class ApplicationTest {
     options.addOption( OptionBuilder.withArgName( "port" ).hasOptionalArg().withDescription( "listen on a port and process inbound lines" ).create( 'l' ) );
     options.addOption( OptionBuilder.withArgName( "splitPattern" ).hasOptionalArg().withDescription( "split lines using splitPattern (default '\\s') using implicit 'split' variable" ).withLongOpt( "autosplit" ).create( 'a' ) );
 
-    Parser parser = new PosixParser();
-    CommandLine line = parser.parse( options, new String[] { "-e", "println 'hello'" }, true );
+    final Parser parser = new PosixParser();
+    final ArgumentList line = parser.parse( options, new String[] { "-e", "println 'hello'" }, true );
 
     assertTrue( line.hasOption( 'e' ) );
     assertEquals( "println 'hello'", line.getOptionValue( 'e' ) );
+  }
+
+
+
+
+  @Test
+  public void testLs() throws Exception {
+    // create the command line parser
+    final CommandLineParser parser = new PosixParser();
+    final Options options = new Options();
+    options.addOption( "a", "all", false, "do not hide entries starting with ." );
+    options.addOption( "A", "almost-all", false, "do not list implied . and .." );
+    options.addOption( "b", "escape", false, "print octal escapes for nongraphic characters" );
+    options.addOption( OptionBuilder.withLongOpt( "block-size" ).withDescription( "use SIZE-byte blocks" ).hasArg().withArgName( "SIZE" ).create() );
+    options.addOption( "B", "ignore-backups", false, "do not list implied entried ending with ~" );
+    options.addOption( "c", false, "with -lt: sort by, and show, ctime (time of last modification of file status information) with -l:show ctime and sort by name otherwise: sort by ctime" );
+    options.addOption( "C", false, "list entries by columns" );
+
+    final String[] args = new String[] { "--block-size=10" };
+
+    final ArgumentList line = parser.parse( options, args );
+    assertTrue( line.hasOption( "block-size" ) );
+    assertEquals( line.getOptionValue( "block-size" ), "10" );
   }
 
 
@@ -119,8 +119,8 @@ public class ApplicationTest {
    */
   @Test
   public void testMan() {
-    String cmdLine = "man [-c|-f|-k|-w|-tZT device] [-adlhu7V] [-Mpath] [-Ppager] [-Slist] " + "[-msystem] [-pstring] [-Llocale] [-eextension] [section] page ...";
-    Options options = new Options().addOption( "a", "all", false, "find all matching manual pages." ).addOption( "d", "debug", false, "emit debugging messages." ).addOption( "e", "extension", false, "limit search to extension type 'extension'." ).addOption( "f", "whatis", false, "equivalent to whatis." ).addOption( "k", "apropos", false, "equivalent to apropos." ).addOption( "w", "location", false, "print physical location of man page(s)." ).addOption( "l", "local-file", false, "interpret 'page' argument(s) as local filename(s)" ).addOption( "u", "update", false, "force a cache consistency check." ).
+    final String cmdLine = "man [-c|-f|-k|-w|-tZT device] [-adlhu7V] [-Mpath] [-Ppager] [-Slist] " + "[-msystem] [-pstring] [-Llocale] [-eextension] [section] page ...";
+    final Options options = new Options().addOption( "a", "all", false, "find all matching manual pages." ).addOption( "d", "debug", false, "emit debugging messages." ).addOption( "e", "extension", false, "limit search to extension type 'extension'." ).addOption( "f", "whatis", false, "equivalent to whatis." ).addOption( "k", "apropos", false, "equivalent to apropos." ).addOption( "w", "location", false, "print physical location of man page(s)." ).addOption( "l", "local-file", false, "interpret 'page' argument(s) as local filename(s)" ).addOption( "u", "update", false, "force a cache consistency check." ).
     //FIXME - should generate -r,--prompt string
         addOption( "r", "prompt", true, "provide 'less' pager with prompt." ).addOption( "c", "catman", false, "used by catman to reformat out of date cat pages." ).addOption( "7", "ascii", false, "display ASCII translation or certain latin1 chars." ).addOption( "t", "troff", false, "use troff format pages." ).
         //FIXME - should generate -T,--troff-device device
@@ -138,7 +138,7 @@ public class ApplicationTest {
         //FIXME - should generate -p,--preprocessor string
         addOption( "p", "preprocessor", true, "string indicates which preprocessor to run.\n" + " e - [n]eqn  p - pic     t - tbl\n" + " g - grap    r - refer   v - vgrind" ).addOption( "V", "version", false, "show version." ).addOption( "h", "help", false, "show this usage message." );
 
-    HelpFormatter hf = new HelpFormatter();
+    final HelpFormatter hf = new HelpFormatter();
     //hf.printHelp(cmdLine, opts);
     hf.printHelp( 60, cmdLine, null, options, null );
   }

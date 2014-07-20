@@ -3,7 +3,7 @@ package coyote.commons.cli;
 /**
  * A class that implements the <code>CommandLineParser</code> interface
  * can parse a String array according to the {@link Options} specified
- * and return a {@link CommandLine}.
+ * and return a {@link ArgumentList}.
  */
 public interface CommandLineParser {
   /**
@@ -11,12 +11,13 @@ public interface CommandLineParser {
    *
    * @param options the specified Options
    * @param arguments the command line arguments
+   * 
    * @return the list of atomic option and value tokens
    *
-   * @throws ParseException if there are any problems encountered
+   * @throws ArgumentException if there are any problems encountered
    * while parsing the command line tokens.
    */
-  CommandLine parse( Options options, String[] arguments ) throws ParseException;
+  ArgumentList parse( Options options, String[] arguments ) throws ArgumentException;
 
 
 
@@ -30,9 +31,10 @@ public interface CommandLineParser {
    * arguments if a non option is encountered.
    *
    * @return the list of atomic option and value tokens
-   * @throws ParseException if there are any problems encountered
+   * 
+   * @throws ArgumentException if there are any problems encountered
    * while parsing the command line tokens.
    */
-  CommandLine parse( Options options, String[] arguments, boolean stopAtNonOption ) throws ParseException;
+  ArgumentList parse( Options options, String[] arguments, boolean stopAtNonOption ) throws ArgumentException;
 
 }

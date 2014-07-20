@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * Thrown when a required option has not been provided.
  */
-public class MissingOptionException extends ParseException {
-  /**
-   * 
-   */
+public class MissingOptionException extends ArgumentException {
   private static final long serialVersionUID = -4276238738584163474L;
+
+  /** The list of missing options */
+  private List<String> missingOptions;
 
 
 
@@ -21,12 +21,12 @@ public class MissingOptionException extends ParseException {
    *
    * @param missingOptions
    */
-  private static String createMessage( final List missingOptions ) {
+  private static String createMessage( final List<String> missingOptions ) {
     final StringBuffer buff = new StringBuffer( "Missing required option" );
     buff.append( missingOptions.size() == 1 ? "" : "s" );
     buff.append( ": " );
 
-    final Iterator it = missingOptions.iterator();
+    final Iterator<String> it = missingOptions.iterator();
     while ( it.hasNext() ) {
       buff.append( it.next() );
       if ( it.hasNext() ) {
@@ -37,9 +37,6 @@ public class MissingOptionException extends ParseException {
     return buff.toString();
   }
 
-  /** The list of missing options */
-  private List missingOptions;
-
 
 
 
@@ -49,7 +46,7 @@ public class MissingOptionException extends ParseException {
    *
    * @param missingOptions the list of missing options
    */
-  public MissingOptionException( final List missingOptions ) {
+  public MissingOptionException( final List<String> missingOptions ) {
     this( createMessage( missingOptions ) );
     this.missingOptions = missingOptions;
   }
@@ -75,7 +72,7 @@ public class MissingOptionException extends ParseException {
    *
    * @return the missing options
    */
-  public List getMissingOptions() {
+  public List<String> getMissingOptions() {
     return missingOptions;
   }
 }

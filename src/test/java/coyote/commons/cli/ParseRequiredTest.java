@@ -14,7 +14,6 @@ import org.junit.Test;
  */
 public class ParseRequiredTest {
   private static Options _options = null;
-  private CommandLineParser parser = new PosixParser();
 
 
 
@@ -24,19 +23,45 @@ public class ParseRequiredTest {
     _options = new Options().addOption( "a", "enable-a", false, "turn [a] on or off" ).addOption( OptionBuilder.withLongOpt( "bfile" ).hasArg().isRequired().withDescription( "set the value of [b]" ).create( 'b' ) );
   }
 
+  private final CommandLineParser parser = new PosixParser();
 
 
 
-  // TODO
-  public void testWithRequiredOption() throws Exception {
-    String[] args = new String[] { "-b", "file" };
 
-    CommandLine cl = parser.parse( _options, args );
+  @Test
+  public void testMissingRequiredOption() {
+    final String[] args = new String[] { "-a" };
 
-    assertTrue( "Confirm -a is NOT set", !cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "file" ) );
-    assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0 );
+    try {
+      parser.parse( _options, args );
+      fail( "exception should have been thrown" );
+    } catch ( final MissingOptionException e ) {
+      assertEquals( "Incorrect exception message", "Missing required option: b", e.getMessage() );
+      assertTrue( e.getMissingOptions().contains( "b" ) );
+    } catch ( final ArgumentException e ) {
+      fail( "expected to catch MissingOptionException" );
+    }
+  }
+
+
+
+
+  @Test
+  public void testMissingRequiredOptions() {
+    final String[] args = new String[] { "-a" };
+
+    _options.addOption( OptionBuilder.withLongOpt( "cfile" ).hasArg().isRequired().withDescription( "set the value of [c]" ).create( 'c' ) );
+
+    try {
+      parser.parse( _options, args );
+      fail( "exception should have been thrown" );
+    } catch ( final MissingOptionException e ) {
+      assertEquals( "Incorrect exception message", "Missing required options: b, c", e.getMessage() );
+      assertTrue( e.getMissingOptions().contains( "b" ) );
+      assertTrue( e.getMissingOptions().contains( "c" ) );
+    } catch ( final ArgumentException e ) {
+      fail( "expected to catch MissingOptionException" );
+    }
   }
 
 
@@ -44,9 +69,9 @@ public class ParseRequiredTest {
 
   // TODO
   public void testOptionAndRequiredOption() throws Exception {
-    String[] args = new String[] { "-a", "-b", "file" };
+    final String[] args = new String[] { "-a", "-b", "file" };
 
-    CommandLine cl = parser.parse( _options, args );
+    final ArgumentList cl = parser.parse( _options, args );
 
     assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
     assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
@@ -58,50 +83,11 @@ public class ParseRequiredTest {
 
 
   @Test
-  public void testMissingRequiredOption() {
-    String[] args = new String[] { "-a" };
-
-    try {
-      CommandLine cl = parser.parse( _options, args );
-      fail( "exception should have been thrown" );
-    } catch ( MissingOptionException e ) {
-      assertEquals( "Incorrect exception message", "Missing required option: b", e.getMessage() );
-      assertTrue( e.getMissingOptions().contains( "b" ) );
-    } catch ( ParseException e ) {
-      fail( "expected to catch MissingOptionException" );
-    }
-  }
-
-
-
-
-  @Test
-  public void testMissingRequiredOptions() {
-    String[] args = new String[] { "-a" };
-
-    _options.addOption( OptionBuilder.withLongOpt( "cfile" ).hasArg().isRequired().withDescription( "set the value of [c]" ).create( 'c' ) );
-
-    try {
-      CommandLine cl = parser.parse( _options, args );
-      fail( "exception should have been thrown" );
-    } catch ( MissingOptionException e ) {
-      assertEquals( "Incorrect exception message", "Missing required options: b, c", e.getMessage() );
-      assertTrue( e.getMissingOptions().contains( "b" ) );
-      assertTrue( e.getMissingOptions().contains( "c" ) );
-    } catch ( ParseException e ) {
-      fail( "expected to catch MissingOptionException" );
-    }
-  }
-
-
-
-
-  @Test
   public void testReuseOptionsTwice() throws Exception {
-    Options opts = new Options();
+    final Options opts = new Options();
     opts.addOption( OptionBuilder.isRequired().create( 'v' ) );
 
-    GnuParser parser = new GnuParser();
+    final GnuParser parser = new GnuParser();
 
     // first parsing
     parser.parse( opts, new String[] { "-v" } );
@@ -110,9 +96,24 @@ public class ParseRequiredTest {
       // second parsing, with the same Options instance and an invalid command line
       parser.parse( opts, new String[0] );
       fail( "MissingOptionException not thrown" );
-    } catch ( MissingOptionException e ) {
+    } catch ( final MissingOptionException e ) {
       // expected
     }
+  }
+
+
+
+
+  // TODO
+  public void testWithRequiredOption() throws Exception {
+    final String[] args = new String[] { "-b", "file" };
+
+    final ArgumentList cl = parser.parse( _options, args );
+
+    assertTrue( "Confirm -a is NOT set", !cl.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "file" ) );
+    assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0 );
   }
 
 }

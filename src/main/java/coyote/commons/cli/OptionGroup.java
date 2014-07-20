@@ -11,10 +11,10 @@ import java.util.Map;
  * A group of mutually exclusive options.
  */
 public class OptionGroup implements Serializable {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -1584937019659511130L;
 
   /** hold the options */
-  private final Map optionMap = new HashMap();
+  private final Map<String, Option> optionMap = new HashMap<String, Option>();
 
   /** the name of the selected option */
   private String selected;
@@ -26,9 +26,10 @@ public class OptionGroup implements Serializable {
 
 
   /**
-   * Add the specified <code>Option</code> to this group.
+   * Add the specified {@code Option} to this group.
    *
    * @param option the option to add to this group
+   * 
    * @return this option group with the option added
    */
   public OptionGroup addOption( final Option option ) {
@@ -43,10 +44,9 @@ public class OptionGroup implements Serializable {
 
 
   /**
-   * @return the names of the options in this group as a 
-   * <code>Collection</code>
+   * @return the names of the options in this group as a  {@code Collection}
    */
-  public Collection getNames() {
+  public Collection<String> getNames() {
     // the key set is the collection of names
     return optionMap.keySet();
   }
@@ -55,9 +55,9 @@ public class OptionGroup implements Serializable {
 
 
   /**
-   * @return the options in this group as a <code>Collection</code>
+   * @return the options in this group as a {@code Collection}
    */
-  public Collection getOptions() {
+  public Collection<Option> getOptions() {
     // the values are the collection of options
     return optionMap.values();
   }
@@ -98,16 +98,16 @@ public class OptionGroup implements Serializable {
 
 
   /**
-   * Set the selected option of this group to <code>name</code>.
+   * Set the selected option of this group to {@code name}.
    *
    * @param option the option that is selected
-   * @throws AlreadySelectedException if an option from this group has 
-   * already been selected.
+   * 
+   * @throws AlreadySelectedException if an option from this group has already 
+   * been selected.
    */
   public void setSelected( final Option option ) throws AlreadySelectedException {
-    // if no option has already been selected or the 
-    // same option is being reselected then set the
-    // selected member variable
+    // if no option has already been selected or the same option is being 
+    // re-selected then set the selected member variable
     if ( ( selected == null ) || selected.equals( option.getOpt() ) ) {
       selected = option.getOpt();
     } else {
@@ -125,12 +125,12 @@ public class OptionGroup implements Serializable {
   public String toString() {
     final StringBuffer buff = new StringBuffer();
 
-    final Iterator iter = getOptions().iterator();
+    final Iterator<Option> iter = getOptions().iterator();
 
-    buff.append( "[" );
+    buff.append( "{" );
 
     while ( iter.hasNext() ) {
-      final Option option = (Option)iter.next();
+      final Option option = iter.next();
 
       if ( option.getOpt() != null ) {
         buff.append( "-" );
@@ -148,7 +148,7 @@ public class OptionGroup implements Serializable {
       }
     }
 
-    buff.append( "]" );
+    buff.append( "}" );
 
     return buff.toString();
   }

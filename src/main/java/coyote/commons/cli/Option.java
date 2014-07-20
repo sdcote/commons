@@ -5,16 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/** <p>Describes a single command-line option.  It maintains
- * information regarding the short-name of the option, the long-name,
- * if any exists, a flag indicating if an argument is required for
+/**
+ * Describes a single command-line option.  
+ * 
+ * <p>It maintains information regarding the short-name of the option, the 
+ * long-name, if any exists, a flag indicating if an argument is required for
  * this option, and a self-documenting description of the option.</p>
  *
  * <p>An Option is not created independently, but is created through
  * an instance of {@link Options}.<p>
  */
 public class Option implements Cloneable, Serializable {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 4102629961402133465L;
 
   /** constant that specifies the number of argument values has not been specified */
   public static final int UNINITIALIZED = -1;
@@ -47,7 +49,7 @@ public class Option implements Cloneable, Serializable {
   private Object type;
 
   /** the list of argument values **/
-  private List values = new ArrayList();
+  private List<String> values = new ArrayList<String>();
 
   /** the character that is the value separator */
   private char valuesep;
@@ -179,7 +181,7 @@ public class Option implements Cloneable, Serializable {
   public Object clone() {
     try {
       final Option option = (Option)super.clone();
-      option.values = new ArrayList( values );
+      option.values = new ArrayList<String>( values );
       return option;
     } catch ( final CloneNotSupportedException cnse ) {
       throw new RuntimeException( "A CloneNotSupportedException was thrown: " + cnse.getMessage() );
@@ -296,8 +298,8 @@ public class Option implements Cloneable, Serializable {
    * Retrieve the name of this Option.
    *
    * It is this String which can be used with
-   * {@link CommandLine#hasOption(String opt)} and
-   * {@link CommandLine#getOptionValue(String opt)} to check
+   * {@link ArgumentList#hasOption(String opt)} and
+   * {@link ArgumentList#getOptionValue(String opt)} to check
    * for existence and argument.
    *
    * @return The name of this option
@@ -403,7 +405,7 @@ public class Option implements Cloneable, Serializable {
    * @return the values of this Option as a List
    * or null if there are no values
    */
-  public List getValuesList() {
+  public List<String> getValuesList() {
     return values;
   }
 

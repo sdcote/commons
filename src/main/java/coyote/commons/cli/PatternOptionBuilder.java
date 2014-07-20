@@ -7,11 +7,10 @@ import java.util.Date;
 
 
 /**
- * <p>
  * Allows Options to be created from a single String.
- * The pattern contains various single character flags and via
- * an optional punctuation character, their expected type.
- * </p>
+ * 
+ * <p>The pattern contains various single character flags and via an optional 
+ * punctuation character, their expected type.</p>
  *
  * <table border="1">
  * <tr><td>a</td><td>-a flag</td></tr>
@@ -23,54 +22,49 @@ import java.util.Date;
  * <tr><td>g:</td><td>-g [string]</td></tr>
  * </table>
  *
- * <p>
- * For example, the following allows command line flags of '-v -p string-value -f /dir/file'.
- * The exclamation mark precede a mandatory option.
- * </p>
- * <code>Options options = PatternOptionBuilder.parsePattern("vp:!f/");</code>
- *
- * TODO These need to break out to OptionType and also to be pluggable.
+ * <p>For example, the following allows command line flags of '-v -p 
+ * string-value -f /dir/file'. The exclamation mark precede a mandatory 
+ * option.</p>
+ * 
+ * <pre>Options options = PatternOptionBuilder.parsePattern("vp:!f/");</pre>
  */
 public class PatternOptionBuilder {
   /** String class */
-  public static final Class STRING_VALUE = String.class;
+  public static final Class<String> STRING_VALUE = String.class;
 
   /** Object class */
-  public static final Class OBJECT_VALUE = Object.class;
+  public static final Class<Object> OBJECT_VALUE = Object.class;
 
   /** Number class */
-  public static final Class NUMBER_VALUE = Number.class;
+  public static final Class<Number> NUMBER_VALUE = Number.class;
 
   /** Date class */
-  public static final Class DATE_VALUE = Date.class;
+  public static final Class<Date> DATE_VALUE = Date.class;
 
   /** Class class */
-  public static final Class CLASS_VALUE = Class.class;
-
-  /// can we do this one??
-  // is meant to check that the file exists, else it errors.
-  // ie) it's for reading not writing.
+  public static final Class<Class> CLASS_VALUE = Class.class;
 
   /** FileInputStream class */
-  public static final Class EXISTING_FILE_VALUE = FileInputStream.class;
+  public static final Class<FileInputStream> EXISTING_FILE_VALUE = FileInputStream.class;
 
   /** File class */
-  public static final Class FILE_VALUE = File.class;
+  public static final Class<File> FILE_VALUE = File.class;
 
   /** File array class */
-  public static final Class FILES_VALUE = File[].class;
+  public static final Class<File[]> FILES_VALUE = File[].class;
 
   /** URL class */
-  public static final Class URL_VALUE = URL.class;
+  public static final Class<URL> URL_VALUE = URL.class;
 
 
 
 
   /**
-   * Retrieve the class that <code>ch</code> represents.
+   * Retrieve the class that {@code ch} represents.
    *
    * @param ch the specified character
-   * @return The class that <code>ch</code> represents
+   * 
+   * @return The class that {@code ch} represents
    */
   public static Object getValueClass( final char ch ) {
     switch ( ch ) {
@@ -101,11 +95,12 @@ public class PatternOptionBuilder {
 
 
   /**
-   * Returns whether <code>ch</code> is a value code, i.e.
-   * whether it represents a class in a pattern.
+   * Returns whether {@code ch} is a value code, i.e. whether it represents a 
+   * class in a pattern.
    *
    * @param ch the specified character
-   * @return true if <code>ch</code> is a value code, otherwise false.
+   * 
+   * @return true if {@code ch} is a value code, otherwise false.
    */
   public static boolean isValueCode( final char ch ) {
     return ( ch == '@' ) || ( ch == ':' ) || ( ch == '%' ) || ( ch == '+' ) || ( ch == '#' ) || ( ch == '<' ) || ( ch == '>' ) || ( ch == '*' ) || ( ch == '/' ) || ( ch == '!' );
@@ -115,9 +110,10 @@ public class PatternOptionBuilder {
 
 
   /**
-   * Returns the {@link Options} instance represented by <code>pattern</code>.
+   * Returns the {@link Options} instance represented by {@code pattern}.
    *
    * @param pattern the pattern string
+   * 
    * @return The {@link Options} instance
    */
   public static Options parsePattern( final String pattern ) {
@@ -130,8 +126,7 @@ public class PatternOptionBuilder {
     for ( int i = 0; i < pattern.length(); i++ ) {
       final char ch = pattern.charAt( i );
 
-      // a value code comes after an option and specifies
-      // details about it
+      // a value code comes after an option and specifies details about it
       if ( !isValueCode( ch ) ) {
         if ( opt != ' ' ) {
           OptionBuilder.hasArg( type != null );

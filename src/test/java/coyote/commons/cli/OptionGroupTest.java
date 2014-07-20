@@ -22,24 +22,24 @@ public class OptionGroupTest {
 
   @BeforeClass
   public static void setUp() {
-    Option file = new Option( "f", "file", false, "file to process" );
-    Option dir = new Option( "d", "directory", false, "directory to process" );
-    OptionGroup group = new OptionGroup();
+    final Option file = new Option( "f", "file", false, "file to process" );
+    final Option dir = new Option( "d", "directory", false, "directory to process" );
+    final OptionGroup group = new OptionGroup();
     group.addOption( file );
     group.addOption( dir );
     _options = new Options().addOptionGroup( group );
 
-    Option section = new Option( "s", "section", false, "section to process" );
-    Option chapter = new Option( "c", "chapter", false, "chapter to process" );
-    OptionGroup group2 = new OptionGroup();
+    final Option section = new Option( "s", "section", false, "section to process" );
+    final Option chapter = new Option( "c", "chapter", false, "chapter to process" );
+    final OptionGroup group2 = new OptionGroup();
     group2.addOption( section );
     group2.addOption( chapter );
 
     _options.addOptionGroup( group2 );
 
-    Option importOpt = new Option( null, "import", false, "section to process" );
-    Option exportOpt = new Option( null, "export", false, "chapter to process" );
-    OptionGroup group3 = new OptionGroup();
+    final Option importOpt = new Option( null, "import", false, "section to process" );
+    final Option exportOpt = new Option( null, "export", false, "chapter to process" );
+    final OptionGroup group3 = new OptionGroup();
     group3.addOption( importOpt );
     group3.addOption( exportOpt );
     _options.addOptionGroup( group3 );
@@ -51,10 +51,42 @@ public class OptionGroupTest {
 
 
   @Test
-  public void testSingleOptionFromGroup() throws Exception {
-    String[] args = new String[] { "-f" };
+  public void testGetNames() {
+    final OptionGroup group = new OptionGroup();
+    group.addOption( OptionBuilder.create( 'a' ) );
+    group.addOption( OptionBuilder.create( 'b' ) );
 
-    CommandLine cl = parser.parse( _options, args );
+    assertNotNull( "null names", group.getNames() );
+    assertEquals( 2, group.getNames().size() );
+    assertTrue( group.getNames().contains( "a" ) );
+    assertTrue( group.getNames().contains( "b" ) );
+  }
+
+
+
+
+  @Test
+  public void testNoOptionsExtraArgs() throws Exception {
+    final String[] args = new String[] { "arg1", "arg2" };
+
+    final ArgumentList cl = parser.parse( _options, args );
+
+    assertTrue( "Confirm -r is NOT set", !cl.hasOption( "r" ) );
+    assertTrue( "Confirm -f is NOT set", !cl.hasOption( "f" ) );
+    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
+    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
+    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
+    assertTrue( "Confirm TWO extra args", cl.getArgList().size() == 2 );
+  }
+
+
+
+
+  @Test
+  public void testSingleLongOption() throws Exception {
+    final String[] args = new String[] { "--file" };
+
+    final ArgumentList cl = parser.parse( _options, args );
 
     assertTrue( "Confirm -r is NOT set", !cl.hasOption( "r" ) );
     assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
@@ -69,9 +101,9 @@ public class OptionGroupTest {
 
   @Test
   public void testSingleOption() throws Exception {
-    String[] args = new String[] { "-r" };
+    final String[] args = new String[] { "-r" };
 
-    CommandLine cl = parser.parse( _options, args );
+    final ArgumentList cl = parser.parse( _options, args );
 
     assertTrue( "Confirm -r is set", cl.hasOption( "r" ) );
     assertTrue( "Confirm -f is NOT set", !cl.hasOption( "f" ) );
@@ -85,27 +117,10 @@ public class OptionGroupTest {
 
 
   @Test
-  public void testTwoValidOptions() throws Exception {
-    String[] args = new String[] { "-r", "-f" };
+  public void testSingleOptionFromGroup() throws Exception {
+    final String[] args = new String[] { "-f" };
 
-    CommandLine cl = parser.parse( _options, args );
-
-    assertTrue( "Confirm -r is set", cl.hasOption( "r" ) );
-    assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
-    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
-    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
-    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm no extra args", cl.getArgList().size() == 0 );
-  }
-
-
-
-
-  @Test
-  public void testSingleLongOption() throws Exception {
-    String[] args = new String[] { "--file" };
-
-    CommandLine cl = parser.parse( _options, args );
+    final ArgumentList cl = parser.parse( _options, args );
 
     assertTrue( "Confirm -r is NOT set", !cl.hasOption( "r" ) );
     assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
@@ -119,50 +134,21 @@ public class OptionGroupTest {
 
 
   @Test
-  public void testTwoValidLongOptions() throws Exception {
-    String[] args = new String[] { "--revision", "--file" };
+  public void testToString() {
+    final OptionGroup group1 = new OptionGroup();
+    group1.addOption( new Option( null, "foo", false, "Foo" ) );
+    group1.addOption( new Option( null, "bar", false, "Bar" ) );
 
-    CommandLine cl = parser.parse( _options, args );
+    if ( !"{--bar Bar, --foo Foo}".equals( group1.toString() ) ) {
+      assertEquals( "{--foo Foo, --bar Bar}", group1.toString() );
+    }
 
-    assertTrue( "Confirm -r is set", cl.hasOption( "r" ) );
-    assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
-    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
-    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
-    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm no extra args", cl.getArgList().size() == 0 );
-  }
+    final OptionGroup group2 = new OptionGroup();
+    group2.addOption( new Option( "f", "foo", false, "Foo" ) );
+    group2.addOption( new Option( "b", "bar", false, "Bar" ) );
 
-
-
-
-  @Test
-  public void testNoOptionsExtraArgs() throws Exception {
-    String[] args = new String[] { "arg1", "arg2" };
-
-    CommandLine cl = parser.parse( _options, args );
-
-    assertTrue( "Confirm -r is NOT set", !cl.hasOption( "r" ) );
-    assertTrue( "Confirm -f is NOT set", !cl.hasOption( "f" ) );
-    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
-    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
-    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm TWO extra args", cl.getArgList().size() == 2 );
-  }
-
-
-
-
-  @Test
-  public void testTwoOptionsFromGroup() throws Exception {
-    String[] args = new String[] { "-f", "-d" };
-
-    try {
-      parser.parse( _options, args );
-      fail( "two arguments from group not allowed" );
-    } catch ( AlreadySelectedException e ) {
-      assertNotNull( "null option group", e.getOptionGroup() );
-      assertEquals( "selected option", "f", e.getOptionGroup().getSelected() );
-      assertEquals( "option", "d", e.getOption().getOpt() );
+    if ( !"{-b Bar, -f Foo}".equals( group2.toString() ) ) {
+      assertEquals( "{-f Foo, -b Bar}", group2.toString() );
     }
   }
 
@@ -171,12 +157,12 @@ public class OptionGroupTest {
 
   @Test
   public void testTwoLongOptionsFromGroup() throws Exception {
-    String[] args = new String[] { "--file", "--directory" };
+    final String[] args = new String[] { "--file", "--directory" };
 
     try {
       parser.parse( _options, args );
       fail( "two arguments from group not allowed" );
-    } catch ( AlreadySelectedException e ) {
+    } catch ( final AlreadySelectedException e ) {
       assertNotNull( "null option group", e.getOptionGroup() );
       assertEquals( "selected option", "f", e.getOptionGroup().getSelected() );
       assertEquals( "option", "d", e.getOption().getOpt() );
@@ -188,9 +174,9 @@ public class OptionGroupTest {
 
   @Test
   public void testTwoOptionsFromDifferentGroup() throws Exception {
-    String[] args = new String[] { "-f", "-s" };
+    final String[] args = new String[] { "-f", "-s" };
 
-    CommandLine cl = parser.parse( _options, args );
+    final ArgumentList cl = parser.parse( _options, args );
     assertTrue( "Confirm -r is NOT set", !cl.hasOption( "r" ) );
     assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
     assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
@@ -203,48 +189,62 @@ public class OptionGroupTest {
 
 
   @Test
+  public void testTwoOptionsFromGroup() throws Exception {
+    final String[] args = new String[] { "-f", "-d" };
+
+    try {
+      parser.parse( _options, args );
+      fail( "two arguments from group not allowed" );
+    } catch ( final AlreadySelectedException e ) {
+      assertNotNull( "null option group", e.getOptionGroup() );
+      assertEquals( "selected option", "f", e.getOptionGroup().getSelected() );
+      assertEquals( "option", "d", e.getOption().getOpt() );
+    }
+  }
+
+
+
+
+  @Test
+  public void testTwoValidLongOptions() throws Exception {
+    final String[] args = new String[] { "--revision", "--file" };
+
+    final ArgumentList cl = parser.parse( _options, args );
+
+    assertTrue( "Confirm -r is set", cl.hasOption( "r" ) );
+    assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
+    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
+    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
+    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
+    assertTrue( "Confirm no extra args", cl.getArgList().size() == 0 );
+  }
+
+
+
+
+  @Test
+  public void testTwoValidOptions() throws Exception {
+    final String[] args = new String[] { "-r", "-f" };
+
+    final ArgumentList cl = parser.parse( _options, args );
+
+    assertTrue( "Confirm -r is set", cl.hasOption( "r" ) );
+    assertTrue( "Confirm -f is set", cl.hasOption( "f" ) );
+    assertTrue( "Confirm -d is NOT set", !cl.hasOption( "d" ) );
+    assertTrue( "Confirm -s is NOT set", !cl.hasOption( "s" ) );
+    assertTrue( "Confirm -c is NOT set", !cl.hasOption( "c" ) );
+    assertTrue( "Confirm no extra args", cl.getArgList().size() == 0 );
+  }
+
+
+
+
+  @Test
   public void testValidLongOnlyOptions() throws Exception {
-    CommandLine cl1 = parser.parse( _options, new String[] { "--export" } );
+    final ArgumentList cl1 = parser.parse( _options, new String[] { "--export" } );
     assertTrue( "Confirm --export is set", cl1.hasOption( "export" ) );
 
-    CommandLine cl2 = parser.parse( _options, new String[] { "--import" } );
+    final ArgumentList cl2 = parser.parse( _options, new String[] { "--import" } );
     assertTrue( "Confirm --import is set", cl2.hasOption( "import" ) );
-  }
-
-
-
-
-  @Test
-  public void testToString() {
-    OptionGroup group1 = new OptionGroup();
-    group1.addOption( new Option( null, "foo", false, "Foo" ) );
-    group1.addOption( new Option( null, "bar", false, "Bar" ) );
-
-    if ( !"[--bar Bar, --foo Foo]".equals( group1.toString() ) ) {
-      assertEquals( "[--foo Foo, --bar Bar]", group1.toString() );
-    }
-
-    OptionGroup group2 = new OptionGroup();
-    group2.addOption( new Option( "f", "foo", false, "Foo" ) );
-    group2.addOption( new Option( "b", "bar", false, "Bar" ) );
-
-    if ( !"[-b Bar, -f Foo]".equals( group2.toString() ) ) {
-      assertEquals( "[-f Foo, -b Bar]", group2.toString() );
-    }
-  }
-
-
-
-
-  @Test
-  public void testGetNames() {
-    OptionGroup group = new OptionGroup();
-    group.addOption( OptionBuilder.create( 'a' ) );
-    group.addOption( OptionBuilder.create( 'b' ) );
-
-    assertNotNull( "null names", group.getNames() );
-    assertEquals( 2, group.getNames().size() );
-    assertTrue( group.getNames().contains( "a" ) );
-    assertTrue( group.getNames().contains( "b" ) );
   }
 }

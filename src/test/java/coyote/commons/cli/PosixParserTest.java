@@ -25,9 +25,9 @@ public class PosixParserTest extends ParserTestCase {
 
   @Test
   public void testBursting() throws Exception {
-    String[] args = new String[] { "-acbtoast", "foo", "bar" };
+    final String[] args = new String[] { "-acbtoast", "foo", "bar" };
 
-    CommandLine cl = parser.parse( options, args );
+    final ArgumentList cl = parser.parse( options, args );
 
     assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
     assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
@@ -39,16 +39,77 @@ public class PosixParserTest extends ParserTestCase {
 
 
 
+  /**
+   * Real world test with long and short options.
+   */
   @Test
-  public void testUnrecognizedOptionWithBursting() throws Exception {
-    String[] args = new String[] { "-adbtoast", "foo", "bar" };
+  public void testLongOptionWithShort() throws Exception {
+    final Option help = new Option( "h", "help", false, "print this message" );
+    final Option version = new Option( "v", "version", false, "print version information" );
+    final Option newRun = new Option( "n", "new", false, "Create NLT cache entries only for new items" );
+    final Option trackerRun = new Option( "t", "tracker", false, "Create NLT cache entries only for tracker items" );
 
-    try {
-      parser.parse( options, args );
-      fail( "UnrecognizedOptionException wasn't thrown" );
-    } catch ( UnrecognizedOptionException e ) {
-      assertEquals( "-adbtoast", e.getOption() );
-    }
+    OptionBuilder.withLongOpt( "limit" );
+    OptionBuilder.hasArg();
+    OptionBuilder.withValueSeparator();
+    OptionBuilder.withDescription( "Set time limit for execution, in minutes" );
+    final Option timeLimit = OptionBuilder.create( "l" );
+
+    OptionBuilder.withLongOpt( "age" );
+    OptionBuilder.hasArg();
+    OptionBuilder.withValueSeparator();
+    OptionBuilder.withDescription( "Age (in days) of cache item before being recomputed" );
+    final Option age = OptionBuilder.create( "a" );
+
+    OptionBuilder.withLongOpt( "server" );
+    OptionBuilder.hasArg();
+    OptionBuilder.withValueSeparator();
+    OptionBuilder.withDescription( "The NLT server address" );
+    final Option server = OptionBuilder.create( "s" );
+
+    OptionBuilder.withLongOpt( "results" );
+    OptionBuilder.hasArg();
+    OptionBuilder.withValueSeparator();
+    OptionBuilder.withDescription( "Number of results per item" );
+    final Option numResults = OptionBuilder.create( "r" );
+
+    OptionBuilder.withLongOpt( "file" );
+    OptionBuilder.hasArg();
+    OptionBuilder.withValueSeparator();
+    OptionBuilder.withDescription( "Use the specified configuration file" );
+    final Option configFile = OptionBuilder.create();
+
+    final Options options = new Options();
+    options.addOption( help );
+    options.addOption( version );
+    options.addOption( newRun );
+    options.addOption( trackerRun );
+    options.addOption( timeLimit );
+    options.addOption( age );
+    options.addOption( server );
+    options.addOption( numResults );
+    options.addOption( configFile );
+
+    // create the command line parser
+    final CommandLineParser parser = new PosixParser();
+
+    final String[] args = new String[] { "-v", "-l", "10", "-age", "5", "-file", "filename" };
+
+    final ArgumentList line = parser.parse( options, args );
+    assertTrue( line.hasOption( "v" ) );
+    assertEquals( line.getOptionValue( "l" ), "10" );
+    assertEquals( line.getOptionValue( "limit" ), "10" );
+    assertEquals( line.getOptionValue( "a" ), "5" );
+    assertEquals( line.getOptionValue( "age" ), "5" );
+    assertEquals( line.getOptionValue( "file" ), "filename" );
+  }
+
+
+
+
+  @Override
+  public void testLongWithEqualSingleDash() throws Exception {
+    // not supported by the PosixParser
   }
 
 
@@ -56,13 +117,13 @@ public class PosixParserTest extends ParserTestCase {
 
   @Test
   public void testMissingArgWithBursting() throws Exception {
-    String[] args = new String[] { "-acb" };
+    final String[] args = new String[] { "-acb" };
 
     boolean caught = false;
 
     try {
       parser.parse( options, args );
-    } catch ( MissingArgumentException e ) {
+    } catch ( final MissingArgumentException e ) {
       caught = true;
       assertEquals( "option missing an argument", "b", e.getOption().getOpt() );
     }
@@ -73,11 +134,19 @@ public class PosixParserTest extends ParserTestCase {
 
 
 
+  @Override
+  public void testShortWithEqual() throws Exception {
+    // not supported by the PosixParser
+  }
+
+
+
+
   @Test
   public void testStopBursting() throws Exception {
-    String[] args = new String[] { "-azc" };
+    final String[] args = new String[] { "-azc" };
 
-    CommandLine cl = parser.parse( options, args, true );
+    final ArgumentList cl = parser.parse( options, args, true );
     assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
     assertFalse( "Confirm -c is not set", cl.hasOption( "c" ) );
 
@@ -90,9 +159,9 @@ public class PosixParserTest extends ParserTestCase {
 
   @Test
   public void testStopBursting2() throws Exception {
-    String[] args = new String[] { "-c", "foobar", "-btoast" };
+    final String[] args = new String[] { "-c", "foobar", "-btoast" };
 
-    CommandLine cl = parser.parse( options, args, true );
+    ArgumentList cl = parser.parse( options, args, true );
     assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
     assertTrue( "Confirm  2 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 2 );
 
@@ -108,62 +177,15 @@ public class PosixParserTest extends ParserTestCase {
 
 
 
-  /**
-   * Real world test with long and short options.
-   */
   @Test
-  public void testLongOptionWithShort() throws Exception {
-    Option help = new Option( "h", "help", false, "print this message" );
-    Option version = new Option( "v", "version", false, "print version information" );
-    Option newRun = new Option( "n", "new", false, "Create NLT cache entries only for new items" );
-    Option trackerRun = new Option( "t", "tracker", false, "Create NLT cache entries only for tracker items" );
+  public void testUnrecognizedOptionWithBursting() throws Exception {
+    final String[] args = new String[] { "-adbtoast", "foo", "bar" };
 
-    Option timeLimit = OptionBuilder.withLongOpt( "limit" ).hasArg().withValueSeparator().withDescription( "Set time limit for execution, in minutes" ).create( "l" );
-
-    Option age = OptionBuilder.withLongOpt( "age" ).hasArg().withValueSeparator().withDescription( "Age (in days) of cache item before being recomputed" ).create( "a" );
-
-    Option server = OptionBuilder.withLongOpt( "server" ).hasArg().withValueSeparator().withDescription( "The NLT server address" ).create( "s" );
-
-    Option numResults = OptionBuilder.withLongOpt( "results" ).hasArg().withValueSeparator().withDescription( "Number of results per item" ).create( "r" );
-
-    Option configFile = OptionBuilder.withLongOpt( "file" ).hasArg().withValueSeparator().withDescription( "Use the specified configuration file" ).create();
-
-    Options options = new Options();
-    options.addOption( help );
-    options.addOption( version );
-    options.addOption( newRun );
-    options.addOption( trackerRun );
-    options.addOption( timeLimit );
-    options.addOption( age );
-    options.addOption( server );
-    options.addOption( numResults );
-    options.addOption( configFile );
-
-    // create the command line parser
-    CommandLineParser parser = new PosixParser();
-
-    String[] args = new String[] { "-v", "-l", "10", "-age", "5", "-file", "filename" };
-
-    CommandLine line = parser.parse( options, args );
-    assertTrue( line.hasOption( "v" ) );
-    assertEquals( line.getOptionValue( "l" ), "10" );
-    assertEquals( line.getOptionValue( "limit" ), "10" );
-    assertEquals( line.getOptionValue( "a" ), "5" );
-    assertEquals( line.getOptionValue( "age" ), "5" );
-    assertEquals( line.getOptionValue( "file" ), "filename" );
-  }
-
-
-
-
-  public void testLongWithEqualSingleDash() throws Exception {
-    // not supported by the PosixParser
-  }
-
-
-
-
-  public void testShortWithEqual() throws Exception {
-    // not supported by the PosixParser
+    try {
+      parser.parse( options, args );
+      fail( "UnrecognizedOptionException wasn't thrown" );
+    } catch ( final UnrecognizedOptionException e ) {
+      assertEquals( "-adbtoast", e.getOption() );
+    }
   }
 }
