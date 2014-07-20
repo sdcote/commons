@@ -20,8 +20,8 @@ public class PoolingDataSource implements DataSource {
 
 
   public PoolingDataSource( final DataSource originalDataSource, final ConnectionPool connectionPool ) {
-    Assert.argumentIsNotNull( originalDataSource, "Datasource must not be null" );
-    Assert.argumentIsNotNull( connectionPool, "ConnectionPool must not be null" );
+    Assert.notNull( originalDataSource, "Datasource must not be null" );
+    Assert.notNull( connectionPool, "ConnectionPool must not be null" );
 
     this.originalDataSource = originalDataSource;
     this.connectionPool = connectionPool;

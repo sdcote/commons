@@ -202,6 +202,94 @@ public final class StringUtil {
 
 
   /**
+   * Check that the given CharSequence is neither {@code null} nor of length 0.
+   * Note: Will return {@code true} for a CharSequence that purely consists of whitespace.
+   * <p><pre class="code">
+   * StringUtil.hasLength(null) = false
+   * StringUtil.hasLength("") = false
+   * StringUtil.hasLength(" ") = true
+   * StringUtil.hasLength("Hello") = true
+   * </pre>
+   * @param str the CharSequence to check (may be {@code null})
+   * 
+   * @return {@code true} if the CharSequence is not null and has length
+   */
+  public static boolean hasLength( CharSequence str ) {
+    return ( str != null && str.length() > 0 );
+  }
+
+
+
+
+  /**
+   * Check that the given String is neither {@code null} nor of length 0.
+   * 
+   * <p><strong>Note:</strong> This will return {@code true} for a String that 
+   * consists entirely of whitespace.</p>
+   * 
+   * @param str the String to check (may be {@code null})
+   * 
+   * @return {@code true} if the String is not null and has length
+   */
+  public static boolean hasLength( String str ) {
+    return hasLength( (CharSequence)str );
+  }
+
+
+
+
+  /**
+   * Check whether the given CharSequence has actual text.
+   * 
+   * <p>Returns {@code true} if the string not {@code null}, its length is 
+   * greater than 0, and it contains at least one non-whitespace character.</p>
+   * 
+   * <pre class="code">
+   * StringUtils.hasText(null) = false
+   * StringUtils.hasText("") = false
+   * StringUtils.hasText(" ") = false
+   * StringUtils.hasText("12345") = true
+   * StringUtils.hasText(" 12345 ") = true
+   * </pre>
+   * 
+   * @param str the CharSequence to check (may be {@code null})
+   * 
+   * @return {@code true} if the CharSequence is not {@code null}, its length is greater than 0, and it does not contain whitespace only
+   */
+  public static boolean hasText( CharSequence str ) {
+    if ( !hasLength( str ) ) {
+      return false;
+    }
+    int strLen = str.length();
+    for ( int i = 0; i < strLen; i++ ) {
+      if ( !Character.isWhitespace( str.charAt( i ) ) ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
+
+  /**
+   * Check whether the given String has actual text.
+   * 
+   * <p>Returns {@code true} if the string not {@code null}, its length is 
+   * greater than 0, and it contains at least one non-whitespace character.</p>
+   * 
+   * @param str the String to check (may be {@code null})
+   * 
+   * @return {@code true} if the String is not {@code null}, its length is greater than 0, and it does not contain whitespace only
+   */
+  public static boolean hasText( String str ) {
+    return hasText( (CharSequence)str );
+  }
+
+
+
+
+  /**
    * Make a string safe to send as part of an XML message.
    * 
    * @param string the string to convert
@@ -1781,6 +1869,52 @@ public final class StringUtil {
     }
 
     return returnString;
+  }
+
+
+
+
+  /**
+   * Remove the leading and trailing quotes from {@code str}. E.g. if str is 
+   * '"one two"', then 'one two' is returned.
+   *
+   * @param str The string from which the leading and trailing quotes
+   * should be removed.
+   *
+   * @return The string without the leading and trailing quotes.
+   */
+  public static String stripLeadingAndTrailingQuotes( String str ) {
+    if ( str.startsWith( "\"" ) ) {
+      str = str.substring( 1, str.length() );
+    }
+    if ( str.endsWith( "\"" ) ) {
+      str = str.substring( 0, str.length() - 1 );
+    }
+    return str;
+  }
+
+
+
+
+  /**
+   * Remove the hyphens from the beginning of {@code str} and return the new 
+   * String.
+   *
+   * @param str The string from which the hyphens should be removed.
+   *
+   * @return the new String.
+   */
+  public static String stripLeadingHyphens( final String str ) {
+    if ( str == null ) {
+      return null;
+    }
+    if ( str.startsWith( "--" ) ) {
+      return str.substring( 2, str.length() );
+    } else if ( str.startsWith( "-" ) ) {
+      return str.substring( 1, str.length() );
+    }
+
+    return str;
   }
 
 }

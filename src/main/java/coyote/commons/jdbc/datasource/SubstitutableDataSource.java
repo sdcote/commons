@@ -28,7 +28,7 @@ public class SubstitutableDataSource extends AbstractDataSource {
 
 
   public SubstitutableDataSource( final DataSource dataSource ) {
-    Assert.argumentIsNotNull( dataSource, "DataSource cannot be null" );
+    Assert.notNull( dataSource, "DataSource cannot be null" );
     _dataSource = dataSource;
   }
 

@@ -65,8 +65,8 @@ public class SimpleDataSource extends AbstractDataSource {
    * @throws ClassNotFoundException
    */
   public SimpleDataSource( final String className, final String url, final String username, final String password ) throws ClassNotFoundException {
-    Assert.argumentIsNotNull( className, "className must not be null" );
-    Assert.argumentIsNotNull( url, "url must not be null" );
+    Assert.notNull( className, "className must not be null" );
+    Assert.notNull( url, "url must not be null" );
 
     Class.forName( className );
 

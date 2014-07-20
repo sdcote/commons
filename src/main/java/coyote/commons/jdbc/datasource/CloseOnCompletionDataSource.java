@@ -20,7 +20,7 @@ public class CloseOnCompletionDataSource extends AbstractDataSource {
 
 
   public CloseOnCompletionDataSource( final DataSource dataSource ) {
-    Assert.argumentIsNotNull( dataSource, "_dataSource cannot be null" );
+    Assert.notNull( dataSource, "_dataSource cannot be null" );
     _dataSource = dataSource;
   }
 

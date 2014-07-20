@@ -17,8 +17,8 @@ public class ReplicationDataSource extends AbstractDataSource {
 
 
   public ReplicationDataSource( final DataSource readWriteDs, final DataSource readOnlyDs ) {
-    Assert.argumentIsNotNull( readWriteDs, "ReadWrite datasource cannot be null" );
-    Assert.argumentIsNotNull( readOnlyDs, "Read only datasource cannot be null" );
+    Assert.notNull( readWriteDs, "ReadWrite datasource cannot be null" );
+    Assert.notNull( readOnlyDs, "Read only datasource cannot be null" );
     _readWreiteDatasource = readWriteDs;
     _readOnlyDatasource = readOnlyDs;
   }

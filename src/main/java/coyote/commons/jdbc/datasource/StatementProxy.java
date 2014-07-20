@@ -17,7 +17,7 @@ public abstract class StatementProxy implements Statement {
 
 
   public StatementProxy( final Statement statement ) {
-    Assert.argumentIsNotNull( statement, "Statement must not be null" );
+    Assert.notNull( statement, "Statement must not be null" );
     _statement = statement;
   }
 

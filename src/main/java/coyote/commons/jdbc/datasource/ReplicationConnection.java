@@ -32,8 +32,8 @@ class ReplicationConnection implements Connection {
 
 
   public ReplicationConnection( final Connection readWriteConn, final Connection readOnlyConn ) {
-    Assert.argumentIsNotNull( readWriteConn, "Connection cannot be null" );
-    Assert.argumentIsNotNull( readOnlyConn, "Connection cannot be null" );
+    Assert.notNull( readWriteConn, "Connection cannot be null" );
+    Assert.notNull( readOnlyConn, "Connection cannot be null" );
 
     _readWriteConn = readWriteConn;
     _readOnlyConn = readOnlyConn;
