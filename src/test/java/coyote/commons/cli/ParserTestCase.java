@@ -45,10 +45,10 @@ public abstract class ParserTestCase {
     options.addOption( OptionBuilder.hasArg().create( 'b' ) );
     String[] args = new String[] { "-a", "-bvalue" };
 
-    CommandLineParser parser = new PosixParser();
+    ArgumentParser parser = new PosixParser();
 
-    ArgumentList cmd = parser.parse( options, args );
-    assertEquals( cmd.getOptionValue( 'b' ), "value" );
+    ArgumentList argList = parser.parse( options, args );
+    assertEquals( argList.getOptionValue( 'b' ), "value" );
 
     // GNU
     options = new Options();
@@ -58,8 +58,8 @@ public abstract class ParserTestCase {
 
     parser = new GnuParser();
 
-    cmd = parser.parse( options, args );
-    assertEquals( cmd.getOptionValue( 'b' ), "value" );
+    argList = parser.parse( options, args );
+    assertEquals( argList.getOptionValue( 'b' ), "value" );
   }
 
 
@@ -69,8 +69,8 @@ public abstract class ParserTestCase {
   public void testArgumentStartingWithHyphen() throws Exception {
     final String[] args = new String[] { "-b", "-foo" };
 
-    final ArgumentList cl = parser.parse( options, args );
-    assertEquals( "-foo", cl.getOptionValue( "b" ) );
+    final ArgumentList argList = parser.parse( options, args );
+    assertEquals( "-foo", argList.getOptionValue( "b" ) );
   }
 
 
@@ -78,7 +78,7 @@ public abstract class ParserTestCase {
 
   @Test
   public void testConflictingOption() throws Exception {
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
     final String[] CLI_ARGS = new String[] { "-z", "c" };
 
     final Options options = new Options();
@@ -88,9 +88,9 @@ public abstract class ParserTestCase {
 
     //now add conflicting option
     options.addOption( "c", "conflict", true, "conflict option" );
-    final ArgumentList line = parser.parse( options, CLI_ARGS );
-    assertEquals( line.getOptionValue( 'z' ), "c" );
-    assertTrue( !line.hasOption( "c" ) );
+    final ArgumentList argList = parser.parse( options, CLI_ARGS );
+    assertEquals( argList.getOptionValue( 'z' ), "c" );
+    assertTrue( !argList.hasOption( "c" ) );
   }
 
 
@@ -103,12 +103,12 @@ public abstract class ParserTestCase {
     options.addOption( "m", true, "missing" );
     final String[] args = new String[] { "-f", "foo" };
 
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
 
-    final ArgumentList cmd = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    cmd.getOptionValue( "f", "default f" );
-    cmd.getOptionValue( "m", "default m" );
+    argList.getOptionValue( "f", "default f" );
+    argList.getOptionValue( "m", "default m" );
   }
 
 
@@ -118,11 +118,11 @@ public abstract class ParserTestCase {
   public void testDoubleDash() throws Exception {
     final String[] args = new String[] { "--copt", "--", "-b", "toast" };
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm -b is not set", !cl.hasOption( "b" ) );
-    assertTrue( "Confirm 2 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 2 );
+    assertTrue( "Confirm -c is set", argList.hasOption( "c" ) );
+    assertTrue( "Confirm -b is not set", !argList.hasOption( "b" ) );
+    assertTrue( "Confirm 2 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 2 );
   }
 
 
@@ -170,12 +170,12 @@ public abstract class ParserTestCase {
     opts.addOption( o );
     opts.addOption( o );
 
-    final CommandLineParser parser = new GnuParser();
+    final ArgumentParser parser = new GnuParser();
 
     final String[] args = new String[] { "-test" };
 
-    final ArgumentList line = parser.parse( opts, args );
-    assertTrue( line.hasOption( "test" ) );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "test" ) );
   }
 
 
@@ -187,10 +187,10 @@ public abstract class ParserTestCase {
     options.addOption( OptionBuilder.withLongOpt( "verbose" ).create() );
     final String[] args = new String[] { "--verbose" };
 
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
 
-    final ArgumentList cmd = parser.parse( options, args );
-    assertTrue( cmd.hasOption( "verbose" ) );
+    final ArgumentList argList = parser.parse( options, args );
+    assertTrue( argList.hasOption( "verbose" ) );
   }
 
 
@@ -203,9 +203,9 @@ public abstract class ParserTestCase {
     final Options options = new Options();
     options.addOption( OptionBuilder.withLongOpt( "foo" ).hasArg().create( 'f' ) );
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertEquals( "bar", cl.getOptionValue( "foo" ) );
+    assertEquals( "bar", argList.getOptionValue( "foo" ) );
   }
 
 
@@ -218,9 +218,9 @@ public abstract class ParserTestCase {
     final Options options = new Options();
     options.addOption( OptionBuilder.withLongOpt( "foo" ).hasArg().create( 'f' ) );
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertEquals( "bar", cl.getOptionValue( "foo" ) );
+    assertEquals( "bar", argList.getOptionValue( "foo" ) );
   }
 
 
@@ -257,10 +257,10 @@ public abstract class ParserTestCase {
     final String[] args = new String[] {};
     final Properties props = new Properties();
     props.setProperty( "o", "ovalue" );
-    final ArgumentList cl = parser.parse( options, args, props );
+    final ArgumentList argList = parser.parse( options, args, props );
 
-    assertTrue( cl.hasOption( 'o' ) );
-    assertEquals( "ovalue", cl.getOptionValue( 'o' ) );
+    assertTrue( argList.hasOption( 'o' ) );
+    assertEquals( "ovalue", argList.getOptionValue( 'o' ) );
   }
 
 
@@ -270,17 +270,17 @@ public abstract class ParserTestCase {
   public void testMultiple() throws Exception {
     final String[] args = new String[] { "-c", "foobar", "-b", "toast" };
 
-    ArgumentList cl = parser.parse( options, args, true );
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm  3 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 3 );
+    ArgumentList argList = parser.parse( options, args, true );
+    assertTrue( "Confirm -c is set", argList.hasOption( "c" ) );
+    assertTrue( "Confirm  3 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 3 );
 
-    cl = parser.parse( options, cl.getArgs() );
+    argList = parser.parse( options, argList.getArgs() );
 
-    assertTrue( "Confirm -c is not set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm  1 extra arg: " + cl.getArgList().size(), cl.getArgList().size() == 1 );
-    assertTrue( "Confirm  value of extra arg: " + cl.getArgList().get( 0 ), cl.getArgList().get( 0 ).equals( "foobar" ) );
+    assertTrue( "Confirm -c is not set", !argList.hasOption( "c" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm  1 extra arg: " + argList.getArgList().size(), argList.getArgList().size() == 1 );
+    assertTrue( "Confirm  value of extra arg: " + argList.getArgList().get( 0 ), argList.getArgList().get( 0 ).equals( "foobar" ) );
   }
 
 
@@ -290,17 +290,17 @@ public abstract class ParserTestCase {
   public void testMultipleWithLong() throws Exception {
     final String[] args = new String[] { "--copt", "foobar", "--bfile", "toast" };
 
-    ArgumentList cl = parser.parse( options, args, true );
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm  3 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 3 );
+    ArgumentList argList = parser.parse( options, args, true );
+    assertTrue( "Confirm -c is set", argList.hasOption( "c" ) );
+    assertTrue( "Confirm  3 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 3 );
 
-    cl = parser.parse( options, cl.getArgs() );
+    argList = parser.parse( options, argList.getArgs() );
 
-    assertTrue( "Confirm -c is not set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm  1 extra arg: " + cl.getArgList().size(), cl.getArgList().size() == 1 );
-    assertTrue( "Confirm  value of extra arg: " + cl.getArgList().get( 0 ), cl.getArgList().get( 0 ).equals( "foobar" ) );
+    assertTrue( "Confirm -c is not set", !argList.hasOption( "c" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm  1 extra arg: " + argList.getArgList().size(), argList.getArgList().size() == 1 );
+    assertTrue( "Confirm  value of extra arg: " + argList.getArgList().get( 0 ), argList.getArgList().get( 0 ).equals( "foobar" ) );
   }
 
 
@@ -310,8 +310,8 @@ public abstract class ParserTestCase {
   public void testNegativeArgument() throws Exception {
     final String[] args = new String[] { "-b", "-1" };
 
-    final ArgumentList cl = parser.parse( options, args );
-    assertEquals( "-1", cl.getOptionValue( "b" ) );
+    final ArgumentList argList = parser.parse( options, args );
+    assertEquals( "-1", argList.getOptionValue( "b" ) );
   }
 
 
@@ -335,7 +335,7 @@ public abstract class ParserTestCase {
     opts.addOptionGroup( directions );
     opts.addOption( straight );
 
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
     boolean exception = false;
 
     String[] args = new String[] {};
@@ -478,16 +478,16 @@ public abstract class ParserTestCase {
     final Options options = new Options();
     options.addOption( OptionBuilder.withValueSeparator().hasArgs( 2 ).create( 'J' ) );
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    final List values = Arrays.asList( cl.getOptionValues( "J" ) );
+    final List values = Arrays.asList( argList.getOptionValues( "J" ) );
     assertNotNull( "null values", values );
     assertEquals( "number of values", 4, values.size() );
     assertEquals( "value 1", "source", values.get( 0 ) );
     assertEquals( "value 2", "1.5", values.get( 1 ) );
     assertEquals( "value 3", "target", values.get( 2 ) );
     assertEquals( "value 4", "1.5", values.get( 3 ) );
-    final List argsleft = cl.getArgList();
+    final List argsleft = argList.getArgList();
     assertEquals( "Should be 1 arg left", 1, argsleft.size() );
     assertEquals( "Expecting foo", "foo", argsleft.get( 0 ) );
   }
@@ -497,7 +497,7 @@ public abstract class ParserTestCase {
 
   @Test
   public void testQuoted() throws Exception {
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
     final String[] args = new String[] { "-m", "\"Two Words\"" };
     OptionBuilder.hasArgs();
     final Option m = OptionBuilder.create( "m" );
@@ -517,7 +517,7 @@ public abstract class ParserTestCase {
     options.addOption( OptionBuilder.withValueSeparator( ':' ).hasArgs().create( 'p' ) );
     final String[] args = new String[] { "-DJAVA_HOME=/opt/java", "-pfile1:file2:file3" };
 
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
 
     final ArgumentList cmd = parser.parse( options, args );
 
@@ -561,9 +561,9 @@ public abstract class ParserTestCase {
     final Options options = new Options();
     options.addOption( OptionBuilder.withLongOpt( "foo" ).hasArg().create( 'f' ) );
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertEquals( "bar", cl.getOptionValue( "foo" ) );
+    assertEquals( "bar", argList.getOptionValue( "foo" ) );
   }
 
 
@@ -576,9 +576,9 @@ public abstract class ParserTestCase {
     final Options options = new Options();
     options.addOption( OptionBuilder.withLongOpt( "foo" ).hasArg().create( 'f' ) );
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertEquals( "bar", cl.getOptionValue( "foo" ) );
+    assertEquals( "bar", argList.getOptionValue( "foo" ) );
   }
 
 
@@ -588,13 +588,13 @@ public abstract class ParserTestCase {
   public void testSimpleLong() throws Exception {
     final String[] args = new String[] { "--enable-a", "--bfile", "toast", "foo", "bar" };
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm arg of --bfile", cl.getOptionValue( "bfile" ).equals( "toast" ) );
-    assertTrue( "Confirm size of extra args", cl.getArgList().size() == 2 );
+    assertTrue( "Confirm -a is set", argList.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm arg of --bfile", argList.getOptionValue( "bfile" ).equals( "toast" ) );
+    assertTrue( "Confirm size of extra args", argList.getArgList().size() == 2 );
   }
 
 
@@ -604,12 +604,12 @@ public abstract class ParserTestCase {
   public void testSimpleShort() throws Exception {
     final String[] args = new String[] { "-a", "-b", "toast", "foo", "bar" };
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm size of extra args", cl.getArgList().size() == 2 );
+    assertTrue( "Confirm -a is set", argList.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm size of extra args", argList.getArgList().size() == 2 );
   }
 
 
@@ -619,13 +619,13 @@ public abstract class ParserTestCase {
   public void testSingleDash() throws Exception {
     final String[] args = new String[] { "--copt", "-b", "-", "-a", "-" };
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "-" ) );
-    assertTrue( "Confirm 1 extra arg: " + cl.getArgList().size(), cl.getArgList().size() == 1 );
-    assertTrue( "Confirm value of extra arg: " + cl.getArgList().get( 0 ), cl.getArgList().get( 0 ).equals( "-" ) );
+    assertTrue( "Confirm -a is set", argList.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "-" ) );
+    assertTrue( "Confirm 1 extra arg: " + argList.getArgList().size(), argList.getArgList().size() == 1 );
+    assertTrue( "Confirm value of extra arg: " + argList.getArgList().get( 0 ), argList.getArgList().get( 0 ).equals( "-" ) );
   }
 
 
@@ -635,11 +635,11 @@ public abstract class ParserTestCase {
   public void testStopAtExpectedArg() throws Exception {
     final String[] args = new String[] { "-b", "foo" };
 
-    final ArgumentList cl = parser.parse( options, args, true );
+    final ArgumentList argList = parser.parse( options, args, true );
 
-    assertTrue( "Confirm -b is set", cl.hasOption( 'b' ) );
-    assertEquals( "Confirm -b is set", "foo", cl.getOptionValue( 'b' ) );
-    assertTrue( "Confirm no extra args: " + cl.getArgList().size(), cl.getArgList().size() == 0 );
+    assertTrue( "Confirm -b is set", argList.hasOption( 'b' ) );
+    assertEquals( "Confirm -b is set", "foo", argList.getOptionValue( 'b' ) );
+    assertTrue( "Confirm no extra args: " + argList.getArgList().size(), argList.getArgList().size() == 0 );
   }
 
 
@@ -649,11 +649,11 @@ public abstract class ParserTestCase {
   public void testStopAtNonOptionLong() throws Exception {
     final String[] args = new String[] { "--zop==1", "-abtoast", "--b=bar" };
 
-    final ArgumentList cl = parser.parse( options, args, true );
+    final ArgumentList argList = parser.parse( options, args, true );
 
-    assertFalse( "Confirm -a is not set", cl.hasOption( "a" ) );
-    assertFalse( "Confirm -b is not set", cl.hasOption( "b" ) );
-    // TODO: assertTrue( "Confirm  3 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 3 );
+    assertFalse( "Confirm -a is not set", argList.hasOption( "a" ) );
+    assertFalse( "Confirm -b is not set", argList.hasOption( "b" ) );
+    // TODO: assertTrue( "Confirm  3 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 3 );
   }
 
 
@@ -663,9 +663,9 @@ public abstract class ParserTestCase {
   public void testStopAtNonOptionShort() throws Exception {
     final String[] args = new String[] { "-z", "-a", "-btoast" };
 
-    final ArgumentList cl = parser.parse( options, args, true );
-    assertFalse( "Confirm -a is not set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm  3 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 3 );
+    final ArgumentList argList = parser.parse( options, args, true );
+    assertFalse( "Confirm -a is not set", argList.hasOption( "a" ) );
+    assertTrue( "Confirm  3 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 3 );
   }
 
 
@@ -675,9 +675,9 @@ public abstract class ParserTestCase {
   public void testStopAtUnexpectedArg() throws Exception {
     final String[] args = new String[] { "-c", "foober", "-b", "toast" };
 
-    final ArgumentList cl = parser.parse( options, args, true );
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm  3 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 3 );
+    final ArgumentList argList = parser.parse( options, args, true );
+    assertTrue( "Confirm -c is set", argList.hasOption( "c" ) );
+    assertTrue( "Confirm  3 extra args: " + argList.getArgList().size(), argList.getArgList().size() == 3 );
   }
 
 

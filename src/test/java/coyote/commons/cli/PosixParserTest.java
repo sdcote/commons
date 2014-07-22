@@ -27,13 +27,13 @@ public class PosixParserTest extends ParserTestCase {
   public void testBursting() throws Exception {
     final String[] args = new String[] { "-acbtoast", "foo", "bar" };
 
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList al = parser.parse( options, args );
 
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm size of extra args", cl.getArgList().size() == 2 );
+    assertTrue( "Confirm -a is set", al.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", al.hasOption( "b" ) );
+    assertTrue( "Confirm -c is set", al.hasOption( "c" ) );
+    assertTrue( "Confirm arg of -b", al.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm size of extra args", al.getArgList().size() == 2 );
   }
 
 
@@ -91,7 +91,7 @@ public class PosixParserTest extends ParserTestCase {
     options.addOption( configFile );
 
     // create the command line parser
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
 
     final String[] args = new String[] { "-v", "-l", "10", "-age", "5", "-file", "filename" };
 
@@ -146,12 +146,12 @@ public class PosixParserTest extends ParserTestCase {
   public void testStopBursting() throws Exception {
     final String[] args = new String[] { "-azc" };
 
-    final ArgumentList cl = parser.parse( options, args, true );
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertFalse( "Confirm -c is not set", cl.hasOption( "c" ) );
+    final ArgumentList al = parser.parse( options, args, true );
+    assertTrue( "Confirm -a is set", al.hasOption( "a" ) );
+    assertFalse( "Confirm -c is not set", al.hasOption( "c" ) );
 
-    assertTrue( "Confirm  1 extra arg: " + cl.getArgList().size(), cl.getArgList().size() == 1 );
-    assertTrue( cl.getArgList().contains( "zc" ) );
+    assertTrue( "Confirm  1 extra arg: " + al.getArgList().size(), al.getArgList().size() == 1 );
+    assertTrue( al.getArgList().contains( "zc" ) );
   }
 
 
@@ -161,17 +161,17 @@ public class PosixParserTest extends ParserTestCase {
   public void testStopBursting2() throws Exception {
     final String[] args = new String[] { "-c", "foobar", "-btoast" };
 
-    ArgumentList cl = parser.parse( options, args, true );
-    assertTrue( "Confirm -c is set", cl.hasOption( "c" ) );
-    assertTrue( "Confirm  2 extra args: " + cl.getArgList().size(), cl.getArgList().size() == 2 );
+    ArgumentList al = parser.parse( options, args, true );
+    assertTrue( "Confirm -c is set", al.hasOption( "c" ) );
+    assertTrue( "Confirm  2 extra args: " + al.getArgList().size(), al.getArgList().size() == 2 );
 
-    cl = parser.parse( options, cl.getArgs() );
+    al = parser.parse( options, al.getArgs() );
 
-    assertTrue( "Confirm -c is not set", !cl.hasOption( "c" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "toast" ) );
-    assertTrue( "Confirm  1 extra arg: " + cl.getArgList().size(), cl.getArgList().size() == 1 );
-    assertTrue( "Confirm  value of extra arg: " + cl.getArgList().get( 0 ), cl.getArgList().get( 0 ).equals( "foobar" ) );
+    assertTrue( "Confirm -c is not set", !al.hasOption( "c" ) );
+    assertTrue( "Confirm -b is set", al.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", al.getOptionValue( "b" ).equals( "toast" ) );
+    assertTrue( "Confirm  1 extra arg: " + al.getArgList().size(), al.getArgList().size() == 1 );
+    assertTrue( "Confirm  value of extra arg: " + al.getArgList().get( 0 ), al.getArgList().get( 0 ).equals( "foobar" ) );
   }
 
 

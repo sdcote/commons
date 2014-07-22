@@ -28,7 +28,7 @@ public class ApplicationTest {
   @Test
   public void testAnt() throws Exception {
     // use the GNU parser
-    final CommandLineParser parser = new GnuParser();
+    final ArgumentParser parser = new GnuParser();
     final Options options = new Options();
     options.addOption( "help", false, "print this message" );
     options.addOption( "projecthelp", false, "print project help information" );
@@ -41,25 +41,24 @@ public class ApplicationTest {
     options.addOption( "listener", true, "add an instance of a class as a project listener" );
     options.addOption( "buildfile", true, "use given buildfile" );
     options.addOption( OptionBuilder.withDescription( "use value for given property" ).hasArgs().withValueSeparator().create( 'D' ) );
-    //, null, true, , false, true );
     options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
 
     final String[] args = new String[] { "-buildfile", "mybuild.xml", "-Dproperty=value", "-Dproperty1=value1", "-projecthelp" };
 
-    final ArgumentList line = parser.parse( options, args );
+    final ArgumentList argList = parser.parse( options, args );
 
     // check multiple values
-    final String[] opts = line.getOptionValues( "D" );
+    final String[] opts = argList.getOptionValues( "D" );
     assertEquals( "property", opts[0] );
     assertEquals( "value", opts[1] );
     assertEquals( "property1", opts[2] );
     assertEquals( "value1", opts[3] );
 
     // check single value
-    assertEquals( line.getOptionValue( "buildfile" ), "mybuild.xml" );
+    assertEquals( argList.getOptionValue( "buildfile" ), "mybuild.xml" );
 
     // check option
-    assertTrue( line.hasOption( "projecthelp" ) );
+    assertTrue( argList.hasOption( "projecthelp" ) );
   }
 
 
@@ -82,10 +81,10 @@ public class ApplicationTest {
     options.addOption( OptionBuilder.withArgName( "splitPattern" ).hasOptionalArg().withDescription( "split lines using splitPattern (default '\\s') using implicit 'split' variable" ).withLongOpt( "autosplit" ).create( 'a' ) );
 
     final Parser parser = new PosixParser();
-    final ArgumentList line = parser.parse( options, new String[] { "-e", "println 'hello'" }, true );
+    final ArgumentList argList = parser.parse( options, new String[] { "-e", "println 'hello'" }, true );
 
-    assertTrue( line.hasOption( 'e' ) );
-    assertEquals( "println 'hello'", line.getOptionValue( 'e' ) );
+    assertTrue( argList.hasOption( 'e' ) );
+    assertEquals( "println 'hello'", argList.getOptionValue( 'e' ) );
   }
 
 
@@ -94,7 +93,7 @@ public class ApplicationTest {
   @Test
   public void testLs() throws Exception {
     // create the command line parser
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
     final Options options = new Options();
     options.addOption( "a", "all", false, "do not hide entries starting with ." );
     options.addOption( "A", "almost-all", false, "do not list implied . and .." );
@@ -106,9 +105,9 @@ public class ApplicationTest {
 
     final String[] args = new String[] { "--block-size=10" };
 
-    final ArgumentList line = parser.parse( options, args );
-    assertTrue( line.hasOption( "block-size" ) );
-    assertEquals( line.getOptionValue( "block-size" ), "10" );
+    final ArgumentList argList = parser.parse( options, args );
+    assertTrue( argList.hasOption( "block-size" ) );
+    assertEquals( argList.getOptionValue( "block-size" ), "10" );
   }
 
 

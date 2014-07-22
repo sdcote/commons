@@ -11,23 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class CommandLineTest {
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {}
-
-
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
-
-
+public class OptionPropertyTest {
 
 
   @Test
@@ -39,9 +23,9 @@ public class CommandLineTest {
     options.addOption( OptionBuilder.withValueSeparator().hasArgs( 2 ).withLongOpt( "property" ).create() );
 
     final Parser parser = new GnuParser();
-    final ArgumentList cl = parser.parse( options, args );
+    final ArgumentList al = parser.parse( options, args );
 
-    final Properties props = cl.getOptionProperties( "D" );
+    final Properties props = al.getOptionProperties( "D" );
     assertNotNull( "null properties", props );
     assertEquals( "number of properties in " + props, 4, props.size() );
     assertEquals( "property 1", "value1", props.getProperty( "param1" ) );
@@ -49,6 +33,6 @@ public class CommandLineTest {
     assertEquals( "property 3", "true", props.getProperty( "param3" ) );
     assertEquals( "property 4", "value4", props.getProperty( "param4" ) );
 
-    assertEquals( "property with long format", "bar", cl.getOptionProperties( "property" ).getProperty( "foo" ) );
+    assertEquals( "property with long format", "bar", al.getOptionProperties( "property" ).getProperty( "foo" ) );
   }
 }

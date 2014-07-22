@@ -14,9 +14,6 @@ import org.junit.Test;
  */
 public class OptionTest {
   private static class DefaultOption extends Option {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7947152607975698810L;
     private final String defaultValue;
 
@@ -38,9 +35,6 @@ public class OptionTest {
   }
 
   private static class TestOption extends Option {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -4341840485935398838L;
 
 

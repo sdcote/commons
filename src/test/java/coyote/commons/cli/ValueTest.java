@@ -14,7 +14,7 @@ import org.junit.Test;
 
 
 public class ValueTest {
-  private static ArgumentList _cl = null;
+  private static ArgumentList _al = null;
   private static Options opts = new Options();
 
 
@@ -38,7 +38,7 @@ public class ValueTest {
     final String[] args = new String[] { "-a", "-b", "foo", "--c", "--d", "bar" };
 
     final Parser parser = new PosixParser();
-    _cl = parser.parse( opts, args );
+    _al = parser.parse( opts, args );
   }
 
 
@@ -46,8 +46,8 @@ public class ValueTest {
 
   @Test
   public void testLongNoArg() {
-    assertTrue( _cl.hasOption( "c" ) );
-    assertNull( _cl.getOptionValue( "c" ) );
+    assertTrue( _al.hasOption( "c" ) );
+    assertNull( _al.getOptionValue( "c" ) );
   }
 
 
@@ -58,9 +58,9 @@ public class ValueTest {
     final String[] args = new String[] { "--fish", "face" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "fish" ) );
-    assertEquals( "face", cmd.getOptionValue( "fish" ) );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "fish" ) );
+    assertEquals( "face", argList.getOptionValue( "fish" ) );
   }
 
 
@@ -71,12 +71,12 @@ public class ValueTest {
     final String[] args = new String[] { "--gravy", "gold", "garden" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "gravy" ) );
-    assertEquals( "gold", cmd.getOptionValue( "gravy" ) );
-    assertEquals( "gold", cmd.getOptionValues( "gravy" )[0] );
-    assertEquals( "garden", cmd.getOptionValues( "gravy" )[1] );
-    assertEquals( cmd.getArgs().length, 0 );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "gravy" ) );
+    assertEquals( "gold", argList.getOptionValue( "gravy" ) );
+    assertEquals( "gold", argList.getOptionValues( "gravy" )[0] );
+    assertEquals( "garden", argList.getOptionValues( "gravy" )[1] );
+    assertEquals( argList.getArgs().length, 0 );
   }
 
 
@@ -88,13 +88,13 @@ public class ValueTest {
 
     final Parser parser = new PosixParser();
 
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "hide" ) );
-    assertEquals( "house", cmd.getOptionValue( "hide" ) );
-    assertEquals( "house", cmd.getOptionValues( "hide" )[0] );
-    assertEquals( "hair", cmd.getOptionValues( "hide" )[1] );
-    assertEquals( cmd.getArgs().length, 1 );
-    assertEquals( "head", cmd.getArgs()[0] );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "hide" ) );
+    assertEquals( "house", argList.getOptionValue( "hide" ) );
+    assertEquals( "house", argList.getOptionValues( "hide" )[0] );
+    assertEquals( "hair", argList.getOptionValues( "hide" )[1] );
+    assertEquals( argList.getArgs().length, 1 );
+    assertEquals( "head", argList.getArgs()[0] );
   }
 
 
@@ -105,9 +105,9 @@ public class ValueTest {
     final String[] args = new String[] { "--fish" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "fish" ) );
-    assertNull( cmd.getOptionValue( "fish" ) );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "fish" ) );
+    assertNull( argList.getOptionValue( "fish" ) );
   }
 
 
@@ -115,9 +115,9 @@ public class ValueTest {
 
   @Test
   public void testLongWithArg() {
-    assertTrue( _cl.hasOption( "d" ) );
-    assertNotNull( _cl.getOptionValue( "d" ) );
-    assertEquals( _cl.getOptionValue( "d" ), "bar" );
+    assertTrue( _al.hasOption( "d" ) );
+    assertNotNull( _al.getOptionValue( "d" ) );
+    assertEquals( _al.getOptionValue( "d" ), "bar" );
   }
 
 
@@ -132,39 +132,39 @@ public class ValueTest {
 
     final Parser parser = new PosixParser();
 
-    ArgumentList cmd = parser.parse( opts, null, properties );
-    assertTrue( cmd.hasOption( "a" ) );
-    assertTrue( cmd.hasOption( "c" ) );
-    assertTrue( cmd.hasOption( "e" ) );
+    ArgumentList argList = parser.parse( opts, null, properties );
+    assertTrue( argList.hasOption( "a" ) );
+    assertTrue( argList.hasOption( "c" ) );
+    assertTrue( argList.hasOption( "e" ) );
 
     properties = new Properties();
     properties.setProperty( "a", "false" );
     properties.setProperty( "c", "no" );
     properties.setProperty( "e", "0" );
 
-    cmd = parser.parse( opts, null, properties );
-    assertTrue( !cmd.hasOption( "a" ) );
-    assertTrue( !cmd.hasOption( "c" ) );
-    assertTrue( !cmd.hasOption( "e" ) );
+    argList = parser.parse( opts, null, properties );
+    assertTrue( !argList.hasOption( "a" ) );
+    assertTrue( !argList.hasOption( "c" ) );
+    assertTrue( !argList.hasOption( "e" ) );
 
     properties = new Properties();
     properties.setProperty( "a", "TRUE" );
     properties.setProperty( "c", "nO" );
     properties.setProperty( "e", "TrUe" );
 
-    cmd = parser.parse( opts, null, properties );
-    assertTrue( cmd.hasOption( "a" ) );
-    assertTrue( !cmd.hasOption( "c" ) );
-    assertTrue( cmd.hasOption( "e" ) );
+    argList = parser.parse( opts, null, properties );
+    assertTrue( argList.hasOption( "a" ) );
+    assertTrue( !argList.hasOption( "c" ) );
+    assertTrue( argList.hasOption( "e" ) );
 
     properties = new Properties();
     properties.setProperty( "a", "just a string" );
     properties.setProperty( "e", "" );
 
-    cmd = parser.parse( opts, null, properties );
-    assertTrue( !cmd.hasOption( "a" ) );
-    assertTrue( !cmd.hasOption( "c" ) );
-    assertTrue( !cmd.hasOption( "e" ) );
+    argList = parser.parse( opts, null, properties );
+    assertTrue( !argList.hasOption( "a" ) );
+    assertTrue( !argList.hasOption( "c" ) );
+    assertTrue( !argList.hasOption( "e" ) );
   }
 
 
@@ -179,9 +179,9 @@ public class ValueTest {
 
     final String[] values = new String[] { "one", "two" };
 
-    final ArgumentList cmd = parser.parse( opts, null, properties );
-    assertTrue( cmd.hasOption( "k" ) );
-    assertTrue( Arrays.equals( values, cmd.getOptionValues( 'k' ) ) );
+    final ArgumentList argList = parser.parse( opts, null, properties );
+    assertTrue( argList.hasOption( "k" ) );
+    assertTrue( Arrays.equals( values, argList.getOptionValues( 'k' ) ) );
   }
 
 
@@ -194,10 +194,10 @@ public class ValueTest {
 
     final Parser parser = new PosixParser();
 
-    final ArgumentList cmd = parser.parse( opts, null, properties );
-    assertTrue( cmd.hasOption( "hide" ) );
-    assertEquals( "seek", cmd.getOptionValue( "hide" ) );
-    assertTrue( !cmd.hasOption( "fake" ) );
+    final ArgumentList argList = parser.parse( opts, null, properties );
+    assertTrue( argList.hasOption( "hide" ) );
+    assertEquals( "seek", argList.getOptionValue( "hide" ) );
+    assertTrue( !argList.hasOption( "fake" ) );
   }
 
 
@@ -211,12 +211,12 @@ public class ValueTest {
     properties.setProperty( "j", "seek" );
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args, properties );
-    assertTrue( cmd.hasOption( "j" ) );
-    assertEquals( "found", cmd.getOptionValue( "j" ) );
-    assertTrue( cmd.hasOption( "i" ) );
-    assertEquals( "ink", cmd.getOptionValue( "i" ) );
-    assertTrue( !cmd.hasOption( "fake" ) );
+    final ArgumentList argList = parser.parse( opts, args, properties );
+    assertTrue( argList.hasOption( "j" ) );
+    assertEquals( "found", argList.getOptionValue( "j" ) );
+    assertTrue( argList.hasOption( "i" ) );
+    assertEquals( "ink", argList.getOptionValue( "i" ) );
+    assertTrue( !argList.hasOption( "fake" ) );
   }
 
 
@@ -224,8 +224,8 @@ public class ValueTest {
 
   @Test
   public void testShortNoArg() {
-    assertTrue( _cl.hasOption( "a" ) );
-    assertNull( _cl.getOptionValue( "a" ) );
+    assertTrue( _al.hasOption( "a" ) );
+    assertNull( _al.getOptionValue( "a" ) );
   }
 
 
@@ -236,9 +236,9 @@ public class ValueTest {
     final String[] args = new String[] { "-e" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "e" ) );
-    assertNull( cmd.getOptionValue( "e" ) );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "e" ) );
+    assertNull( argList.getOptionValue( "e" ) );
   }
 
 
@@ -249,9 +249,9 @@ public class ValueTest {
     final String[] args = new String[] { "-e", "everything" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "e" ) );
-    assertEquals( "everything", cmd.getOptionValue( "e" ) );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "e" ) );
+    assertEquals( "everything", argList.getOptionValue( "e" ) );
   }
 
 
@@ -262,12 +262,12 @@ public class ValueTest {
     final String[] args = new String[] { "-j", "ink", "idea" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "j" ) );
-    assertEquals( "ink", cmd.getOptionValue( "j" ) );
-    assertEquals( "ink", cmd.getOptionValues( "j" )[0] );
-    assertEquals( "idea", cmd.getOptionValues( "j" )[1] );
-    assertEquals( cmd.getArgs().length, 0 );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "j" ) );
+    assertEquals( "ink", argList.getOptionValue( "j" ) );
+    assertEquals( "ink", argList.getOptionValues( "j" )[0] );
+    assertEquals( "idea", argList.getOptionValues( "j" )[1] );
+    assertEquals( argList.getArgs().length, 0 );
   }
 
 
@@ -278,14 +278,14 @@ public class ValueTest {
     final String[] args = new String[] { "-i", "ink", "idea", "isotope", "ice" };
 
     final Parser parser = new PosixParser();
-    final ArgumentList cmd = parser.parse( opts, args );
-    assertTrue( cmd.hasOption( "i" ) );
-    assertEquals( "ink", cmd.getOptionValue( "i" ) );
-    assertEquals( "ink", cmd.getOptionValues( "i" )[0] );
-    assertEquals( "idea", cmd.getOptionValues( "i" )[1] );
-    assertEquals( cmd.getArgs().length, 2 );
-    assertEquals( "isotope", cmd.getArgs()[0] );
-    assertEquals( "ice", cmd.getArgs()[1] );
+    final ArgumentList argList = parser.parse( opts, args );
+    assertTrue( argList.hasOption( "i" ) );
+    assertEquals( "ink", argList.getOptionValue( "i" ) );
+    assertEquals( "ink", argList.getOptionValues( "i" )[0] );
+    assertEquals( "idea", argList.getOptionValues( "i" )[1] );
+    assertEquals( argList.getArgs().length, 2 );
+    assertEquals( "isotope", argList.getArgs()[0] );
+    assertEquals( "ice", argList.getArgs()[1] );
   }
 
 
@@ -293,9 +293,9 @@ public class ValueTest {
 
   @Test
   public void testShortWithArg() {
-    assertTrue( _cl.hasOption( "b" ) );
-    assertNotNull( _cl.getOptionValue( "b" ) );
-    assertEquals( _cl.getOptionValue( "b" ), "foo" );
+    assertTrue( _al.hasOption( "b" ) );
+    assertNotNull( _al.getOptionValue( "b" ) );
+    assertEquals( _al.getOptionValue( "b" ), "foo" );
   }
 
 }

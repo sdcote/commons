@@ -13,7 +13,7 @@ import coyote.commons.StringUtil;
 /**
  * {@code Parser} creates {@link ArgumentList}s.
  */
-public abstract class Parser implements CommandLineParser {
+public abstract class Parser implements ArgumentParser {
   /** command-line instance */
   protected ArgumentList cmd;
 

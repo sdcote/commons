@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class ValuesTest {
   /** ArgumentList instance */
-  private static ArgumentList _cmdline = null;
+  private static ArgumentList _argList = null;
 
 
 
@@ -38,9 +38,9 @@ public class ValuesTest {
 
     final String[] args = new String[] { "-a", "-b", "foo", "--c", "--d", "bar", "-e", "one", "two", "-f", "arg1", "arg2", "-g", "val1", "val2", "arg3", "-h", "val1", "-i", "-h", "val2", "-jkey=value", "-j", "key=value", "-kkey1=value1", "-kkey2=value2", "-mkey=value" };
 
-    final CommandLineParser parser = new PosixParser();
+    final ArgumentParser parser = new PosixParser();
 
-    _cmdline = parser.parse( options, args );
+    _argList = parser.parse( options, args );
   }
 
 
@@ -51,28 +51,28 @@ public class ValuesTest {
     // tests the char methods of ArgumentList that delegate to
     // the String methods
     String[] values = new String[] { "key", "value", "key", "value" };
-    assertTrue( _cmdline.hasOption( "j" ) );
-    assertTrue( _cmdline.hasOption( 'j' ) );
-    assertEquals( 4, _cmdline.getOptionValues( "j" ).length );
-    assertEquals( 4, _cmdline.getOptionValues( 'j' ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "j" ) ) );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( 'j' ) ) );
+    assertTrue( _argList.hasOption( "j" ) );
+    assertTrue( _argList.hasOption( 'j' ) );
+    assertEquals( 4, _argList.getOptionValues( "j" ).length );
+    assertEquals( 4, _argList.getOptionValues( 'j' ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "j" ) ) );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( 'j' ) ) );
 
     values = new String[] { "key1", "value1", "key2", "value2" };
-    assertTrue( _cmdline.hasOption( "k" ) );
-    assertTrue( _cmdline.hasOption( 'k' ) );
-    assertEquals( 4, _cmdline.getOptionValues( "k" ).length );
-    assertEquals( 4, _cmdline.getOptionValues( 'k' ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "k" ) ) );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( 'k' ) ) );
+    assertTrue( _argList.hasOption( "k" ) );
+    assertTrue( _argList.hasOption( 'k' ) );
+    assertEquals( 4, _argList.getOptionValues( "k" ).length );
+    assertEquals( 4, _argList.getOptionValues( 'k' ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "k" ) ) );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( 'k' ) ) );
 
     values = new String[] { "key", "value" };
-    assertTrue( _cmdline.hasOption( "m" ) );
-    assertTrue( _cmdline.hasOption( 'm' ) );
-    assertEquals( 2, _cmdline.getOptionValues( "m" ).length );
-    assertEquals( 2, _cmdline.getOptionValues( 'm' ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "m" ) ) );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( 'm' ) ) );
+    assertTrue( _argList.hasOption( "m" ) );
+    assertTrue( _argList.hasOption( 'm' ) );
+    assertEquals( 2, _argList.getOptionValues( "m" ).length );
+    assertEquals( 2, _argList.getOptionValues( 'm' ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "m" ) ) );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( 'm' ) ) );
   }
 
 
@@ -80,12 +80,12 @@ public class ValuesTest {
 
   @Test
   public void testComplexValues() {
-    _cmdline.getOptionValues( "h" );
+    _argList.getOptionValues( "h" );
     final String[] values = new String[] { "val1", "val2" };
-    assertTrue( _cmdline.hasOption( "i" ) );
-    assertTrue( _cmdline.hasOption( "h" ) );
-    assertEquals( 2, _cmdline.getOptionValues( "h" ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "h" ) ) );
+    assertTrue( _argList.hasOption( "i" ) );
+    assertTrue( _argList.hasOption( "h" ) );
+    assertEquals( 2, _argList.getOptionValues( "h" ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "h" ) ) );
   }
 
 
@@ -94,8 +94,8 @@ public class ValuesTest {
   @Test
   public void testExtraArgs() {
     final String[] args = new String[] { "arg1", "arg2", "arg3" };
-    assertEquals( 3, _cmdline.getArgs().length );
-    assertTrue( Arrays.equals( args, _cmdline.getArgs() ) );
+    assertEquals( 3, _argList.getArgs().length );
+    assertTrue( Arrays.equals( args, _argList.getArgs() ) );
   }
 
 
@@ -103,11 +103,11 @@ public class ValuesTest {
 
   @Test
   public void testMultipleArgValues() {
-    _cmdline.getOptionValues( "e" );
+    _argList.getOptionValues( "e" );
     final String[] values = new String[] { "one", "two" };
-    assertTrue( _cmdline.hasOption( "e" ) );
-    assertEquals( 2, _cmdline.getOptionValues( "e" ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "e" ) ) );
+    assertTrue( _argList.hasOption( "e" ) );
+    assertEquals( 2, _argList.getOptionValues( "e" ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "e" ) ) );
   }
 
 
@@ -115,11 +115,11 @@ public class ValuesTest {
 
   @Test
   public void testShortArgs() {
-    assertTrue( _cmdline.hasOption( "a" ) );
-    assertTrue( _cmdline.hasOption( "c" ) );
+    assertTrue( _argList.hasOption( "a" ) );
+    assertTrue( _argList.hasOption( "c" ) );
 
-    assertNull( _cmdline.getOptionValues( "a" ) );
-    assertNull( _cmdline.getOptionValues( "c" ) );
+    assertNull( _argList.getOptionValues( "a" ) );
+    assertNull( _argList.getOptionValues( "c" ) );
   }
 
 
@@ -127,13 +127,13 @@ public class ValuesTest {
 
   @Test
   public void testShortArgsWithValue() {
-    assertTrue( _cmdline.hasOption( "b" ) );
-    assertTrue( _cmdline.getOptionValue( "b" ).equals( "foo" ) );
-    assertEquals( 1, _cmdline.getOptionValues( "b" ).length );
+    assertTrue( _argList.hasOption( "b" ) );
+    assertTrue( _argList.getOptionValue( "b" ).equals( "foo" ) );
+    assertEquals( 1, _argList.getOptionValues( "b" ).length );
 
-    assertTrue( _cmdline.hasOption( "d" ) );
-    assertTrue( _cmdline.getOptionValue( "d" ).equals( "bar" ) );
-    assertEquals( 1, _cmdline.getOptionValues( "d" ).length );
+    assertTrue( _argList.hasOption( "d" ) );
+    assertTrue( _argList.getOptionValue( "d" ).equals( "bar" ) );
+    assertEquals( 1, _argList.getOptionValues( "d" ).length );
   }
 
 
@@ -141,11 +141,11 @@ public class ValuesTest {
 
   @Test
   public void testTwoArgValues() {
-    _cmdline.getOptionValues( "g" );
+    _argList.getOptionValues( "g" );
     final String[] values = new String[] { "val1", "val2" };
-    assertTrue( _cmdline.hasOption( "g" ) );
-    assertEquals( 2, _cmdline.getOptionValues( "g" ).length );
-    assertTrue( Arrays.equals( values, _cmdline.getOptionValues( "g" ) ) );
+    assertTrue( _argList.hasOption( "g" ) );
+    assertEquals( 2, _argList.getOptionValues( "g" ).length );
+    assertTrue( Arrays.equals( values, _argList.getOptionValues( "g" ) ) );
   }
 
 }

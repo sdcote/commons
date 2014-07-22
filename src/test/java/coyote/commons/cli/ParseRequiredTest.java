@@ -23,7 +23,7 @@ public class ParseRequiredTest {
     _options = new Options().addOption( "a", "enable-a", false, "turn [a] on or off" ).addOption( OptionBuilder.withLongOpt( "bfile" ).hasArg().isRequired().withDescription( "set the value of [b]" ).create( 'b' ) );
   }
 
-  private final CommandLineParser parser = new PosixParser();
+  private final ArgumentParser parser = new PosixParser();
 
 
 
@@ -71,12 +71,12 @@ public class ParseRequiredTest {
   public void testOptionAndRequiredOption() throws Exception {
     final String[] args = new String[] { "-a", "-b", "file" };
 
-    final ArgumentList cl = parser.parse( _options, args );
+    final ArgumentList argList = parser.parse( _options, args );
 
-    assertTrue( "Confirm -a is set", cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "file" ) );
-    assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0 );
+    assertTrue( "Confirm -a is set", argList.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "file" ) );
+    assertTrue( "Confirm NO of extra args", argList.getArgList().size() == 0 );
   }
 
 
@@ -108,12 +108,12 @@ public class ParseRequiredTest {
   public void testWithRequiredOption() throws Exception {
     final String[] args = new String[] { "-b", "file" };
 
-    final ArgumentList cl = parser.parse( _options, args );
+    final ArgumentList argList = parser.parse( _options, args );
 
-    assertTrue( "Confirm -a is NOT set", !cl.hasOption( "a" ) );
-    assertTrue( "Confirm -b is set", cl.hasOption( "b" ) );
-    assertTrue( "Confirm arg of -b", cl.getOptionValue( "b" ).equals( "file" ) );
-    assertTrue( "Confirm NO of extra args", cl.getArgList().size() == 0 );
+    assertTrue( "Confirm -a is NOT set", !argList.hasOption( "a" ) );
+    assertTrue( "Confirm -b is set", argList.hasOption( "b" ) );
+    assertTrue( "Confirm arg of -b", argList.getOptionValue( "b" ).equals( "file" ) );
+    assertTrue( "Confirm NO of extra args", argList.getArgList().size() == 0 );
   }
 
 }
