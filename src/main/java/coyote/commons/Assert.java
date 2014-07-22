@@ -10,14 +10,6 @@ import java.util.Map;
 public final class Assert {
 
   /**
-   * Private Constructor so no instances of this class
-   */
-  private Assert() {}
-
-
-
-
-  /**
    * Assert that the given text does not contain the given substring.
    * 
    * <pre class="code">Assert.doesNotContain(name, "boogers");</pre>
@@ -305,6 +297,84 @@ public final class Assert {
 
 
   /**
+   * Assert that a string has a specific maximum length; it must not be 
+   * {@code null} and must have at most the given number of characters.
+   * 
+   * <pre class="code">Assert.maxLength(16, text);</pre>
+   *
+   * @param limit The maximum number of characters the string is allow to have.
+   * @param text The string to check
+   * 
+   * @throws IllegalArgumentException if the text is {@code null} or has a length which exceeds the given limit
+   */
+  public static void maxLength( final int limit, final String text ) {
+    maxLength( limit, text, "[Assertion Failure] - this String argument must not exceed " + limit + " characters in length" );
+  }
+
+
+
+
+  /**
+   * Assert that a string has a specific maximum length; it must not be 
+   * {@code null} and must have at most the given number of characters.
+   * 
+   * <pre class="code">Assert.maxLength(16, text, "The text cannot be larger than 16 characters");</pre>
+   * 
+   * @param limit The maximum number of characters the string is allow to have.
+   * @param text The string to check
+   * @param msg the exception message to use if the assertion fails
+   * 
+   * @throws IllegalArgumentException if the text is {@code null} or has a length which exceeds the given limit
+   */
+  public static void maxLength( final int limit, final String text, final String msg ) {
+    if ( ( text != null ) && ( text.length() > limit ) ) {
+      throw new IllegalStateException( msg );
+    }
+  }
+
+
+
+
+  /**
+   * Assert that a string has at least the specified number of characters; it 
+   * must not be {@code null} and must have at least the number of characters.
+   * 
+   * <pre class="code">Assert.minLength(8, text, "The text must contain at least 8 characters");</pre>
+   * 
+   * @param limit The minimum number of characters the string must have.
+   * @param text The string to check
+   * 
+   * @throws IllegalArgumentException if the text is {@code null} or has a length less than the given limit
+   */
+  public static void minLength( final int limit, final String text ) {
+    maxLength( limit, text, "[Assertion Failure] - this String argument must be at least " + limit + " characters in length" );
+  }
+
+
+
+
+  /**
+   * Assert that a string has at least the specified number of characters; it 
+   * must not be {@code null} and must have at least the number of characters.
+   * 
+   * <pre class="code">Assert.minLength(8, text, "The text must contain at least 8 characters");</pre>
+   * 
+   * @param limit The minimum number of characters the string must have.
+   * @param text The string to check
+   * @param msg the exception message to use if the assertion fails
+   * 
+   * @throws IllegalArgumentException if the text is {@code null} or has a length less than the given limit
+   */
+  public static void minLength( final int limit, final String text, final String msg ) {
+    if ( !StringUtil.hasLength( text ) || ( text.length() < limit ) ) {
+      throw new IllegalStateException( msg );
+    }
+  }
+
+
+
+
+  /**
    * Assert that an array has no null elements.
    * 
    * <p><strong>Note:</strong> Does not complain if the array is empty.</p>
@@ -535,4 +605,11 @@ public final class Assert {
     }
   }
 
+
+
+
+  /**
+   * Private Constructor so no instances of this class
+   */
+  private Assert() {}
 }
