@@ -126,7 +126,6 @@ public class HelpFormatterTest extends TestCase {
 
   @Test
   public void testOptionWithoutShortFormat2() {
-    // related to Bugzilla #27635 (CLI-26)
     final Option help = new Option( "h", "help", false, "print this message" );
     final Option version = new Option( "v", "version", false, "print version information" );
     final Option newRun = new Option( "n", "new", false, "Create NLT cache entries only for new items" );
