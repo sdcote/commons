@@ -104,13 +104,13 @@ public class ClasspathUtil {
                   byte[] buffer = new byte[1024];
                   while ( ( bytesRead = entryStream.read( buffer ) ) != -1 );
                 } catch ( Exception ex ) {
-                  Log.error( "Classpath entry '" + entry + "' is not a valid archive, problems accessing '" + jentry.getName() + "' - " + ex.getMessage() );
+                  Log.warn( "Classpath entry '" + entry + "' is not a valid archive, problems accessing '" + jentry.getName() + "' - " + ex.getMessage() );
                   retval = false;
                   break;
                 }
               }
             } catch ( IOException e ) {
-              Log.error( "Classpath entry '" + entry + "' is not a valid java archive: " + e.getMessage() );
+              Log.warn( "Classpath entry '" + entry + "' is not a valid java archive: " + e.getMessage() );
               retval = false;
             }
           } else if ( entry.endsWith( "zip" ) ) {
@@ -131,22 +131,22 @@ public class ClasspathUtil {
                   byte[] buffer = new byte[1024];
                   while ( ( bytesRead = entryStream.read( buffer ) ) != -1 );
                 } catch ( Exception ex ) {
-                  Log.error( "Classpath entry '" + entry + "' is not a valid archive, problems accessing '" + zentry.getName() + "' - " + ex.getMessage() );
+                  Log.warn( "Classpath entry '" + entry + "' is not a valid archive, problems accessing '" + zentry.getName() + "' - " + ex.getMessage() );
                   retval = false;
                   break;
                 }
               }
             } catch ( IOException e ) {
-              Log.error( "Classpath entry '" + entry + "' is not a valid zip archive: " + e.getMessage() );
+              Log.warn( "Classpath entry '" + entry + "' is not a valid zip archive: " + e.getMessage() );
               retval = false;
             }
           }
         } else {
-          Log.error( "Classpath entry '" + entry + "' is not readable" );
+          Log.warn( "Classpath entry '" + entry + "' is not readable" );
           retval = false;
         }
       } else {
-        Log.error( "Classpath entry '" + entry + "' does not appear to exist on file system" );
+        Log.warn( "Classpath entry '" + entry + "' does not appear to exist on file system" );
         missing.add( entry );
         retval = false;
       }
@@ -217,8 +217,8 @@ public class ClasspathUtil {
 
 
   /**
-   * Access a detailed line of text describing what classes were found in which 
-   * class path entries.
+   * Access a detailed line of text describing what classes were found shadowed
+   * (i.e. duplicated) in which class path entries.
    * 
    * <p>This not necessarily an error, but it can allow an application to 
    * determine why a version of a class is not loading as expected. This may be 
@@ -264,14 +264,14 @@ public class ClasspathUtil {
     if ( ClasspathUtil.verifyClasspath() ) {
       Log.info( "Classpath checks out O.K." );
     } else {
-      Log.warn( "Classpath has some problems. Check the logs for details." );
+      Log.warn( "Classpath has some problems. Check the logs for details. Summary follows:" );
 
       // Get a listing of classes that appear more than once in the class path
       String[] shadowedClasses = ClasspathUtil.getShadowedClasses();
 
       // print them out
       if ( shadowedClasses.length > 0 ) {
-        StringBuffer buffer = new StringBuffer( "The following classes appear more than once in the class path:\n" );
+        StringBuilder buffer = new StringBuilder( "The following classes appear more than once in the class path:\n" );
         for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedClasses[x++] + "\n" ) );
         Log.warn( buffer );
       } else {
@@ -282,12 +282,22 @@ public class ClasspathUtil {
       String[] shadowedDetails = ClasspathUtil.getShadowClassDetails();
 
       // print them out
-      if ( shadowedClasses.length > 0 ) {
-        StringBuffer buffer = new StringBuffer( "Details of shadowed classes:\n" );
+      if ( shadowedDetails.length > 0 ) {
+        StringBuilder buffer = new StringBuilder( "Details of shadowed classes:\n" );
         for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedDetails[x++] + "\n" ) );
         Log.warn( buffer );
       } else {
         Log.info( "No shadowed classes were found" );
+      }
+      
+      String[] missing = ClasspathUtil.getMissingClasspathEntries();
+      // print them out
+      if ( missing.length > 0 ) {
+        StringBuilder buffer = new StringBuilder( "Missing classpath entries:\n" );
+        for ( int x = 0; x < missing.length; buffer.append( missing[x++] + "\n" ) );
+        Log.warn( buffer );
+      } else {
+        Log.info( "No missing entries were found" );
       }
     }
   }
