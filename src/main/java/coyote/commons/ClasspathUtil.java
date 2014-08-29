@@ -45,16 +45,25 @@ public class ClasspathUtil {
    * on the file system, can be read, and if it is a JAR or ZIP, verify that 
    * the entries can be read.</p>
    * 
-   * <p>This method will also generate a hashmap of classes that appear in in 
-   * more than one path entry. These shadow classes should not be the cause of 
-   * errors, but some class loaders can get confused when shadow classes exist.
-   * So it is a good idea to eliminate them if possible.<p>
+   * <p>This method will also generate a hashmap of classes that appear in more 
+   * than one path entry. These shadow classes should not be the cause of 
+   * errors, but some class loaders can get confused when shadow classes exist. 
+   * Also, is the wrong version of the class is loaded because it appears first 
+   * on the classpath, the system many not operate as expected. So it is a good 
+   * idea to eliminate them if possible.<p>
    * 
-   * <p>This method will also generate a list of missing path entries.</p>
+   * <p>This class will also generate a list of missing path entries. These are 
+   * classpath entries which do not exist on the file system. An example of 
+   * this if if a JAR was removed from the disk and now the system is throwing 
+   * "class not found" exceptions. Sometimes class paths get too long for the 
+   * OS environment variables (Windows) and older systems have empty classpath 
+   * entries which are no longer needed. This feature can be used to identify 
+   * empty. useless entries so they can be removed providing more room for new 
+   * entries.</p>
    * 
-   * @see #getShadowedClasses()
-   * @see #getShadowClassDetails()
-   * @see #getMissingClasspathEntries()
+   * @see {@link #getShadowedClasses}
+   * @see {@link #getShadowClassDetails}
+   * @see {@link #getMissingClasspathEntries}
    * 
    * @return True if the classpath is clean, false if there are invalid entries.
    */
@@ -64,6 +73,8 @@ public class ClasspathUtil {
     HashMap<String, String> classMap = new HashMap<String, String>();
     HashMap<String, String> shadows = new HashMap<String, String>();
     ArrayList<String> missing = new ArrayList<String>();
+    
+    @SuppressWarnings("unused")
     int bytesRead;
 
     boolean retval = true;
@@ -220,12 +231,13 @@ public class ClasspathUtil {
    * <p>Where: <tt>&lt;class&gt;</tt> is the fully-qualified class name that 
    * appears more than once in the class path, <tt>&lt;initial&gt;</tt> is the 
    * class path entry where the class was first located and from where it will 
-   * probably be found by the classloader, and <tt>&lt;secondary&gt;</tt> is 
+   * probably be found by the class loader, and <tt>&lt;secondary&gt;</tt> is 
    * the class path entry when a copy of the class was found.</p>
    * 
    * <p>This will show each class that occurs more than once in the class path 
-   * listing both the fist class path entry from which the class will probably 
-   * be loaded and the class path entry contains a shadow copy of the entry.</p>
+   * listing; both the first class path entry from which the class will 
+   * probably be loaded and the class path entry contains a shadow copy of the 
+   * entry.</p>
    * 
    * @return an array of shadowed class entries.
    */
@@ -252,7 +264,7 @@ public class ClasspathUtil {
     if ( ClasspathUtil.verifyClasspath() ) {
       Log.info( "Classpath checks out O.K." );
     } else {
-      Log.info( "Classpath has some problems. Check the logs for details." );
+      Log.warn( "Classpath has some problems. Check the logs for details." );
 
       // Get a listing of classes that appear more than once in the class path
       String[] shadowedClasses = ClasspathUtil.getShadowedClasses();
@@ -261,7 +273,7 @@ public class ClasspathUtil {
       if ( shadowedClasses.length > 0 ) {
         StringBuffer buffer = new StringBuffer( "The following classes appear more than once in the class path:\n" );
         for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedClasses[x++] + "\n" ) );
-        Log.info( buffer );
+        Log.warn( buffer );
       } else {
         Log.info( "No shadowed classes were found" );
       }
@@ -273,7 +285,7 @@ public class ClasspathUtil {
       if ( shadowedClasses.length > 0 ) {
         StringBuffer buffer = new StringBuffer( "Details of shadowed classes:\n" );
         for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedDetails[x++] + "\n" ) );
-        Log.info( buffer );
+        Log.warn( buffer );
       } else {
         Log.info( "No shadowed classes were found" );
       }
