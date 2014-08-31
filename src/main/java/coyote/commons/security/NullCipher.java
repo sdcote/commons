@@ -16,8 +16,7 @@ package coyote.commons.security;
  * platform is distributed overseas and encryption technologies are not allowed
  * by the government.
  */
-public class NullCipher implements Cipher
-{
+public class NullCipher extends AbstractCipher implements Cipher {
   private static final String CIPHER_NAME = "Null";
 
 
@@ -26,8 +25,7 @@ public class NullCipher implements Cipher
   /**
    * Standard no-arg constructor.
    */
-  public NullCipher()
-  {
+  public NullCipher() {
     super();
   }
 
@@ -41,8 +39,8 @@ public class NullCipher implements Cipher
    * 
    * @return The data passed to this method.
    */
-  public byte[] decrypt( final byte[] data )
-  {
+  @Override
+  public byte[] decrypt( final byte[] data ) {
     return data;
   }
 
@@ -56,8 +54,8 @@ public class NullCipher implements Cipher
    * 
    * @return The data passed to this method.
    */
-  public byte[] encrypt( final byte[] bytes )
-  {
+  @Override
+  public byte[] encrypt( final byte[] bytes ) {
     return bytes;
   }
 
@@ -67,8 +65,8 @@ public class NullCipher implements Cipher
   /**
    * @see coyote.commons.security.Cipher#getBlockSize()
    */
-  public int getBlockSize()
-  {
+  @Override
+  public int getBlockSize() {
     return 8; // pretend to be a block cipher
   }
 
@@ -79,8 +77,7 @@ public class NullCipher implements Cipher
    * @see coyote.commons.security.Cipher#getName()
    */
   @Override
-  public String getName()
-  {
+  public String getName() {
     return NullCipher.CIPHER_NAME;
   }
 
@@ -92,8 +89,8 @@ public class NullCipher implements Cipher
    * 
    * @param key The key to use for all operations.
    */
-  public void init( final byte[] key )
-  {
+  @Override
+  public void init( final byte[] key ) {
     // don't care
   }
 
