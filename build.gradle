@@ -58,10 +58,20 @@ repositories {
 }
 
 
+ext.junitVersion = '4.11'
+ext.servletVersion = '2.5'
+ext.h2Version = '1.4.177'
+
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.11'
-	testCompile group: 'com.h2database', name: 'h2', version: '1.4.177'
-	testCompile group: 'javax', name: 'javaee-api', version: '6.0'
+	// jUnit support for testing
+	testCompile "junit:junit:$junitVersion"
+	
+	testCompile "com.h2database:h2:$h2Version"
+
+	// Servlet support
+	compile "javax.servlet:servlet-api:$servletVersion"
+	runtime "javax.servlet:servlet-api:$servletVersion"
+
 	
     
 }
