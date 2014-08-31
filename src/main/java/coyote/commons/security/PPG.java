@@ -15,6 +15,158 @@ import java.util.Random;
 
 
 /**
+ * PPG - Pronounceable Password / Pass-phrase Generator.
+ * 
+ * <p>It is known that pass-phrases of multiple words are better than short 
+ * passwords that are hard to remember. As a result, there are pass-phrase 
+ * generators that string together a number of words. The problem with this 
+ * approach is that these phrases are still prone to dictionary attacks.</p>
+ * 
+ * <p>One solution is to use uncommon words. It's even better to use words 
+ * that don't actually exist in dictionaries. The problem is, these words can 
+ * be too difficult to remember and the result is little more than groups of
+ * randomized characters delimited with spaces.</p>
+ * 
+ * One way to make these words easier to remember is to make your brain think
+ * they are words by grouping characters into "pronounceable" tokens making 
+ * them easier to remember.</p>
+ * 
+ * This program uses statistics on the frequency of three-letter sequences in 
+ * English to generate passwords. 
+ * 
+ * This is based on the concept developed by Tom Van Vleck, based on work 
+ * by Morrie Gasser. 
+ */
+public class PPG {
+  private static final Data DATA = new Data();
+  private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
+  private static final Random random = new Random();
+
+
+
+
+  /**
+   * Generate a pass phrase utilizing a set of randomized characters which form 
+   * "pronounceable" tokens.
+   * 
+   * <p>Anecdotal evidence seems to indicate using pass-phrases of only 2 to 4 
+   * tokens of 3 to 5 characters each. When performed correctly, many think the 
+   * result is a Latin phrase.</p> 
+   * 
+   * @param tokens Number of tokens in the phrase
+   * @param min minimum length of the tokens in the phrase
+   * @param max maximum length of the tokens in the phrase
+   * 
+   * @return a pass-phrase of pronounceable, randomized characters
+   */
+  public static String generate( final int tokens, final int min, final int max ) {
+    if ( min > max ) {
+      throw new IllegalArgumentException( "Maximum length cannot be less than minimum lenght value." );
+    }
+    final StringBuilder retval = new StringBuilder();
+    for ( int x = 0; x < tokens; x++ ) {
+      retval.append( generateToken( min + random.nextInt( min == max ? min : ( max + 1 ) - min ) ) );
+      retval.append( ' ' );
+    }
+    return retval.toString();
+  }
+
+
+
+
+  /**
+   * Generate a pronounceable word of a given length.
+   * 
+   * <p>Because this algorithm uses 3-character patterns to generate "words" so
+   * if a length of 1 or 2 is requested, a return value of 3 characters in 
+   * length. Requesting a length of zero or less results in an empty string 
+   * being returned.</p>  
+   * 
+   * @param length length of the token to create
+   * 
+   * @return A pronounceable token of the requested length
+   */
+  public static String generateToken( final int length ) {
+    if ( length < 1 ) {
+      return "";
+    }
+
+    int a, b, c;
+    long sum = 0;
+    int nchar;
+    long ranno;
+    double choice;
+    StringBuilder password;
+
+    password = new StringBuilder( length );
+    choice = random.nextDouble();
+    ranno = (long)( choice * DATA.getSigma() );
+    sum = 0;
+    for ( a = 0; a < 26; a++ ) {
+      for ( b = 0; b < 26; b++ ) {
+        for ( c = 0; c < 26; c++ ) {
+          sum += DATA.get( a, b, c );
+          if ( sum > ranno ) {
+            password.append( CHARACTERS.charAt( a ) );
+            password.append( CHARACTERS.charAt( b ) );
+            password.append( CHARACTERS.charAt( c ) );
+            a = 26;
+            b = 26;
+            c = 26;
+          }
+        }
+      }
+    }
+
+    nchar = 3;
+    while ( nchar < length ) {
+      a = CHARACTERS.indexOf( password.charAt( nchar - 2 ) );
+      b = CHARACTERS.indexOf( password.charAt( nchar - 1 ) );
+      sum = 0;
+      for ( c = 0; c < 26; c++ ) {
+        sum += DATA.get( a, b, c );
+      }
+      if ( sum == 0 ) {
+        break;
+      }
+      choice = random.nextDouble();
+      ranno = (long)( choice * sum );
+      sum = 0;
+      for ( c = 0; c < 26; c++ ) {
+        sum += DATA.get( a, b, c );
+        if ( sum > ranno ) {
+          password.append( CHARACTERS.charAt( c ) );
+          break;
+        }
+      }
+      nchar++;
+    }
+    return password.toString();
+  }
+
+
+
+
+  public static void main( final String[] arge ) {
+    System.out.println( PPG.generate( 1, 3, 5 ) );
+    System.out.println( PPG.generate( 2, 3, 5 ) );
+    System.out.println( PPG.generate( 3, 3, 5 ) );
+    System.out.println( PPG.generate( 4, 3, 5 ) );
+    System.out.println( PPG.generate( 5, 3, 5 ) );
+    System.out.println( PPG.generate( 6, 3, 5 ) );
+    System.out.println( PPG.generate( 7, 3, 5 ) );
+    System.out.println( PPG.generate( 8, 3, 5 ) );
+    System.out.println( PPG.generate( 9, 3, 5 ) );
+    System.out.println( PPG.generate( 10, 3, 5 ) );
+    System.out.println( PPG.generate( 11, 3, 5 ) );
+    System.out.println( PPG.generate( 12, 3, 5 ) );
+  }
+}
+
+
+
+
+/**
  * Class which holds the character distribution data
  */
 class Data {
@@ -782,158 +934,4 @@ class DataInit2 {
     }
   }
 
-}
-
-
-
-
-//
-
-/**
- * PPG - Pronounceable Password / Pass-phrase Generator.
- * 
- * <p>It is known that pass-phrases of multiple words are better than short 
- * passwords that are hard to remember. As a result, there are pass-phrase 
- * generators that string together a number of words. The problem with this 
- * approach is that these phrases are still prone to dictionary attacks.</p>
- * 
- * <p>One solution is to use uncommon words. It's even better to use words 
- * that don't actually exist in dictionaries. The problem is, these words can 
- * be too difficult to remember and the result is little more than groups of
- * randomized characters delimited with spaces.</p>
- * 
- * One way to make these words easier to remember is to make your brain think
- * they are words by grouping characters into "pronounceable" tokens making 
- * them easier to remember.</p>
- * 
- * This program uses statistics on the frequency of three-letter sequences in 
- * English to generate passwords. 
- * 
- * This is based on the concept developed by Tom Van Vleck, based on work 
- * by Morrie Gasser. 
- */
-public class PPG {
-  private static final Data DATA = new Data();
-  private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
-  private static final Random random = new Random();
-
-
-
-
-  /**
-   * Generate a pass phrase utilizing a set of randomized characters which form 
-   * "pronounceable" tokens.
-   * 
-   * <p>Anecdotal evidence seems to indicate using pass-phrases of only 2 to 4 
-   * tokens of 3 to 5 characters each. When performed correctly, many think the 
-   * result is a Latin phrase.</p> 
-   * 
-   * @param tokens Number of tokens in the phrase
-   * @param min minimum length of the tokens in the phrase
-   * @param max maximum length of the tokens in the phrase
-   * 
-   * @return a pass-phrase of pronounceable, randomized characters
-   */
-  public static String generate( final int tokens, final int min, final int max ) {
-    if ( min > max ) {
-      throw new IllegalArgumentException( "Maximum length cannot be less than minimum lenght value." );
-    }
-    final StringBuilder retval = new StringBuilder();
-    for ( int x = 0; x < tokens; x++ ) {
-      retval.append( generateToken( min + random.nextInt( min == max ? min : ( max + 1 ) - min ) ) );
-      retval.append( ' ' );
-    }
-    return retval.toString();
-  }
-
-
-
-
-  /**
-   * Generate a pronounceable word of a given length.
-   * 
-   * <p>Because this algorithm uses 3-character patterns to generate "words" so
-   * if a length of 1 or 2 is requested, a return value of 3 characters in 
-   * length. Requesting a length of zero or less results in an empty string 
-   * being returned.</p>  
-   * 
-   * @param length length of the token to create
-   * 
-   * @return A pronounceable token of the requested length
-   */
-  public static String generateToken( final int length ) {
-    if ( length < 1 ) {
-      return "";
-    }
-
-    int a, b, c;
-    long sum = 0;
-    int nchar;
-    long ranno;
-    double choice;
-    StringBuilder password;
-
-    password = new StringBuilder( length );
-    choice = random.nextDouble();
-    ranno = (long)( choice * DATA.getSigma() );
-    sum = 0;
-    for ( a = 0; a < 26; a++ ) {
-      for ( b = 0; b < 26; b++ ) {
-        for ( c = 0; c < 26; c++ ) {
-          sum += DATA.get( a, b, c );
-          if ( sum > ranno ) {
-            password.append( CHARACTERS.charAt( a ) );
-            password.append( CHARACTERS.charAt( b ) );
-            password.append( CHARACTERS.charAt( c ) );
-            a = 26;
-            b = 26;
-            c = 26;
-          }
-        }
-      }
-    }
-
-    nchar = 3;
-    while ( nchar < length ) {
-      a = CHARACTERS.indexOf( password.charAt( nchar - 2 ) );
-      b = CHARACTERS.indexOf( password.charAt( nchar - 1 ) );
-      sum = 0;
-      for ( c = 0; c < 26; c++ ) {
-        sum += DATA.get( a, b, c );
-      }
-      if ( sum == 0 ) {
-        break;
-      }
-      choice = random.nextDouble();
-      ranno = (long)( choice * sum );
-      sum = 0;
-      for ( c = 0; c < 26; c++ ) {
-        sum += DATA.get( a, b, c );
-        if ( sum > ranno ) {
-          password.append( CHARACTERS.charAt( c ) );
-          break;
-        }
-      }
-      nchar++;
-    }
-    return password.toString();
-  }
-
-
-
-
-  public static void main( final String[] arge ) {
-    System.out.println( PPG.generate( 1, 3, 5 ) );
-    System.out.println( PPG.generate( 2, 3, 5 ) );
-    System.out.println( PPG.generate( 3, 3, 5 ) );
-    System.out.println( PPG.generate( 4, 3, 5 ) );
-    System.out.println( PPG.generate( 5, 3, 5 ) );
-    System.out.println( PPG.generate( 6, 3, 5 ) );
-    System.out.println( PPG.generate( 7, 3, 5 ) );
-    System.out.println( PPG.generate( 8, 3, 5 ) );
-    System.out.println( PPG.generate( 9, 3, 5 ) );
-    System.out.println( PPG.generate( 10, 3, 5 ) );
-    System.out.println( PPG.generate( 11, 3, 5 ) );
-    System.out.println( PPG.generate( 12, 3, 5 ) );
-  }
 }
