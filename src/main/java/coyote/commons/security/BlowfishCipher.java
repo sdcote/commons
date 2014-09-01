@@ -113,7 +113,7 @@ import coyote.commons.ByteUtil;
  * Encryption Algorithm.</a></li>
  * </ol>
  */
-class BlowfishCipher implements Cipher {
+class BlowfishCipher extends AbstractCipher implements Cipher {
   private static final String CIPHER_NAME = "Default";
 
   /**
@@ -149,12 +149,10 @@ class BlowfishCipher implements Cipher {
   //given in bytes from a value in bits
   private static final int MAX_USER_KEY_LENGTH = 448 / 8;
 
-
   // This Blowfish object session key and s-boxes data placeholders.
   private final int[] P = new int[18];
 
   private final int[] sKey = new int[4 * 256];
-
 
 
 
@@ -227,7 +225,6 @@ class BlowfishCipher implements Cipher {
     System.out.println( "Encrypted data:\r\n" + ByteUtil.dump( data ) );
     System.out.println();
 
-    
     // Now create a new instance of the cipher for decryption
     final Cipher cipher2 = new BlowfishCipher();
     cipher2.init( "pickles".getBytes() );
@@ -247,13 +244,15 @@ class BlowfishCipher implements Cipher {
 
     final String text2 = new String( data2 );
     System.out.println( text2 );
-    
-    if( text2.equals( text2 ))
-      System.out.println("Test complete, text values are equal");
+
+    if ( text2.equals( text2 ) )
+      System.out.println( "Test complete, text values are equal" );
     else
-      System.err.println("Decryption failed!");
+      System.err.println( "Decryption failed!" );
 
   }
+
+
 
 
   /**
@@ -372,6 +371,7 @@ class BlowfishCipher implements Cipher {
    */
   @Override
   public byte[] decrypt( final byte[] data ) {
+
     int inOff = 0;
     final int blockCount = data.length / BlowfishCipher.BLOCK_SIZE;
     final byte[] retval = new byte[blockCount * BlowfishCipher.BLOCK_SIZE];
@@ -380,7 +380,7 @@ class BlowfishCipher implements Cipher {
       inOff += BlowfishCipher.BLOCK_SIZE;
     }
 
-    return retval;
+    return AbstractCipher.trim( retval );
   }
 
 
@@ -391,14 +391,22 @@ class BlowfishCipher implements Cipher {
    */
   @Override
   public byte[] encrypt( final byte[] bytes ) {
-    int inOff = 0;
-    final int blockCount = bytes.length / BlowfishCipher.BLOCK_SIZE;
-    final byte[] outs = new byte[blockCount * BlowfishCipher.BLOCK_SIZE];
+
+    // pad the data using RFC-1423 scheme
+    byte[] data = AbstractCipher.pad( bytes );
+
+    // how many blocks will we perform?
+    final int blockCount = data.length / BlowfishCipher.BLOCK_SIZE;
+
+    // create our return value
+    final byte[] retval = new byte[blockCount * BlowfishCipher.BLOCK_SIZE];
+
+    // encrypt our padded data into our return value
     for ( int i = 0; i < blockCount; i++ ) {
-      blowfishEncrypt( bytes, inOff, outs, i * BlowfishCipher.BLOCK_SIZE );
-      inOff += BlowfishCipher.BLOCK_SIZE;
+      blowfishEncrypt( data, i * BlowfishCipher.BLOCK_SIZE, retval, i * BlowfishCipher.BLOCK_SIZE );
     }
-    return outs;
+
+    return retval;
   }
 
 

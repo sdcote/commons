@@ -244,7 +244,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * <p>Finally, the resulting blocked data is run through 32-round Feistel 
    * cipher which uses operations from mixed (orthogonal) algebraic groups - 
    * XORs and additions in this case. It encrypts 64 data bits at a time using 
-   * the 128-bit key.</p>
+   * the key.</p>
    * 
    * @param bytes The data to encipher.
    * @param key The key to use in the generation of the enciphered text.
@@ -282,7 +282,6 @@ public class XTEACipher extends AbstractCipher implements Cipher {
     
     // encrypt the data
     for ( int x = 0; x < bytes.length; x += XTEACipher.BLOCK_SIZE ) {
-      //System.out.println( "Encrypt: offset=" + x );
       final byte[] block = XTEACipher.encrypt( data, x, subKeys );
       System.arraycopy( block, 0, retval, x, block.length );
     }

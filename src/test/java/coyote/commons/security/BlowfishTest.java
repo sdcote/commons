@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  * 
  */
-public class XTEATest {
+public class BlowfishTest {
 
   /**
    * @throws java.lang.Exception
@@ -35,7 +35,7 @@ public class XTEATest {
 
 
   /**
-   * This shows the basic use case for XTEA ciphering.
+   * This shows the basic use case for Blowfish ciphering.
    */
   @Test
   public void testBasicUseCase() throws Exception {
@@ -46,29 +46,29 @@ public class XTEATest {
     // - - - Encrypt the data - - - 
 
     // Create a new instance of the Cipher
-    Cipher cipher = new XTEACipher();
+    Cipher cipher = new BlowfishCipher();
 
     // Initialize the cipher with our secret key here we just use the UTF16 
     // encoding of our key string
-    cipher.init( secret.getBytes( "UTF16" ) ); // use UTF8 if you want 1 byte per character
+    cipher.init( secret.getBytes( "UTF8" ) ); // use UTF16 for larger character sets
 
     // Encrypt the text with the UTF16 encoded bytes our our clear text string 
-    byte[] cipherdata = cipher.encrypt( cleartext.getBytes( "UTF16" ) );
+    byte[] cipherdata = cipher.encrypt( cleartext.getBytes( "UTF8" ) );
     
     //System.out.println("Data has been converted into "+cipherdata.length+" bytes of data");
 
     // - - - Decrypt the data - - - 
 
     // Create a new instance of the Cipher to decrypt our data
-    Cipher cipher2 = new XTEACipher();
+    Cipher cipher2 = new BlowfishCipher();
 
     // Initialize the second cipher with our secret key
-    cipher2.init( secret.getBytes( "UTF16" ) );
+    cipher2.init( secret.getBytes( "UTF8" ) );
 
     // Decrypt the data  
     byte[] cleardata = cipher2.decrypt( cipherdata );
 
-    String newtext = new String( cleardata, "UTF16" );
+    String newtext = new String( cleardata, "UTF8" );
 
     //System.out.println( cleartext );
     //System.out.println( newtext );
