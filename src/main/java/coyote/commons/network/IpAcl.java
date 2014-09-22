@@ -60,7 +60,7 @@ public class IpAcl {
    * Construct a new Access Control List.
    *
    * <p>The default mode is to ALLOW anything that isn't explicitly blocked by
-   * a rule. This means the ACL is a blacklist be default.</p>
+   * a rule. This means the ACL is a blacklist by default.</p>
    */
   public IpAcl() {
     this( IpAcl.DEFAULT_MODE );

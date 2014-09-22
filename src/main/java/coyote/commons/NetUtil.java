@@ -621,6 +621,11 @@ public class NetUtil {
 
 
 
+	  /**
+	   * Convert hex representation of bytes to an array bytes
+	   * @param s The string to parse
+	   * @return an array of bytes represented by the string
+	   */
 	// Quick hack, need to clean up and test
 	public static byte[] hexToBytes(String s) {
 		int len = s.length();
