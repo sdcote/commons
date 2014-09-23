@@ -458,6 +458,7 @@ public class IpInterface {
 		} // Linux
 		else {
 			// unsupported OS
+			System.err.println("Unsupported OS: '"+opsys+"'");
 		}
 
 	}
@@ -481,8 +482,9 @@ public class IpInterface {
 
 		IpInterface[] retval = new IpInterface[interfaces.size()];
 
-		for (int x = 0; x < interfaces.size(); retval[x] = (IpInterface) interfaces.get(x++))
-			;
+		if (interfaces.size() > 0) {
+			for (int x = 0; x < interfaces.size(); retval[x] = (IpInterface) interfaces.get(x++));
+		}
 
 		return retval;
 	}
