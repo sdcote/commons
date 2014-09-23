@@ -103,16 +103,15 @@ public class IpAcl {
    * special expression of 'DEFAULT' which represents the default rule (what
    * should  happen if no expression is matched when performing a check).</p>
    *
-   * <p>Examples include:
-   * <pre>
-   *     192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY
-   * </pre>
-   *
-   * Where everything coming from the 192.168.0.0/255.255.0.0 network is
-   * allowed, 150.159.0.0/255.255.0.0 is denied and everything else is
-   * denied.</p>
-   *
-   * @param rules A semicolon delimited list of rules
+   * <p>The rules are a semicolon delimited list of CIDR networks with a 
+   * directive of either ALLOW or DENY for that network. For 
+   * example:<pre>192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY</pre>Where 
+   * everything coming from the 192.168.0.0/255.255.0.0 network is allowed, 
+   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.</p>
+   * 
+   * @param rules the string containing the network specifications and their ability to access.
+   * 
+   * @throws IllegalArgumentException if the rules cannot be parsed.
    */
   public void parse( final String rules ) {
     if ( acl != null ) {
