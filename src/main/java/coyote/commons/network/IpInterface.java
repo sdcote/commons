@@ -757,10 +757,10 @@ public class IpInterface {
 		if (primaryInterface == null) {
 			IpInterface retval = null;
 
-			// make sure the interfaces have been discovered
-			getIpInterfaces();
-
 			try {
+				// make sure the interfaces have been discovered
+				getIpInterfaces();
+
 				// get the IpAddress by which the rest of the world knows this
 				// host
 				IpAddress addr = new IpAddress(NetUtil.getLocalAddress());
