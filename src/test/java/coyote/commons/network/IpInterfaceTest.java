@@ -23,8 +23,12 @@ public class IpInterfaceTest {
 	 */
 	@Test
 	public void testGetPrimary() {
-		IpInterface intrfc = IpInterface.getPrimary();
-		System.out.println(intrfc);
+		try {
+			IpInterface intrfc = IpInterface.getPrimary();
+			System.out.println(intrfc);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
