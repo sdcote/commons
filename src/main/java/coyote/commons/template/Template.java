@@ -60,7 +60,7 @@ import coyote.commons.StringParser;
 public class Template extends StringParser
 {
   private static SymbolTable symbols = new SymbolTable();
-  private Hashtable classCache = new Hashtable();
+  private Hashtable<String,Object> classCache = new Hashtable<String,Object>();
 
   private static final String OPEN_TAG = "[#";
   private static final String CLOSE_TAG = "#]";
@@ -114,11 +114,11 @@ public class Template extends StringParser
 
 
   /**
-   * Method get
+   * Get the object with the given name.
    *
-   * @param name
+   * @param name The name of the object to retrieve.
    *
-   * @return
+   * @return the object with the given name or null if not found.
    */
   public Object get( String name )
   {
@@ -129,6 +129,7 @@ public class Template extends StringParser
 
     return null;
   }
+  
 
 
 

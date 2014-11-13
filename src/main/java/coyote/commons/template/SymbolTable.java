@@ -24,6 +24,9 @@ import coyote.commons.StringUtil;
 
 /**
  * Simply a table of named string values.
+ * 
+ * <p>This table has some utility functions to manage the data in the table 
+ * such as placing system properties in and removing them from the table.</p>
  */
 public class SymbolTable extends HashMap {
 
