@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 
 import coyote.commons.ArrayUtil;
 import coyote.commons.DateUtil;
@@ -25,6 +26,11 @@ import coyote.commons.StringUtil;
  * Simply a table of named string values.
  */
 public class SymbolTable extends HashMap {
+
+  private static final long serialVersionUID = -3448311765253950903L;
+
+
+
 
   /**
    * Constructor SymbolTable
@@ -38,10 +44,7 @@ public class SymbolTable extends HashMap {
    * Read all the System properties into the SymbolTable.
    */
   public synchronized void readSystemProperties() {
-    for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-      String name = (String)en.nextElement();
-      put( name, System.getProperty( name ) );
-    }
+    readProperties( System.getProperties() );
   }
 
 
@@ -51,9 +54,40 @@ public class SymbolTable extends HashMap {
    * Remove all the System properties from the SymbolTable.
    */
   public synchronized void removeSystemProperties() {
-    for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-      String name = (String)en.nextElement();
-      remove( name );
+    removeProperties( System.getProperties() );
+  }
+
+
+
+
+  /**
+   * Remove the given set of properties from the symbol table.
+   * 
+   * @param props The properties to remove
+   */
+  public synchronized void removeProperties( Properties props ) {
+    if ( props != null ) {
+      for ( Enumeration en = props.propertyNames(); en.hasMoreElements(); ) {
+        String name = (String)en.nextElement();
+        remove( name );
+      }
+    }
+  }
+
+
+
+
+  /**
+   * Read the given set of properties into the symbol table.
+   * 
+   * @param props the properties to add/replace in this symbol table
+   */
+  public synchronized void readProperties( Properties props ) {
+    if ( props != null ) {
+      for ( Enumeration en = props.propertyNames(); en.hasMoreElements(); ) {
+        String name = (String)en.nextElement();
+        put( name, System.getProperty( name ) );
+      }
     }
   }
 
@@ -63,48 +97,48 @@ public class SymbolTable extends HashMap {
   /**
    * Return the String value of the named symbol from the table.
    *
-   * @param key
+   * @param symbol the symbol to lookup in the table
    *
-   * @return
+   * @return the value of the symbol or an empty string if the value was not found.
    */
-  public synchronized String getString( String key ) {
-    if ( key != null ) {
-      if ( containsKey( key ) ) {
-        return get( key ).toString();
-      } else if ( key.equals( "time" ) ) {
+  public synchronized String getString( String symbol ) {
+    if ( symbol != null ) {
+      if ( containsKey( symbol ) ) {
+        return get( symbol ).toString();
+      } else if ( symbol.equals( "time" ) ) {
         return DateUtil.toExtendedTime( new Date() );
-      } else if ( key.equals( "currentMilliseconds" ) ) {
+      } else if ( symbol.equals( "currentMilliseconds" ) ) {
         return Long.toString( System.currentTimeMillis() );
-      } else if ( key.equals( "currentSeconds" ) ) {
+      } else if ( symbol.equals( "currentSeconds" ) ) {
         return Long.toString( System.currentTimeMillis() / 1000 );
-      } else if ( key.equals( "epocTime" ) ) {
+      } else if ( symbol.equals( "epocTime" ) ) {
         return Long.toString( System.currentTimeMillis() / 1000 );
-      } else if ( key.equals( "rfc822date" ) ) {
+      } else if ( symbol.equals( "rfc822date" ) ) {
         return DateUtil.RFC822Format( new Date() );
-      } else if ( key.equals( "iso8601date" ) ) {
+      } else if ( symbol.equals( "iso8601date" ) ) {
         return DateUtil.ISO8601Format( new Date() );
-      } else if ( key.equals( "iso8601GMT" ) ) {
+      } else if ( symbol.equals( "iso8601GMT" ) ) {
         return DateUtil.ISO8601GMT( new Date() );
-      } else if ( key.equals( "CR" ) ) {
+      } else if ( symbol.equals( "CR" ) ) {
         return StringUtil.CR;
-      } else if ( key.equals( "LF" ) ) {
+      } else if ( symbol.equals( "LF" ) ) {
         return StringUtil.LF;
-      } else if ( key.equals( "CRLF" ) ) {
+      } else if ( symbol.equals( "CRLF" ) ) {
         return StringUtil.CRLF;
-      } else if ( key.equals( "FS" ) ) {
+      } else if ( symbol.equals( "FS" ) ) {
         return StringUtil.FILE_SEPARATOR;
-      } else if ( key.equals( "PS" ) ) {
+      } else if ( symbol.equals( "PS" ) ) {
         return StringUtil.PATH_SEPARATOR;
-      } else if ( key.equals( "HT" ) ) {
+      } else if ( symbol.equals( "HT" ) ) {
         return StringUtil.HT;
-      } else if ( key.equals( "NL" ) ) {
+      } else if ( symbol.equals( "NL" ) ) {
         return StringUtil.NL;
-      } else if ( key.equals( "symbolDump" ) ) {
+      } else if ( symbol.equals( "symbolDump" ) ) {
         return dump();
       }
     }
 
-    return "null";
+    return "";
   }
 
 
@@ -132,11 +166,17 @@ public class SymbolTable extends HashMap {
 
 
   /**
-   * Method getChildNames
+   * Return all the symbols which start with the given prefix.
+   * 
+   * <p>This method is used when a symbol naming convention is used which 
+   * involves segmented names in the form of tokens representing levels and 
+   * some token delimiter. This models a hierarchy of values common in complex 
+   * property files. Using this method, it is possible to retrive all the keys 
+   * for a specific level in the tree.</p>
    *
-   * @param prefix
+   * @param prefix The prefix of the symbol for which to search (e.g. "log.config.file.")
    *
-   * @return
+   * @return a list of symbols which start with that parental prefix
    */
   public synchronized String[] getChildNames( String prefix ) {
     String[] retval = new String[0];
@@ -156,9 +196,10 @@ public class SymbolTable extends HashMap {
 
 
   /**
-   * Method dump
+   * More of a debugging tool, this creates a string with the entire contents 
+   * of the symbol table.
    *
-   * @return
+   * @return the entire contents of the table as a string.
    */
   public synchronized String dump() {
     StringBuffer retval = new StringBuffer();
