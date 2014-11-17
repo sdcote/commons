@@ -14,7 +14,11 @@ package coyote.commons.security;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 /**
@@ -96,7 +100,8 @@ public class CredentialSet {
    * credential data. Setting the number of rounds to 1 (or more) will result 
    * in this class using the MD5 has of the credential.</p>
    * 
-   * @param rounds Number of rounds of MD5 digests to perform.  0 equals using the raw (unsecure) credentials, 1=single round of digest (more secure).
+   * @param rounds Number of rounds of MD5 digests to perform.  0 equals using 
+   * the raw (unsecure) credentials, 1=single round of digest (more secure).
    */
   public CredentialSet( int rounds ) {
     if ( rounds < 0 )
@@ -178,6 +183,56 @@ public class CredentialSet {
 
   public boolean contains( String name ) {
     return _credentials.containsKey( name );
+  }
+
+
+
+
+  /**
+   * @return
+   */
+  public int size() {
+    return _credentials.size();
+  }
+
+
+
+
+  /**
+   * Test to see if all the given credentials match what is recorded in in 
+   * this credential set.
+   * 
+   * <p>This exits early on the first failure to match.</p>
+   * 
+   * @param creds The set of credentials to match.
+   * 
+   * @return True if all the given credentials match, false otherwise.
+   */
+  public boolean matchAll( CredentialSet creds ) {
+    boolean retval = true;
+    if ( creds == null ) {
+      return false;
+    } else {
+
+      // iterate through the give credentials
+      for ( Iterator<Map.Entry<String, byte[]>> it = creds._credentials.entrySet().iterator(); it.hasNext(); ) {
+        Entry<String, byte[]> entry = it.next();
+
+        // If we have a credential with the given name
+        if ( _credentials.containsKey( entry.getKey() ) ) {
+          byte[] data = entry.getValue(); // given credential value
+          byte[] ourdata = _credentials.get( entry.getKey() ); // our credential value
+
+          if ( !Arrays.equals( data, ourdata ) ) {
+            return false; // values do not match
+          }
+        } else {
+          return false; // we do not contain a credential with the given name
+        }
+      } // for
+    } // not null
+    
+    return retval;
   }
 
 }
