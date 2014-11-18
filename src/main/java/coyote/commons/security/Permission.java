@@ -18,9 +18,9 @@ package coyote.commons.security;
  * <p>Target names are meaningful only to an application and can represent any
  * object instance or logical construct. This design allows a generic 
  * permission object to be applied to anything and not require specialized 
- * permission objects like FilePermission or SocketPermission.</p>
+ * permission classes like FilePermission or SocketPermission.</p>
  * 
- * <p>The action of a permission is a set of standard action that can be 
+ * <p>The action of a permission is a set of standard actions that can be 
  * performed on a variety of objects. Each action is represented by a single 
  * bit in a field of bits and checking an action or set of actions is extremely 
  * fast as action masks are ORed as 64-bit fields. This far out-performs many

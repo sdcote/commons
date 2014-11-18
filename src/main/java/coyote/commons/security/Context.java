@@ -101,6 +101,13 @@ public interface Context {
   /**
    * Check to see if the given login has the given named permissions.
    * 
+   * <p>This is a basic authorization check. The underlying implementation can 
+   * choose to perform the check using a variety of strategies including, but 
+   * not limited to, Role Based Access Control (RBAC) or individualized 
+   * permissions. The implementation may also support the concept of revocation
+   * where the role grants permissions, but the login contains permissions 
+   * which revoke specific permissions.</p> 
+   * 
    * <p>HINT: Permissions can be AND'ed to create more specific checks and 
    * OR'ed to create more broad checks as permissions are essentially bit 
    * flags.</p>

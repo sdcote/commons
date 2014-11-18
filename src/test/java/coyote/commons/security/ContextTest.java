@@ -12,6 +12,7 @@
 package coyote.commons.security;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -69,7 +70,10 @@ public class ContextTest {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Now see if the login is allowed to create a ticket
-    assertTrue( "user1 whould be allowed to create a ticket", context.loginHasPermission( login, "ticket", Permission.CREATE ) );
+    assertTrue( "user1 should be allowed to create a ticket", context.loginHasPermission( login, "ticket", Permission.CREATE ) );
+
+    // Now make sure the login is not allowed to delete an order
+    assertFalse( "user1 should not be allowed to delete an order", context.loginHasPermission( login, "order", Permission.DELETE ) );
 
   }
 
