@@ -12,7 +12,9 @@
 package coyote.commons.security;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 
 /**
@@ -24,19 +26,19 @@ public class Login {
   String id;
 
   /** The credentials used to authenticate this login */
-  CredentialSet _credentials;
+  CredentialSet credentials;
 
   /** The principal (entity) of this login. */
   Principal principal;
 
   /** A map of role names this login assumes. */
-  HashSet<String> _roles = new HashSet<String>();
+  HashSet<String> roles = new HashSet<String>();
 
 
 
 
   public Login( CredentialSet creds ) {
-    _credentials = creds;
+    credentials = creds;
   }
 
 
@@ -57,15 +59,8 @@ public class Login {
    */
   public void addRole( String role ) {
     if ( role != null && role.length() > 0 ) {
-      _roles.add( role );
+      roles.add( role );
     }
-  }
-
-
-
-
-  public boolean hasPermission( String target, long action ) {
-    return false;
   }
 
 
@@ -87,7 +82,7 @@ public class Login {
     }
 
     b.append( " Creds:" );
-    b.append( _credentials.size() );
+    b.append( credentials.size() );
 
     return b.toString();
   }
@@ -119,10 +114,20 @@ public class Login {
    */
   public boolean matchCredentials( CredentialSet creds ) {
     if ( creds != null ) {
-      return _credentials.matchAll( creds );
+      return credentials.matchAll( creds );
     } else {
       return false;
     }
+  }
+
+
+
+
+  /**
+   * @return a list of role names to which this login belongs.
+   */
+  public List<String> getRoles() {
+    return new ArrayList<String>( roles );
   }
 
 }

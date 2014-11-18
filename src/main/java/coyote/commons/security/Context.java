@@ -33,6 +33,7 @@ package coyote.commons.security;
  * roles and permissions can be checked for authorization.
  */
 public interface Context {
+
   /**
    * Retrieve a login using the given credential set for authentication.
    * 
@@ -51,8 +52,10 @@ public interface Context {
    * identifier of the session may not be static; they may change frequently as
    * in the case of a session nonce.
    * 
-   * @param id
-   * @return
+   * @param id the identifier of the session to retrieve
+   * 
+   * @return The session in this context with the given identifier or null if 
+   * no session could be found.
    */
   public Login getLogin( String sessionId );
 
@@ -64,11 +67,50 @@ public interface Context {
 
 
 
+  /**
+   * Add the given role to the context.
+   * 
+   * <p>All roles have a name, and if the given role has a name which already 
+   * exists in the context, the existing context will be over written.</p>
+   * 
+   * @param role The role to add.
+   */
   public void add( Role role );
 
 
 
 
+  /**
+   * Retrieve the role with the given name
+   * 
+   * @param name Name of the role to retrieve
+   * 
+   * @return The role in the context with the given name or null if there is no 
+   * role in the context with the given name.
+   */
+  public Role getRole( String name );
+
+
+
+
   public Session createSession( Login login );
+
+
+
+
+  /**
+   * Check to see if the given login has the given named permissions.
+   * 
+   * <p>HINT: Permissions can be AND'ed to create more specific checks and 
+   * OR'ed to create more broad checks as permissions are essentially bit 
+   * flags.</p>
+   * 
+   * @param login The login to check
+   * @param name The name of the permission
+   * @param perms The permission flags to check
+   * 
+   * @return True if the given login has the given permissions, false otherwise.
+   */
+  public boolean loginHasPermission( Login login, String name, long perms );
 
 }

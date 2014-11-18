@@ -41,6 +41,10 @@ public class ContextTest {
     // add the role to the context
     context.add( role );
 
+    // Make sure it was added
+    Role newRole = context.getRole( role.getName() );
+    assertNotNull( "admin role cold not be retrieved", newRole );
+
     // Add some logins to the context
     Login login = new Login( new CredentialSet( "user1", "SeCr3t" ) );
 
@@ -59,13 +63,13 @@ public class ContextTest {
     login = context.getLogin( new CredentialSet( "user1", "SeCr3T" ) );
     assertNull( "Should not be able to get a login for user1", login );
 
-    
     // This should work
     login = context.getLogin( new CredentialSet( "user1", "SeCr3t" ) );
     assertNotNull( "user1 could not be validated", login );
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Now see if the login is allowed to create a ticket
-    //assertTrue( "user1 whould be allowed to create a ticket", login.hasPermission( "ticket", Permission.CREATE ) );
+    assertTrue( "user1 whould be allowed to create a ticket", context.loginHasPermission( login, "ticket", Permission.CREATE ) );
 
   }
 

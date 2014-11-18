@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import coyote.commons.StringUtil;
+
 
 /**
  * The GenericContext class models a named collection of roles, permissions and 
@@ -30,6 +32,7 @@ public class GenericContext implements Context {
 
   private Map<String, Session> sessions = new Hashtable<String, Session>();
   private List<Login> logins = new ArrayList<Login>();
+  private Map<String, Role> roles = new Hashtable<String, Role>();
 
 
 
@@ -71,7 +74,7 @@ public class GenericContext implements Context {
    */
   public void add( Login login ) {
     // if the login is not currently found in the context...
-    if ( getLogin( login._credentials ) == null ) {
+    if ( getLogin( login.credentials ) == null ) {
       logins.add( login ); // ...add the login
     }
   }
@@ -83,7 +86,8 @@ public class GenericContext implements Context {
    * @see coyote.commons.security.Context#add(coyote.commons.security.Role)
    */
   public void add( Role role ) {
-    // TODO Auto-generated method stub
+    if ( role != null && StringUtil.isNotBlank( role.getName() ) )
+      roles.put( role.getName(), role );
   }
 
 
@@ -110,6 +114,50 @@ public class GenericContext implements Context {
     retval.setLogin( login );
     Login l = retval.getLogin();
     return null;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.Context#getRole(java.lang.String)
+   */
+  @Override
+  public Role getRole( String name ) {
+    Role retval = null;
+    if ( StringUtil.isNotBlank( name ) ) {
+      retval = roles.get( name );
+    }
+    return retval;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.Context#loginHasPermission(coyote.commons.security.Login, java.lang.String, long)
+   */
+  @Override
+  public boolean loginHasPermission( Login login, String name, long perms ) {
+
+    boolean retval = false;
+
+    // for each role in the login
+    List<String> roles = login.getRoles();
+    Role role = null;
+    for ( String roleName : roles ) {
+      role = getRole( roleName );
+      if ( role != null && role.allows( name, perms ) ) {
+        retval = true;
+        break;
+      }
+    }
+
+    // TODO: Check the login for specific permissions
+
+    // TODO: Now check for revocations at the login level
+
+    return retval;
   }
 
 }
