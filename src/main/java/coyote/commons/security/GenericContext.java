@@ -13,9 +13,11 @@ package coyote.commons.security;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import coyote.commons.StringUtil;
 
@@ -93,14 +95,17 @@ public class GenericContext implements Context {
 
 
 
-  /**
-   * @see coyote.commons.security.Context#getLogin(java.lang.String)
-   */
-  @Override
-  public Login getLogin( String sessionId ) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+	/**
+	 * @see coyote.commons.security.Context#getLogin(java.lang.String)
+	 */
+	@Override
+	public Login getLogin(String sessionId) {
+		Session session = sessions.get(sessionId);
+		if (session != null) {
+			return session.getLogin();
+		}
+		return null;
+	}
 
 
 
@@ -110,12 +115,22 @@ public class GenericContext implements Context {
    */
   @Override
   public Session createSession( Login login ) {
-    Session retval = new GenericSession();
-    retval.setLogin( login );
-    Login l = retval.getLogin();
-    return null;
+    return createSession(UUID.randomUUID().toString(),login);
   }
 
+
+
+  /**
+   * @see coyote.commons.security.Context#createSession(java.lang.String,coyote.commons.security.Login)
+   */
+   @Override
+  public Session createSession(String id, Login login) {
+	    Session retval = new GenericSession();
+	    retval.setLogin( login );
+	    retval.setId(id);
+	    sessions.put(retval.getId(),retval);
+	    return retval;
+  }
 
 
 
@@ -159,5 +174,32 @@ public class GenericContext implements Context {
 
     return retval;
   }
+
+
+
+
+	@Override
+	public Session getSession(String sessionId) {
+		return sessions.get(sessionId);
+	}
+
+
+
+
+	@Override
+	public Session getSession(Login login) {
+		if (login != null) {
+			for (Iterator<Map.Entry<String, Session>> it = sessions.entrySet().iterator(); it.hasNext();) {
+				Entry<String, Session> entry = it.next();
+				if (login == entry.getValue().getLogin()) {
+					return entry.getValue();
+				}
+			} // for
+		} // login ! null
+		return null;
+	}
+
+
+
 
 }

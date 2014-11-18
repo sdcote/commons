@@ -69,7 +69,8 @@ public class CredentialSet {
 
   static {
     try {
-      MessageDigest md = MessageDigest.getInstance( MD5 );
+      @SuppressWarnings("unused")
+	MessageDigest md = MessageDigest.getInstance( MD5 );
     } catch ( NoSuchAlgorithmException e ) {
       e.printStackTrace();
     }
@@ -214,7 +215,7 @@ public class CredentialSet {
       return false;
     } else {
 
-      // iterate through the give credentials
+      // iterate through the given credentials
       for ( Iterator<Map.Entry<String, byte[]>> it = creds._credentials.entrySet().iterator(); it.hasNext(); ) {
         Entry<String, byte[]> entry = it.next();
 
