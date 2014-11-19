@@ -19,8 +19,8 @@ import java.util.HashMap;
  * assigned.
  * 
  * <p>This is intended to be the base class for both the Role class which 
- * represents a group of security principals and the Login, which represents an 
- * individual security principal. This allows permissions to be assigned at 
+ * represents a group of security subject and the Login, which represents an 
+ * individual security subject. This allows permissions to be assigned at 
  * both the group and individual levels.</p>
  */
 public class PermissionEnabledSubject {
