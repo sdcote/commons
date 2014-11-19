@@ -19,7 +19,7 @@ defaultTasks 'clean', 'build', 'jacocoTestReport'
 
 
 group = 'coyote'
-version = '0.0.5'
+version = '0.0.6'
 
 
 ext {
