@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -68,7 +69,6 @@ public final class StringUtil {
   /** Soundex Character Mapping */
   private static final char soundex_map[] = "01230120032455012623010202".toCharArray();
 
-
   /**
    * CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. </p>
    */
@@ -89,6 +89,9 @@ public final class StringUtil {
 
   /** Eight-bit Unicode Transformation Format. */
   public static final String UTF_8 = "UTF-8";
+
+
+
 
   /**
    * Private constructor because everything is static
@@ -1936,9 +1939,15 @@ public final class StringUtil {
     return str;
   }
 
-  private static IllegalStateException newIllegalStateException(String charsetName, UnsupportedEncodingException e) {
-      return new IllegalStateException(charsetName + ": " + e);
+
+
+
+  private static IllegalStateException newIllegalStateException( String charsetName, UnsupportedEncodingException e ) {
+    return new IllegalStateException( charsetName + ": " + e );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the given charset.
@@ -1954,18 +1963,20 @@ public final class StringUtil {
    * 
    * @see String#String(byte[], String)
    */
-  public static String newString(byte[] bytes, String charsetName) {
-      if (bytes == null) {
-          return null;
-      }
-      try {
-          return new String(bytes, charsetName);
-      } catch (UnsupportedEncodingException e) {
-          throw StringUtil.newIllegalStateException(charsetName, e);
-      }
+  public static String newString( byte[] bytes, String charsetName ) {
+    if ( bytes == null ) {
+      return null;
+    }
+    try {
+      return new String( bytes, charsetName );
+    } catch ( UnsupportedEncodingException e ) {
+      throw StringUtil.newIllegalStateException( charsetName, e );
+    }
   }
-  
-  
+
+
+
+
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-8 charset.
    * 
@@ -1975,9 +1986,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringUtf8(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.UTF_8);
+  public static String newStringUtf8( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.UTF_8 );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the ISO-8859-1 charset.
@@ -1988,9 +2002,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringIso8859_1(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.ISO_8859_1);
+  public static String newStringIso8859_1( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.ISO_8859_1 );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the US-ASCII charset.
@@ -2001,9 +2018,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringUsAscii(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.US_ASCII);
+  public static String newStringUsAscii( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.US_ASCII );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16 charset.
@@ -2014,9 +2034,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringUtf16(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.UTF_16);
+  public static String newStringUtf16( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.UTF_16 );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16BE charset.
@@ -2027,9 +2050,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringUtf16Be(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.UTF_16BE);
+  public static String newStringUtf16Be( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.UTF_16BE );
   }
+
+
+
 
   /**
    * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16LE charset.
@@ -2040,10 +2066,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
-  public static String newStringUtf16Le(byte[] bytes) {
-      return StringUtil.newString(bytes, StringUtil.UTF_16LE);
+  public static String newStringUtf16Le( byte[] bytes ) {
+    return StringUtil.newString( bytes, StringUtil.UTF_16LE );
   }
-  
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the ISO-8859-1 charset, storing the result into a new byte array.
@@ -2054,9 +2082,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesIso8859_1(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.ISO_8859_1);
+  public static byte[] getBytesIso8859_1( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.ISO_8859_1 );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the US-ASCII charset, storing the result into a new byte array.
@@ -2067,9 +2098,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesUsAscii(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.US_ASCII);
+  public static byte[] getBytesUsAscii( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.US_ASCII );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the UTF-16 charset, storing the result into a new byte array.
@@ -2080,9 +2114,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesUtf16(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.UTF_16);
+  public static byte[] getBytesUtf16( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.UTF_16 );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the UTF-16BE charset, storing the result into a new byte array.
@@ -2093,9 +2130,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesUtf16Be(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.UTF_16BE);
+  public static byte[] getBytesUtf16Be( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.UTF_16BE );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the UTF-16LE charset, storing the result into a new byte array.
@@ -2106,9 +2146,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesUtf16Le(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.UTF_16LE);
+  public static byte[] getBytesUtf16Le( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.UTF_16LE );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the UTF-8 charset, storing the result into a new byte array.
@@ -2119,9 +2162,12 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
-  public static byte[] getBytesUtf8(String string) {
-      return StringUtil.getBytesUnchecked(string, StringUtil.UTF_8);
+  public static byte[] getBytesUtf8( String string ) {
+    return StringUtil.getBytesUnchecked( string, StringUtil.UTF_8 );
   }
+
+
+
 
   /**
    * Encodes the given string into a sequence of bytes using the named charset, storing the result into a new byte array.
@@ -2134,14 +2180,94 @@ public final class StringUtil {
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a required charset name.
    */
-  public static byte[] getBytesUnchecked(String string, String charsetName) {
-      if (string == null) {
-          return null;
+  public static byte[] getBytesUnchecked( String string, String charsetName ) {
+    if ( string == null ) {
+      return null;
+    }
+    try {
+      return string.getBytes( charsetName );
+    } catch ( UnsupportedEncodingException e ) {
+      throw StringUtil.newIllegalStateException( charsetName, e );
+    }
+  }
+
+
+
+
+  /**
+   * Tokenize the given String into a String array via a StringTokenizer.
+   * 
+   * <p>The given delimiters string is supposed to consist of any number of
+   * delimiter characters. Each of those characters can be used to separate
+   * tokens. A delimiter is always a single character; for multi-character
+   * delimiters, consider using {@code delimitedListToStringArray}</p>
+   * 
+   * @param str the String to tokenize
+   * @param delimiters the delimiter characters, assembled as String (each of those characters is individually considered as delimiter)
+   * @param trimTokens trim the tokens via String's {@code trim}
+   * @param ignoreEmptyTokens omit empty tokens from the result array (only applies to tokens that are empty after trimming; StringTokenizer will not consider subsequent delimiters as token in the first place).
+   * 
+   * @return an array of the tokens ({@code null} if the input String was {@code null})
+   */
+  public static String[] tokenizeToStringArray( String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens ) {
+
+    if ( str == null ) {
+      return null;
+    }
+    StringTokenizer st = new StringTokenizer( str, delimiters );
+    List<String> tokens = new ArrayList<String>();
+    while ( st.hasMoreTokens() ) {
+      String token = st.nextToken();
+      if ( trimTokens ) {
+        token = token.trim();
       }
-      try {
-          return string.getBytes(charsetName);
-      } catch (UnsupportedEncodingException e) {
-          throw StringUtil.newIllegalStateException(charsetName, e);
+      if ( !ignoreEmptyTokens || token.length() > 0 ) {
+        tokens.add( token );
       }
+    }
+    return toStringArray( tokens );
+  }
+
+
+
+
+  /**
+   * Copy the given Collection into a String array.
+   * 
+   * <p>The Collection must contain String elements only.</p>
+   * 
+   * @param collection the Collection to copy
+   * 
+   * @return the String array ({@code null} if the passed-in Collection was 
+   * {@code null})
+   */
+  public static String[] toStringArray( Collection<String> collection ) {
+    if ( collection == null ) {
+      return null;
+    }
+    return collection.toArray( new String[collection.size()] );
+  }
+
+
+
+
+  /**
+   * Count the occurrences of the substring in string s.
+   * 
+   * @param str string to search in. Return 0 if this is null.
+   * @param sub string to search for. Return 0 if this is null.
+   */
+  public static int countOccurrencesOf( String str, String sub ) {
+    if ( str == null || sub == null || str.length() == 0 || sub.length() == 0 ) {
+      return 0;
+    }
+    int count = 0;
+    int pos = 0;
+    int idx;
+    while ( ( idx = str.indexOf( sub, pos ) ) != -1 ) {
+      ++count;
+      pos = idx + sub.length();
+    }
+    return count;
   }
 }
