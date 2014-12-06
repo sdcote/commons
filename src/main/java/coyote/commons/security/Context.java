@@ -142,7 +142,7 @@ public interface Context {
 	 * 
 	 * @return True if the given login has the given permissions, false otherwise.
 	 */
-	public boolean loginHasPermission(Login login, String name, long perms);
+	public boolean allows(Login login, String name, long perms);
 
 
 

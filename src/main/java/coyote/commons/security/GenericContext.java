@@ -150,10 +150,10 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#loginHasPermission(coyote.commons.security.Login, java.lang.String, long)
+   * @see coyote.commons.security.Context#allows(coyote.commons.security.Login, java.lang.String, long)
    */
   @Override
-  public boolean loginHasPermission( Login login, String name, long perms ) {
+  public boolean allows( Login login, String name, long perms ) {
 
     boolean retval = false;
 

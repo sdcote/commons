@@ -71,10 +71,10 @@ public class ContextTest {
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// - -
 		// Now see if the login is allowed to create a ticket
-		assertTrue("user1 should be allowed to create a ticket", context.loginHasPermission(login, "ticket", Permission.CREATE));
+		assertTrue("user1 should be allowed to create a ticket", context.allows(login, "ticket", Permission.CREATE));
 
 		// Now make sure the login is not allowed to delete an order
-		assertFalse("user1 should not be allowed to delete an order", context.loginHasPermission(login, "order", Permission.DELETE));
+		assertFalse("user1 should not be allowed to delete an order", context.allows(login, "order", Permission.DELETE));
 
 		// Since we have a valid login, let's create a session
 		Session session = context.createSession(login);
