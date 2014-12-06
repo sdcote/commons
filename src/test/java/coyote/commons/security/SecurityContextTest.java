@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * 
  */
-public class ContextTest {
+public class SecurityContextTest {
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class ContextTest {
 	@Test
 	public void testGenericContext() {
 		// Create a generic security context
-		Context context = new GenericContext("Demo");
+		SecurityContext context = new GenericSecurityContext("Demo");
 
 		// Add some roles to the context
 		Role role = new Role("admin");

@@ -12,7 +12,7 @@
 package coyote.commons.security;
 
 /**
- * The Context class models a logical grouping of roles and logins each with a 
+ * The SecurityContext class models a logical grouping of roles and logins each with a 
  * set of permissions.
  * 
  * <p>Roles are named group of permissions.</p>
@@ -32,7 +32,7 @@ package coyote.commons.security;
  * login can be ascertained. The login also contains the set of associated 
  * roles and permissions can be checked for authorization.
  */
-public interface Context {
+public interface SecurityContext {
 
 	/**
 	 * Retrieve a login using the given credential set for authentication.

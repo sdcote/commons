@@ -23,13 +23,13 @@ import coyote.commons.StringUtil;
 
 
 /**
- * The GenericContext class models a named collection of roles, permissions and 
+ * The GenericSecurityContext class models a named collection of roles, permissions and 
  * login memberships.
  * 
  * <p>This version of the context is a fully functional security context which
  * can be used in a variety of applications.</p>
  */
-public class GenericContext implements Context {
+public class GenericSecurityContext implements SecurityContext {
   private String _name = null;
 
   private Map<String, Session> sessions = new Hashtable<String, Session>();
@@ -39,14 +39,14 @@ public class GenericContext implements Context {
 
 
 
-  public GenericContext() {
+  public GenericSecurityContext() {
     _name = UUID.randomUUID().toString();
   }
 
 
 
 
-  public GenericContext( String name ) {
+  public GenericSecurityContext( String name ) {
     _name = name;
   }
 
@@ -56,7 +56,7 @@ public class GenericContext implements Context {
   /**
    * This is essentially an authentication operation.
    * 
-   * @see coyote.commons.security.Context#getLogin(coyote.commons.security.Credentials)
+   * @see coyote.commons.security.SecurityContext#getLogin(coyote.commons.security.Credentials)
    */
   public Login getLogin( CredentialSet creds ) {
     // for each credential in the given set, see if there is a login which contains a match for each
@@ -72,7 +72,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#add(coyote.commons.security.Login)
+   * @see coyote.commons.security.SecurityContext#add(coyote.commons.security.Login)
    */
   public void add( Login login ) {
     // if the login is not currently found in the context...
@@ -85,7 +85,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#add(coyote.commons.security.Role)
+   * @see coyote.commons.security.SecurityContext#add(coyote.commons.security.Role)
    */
   public void add( Role role ) {
     if ( role != null && StringUtil.isNotBlank( role.getName() ) )
@@ -96,7 +96,7 @@ public class GenericContext implements Context {
 
 
 	/**
-	 * @see coyote.commons.security.Context#getLogin(java.lang.String)
+	 * @see coyote.commons.security.SecurityContext#getLogin(java.lang.String)
 	 */
 	@Override
 	public Login getLogin(String sessionId) {
@@ -111,7 +111,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#createSession(coyote.commons.security.Login)
+   * @see coyote.commons.security.SecurityContext#createSession(coyote.commons.security.Login)
    */
   @Override
   public Session createSession( Login login ) {
@@ -121,7 +121,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#createSession(java.lang.String,coyote.commons.security.Login)
+   * @see coyote.commons.security.SecurityContext#createSession(java.lang.String,coyote.commons.security.Login)
    */
    @Override
   public Session createSession(String id, Login login) {
@@ -135,7 +135,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#getRole(java.lang.String)
+   * @see coyote.commons.security.SecurityContext#getRole(java.lang.String)
    */
   @Override
   public Role getRole( String name ) {
@@ -150,7 +150,7 @@ public class GenericContext implements Context {
 
 
   /**
-   * @see coyote.commons.security.Context#allows(coyote.commons.security.Login, java.lang.String, long)
+   * @see coyote.commons.security.SecurityContext#allows(coyote.commons.security.Login, java.lang.String, long)
    */
   @Override
   public boolean allows( Login login, String name, long perms ) {
