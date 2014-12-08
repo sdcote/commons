@@ -11,6 +11,9 @@
  */
 package coyote.commons.security;
 
+import java.util.UUID;
+
+
 public class GenericSecurityPrincipal extends SecurityPrincipal {
 
   private String name = null;
@@ -19,13 +22,21 @@ public class GenericSecurityPrincipal extends SecurityPrincipal {
 
 
 
+  /**
+   * Creates and "anonymous" principal with a random identifier.
+   */
   public GenericSecurityPrincipal() {
-    this( null, null );
+    this( UUID.randomUUID().toString(), "ANONYMOUS" );
   }
 
 
 
 
+  /**
+   * Create a security principal with the given name.
+   * 
+   * @param name a name suitable for display to the principal this object represents.
+   */
   public GenericSecurityPrincipal( String name ) {
     this( null, name );
   }
