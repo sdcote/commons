@@ -46,7 +46,7 @@ public class SecurityContextTest {
 		assertNotNull("admin role cold not be retrieved", newRole);
 
 		// Add some logins to the context
-		Login login = new Login(new CredentialSet("user1", "SeCr3t"));
+		Login login = new Login(new GenericSecurityPrincipal("ID:12345", "user1"), new CredentialSet("user1", "SeCr3t"));
 
 		// add a role to the login
 		login.addRole("admin");
@@ -67,6 +67,12 @@ public class SecurityContextTest {
 		// This should work
 		login = context.getLogin(new CredentialSet("user1", "SeCr3t"));
 		assertNotNull("user1 could not be validated", login);
+		
+		// Make sure we can get a security principal associated to this login
+		SecurityPrincipal principal = login.getPrincipal();
+		assertNotNull(principal);
+		assertTrue("ID:12345".equals(principal.getId()));
+		assertTrue("user1".equals(principal.getName()));
 
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// - -
