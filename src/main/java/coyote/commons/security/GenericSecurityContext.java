@@ -152,10 +152,10 @@ public class GenericSecurityContext implements SecurityContext {
 
 
   /**
-   * @see coyote.commons.security.SecurityContext#allows(coyote.commons.security.Login, java.lang.String, long)
+   * @see coyote.commons.security.SecurityContext#allows(coyote.commons.security.Login, long, java.lang.String)
    */
   @Override
-  public boolean allows( Login login, String name, long perms ) {
+  public boolean allows( Login login, long perms, String name ) {
 
     boolean retval = false;
 

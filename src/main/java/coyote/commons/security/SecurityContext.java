@@ -137,12 +137,12 @@ public interface SecurityContext {
    * flags.</p>
    * 
    * @param login The login to check
-   * @param name The name of the permission
    * @param perms The permission flags to check
+   * @param name The name of the permission
    * 
    * @return True if the given login has the given permissions, false otherwise.
    */
-  public boolean allows( Login login, String name, long perms );
+  public boolean allows( Login login, long perms, String name );
 
 
 
