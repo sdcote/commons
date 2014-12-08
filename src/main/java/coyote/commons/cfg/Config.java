@@ -259,7 +259,7 @@ public class Config implements Cloneable, Serializable {
    */
   public void addConfigSlot( final ConfigSlot slot ) {
     if ( slots == null ) {
-      slots = new HashMap<String,ConfigSlot>();
+      slots = new HashMap<String, ConfigSlot>();
     }
 
     if ( slot != null ) {
@@ -491,7 +491,7 @@ public class Config implements Cloneable, Serializable {
       final Vector<Config> retval = new Vector<Config>();
 
       for ( int x = 0; x < sections.size(); x++ ) {
-        if ( type.equals(  sections.get( x ).getName()) ) {
+        if ( type.equals( sections.get( x ).getName() ) ) {
           retval.add( sections.get( x ) );
         }
       }

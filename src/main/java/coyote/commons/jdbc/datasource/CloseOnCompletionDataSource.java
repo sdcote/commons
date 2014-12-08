@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import coyote.commons.Assert;
 
+
 /**
  * All connections constructed by a {@code CloseOnCompletionDataSource} 
  * instance will be closed sequentially as soon as the datasource has been 

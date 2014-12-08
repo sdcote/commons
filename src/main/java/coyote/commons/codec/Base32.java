@@ -88,7 +88,6 @@ public class Base32 extends BaseNCodec {
   /** Mask used to extract 5 bits, used when encoding Base32 bytes */
   private static final int MASK_5BITS = 0x1f;
 
-
   /**
    * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
    * <code>decodeSize = {@link #BYTES_PER_ENCODED_BLOCK} - 1 + lineSeparator.length;</code>
@@ -533,5 +532,5 @@ public class Base32 extends BaseNCodec {
   public boolean isInAlphabet( final byte octet ) {
     return ( octet >= 0 ) && ( octet < decodeTable.length ) && ( decodeTable[octet] != -1 );
   }
-  
+
 }

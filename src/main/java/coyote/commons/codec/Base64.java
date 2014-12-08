@@ -301,10 +301,6 @@ public class Base64 extends BaseNCodec {
 
 
 
-
-
-
-
   /**
    * Returns whether or not the {@code octet} is in the base 64 alphabet.
    *

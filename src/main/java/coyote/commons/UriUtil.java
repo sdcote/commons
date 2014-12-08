@@ -198,8 +198,7 @@ public class UriUtil {
 
     try {
       retval = new URI( uri.toString() );
-    }
-    catch( final URISyntaxException e ) {
+    } catch ( final URISyntaxException e ) {
       // should always work
       // e.printStackTrace();
     }
@@ -222,8 +221,7 @@ public class UriUtil {
 
     try {
       retval = new URL( url.toString() );
-    }
-    catch( final MalformedURLException e ) {
+    } catch ( final MalformedURLException e ) {
       // should always work
       // e.printStackTrace();
     }
@@ -265,20 +263,20 @@ public class UriUtil {
     int n = 0;
     boolean noDecode = true;
 
-    for( int i = 0; i < len; i++ ) {
+    for ( int i = 0; i < len; i++ ) {
       final char c = characters[i];
 
-      if( c > 0xff ) {
+      if ( c > 0xff ) {
         throw new IllegalArgumentException( "illegal character at position " + i + " (>255)" );
       }
 
       byte b = (byte)( 0xff & c );
 
-      if( c == '+' ) {
+      if ( c == '+' ) {
         noDecode = false;
         b = (byte)' ';
       } else {
-        if( ( c == '%' ) && ( ( i + 2 ) < len ) ) {
+        if ( ( c == '%' ) && ( ( i + 2 ) < len ) ) {
           noDecode = false;
           b = (byte)( 0xff & Integer.parseInt( encoded.substring( i + 1, i + 3 ), 16 ) );
           i += 2;
@@ -288,7 +286,7 @@ public class UriUtil {
       bytes[n++] = b;
     }
 
-    if( noDecode ) {
+    if ( noDecode ) {
       return encoded;
     }
 
@@ -313,14 +311,14 @@ public class UriUtil {
     int n = 0;
     boolean noEncode = true;
 
-    for( int i = 0; i < len; i++ ) {
+    for ( int i = 0; i < len; i++ ) {
       final byte b = bytes[i];
 
-      if( b == ' ' ) {
+      if ( b == ' ' ) {
         noEncode = false;
         encoded[n++] = (byte)'+';
       } else {
-        if( ( ( b >= 'a' ) && ( b <= 'z' ) ) || ( ( b >= 'A' ) && ( b <= 'Z' ) ) || ( ( b >= '0' ) && ( b <= '9' ) ) ) {
+        if ( ( ( b >= 'a' ) && ( b <= 'z' ) ) || ( ( b >= 'A' ) && ( b <= 'Z' ) ) || ( ( b >= '0' ) && ( b <= '9' ) ) ) {
           encoded[n++] = b;
         } else {
           noEncode = false;
@@ -328,7 +326,7 @@ public class UriUtil {
 
           byte nibble = (byte)( ( b & 0xf0 ) >> 4 );
 
-          if( nibble >= 10 ) {
+          if ( nibble >= 10 ) {
             encoded[n++] = (byte)( 'A' + nibble - 10 );
           } else {
             encoded[n++] = (byte)( '0' + nibble );
@@ -336,7 +334,7 @@ public class UriUtil {
 
           nibble = (byte)( b & 0xf );
 
-          if( nibble >= 10 ) {
+          if ( nibble >= 10 ) {
             encoded[n++] = (byte)( 'A' + nibble - 10 );
           } else {
             encoded[n++] = (byte)( '0' + nibble );
@@ -345,7 +343,7 @@ public class UriUtil {
       }
     }
 
-    if( noEncode ) {
+    if ( noEncode ) {
       return string;
     }
 
@@ -363,11 +361,11 @@ public class UriUtil {
    * @return TODO Complete Documentation
    */
   public static File getFile( final URI uri ) {
-    if( uri == null ) {
+    if ( uri == null ) {
       return null;
     }
 
-    if( UriUtil.isFile( uri ) || UriUtil.isJar( uri ) ) {
+    if ( UriUtil.isFile( uri ) || UriUtil.isJar( uri ) ) {
       return new File( UriUtil.getFilePath( uri ) );
     }
 
@@ -388,8 +386,7 @@ public class UriUtil {
   public static File getFile( final URL url ) {
     try {
       return UriUtil.getFile( new URI( url.toString() ) );
-    }
-    catch( final URISyntaxException e ) {
+    } catch ( final URISyntaxException e ) {
       // should never happen since URL is a subset of URI
       System.err.println( "Could not convert '" + url.toString() + "' to a URI" );
       e.printStackTrace();
@@ -408,31 +405,31 @@ public class UriUtil {
    * @return a path suitable for the local file system
    */
   public static String getFilePath( final URI uri ) {
-    if( uri == null ) {
+    if ( uri == null ) {
       return null;
     }
 
     final StringBuffer buffer = new StringBuffer();
 
-    if( uri.getScheme().equalsIgnoreCase( "jar" ) ) {
+    if ( uri.getScheme().equalsIgnoreCase( "jar" ) ) {
       try {
         String retval = null;
 
-        if( uri.getSchemeSpecificPart().toLowerCase().startsWith( "file" ) ) {
+        if ( uri.getSchemeSpecificPart().toLowerCase().startsWith( "file" ) ) {
           final URI furi = new URI( uri.getSchemeSpecificPart() );
 
           // recursive call to get the file path
           retval = UriUtil.getFilePath( furi );
 
-          if( retval != null ) {
+          if ( retval != null ) {
             final int ptr = retval.indexOf( '!' );
 
-            if( ptr > -1 ) {
+            if ( ptr > -1 ) {
               retval = retval.substring( 0, ptr );
             }
           }
 
-          if( ( retval != null ) && ( retval.length() > 0 ) ) {
+          if ( ( retval != null ) && ( retval.length() > 0 ) ) {
             return retval;
           }
 
@@ -440,12 +437,11 @@ public class UriUtil {
         } else {
           return new File( uri.getSchemeSpecificPart() ).getAbsolutePath();
         }
-      }
-      catch( final Exception e ) {
+      } catch ( final Exception e ) {
         System.err.println( "File reference within jar URI is invalid: " + e.getMessage() );
       }
-    } else if( uri.getScheme().equalsIgnoreCase( "file" ) ) {
-      if( uri.getAuthority() != null ) {
+    } else if ( uri.getScheme().equalsIgnoreCase( "file" ) ) {
+      if ( uri.getAuthority() != null ) {
         buffer.append( uri.getAuthority() );
       }
     }
@@ -454,7 +450,7 @@ public class UriUtil {
     buffer.append( uri.getPath() );
 
     // Windows drive specifiers don't need the root '/'
-    if( ( buffer.charAt( 2 ) == ':' ) && ( buffer.charAt( 0 ) == '/' ) ) {
+    if ( ( buffer.charAt( 2 ) == ':' ) && ( buffer.charAt( 0 ) == '/' ) ) {
       buffer.delete( 0, 1 );
     }
 
@@ -493,7 +489,7 @@ public class UriUtil {
    * @return TODO Complete Documentation
    */
   public static String normalizeSlashes( String path ) {
-    if( path == null ) {
+    if ( path == null ) {
       return null;
     } else {
       path = path.replace( '/', File.separatorChar );
@@ -518,9 +514,9 @@ public class UriUtil {
    * @return The representative path without the dots
    */
   public static String removeRelations( final String path ) {
-    if( path == null ) {
+    if ( path == null ) {
       return null;
-    } else if( path.length() == 0 ) {
+    } else if ( path.length() == 0 ) {
       return path;
     } else {
       // Break the path into tokens and skip any '.' tokens
@@ -529,14 +525,14 @@ public class UriUtil {
 
       int i = 0;
 
-      while( st.hasMoreTokens() ) {
+      while ( st.hasMoreTokens() ) {
         final String token = st.nextToken();
 
-        if( ( token != null ) && ( token.length() > 0 ) && !token.equals( "." ) ) {
+        if ( ( token != null ) && ( token.length() > 0 ) && !token.equals( "." ) ) {
           // if there is a reference to the parent, then just move back to the
           // previous token in the list, which is this tokens parent
-          if( token.equals( ".." ) ) {
-            if( i > 0 ) {
+          if ( token.equals( ".." ) ) {
+            if ( i > 0 ) {
               tokens[--i] = null;
             }
           } else {
@@ -550,26 +546,26 @@ public class UriUtil {
 
       // If the original path started with a file separator, then make sure the
       // return value starts the same way
-      if( ( path.charAt( 0 ) == '/' ) || ( path.charAt( 0 ) == '\\' ) ) {
+      if ( ( path.charAt( 0 ) == '/' ) || ( path.charAt( 0 ) == '\\' ) ) {
         retval.append( File.separatorChar );
       }
 
       // For each token in the path
-      if( tokens.length > 0 ) {
-        for( i = 0; i < tokens.length; i++ ) {
-          if( tokens[i] != null ) {
+      if ( tokens.length > 0 ) {
+        for ( i = 0; i < tokens.length; i++ ) {
+          if ( tokens[i] != null ) {
             retval.append( tokens[i] );
           }
 
           // if there is another token on the list, use the platform-specific
           // file separator as a delimiter in the return value
-          if( ( i + 1 < tokens.length ) && ( tokens[i + 1] != null ) ) {
+          if ( ( i + 1 < tokens.length ) && ( tokens[i + 1] != null ) ) {
             retval.append( File.separatorChar );
           }
         }
       }
 
-      if( ( path.charAt( path.length() - 1 ) == '/' ) || ( ( path.charAt( path.length() - 1 ) == '\\' ) && ( retval.charAt( retval.length() - 1 ) != File.separatorChar ) ) ) {
+      if ( ( path.charAt( path.length() - 1 ) == '/' ) || ( ( path.charAt( path.length() - 1 ) == '\\' ) && ( retval.charAt( retval.length() - 1 ) != File.separatorChar ) ) ) {
         retval.append( File.separatorChar );
       }
 
@@ -594,12 +590,12 @@ public class UriUtil {
     // defined in the URI making it hard for the URI class to figure out which
     // part of the authority is the host portion. We assume anything infront of
     // the colon is the host.
-    if( ( retval == null ) && ( uri.getAuthority() != null ) ) {
+    if ( ( retval == null ) && ( uri.getAuthority() != null ) ) {
       // The authority is usually in the form of XXXX:999 as in "myhost:-1"
       final String text = uri.getAuthority();
       final int ptr = text.indexOf( ':' );
 
-      if( ptr > -1 ) {
+      if ( ptr > -1 ) {
         // just return the host portion
         retval = text.substring( 0, ptr );
       }
@@ -625,14 +621,13 @@ public class UriUtil {
    *         specified in the URI.
    */
   public static InetAddress getHostAddress( final URI uri ) {
-    if( uri != null ) {
+    if ( uri != null ) {
       final String host = uri.getHost();
 
-      if( host != null ) {
+      if ( host != null ) {
         try {
           return InetAddress.getByName( host );
-        }
-        catch( final Exception exception ) {}
+        } catch ( final Exception exception ) {}
       }
     }
 
@@ -652,15 +647,15 @@ public class UriUtil {
   public static String getPassword( final URI uri ) {
     String retval = null;
 
-    if( uri != null ) {
+    if ( uri != null ) {
       final String userInfo = uri.getUserInfo();
 
-      if( ( userInfo != null ) && ( userInfo.length() > 0 ) ) {
-        if( userInfo.indexOf( ':' ) > -1 ) {
+      if ( ( userInfo != null ) && ( userInfo.length() > 0 ) ) {
+        if ( userInfo.indexOf( ':' ) > -1 ) {
           retval = userInfo.substring( userInfo.indexOf( ':' ) + 1 );
         }
 
-        if( ( retval != null ) && ( retval.length() > 0 ) ) {
+        if ( ( retval != null ) && ( retval.length() > 0 ) ) {
           return retval;
         }
       }
@@ -680,7 +675,7 @@ public class UriUtil {
    * @return TODO Complete Documentation
    */
   public static int getPort( final String scheme ) {
-    if( UriUtil.portMap.containsKey( scheme.toLowerCase() ) ) {
+    if ( UriUtil.portMap.containsKey( scheme.toLowerCase() ) ) {
       return ( (Integer)UriUtil.portMap.get( scheme.toLowerCase() ) ).intValue();
     }
 
@@ -704,7 +699,7 @@ public class UriUtil {
    *         indicates no port was specified.
    */
   public static int getPort( final URI uri ) {
-    if( uri.getPort() < 0 ) {
+    if ( uri.getPort() < 0 ) {
       return UriUtil.getPort( uri.getScheme() );
     }
 
@@ -723,7 +718,7 @@ public class UriUtil {
   public static String getPortString( final URI uri ) {
     String retval = null;
 
-    if( uri.getPort() < 0 ) {
+    if ( uri.getPort() < 0 ) {
       return retval;
     }
 
@@ -753,15 +748,14 @@ public class UriUtil {
     try {
       final String scheme = uri.getScheme();
 
-      if( scheme != null ) {
-        if( scheme.equalsIgnoreCase( "https" ) || scheme.equalsIgnoreCase( "tls" ) ) {
+      if ( scheme != null ) {
+        if ( scheme.equalsIgnoreCase( "https" ) || scheme.equalsIgnoreCase( "tls" ) ) {
           retval = new URI( "ssl://" + uri.getHost() + ":" + uri.getPort() );
         } else {
           retval = new URI( "tcp://" + uri.getHost() + ":" + uri.getPort() );
         }
       }
-    }
-    catch( final URISyntaxException e ) {
+    } catch ( final URISyntaxException e ) {
       // e.printStackTrace();
     }
 
@@ -781,14 +775,14 @@ public class UriUtil {
   public static String getUser( final URI uri ) {
     String retval = null;
 
-    if( uri != null ) {
+    if ( uri != null ) {
       final String userInfo = uri.getUserInfo();
 
-      if( ( userInfo != null ) && ( userInfo.length() > 0 ) ) {
+      if ( ( userInfo != null ) && ( userInfo.length() > 0 ) ) {
         final int ptr = userInfo.indexOf( ':' );
 
-        if( ptr > -1 ) {
-          if( ptr > 0 ) {
+        if ( ptr > -1 ) {
+          if ( ptr > 0 ) {
             // return is everything up to the delimiter
             retval = userInfo.substring( 0, userInfo.indexOf( ':' ) );
           } else {
@@ -799,7 +793,7 @@ public class UriUtil {
           retval = userInfo;
         }
 
-        if( ( retval != null ) && ( retval.length() > 0 ) ) {
+        if ( ( retval != null ) && ( retval.length() > 0 ) ) {
           return retval;
         }
       }
@@ -822,11 +816,11 @@ public class UriUtil {
     final String host = uri.getHost();
 
     // No host implies a local (relative) URI
-    if( host == null ) {
+    if ( host == null ) {
       return true;
     } else {
       // Try to see if the host is one of the standard names
-      if( host.equalsIgnoreCase( "localhost" ) || host.equals( "127.0.0.1" ) || host.equals( "0.0.0.0" ) ) {
+      if ( host.equalsIgnoreCase( "localhost" ) || host.equals( "127.0.0.1" ) || host.equals( "0.0.0.0" ) ) {
         return true;
       } else {
         // the obvious hostnames have been tested, now try to match addresses
@@ -834,7 +828,7 @@ public class UriUtil {
           final InetAddress laddr = InetAddress.getLocalHost();
           final String localHostAddress = laddr.getHostAddress();
 
-          if( localHostAddress == null ) {
+          if ( localHostAddress == null ) {
             // Could not determine the accress of this host, assume no match
             return false;
           } else {
@@ -845,14 +839,13 @@ public class UriUtil {
             try {
               haddr = InetAddress.getByName( host );
               hostAddress = haddr.getHostAddress();
-            }
-            catch( final Throwable t ) {
+            } catch ( final Throwable t ) {
               return false;
             }
 
-            if( hostAddress != null ) {
+            if ( hostAddress != null ) {
               // one last check
-              if( hostAddress.equals( "127.0.0.1" ) || host.equals( "0.0.0.0" ) ) {
+              if ( hostAddress.equals( "127.0.0.1" ) || host.equals( "0.0.0.0" ) ) {
                 return true;
               } else {
                 // Match the two IP addresses
@@ -860,8 +853,7 @@ public class UriUtil {
               }
             }
           }
-        }
-        catch( final UnknownHostException ignore ) {}
+        } catch ( final UnknownHostException ignore ) {}
       }
     }
 
@@ -879,7 +871,7 @@ public class UriUtil {
    * @return True if the URI is representing a file
    */
   public static boolean isFile( final URI uri ) {
-    if( ( uri != null ) && ( uri.getScheme() != null ) ) {
+    if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
       return uri.getScheme().equalsIgnoreCase( "file" );
     }
 
@@ -896,7 +888,7 @@ public class UriUtil {
    * @return True if the URL is representing a file
    */
   public static boolean isFile( final URL url ) {
-    if( ( url != null ) && ( url.getProtocol() != null ) ) {
+    if ( ( url != null ) && ( url.getProtocol() != null ) ) {
       return url.getProtocol().equalsIgnoreCase( "file" );
     }
 
@@ -914,7 +906,7 @@ public class UriUtil {
    * @return True if the URI is representing a JAR file
    */
   public static boolean isJar( final URI uri ) {
-    if( ( uri != null ) && ( uri.getScheme() != null ) ) {
+    if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
       return uri.getScheme().equalsIgnoreCase( "jar" );
     }
 
@@ -932,7 +924,7 @@ public class UriUtil {
    * @return True if the URL is representing a JAR file
    */
   public static boolean isJar( final URL url ) {
-    if( ( url != null ) && ( url.getProtocol() != null ) ) {
+    if ( ( url != null ) && ( url.getProtocol() != null ) ) {
       return url.getProtocol().equalsIgnoreCase( "jar" );
     }
 
@@ -954,7 +946,7 @@ public class UriUtil {
    * @return TODO Complete Documentation
    */
   public static boolean isTcp( final URI uri ) {
-    if( ( uri != null ) && ( uri.getScheme() != null ) ) {
+    if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
       return ( UriUtil.portMap.containsKey( uri.getScheme() ) && !UriUtil.udpMap.containsKey( uri.getScheme() ) );
     }
 
@@ -976,7 +968,7 @@ public class UriUtil {
    *         is null.
    */
   public static boolean isUdp( final URI uri ) {
-    if( ( uri != null ) && ( uri.getScheme() != null ) ) {
+    if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
       return ( uri.getScheme().equalsIgnoreCase( "udp" ) || UriUtil.udpMap.containsKey( uri.getScheme().toLowerCase() ) );
     }
 
@@ -1023,8 +1015,7 @@ public class UriUtil {
 
     try {
       retval = new URI( text );
-    }
-    catch( final URISyntaxException use ) {
+    } catch ( final URISyntaxException use ) {
       // Ignore and return null
     }
 
@@ -1041,26 +1032,26 @@ public class UriUtil {
    * @param map The hashmap to populate with the query
    */
   public static void queryToMap( final String query, final HashMap map ) {
-    if( map != null ) {
+    if ( map != null ) {
       synchronized( map ) {
         String token;
         String name;
         String value;
         final StringTokenizer tokenizer = new StringTokenizer( query, "&", false );
 
-        while( ( tokenizer.hasMoreTokens() ) ) {
+        while ( ( tokenizer.hasMoreTokens() ) ) {
           token = tokenizer.nextToken();
 
           // breaking it at the "=" sign
           int i = token.indexOf( '=' );
 
-          if( i < 0 ) {
+          if ( i < 0 ) {
             name = UriUtil.decodeString( token );
             value = "";
           } else {
             name = UriUtil.decodeString( token.substring( 0, i++ ) );
 
-            if( i >= token.length() ) {
+            if ( i >= token.length() ) {
               value = "";
             } else {
               value = UriUtil.decodeString( token.substring( i ) );
@@ -1068,7 +1059,7 @@ public class UriUtil {
           }
 
           // Add value to the map
-          if( name.length() > 0 ) {
+          if ( name.length() > 0 ) {
             map.put( name, value );
           }
         }
@@ -1236,22 +1227,22 @@ public class UriUtil {
     byte[] retval = new byte[0];
     final String text = url.toString().toLowerCase();
 
-    if( text.startsWith( "jar:" ) ) {
+    if ( text.startsWith( "jar:" ) ) {
       final JarURLConnection jarConnection = (JarURLConnection)url.openConnection();
       jarConnection.setDoInput( true );
       jarConnection.setUseCaches( false );
       jarConnection.connect();
 
-      if( jarConnection.getEntryName() != null ) {
+      if ( jarConnection.getEntryName() != null ) {
         retval = UriUtil.readFully( jarConnection.getInputStream() );
       }
 
       jarConnection.getInputStream().close();
-    } else if( text.startsWith( "file:" ) ) {
+    } else if ( text.startsWith( "file:" ) ) {
       final File file = UriUtil.getFile( url );
 
-      if( file.exists() ) {
-        if( file.canRead() ) {
+      if ( file.exists() ) {
+        if ( file.canRead() ) {
           DataInputStream dis = null;
           final byte[] bytes = new byte[new Long( file.length() ).intValue()];
 
@@ -1261,18 +1252,16 @@ public class UriUtil {
             dis.readFully( bytes );
 
             return bytes;
-          }
-          catch( final IOException ex ) {
+          } catch ( final IOException ex ) {
             throw ex; // re-throw
           }
           finally {
             // Attempt to close the data input stream
             try {
-              if( dis != null ) {
+              if ( dis != null ) {
                 dis.close();
               }
-            }
-            catch( final Exception ignore ) {}
+            } catch ( final Exception ignore ) {}
           }
         } else {
           throw new IOException( "Can not read file: " + file.getAbsolutePath() );
@@ -1311,13 +1300,13 @@ public class UriUtil {
     do {
       final int i = inputstream.read( bytes, 0, bytes.length );
 
-      if( i != -1 ) {
+      if ( i != -1 ) {
         bytearrayoutputstream.write( bytes, 0, i );
       } else {
         return bytearrayoutputstream.toByteArray();
       }
     }
-    while( true );
+    while ( true );
   }
 
 

@@ -59,19 +59,18 @@ public class Ip4Address extends IpAddress {
     String thisLabel;
     int labelCount = 0, octet;
 
-    while( labels.hasMoreTokens() ) {
+    while ( labels.hasMoreTokens() ) {
       thisLabel = labels.nextToken();
 
       try {
         octet = Integer.parseInt( thisLabel );
 
-        if( ( octet < 0 ) || ( octet > 255 ) ) {
+        if ( ( octet < 0 ) || ( octet > 255 ) ) {
           return false;
         } else {
           labelCount++;
         }
-      }
-      catch( NumberFormatException ex ) {
+      } catch ( NumberFormatException ex ) {
         return false;
       }
     }
@@ -94,19 +93,18 @@ public class Ip4Address extends IpAddress {
     String thisLabel;
     int labelCount = 0, octet;
 
-    while( labels.hasMoreTokens() ) {
+    while ( labels.hasMoreTokens() ) {
       thisLabel = labels.nextToken();
 
       try {
         octet = Integer.parseInt( thisLabel );
 
-        if( ( octet < 0 ) || ( octet > 255 ) ) {
+        if ( ( octet < 0 ) || ( octet > 255 ) ) {
           return 0;
         } else {
           labelCount++;
         }
-      }
-      catch( NumberFormatException ex ) {
+      } catch ( NumberFormatException ex ) {
         return 0; // *** Not sure this is right...
       }
     }
@@ -131,12 +129,12 @@ public class Ip4Address extends IpAddress {
    * @return A string representing a reverse lookup of the address passed in.
    */
   public static String IPv4ptrQueryString( String addr ) {
-    if( isIPv4DottedDecimal( addr ) ) {
+    if ( isIPv4DottedDecimal( addr ) ) {
       StringTokenizer labels = new StringTokenizer( addr, "." );
       String thisLabel;
       String retnValue = "in-addr.arpa";
 
-      while( labels.hasMoreTokens() ) {
+      while ( labels.hasMoreTokens() ) {
         thisLabel = labels.nextToken();
         retnValue = thisLabel + "." + retnValue;
       }

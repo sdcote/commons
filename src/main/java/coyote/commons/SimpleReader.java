@@ -18,8 +18,7 @@ import java.io.Reader;
  * SimpleReader is a scaled-down version, slightly faster version of
  * StringReader.
  */
-public final class SimpleReader extends Reader
-{
+public final class SimpleReader extends Reader {
 
   /** Field string */
   String string;
@@ -41,8 +40,7 @@ public final class SimpleReader extends Reader
    *
    * @param text The string to be read by the reader
    */
-  public SimpleReader( String text )
-  {
+  public SimpleReader( String text ) {
     next = 0;
     mark = 0;
     string = text;
@@ -57,8 +55,7 @@ public final class SimpleReader extends Reader
    *
    * @return
    */
-  public int read()
-  {
+  public int read() {
     return ( next < length ) ? string.charAt( next++ ) : -1;
   }
 
@@ -74,19 +71,14 @@ public final class SimpleReader extends Reader
    *
    * @return
    */
-  public int read( char buffer[], int offset, int length )
-  {
-    if( length == 0 )
-    {
+  public int read( char buffer[], int offset, int length ) {
+    if ( length == 0 ) {
       return 0;
     }
 
-    if( next >= length )
-    {
+    if ( next >= length ) {
       return -1;
-    }
-    else
-    {
+    } else {
       int bytesToRead = Math.min( length - next, length );
       string.getChars( next, next + bytesToRead, buffer, offset );
 
@@ -106,14 +98,10 @@ public final class SimpleReader extends Reader
    *
    * @return The number skipped
    */
-  public long skip( long amount )
-  {
-    if( next >= length )
-    {
+  public long skip( long amount ) {
+    if ( next >= length ) {
       return 0L;
-    }
-    else
-    {
+    } else {
       long skipped = Math.min( length - next, amount );
       next += skipped;
 
@@ -129,8 +117,7 @@ public final class SimpleReader extends Reader
    *
    * @return
    */
-  public boolean ready()
-  {
+  public boolean ready() {
     return true;
   }
 
@@ -142,8 +129,7 @@ public final class SimpleReader extends Reader
    *
    * @return
    */
-  public boolean markSupported()
-  {
+  public boolean markSupported() {
     return true;
   }
 
@@ -155,8 +141,7 @@ public final class SimpleReader extends Reader
    *
    * @param limit
    */
-  public void mark( int limit )
-  {
+  public void mark( int limit ) {
     mark = next;
   }
 
@@ -166,8 +151,7 @@ public final class SimpleReader extends Reader
   /**
    * Method reset
    */
-  public void reset()
-  {
+  public void reset() {
     next = mark;
   }
 
@@ -177,8 +161,7 @@ public final class SimpleReader extends Reader
   /**
    * Method close
    */
-  public void close()
-  {
+  public void close() {
     string = null;
   }
 }

@@ -34,10 +34,14 @@ public class Login {
   HashSet<String> roles = new HashSet<String>();
 
 
+
+
   public Login( SecurityPrincipal principal, CredentialSet creds ) {
-	  this.principal = principal;
-	    credentials = creds;
-	  }
+    this.principal = principal;
+    credentials = creds;
+  }
+
+
 
 
   public Login( CredentialSet creds ) {
@@ -133,36 +137,48 @@ public class Login {
     return new ArrayList<String>( roles );
   }
 
+
+
+
   /**
    * @return the identifier for this login
    */
-public String getId() {
-	return id;
-}
+  public String getId() {
+    return id;
+  }
 
-/**
- * Set the identifier for this login
- * 
- * @param id the identifier unique to the security context
- */
-public void setId(String id) {
-	this.id = id;
-}
 
-/**
- * @return The principal associated to this login
- */
-public SecurityPrincipal getPrincipal() {
-	return principal;
-}
 
-/**
- * Set the security principal associated to this login.
- * 
- * @param principal The principal associated with this login.
- */
-public void setPrincipal(SecurityPrincipal principal) {
-	this.principal = principal;
-}
+
+  /**
+   * Set the identifier for this login
+   * 
+   * @param id the identifier unique to the security context
+   */
+  public void setId( String id ) {
+    this.id = id;
+  }
+
+
+
+
+  /**
+   * @return The principal associated to this login
+   */
+  public SecurityPrincipal getPrincipal() {
+    return principal;
+  }
+
+
+
+
+  /**
+   * Set the security principal associated to this login.
+   * 
+   * @param principal The principal associated with this login.
+   */
+  public void setPrincipal( SecurityPrincipal principal ) {
+    this.principal = principal;
+  }
 
 }

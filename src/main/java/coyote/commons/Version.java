@@ -68,7 +68,7 @@ public class Version {
     major = maj;
     minor = min;
     patch = pch;
-    if( rls > -1 && rls <= GENERAL ) {
+    if ( rls > -1 && rls <= GENERAL ) {
       release = rls;
     }
   }
@@ -86,14 +86,14 @@ public class Version {
   public static Version createVersion( String text ) {
     Version retval = new Version();
 
-    if( text != null ) {
+    if ( text != null ) {
       int mark = 0;
       int mode = 0;
 
-      for( int i = 0; i < text.length(); i++ ) {
-        if( ( text.charAt( i ) == '.' ) || ( text.charAt( i ) == ' ' ) || ( text.charAt( i ) == '-' ) ) {
+      for ( int i = 0; i < text.length(); i++ ) {
+        if ( ( text.charAt( i ) == '.' ) || ( text.charAt( i ) == ' ' ) || ( text.charAt( i ) == '-' ) ) {
           try {
-            switch( mode ) {
+            switch ( mode ) {
 
               case 0:
                 retval.setMajor( Integer.parseInt( text.substring( mark, i ) ) );
@@ -107,8 +107,7 @@ public class Version {
                 retval.setPatch( Integer.parseInt( text.substring( mark, i ) ) );
                 break;
             }
-          }
-          catch( NumberFormatException nfe ) {
+          } catch ( NumberFormatException nfe ) {
             return retval;
           }
 
@@ -120,7 +119,7 @@ public class Version {
 
       try {
         // Now finishup
-        switch( mode ) {
+        switch ( mode ) {
 
           case 0:
             retval.setMajor( Integer.parseInt( text.substring( mark ) ) );
@@ -135,8 +134,7 @@ public class Version {
             break;
         }
 
-      }
-      catch( Exception ex ) {
+      } catch ( Exception ex ) {
 
       }
 
@@ -228,11 +226,11 @@ public class Version {
   public String toString() {
     StringBuffer retval = new StringBuffer( major + "." + minor );
 
-    if( patch > 0 ) {
+    if ( patch > 0 ) {
       retval.append( "." + patch );
     }
 
-    if( release < GENERAL ) {
+    if ( release < GENERAL ) {
       retval.append( "-" + getReleaseString( release ) );
     }
 
@@ -243,7 +241,7 @@ public class Version {
 
 
   public static String getReleaseString( short code ) {
-    if( code < GENERAL ) {
+    if ( code < GENERAL ) {
       return releaseNames[code];
     }
     return releaseNames[GENERAL];
@@ -266,7 +264,7 @@ public class Version {
    * @param release The release to set.
    */
   public void setRelease( short release ) {
-    if( release > -1 && release >= GENERAL ) {
+    if ( release > -1 && release >= GENERAL ) {
       this.release = release;
     }
   }
@@ -283,15 +281,15 @@ public class Version {
    *         given version, false if this version is less than the argument.
    */
   public boolean isAtLeast( Version std ) {
-    if( major > std.major ) {
+    if ( major > std.major ) {
       return true;
     } else {
-      if( major == std.major ) {
-        if( minor > std.minor ) {
+      if ( major == std.major ) {
+        if ( minor > std.minor ) {
           return true;
         } else {
-          if( minor == std.minor ) {
-            if( patch > std.patch ) {
+          if ( minor == std.minor ) {
+            if ( patch > std.patch ) {
               return true;
             }
           }
@@ -315,15 +313,15 @@ public class Version {
    *         version, false if this version is greater than the argument.
    */
   public boolean isAtMost( Version std ) {
-    if( major < std.major ) {
+    if ( major < std.major ) {
       return true;
     } else {
-      if( major == std.major ) {
-        if( minor < std.minor ) {
+      if ( major == std.major ) {
+        if ( minor < std.minor ) {
           return true;
         } else {
-          if( minor == std.minor ) {
-            if( patch < std.patch ) {
+          if ( minor == std.minor ) {
+            if ( patch < std.patch ) {
               return true;
             }
           }

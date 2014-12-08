@@ -16,8 +16,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import coyote.commons.StringUtil;
 
@@ -95,17 +95,17 @@ public class GenericSecurityContext implements SecurityContext {
 
 
 
-	/**
-	 * @see coyote.commons.security.SecurityContext#getLogin(java.lang.String)
-	 */
-	@Override
-	public Login getLogin(String sessionId) {
-		Session session = sessions.get(sessionId);
-		if (session != null) {
-			return session.getLogin();
-		}
-		return null;
-	}
+  /**
+   * @see coyote.commons.security.SecurityContext#getLogin(java.lang.String)
+   */
+  @Override
+  public Login getLogin( String sessionId ) {
+    Session session = sessions.get( sessionId );
+    if ( session != null ) {
+      return session.getLogin();
+    }
+    return null;
+  }
 
 
 
@@ -115,22 +115,24 @@ public class GenericSecurityContext implements SecurityContext {
    */
   @Override
   public Session createSession( Login login ) {
-    return createSession(UUID.randomUUID().toString(),login);
+    return createSession( UUID.randomUUID().toString(), login );
   }
+
 
 
 
   /**
    * @see coyote.commons.security.SecurityContext#createSession(java.lang.String,coyote.commons.security.Login)
    */
-   @Override
-  public Session createSession(String id, Login login) {
-	    Session retval = new GenericSession();
-	    retval.setLogin( login );
-	    retval.setId(id);
-	    sessions.put(retval.getId(),retval);
-	    return retval;
+  @Override
+  public Session createSession( String id, Login login ) {
+    Session retval = new GenericSession();
+    retval.setLogin( login );
+    retval.setId( id );
+    sessions.put( retval.getId(), retval );
+    return retval;
   }
+
 
 
 
@@ -178,28 +180,25 @@ public class GenericSecurityContext implements SecurityContext {
 
 
 
-	@Override
-	public Session getSession(String sessionId) {
-		return sessions.get(sessionId);
-	}
+  @Override
+  public Session getSession( String sessionId ) {
+    return sessions.get( sessionId );
+  }
 
 
 
 
-	@Override
-	public Session getSession(Login login) {
-		if (login != null) {
-			for (Iterator<Map.Entry<String, Session>> it = sessions.entrySet().iterator(); it.hasNext();) {
-				Entry<String, Session> entry = it.next();
-				if (login == entry.getValue().getLogin()) {
-					return entry.getValue();
-				}
-			} // for
-		} // login ! null
-		return null;
-	}
-
-
-
+  @Override
+  public Session getSession( Login login ) {
+    if ( login != null ) {
+      for ( Iterator<Map.Entry<String, Session>> it = sessions.entrySet().iterator(); it.hasNext(); ) {
+        Entry<String, Session> entry = it.next();
+        if ( login == entry.getValue().getLogin() ) {
+          return entry.getValue();
+        }
+      } // for
+    } // login ! null
+    return null;
+  }
 
 }

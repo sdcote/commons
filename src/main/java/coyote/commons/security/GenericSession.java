@@ -15,45 +15,45 @@ package coyote.commons.security;
  * 
  */
 public class GenericSession implements Session {
-	private Login login = null;
-	private String identifier = null;
+  private Login login = null;
+  private String identifier = null;
 
 
 
 
-	/**
-	 * @see coyote.commons.security.Session#setLogin(coyote.commons.security.Login)
-	 */
-	@Override
-	public void setLogin(Login login) {
-		this.login = login;
-	}
+  /**
+   * @see coyote.commons.security.Session#setLogin(coyote.commons.security.Login)
+   */
+  @Override
+  public void setLogin( Login login ) {
+    this.login = login;
+  }
 
 
 
 
-	/**
-	 * @see coyote.commons.security.Session#getLogin()
-	 */
-	@Override
-	public Login getLogin() {
-		return login;
-	}
+  /**
+   * @see coyote.commons.security.Session#getLogin()
+   */
+  @Override
+  public Login getLogin() {
+    return login;
+  }
 
 
 
 
-	@Override
-	public String getId() {
-		return identifier;
-	}
+  @Override
+  public String getId() {
+    return identifier;
+  }
 
 
 
 
-	@Override
-	public void setId(String id) {
-		identifier = id;
-	}
+  @Override
+  public void setId( String id ) {
+    identifier = id;
+  }
 
 }

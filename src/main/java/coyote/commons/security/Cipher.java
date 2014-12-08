@@ -14,8 +14,7 @@ package coyote.commons.security;
 /**
  * The Cipher class models a simple encryption utility.
  */
-public interface Cipher
-{
+public interface Cipher {
   /**
    * Returns the name of the cipher algorithm.
    * 

@@ -10,7 +10,7 @@ import java.util.Date;
   * TypeHandler directs types conversions.
   */
 public class TypeHandler {
-  
+
   /**
    * Returns the class whose name is {@code classname}.
    *

@@ -49,7 +49,7 @@ public class BlockingQueue {
   public BlockingQueue( int size ) {
     capacity = size;
 
-    if( size == 0 ) {
+    if ( size == 0 ) {
       capacity = 255;
     }
 
@@ -89,7 +89,7 @@ public class BlockingQueue {
    * @return the current load percentage of the queue
    */
   public float load() {
-    if( capacity > 0 ) {
+    if ( capacity > 0 ) {
       return (float)size / (float)capacity;
     } else {
       return 1;
@@ -106,7 +106,7 @@ public class BlockingQueue {
    *         get()
    */
   public boolean isEmpty() {
-    if( ( capacity - size ) == 0 ) {
+    if ( ( capacity - size ) == 0 ) {
       return true;
     } else {
       return false;
@@ -133,7 +133,7 @@ public class BlockingQueue {
    */
   public void clear() {
     synchronized( slots ) {
-      for( int i = 0; i < capacity; i++ ) {
+      for ( int i = 0; i < capacity; i++ ) {
         slots[i] = null;
       }
 
@@ -157,13 +157,13 @@ public class BlockingQueue {
    */
   public void put( Object o ) throws InterruptedException {
     synchronized( slots ) {
-      while( size == capacity ) {
+      while ( size == capacity ) {
         slots.wait();
       }
 
       slots[tail] = o;
 
-      if( ++tail == capacity ) {
+      if ( ++tail == capacity ) {
         tail = 0;
       }
 
@@ -187,17 +187,17 @@ public class BlockingQueue {
    */
   public void put( Object o, int timeout ) throws InterruptedException {
     synchronized( slots ) {
-      if( size == capacity ) {
+      if ( size == capacity ) {
         slots.wait( timeout );
 
-        if( size == capacity ) {
+        if ( size == capacity ) {
           throw new InterruptedException( "Timed out" );
         }
       }
 
       slots[tail] = o;
 
-      if( ++tail == capacity ) {
+      if ( ++tail == capacity ) {
         tail = 0;
       }
 
@@ -221,17 +221,17 @@ public class BlockingQueue {
    */
   public Object get() throws InterruptedException {
     synchronized( slots ) {
-      while( size == 0 ) {
+      while ( size == 0 ) {
         slots.wait();
       }
 
       Object o = slots[head];
 
-      if( ++head == capacity ) {
+      if ( ++head == capacity ) {
         head = 0;
       }
 
-      if( size == capacity ) {
+      if ( size == capacity ) {
         slots.notify();
       }
 
@@ -256,21 +256,21 @@ public class BlockingQueue {
    */
   public Object get( long millis ) throws InterruptedException {
     synchronized( slots ) {
-      if( size == 0 ) {
+      if ( size == 0 ) {
         slots.wait( millis );
       }
 
-      if( size == 0 ) {
+      if ( size == 0 ) {
         return null;
       }
 
       Object o = slots[head];
 
-      if( ++head == capacity ) {
+      if ( ++head == capacity ) {
         head = 0;
       }
 
-      if( size == capacity ) {
+      if ( size == capacity ) {
         slots.notify();
       }
 
@@ -294,11 +294,11 @@ public class BlockingQueue {
    */
   public Object peek() throws InterruptedException {
     synchronized( slots ) {
-      if( size == 0 ) {
+      if ( size == 0 ) {
         slots.wait();
       }
 
-      if( size == 0 ) {
+      if ( size == 0 ) {
         return null;
       }
 
@@ -323,11 +323,11 @@ public class BlockingQueue {
    */
   public Object peek( int millis ) throws InterruptedException {
     synchronized( slots ) {
-      if( size == 0 ) {
+      if ( size == 0 ) {
         slots.wait( (long)millis );
       }
 
-      if( size == 0 ) {
+      if ( size == 0 ) {
         return null;
       }
 

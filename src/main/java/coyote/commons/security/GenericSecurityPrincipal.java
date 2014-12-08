@@ -13,67 +13,67 @@ package coyote.commons.security;
 
 public class GenericSecurityPrincipal extends SecurityPrincipal {
 
-	private String name = null;
-	private String id = null;
+  private String name = null;
+  private String id = null;
 
 
 
 
-	public GenericSecurityPrincipal() {
-		this(null, null);
-	}
+  public GenericSecurityPrincipal() {
+    this( null, null );
+  }
 
 
 
 
-	public GenericSecurityPrincipal(String name) {
-		this(null, name);
-	}
+  public GenericSecurityPrincipal( String name ) {
+    this( null, name );
+  }
 
 
 
 
-	/**
-	 * Create a security principal with the given identifier and name.
-	 * 
-	 * @param id an identifier unique within the security context.
-	 * @param name a name suitable for display to the principal this object represents.
-	 */
-	public GenericSecurityPrincipal(String id, String name) {
-		this.setId(id);
-		this.name = name;
-	}
+  /**
+   * Create a security principal with the given identifier and name.
+   * 
+   * @param id an identifier unique within the security context.
+   * @param name a name suitable for display to the principal this object represents.
+   */
+  public GenericSecurityPrincipal( String id, String name ) {
+    this.setId( id );
+    this.name = name;
+  }
 
 
 
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  @Override
+  public String getName() {
+    return name;
+  }
 
 
 
 
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
+  @Override
+  public void setName( String name ) {
+    this.name = name;
+  }
 
 
 
 
-	@Override
-	public String getId() {
-		return id;
-	}
+  @Override
+  public String getId() {
+    return id;
+  }
 
 
 
 
-	@Override
-	public void setId(String id) {
-		this.id = id;
-	}
+  @Override
+  public void setId( String id ) {
+    this.id = id;
+  }
 
 }

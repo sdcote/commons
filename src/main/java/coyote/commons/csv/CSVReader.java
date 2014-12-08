@@ -8,6 +8,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import coyote.commons.cli.ArgumentException;
+
 
 /**
  * A CSV reader which uses the CSVParser to split lines into fields.

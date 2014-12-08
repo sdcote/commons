@@ -446,7 +446,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
     // Calculate non-chunked size - rounded up to allow for padding casting to 
     // long is needed to avoid possibility of overflow
     long len = ( ( ( pArray.length + unencodedBlockSize ) - 1 ) / unencodedBlockSize ) * (long)encodedBlockSize;
-    if ( lineLength > 0 ) { 
+    if ( lineLength > 0 ) {
       // We're using chunking, round up to nearest multiple
       len += ( ( ( len + lineLength ) - 1 ) / lineLength ) * chunkSeparatorLength;
     }

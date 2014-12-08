@@ -370,5 +370,5 @@ public abstract class Parser implements ArgumentParser {
     this.options = options;
     requiredOptions = new ArrayList<String>( options.getRequiredOptions() );
   }
-  
+
 }

@@ -233,5 +233,5 @@ public class PosixParser extends Parser {
 
     tokens.add( token );
   }
-  
+
 }

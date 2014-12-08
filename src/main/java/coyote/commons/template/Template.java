@@ -57,10 +57,9 @@ import coyote.commons.StringParser;
  * Access Objects (DAO), data repositories, and any other specialized object
  * that is designed to present data in a string format.</p>
  */
-public class Template extends StringParser
-{
+public class Template extends StringParser {
   private static SymbolTable symbols = new SymbolTable();
-  private Hashtable<String,Object> classCache = new Hashtable<String,Object>();
+  private Hashtable<String, Object> classCache = new Hashtable<String, Object>();
 
   private static final String OPEN_TAG = "[#";
   private static final String CLOSE_TAG = "#]";
@@ -73,8 +72,7 @@ public class Template extends StringParser
    *
    * @param string
    */
-  public Template( String string )
-  {
+  public Template( String string ) {
     super( string );
   }
 
@@ -87,8 +85,7 @@ public class Template extends StringParser
    * @param string
    * @param symbols
    */
-  public Template( String string, SymbolTable symbols )
-  {
+  public Template( String string, SymbolTable symbols ) {
     super( string );
 
     Template.symbols = symbols;
@@ -102,10 +99,8 @@ public class Template extends StringParser
    *
    * @param obj
    */
-  public void put( Object obj )
-  {
-    if( obj != null )
-    {
+  public void put( Object obj ) {
+    if ( obj != null ) {
       classCache.put( obj.getClass().getName(), obj );
     }
   }
@@ -120,16 +115,13 @@ public class Template extends StringParser
    *
    * @return the object with the given name or null if not found.
    */
-  public Object get( String name )
-  {
-    if( ( name != null ) && ( name.length() > 0 ) )
-    {
+  public Object get( String name ) {
+    if ( ( name != null ) && ( name.length() > 0 ) ) {
       return classCache.get( name );
     }
 
     return null;
   }
-  
 
 
 
@@ -143,30 +135,23 @@ public class Template extends StringParser
    *
    * @return a string representing the data behind the given tag.
    */
-  public static String resolve( String tag, SymbolTable symbols, Hashtable cache )
-  {
+  public static String resolve( String tag, SymbolTable symbols, Hashtable cache ) {
     StringBuffer retval = new StringBuffer();
 
     StringParser parser = new StringParser( tag );
 
-    try
-    {
-      while( !parser.eof() )
-      {
+    try {
+      while ( !parser.eof() ) {
         String token = parser.readToken();
 
-        if( ( token == null ) || ( token.length() < 1 ) )
-        {
+        if ( ( token == null ) || ( token.length() < 1 ) ) {
           break;
         }
 
-        if( token.startsWith( "$" ) )
-        {
+        if ( token.startsWith( "$" ) ) {
           String key = token.substring( 1 );
           retval.append( symbols.getString( key ) );
-        }
-        else
-        {
+        } else {
           // Must be a class; see if it is a method or constructor reference
 
           //
@@ -175,9 +160,7 @@ public class Template extends StringParser
 
         }
       }
-    }
-    catch( Exception ex )
-    {
+    } catch ( Exception ex ) {
 
     }
 
@@ -192,15 +175,11 @@ public class Template extends StringParser
    *
    * @return the String representing the resolved template.
    */
-  public String toString()
-  {
-    try
-    {
+  public String toString() {
+    try {
       // call our static method with our instance attributes
       return toString( this, symbols, classCache );
-    }
-    catch( TemplateException te )
-    {
+    } catch ( TemplateException te ) {
       System.err.println( te.getMessage() );
       System.err.println( te.getContext() );
 
@@ -224,36 +203,27 @@ public class Template extends StringParser
    *
    * @throws TemplateException
    */
-  public static String toString( Template template, SymbolTable symbols, Hashtable cache ) throws TemplateException
-  {
-    if( template != null )
-    {
-      if( symbols == null )
-      {
+  public static String toString( Template template, SymbolTable symbols, Hashtable cache ) throws TemplateException {
+    if ( template != null ) {
+      if ( symbols == null ) {
         symbols = new SymbolTable();
       }
 
       StringBuffer buffer = new StringBuffer();
 
-      try
-      {
+      try {
         // Keep looping
-        while( !template.eof() )
-        {
+        while ( !template.eof() ) {
           String userText = template.readToPattern( OPEN_TAG );
 
-          if( userText != null )
-          {
+          if ( userText != null ) {
             buffer.append( userText );
           }
 
           // if we are at the End Of the File, then we are done
-          if( template.eof() )
-          {
+          if ( template.eof() ) {
             break;
-          }
-          else
-          {
+          } else {
             // Skip past the opening tag delimiter
             template.skip( OPEN_TAG.length() );
 
@@ -262,8 +232,7 @@ public class Template extends StringParser
 
             // If we are at EOF then the read terminated before the closing tag
             // was encountered. This means the template is not complete.
-            if( template.eof() )
-            {
+            if ( template.eof() ) {
               buffer.append( "TEMPLATE ERROR: reached EOF before finding closing delimiter '" + CLOSE_TAG + "' at " + template.getPosition() );
 
               return buffer.toString();
@@ -273,17 +242,14 @@ public class Template extends StringParser
             template.skip( CLOSE_TAG.length() );
 
             // OK, now perform our replacement magik
-            if( ( tag != null ) && ( tag.length() > 0 ) )
-            {
+            if ( ( tag != null ) && ( tag.length() > 0 ) ) {
               // resolve the tag using the given symbol table and class cache
               buffer.append( resolve( tag, symbols, cache ) );
             }
 
           }
         }
-      }
-      catch( IOException ioe )
-      {
+      } catch ( IOException ioe ) {
         throw new TemplateException( "IOE", ioe );
       }
 
@@ -301,15 +267,10 @@ public class Template extends StringParser
    *
    * @param table
    */
-  public void mergeSymbols( SymbolTable table )
-  {
+  public void mergeSymbols( SymbolTable table ) {
     symbols.merge( table );
   }
 
-
-
-
- 
 
 
 
@@ -318,8 +279,7 @@ public class Template extends StringParser
    *
    * @return
    */
-  public SymbolTable getSymbols()
-  {
+  public SymbolTable getSymbols() {
     return symbols;
   }
 
@@ -331,8 +291,7 @@ public class Template extends StringParser
    *
    * @param symbols
    */
-  public void setSymbols( SymbolTable symbols )
-  {
+  public void setSymbols( SymbolTable symbols ) {
     Template.symbols = symbols;
   }
 
@@ -345,10 +304,8 @@ public class Template extends StringParser
    * @param name
    * @param value
    */
-  public void addSymbol( String name, Object value )
-  {
-    if( ( name != null ) && ( value != null ) )
-    {
+  public void addSymbol( String name, Object value ) {
+    if ( ( name != null ) && ( value != null ) ) {
       symbols.put( name, value );
     }
   }

@@ -70,7 +70,7 @@ public class CredentialSet {
   static {
     try {
       @SuppressWarnings("unused")
-	MessageDigest md = MessageDigest.getInstance( MD5 );
+      MessageDigest md = MessageDigest.getInstance( MD5 );
     } catch ( NoSuchAlgorithmException e ) {
       e.printStackTrace();
     }
@@ -232,7 +232,7 @@ public class CredentialSet {
         }
       } // for
     } // not null
-    
+
     return retval;
   }
 

@@ -31,8 +31,8 @@ public class XTEACipher extends AbstractCipher implements Cipher {
   private static final String UTF16 = "UTF-16";
   private static final String CIPHER_NAME = "XTEA";
 
-  
-  private int[] subKeys = null; 
+  private int[] subKeys = null;
+
 
 
 
@@ -190,6 +190,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
 
 
 
+
   /**
    * @see coyote.commons.security.Cipher#decrypt(byte[])
    */
@@ -201,9 +202,10 @@ public class XTEACipher extends AbstractCipher implements Cipher {
       final byte[] block = XTEACipher.decrypt( data, x, subKeys );
       System.arraycopy( block, 0, retval, x, block.length );
     }
-    
+
     return AbstractCipher.trim( retval );
   }
+
 
 
 
@@ -252,16 +254,18 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * @return The encrypted text as a byte array.
    */
   public static byte[] encrypt( byte[] bytes, final String key ) {
-    
+
     XTEACipher cipher = new XTEACipher();
-    
+
     // initialize with the key string
-    cipher.init( XTEACipher.getKeyBytes( key ));
+    cipher.init( XTEACipher.getKeyBytes( key ) );
 
     // Have the cipher encrypt the data
     return cipher.encrypt( bytes );
-    
+
   }
+
+
 
 
   /**
@@ -275,11 +279,11 @@ public class XTEACipher extends AbstractCipher implements Cipher {
   public byte[] encrypt( byte[] bytes ) {
 
     // pad the data using RFC-1423 scheme
-    byte[] data = AbstractCipher.pad(bytes);
-    
+    byte[] data = AbstractCipher.pad( bytes );
+
     // create our return value
     final byte[] retval = new byte[data.length];
-    
+
     // encrypt the data
     for ( int x = 0; x < bytes.length; x += XTEACipher.BLOCK_SIZE ) {
       final byte[] block = XTEACipher.encrypt( data, x, subKeys );
@@ -287,6 +291,8 @@ public class XTEACipher extends AbstractCipher implements Cipher {
     }
     return retval;
   }
+
+
 
 
   /**
@@ -369,12 +375,6 @@ public class XTEACipher extends AbstractCipher implements Cipher {
     subKeys = XTEACipher.generateSubKeys( key );
   }
 
-
-
-
-
-
- 
 
 
 

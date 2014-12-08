@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import javax.sql.DataSource;
 
+
 /**
  * The master-slave datasource is used when you have few writes and many reads 
  * in your application. A {@code ReplicationDataSource} instance returns a 
@@ -34,7 +35,7 @@ public class MasterSlaveDataSource extends AbstractDataSource {
 
     // round-robin replicas
     final RoundRobinDataSource roundRobinReads = new RoundRobinDataSource( substitutableDataSources );
-    
+
     // split read (master) and write (replicas)
     _masterSlaveDataSource = new ReplicationDataSource( master, roundRobinReads );
   }
