@@ -35,6 +35,20 @@ package coyote.commons.security;
 public interface SecurityContext {
 
   /**
+   * Retrieve the name of this security context.
+   * 
+   * <p>This name is assigned through the context's constructor and is used to 
+   * address this context in the system. It is therefore assumed that the name 
+   * is unique to the system.</p>
+   * 
+   * @return The name assigned to this security context.
+   */
+  public String getName();
+
+
+
+
+  /**
    * Retrieve a login using the given credential set for authentication.
    * 
    * <p>This method uses the given credentials to find the associated login. 
@@ -169,5 +183,17 @@ public interface SecurityContext {
    * have a session in this context.
    */
   public Session getSession( Login login );
+
+
+
+
+  /**
+   * The most common use case, username and password (via credential set).
+   * 
+   * @param string
+   * @param credentialSet
+   * @return
+   */
+  public Login getLogin( String string, CredentialSet credentialSet );
 
 }

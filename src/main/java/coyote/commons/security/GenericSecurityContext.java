@@ -54,15 +54,45 @@ public class GenericSecurityContext implements SecurityContext {
 
 
   /**
+   * @see coyote.commons.security.SecurityContext#getLogin(java.lang.String, coyote.commons.security.CredentialSet)
+   */
+  @Override
+  public Login getLogin( String name, CredentialSet creds ) {
+
+    if ( name != null && creds != null ) {
+      for ( Login login : logins ) {
+        // if the name of the login principal matches the requested name
+        if ( login.getPrincipal() != null && name.equals( login.getPrincipal().getName() ) ) {
+          // check to see if all the credentials match...the all have to match
+          if ( login.matchCredentials( creds ) ) {
+            return login;
+          }
+        } else {
+          // wrong credentials for the found security principal
+          return null;
+        }
+      }
+    }
+    
+    // no login found with the security principal with that name
+    return null;
+  }
+
+
+
+
+  /**
    * This is essentially an authentication operation.
    * 
    * @see coyote.commons.security.SecurityContext#getLogin(coyote.commons.security.Credentials)
    */
   public Login getLogin( CredentialSet creds ) {
-    // for each credential in the given set, see if there is a login which contains a match for each
-    for ( Login login : logins ) {
-      if ( login.matchCredentials( creds ) ) {
-        return login;
+    if ( creds != null ) {
+      // for each credential in the given set, see if there is a login which contains a match for each
+      for ( Login login : logins ) {
+        if ( login.matchCredentials( creds ) ) {
+          return login;
+        }
       }
     }
     return null;
@@ -159,21 +189,22 @@ public class GenericSecurityContext implements SecurityContext {
 
     boolean retval = false;
 
-    // for each role in the login
-    List<String> roles = login.getRoles();
-    Role role = null;
-    for ( String roleName : roles ) {
-      role = getRole( roleName );
-      if ( role != null && role.allows( name, perms ) ) {
-        retval = true;
-        break;
+    if ( login != null ) {
+      // for each role in the login
+      List<String> roles = login.getRoles();
+      Role role = null;
+      for ( String roleName : roles ) {
+        role = getRole( roleName );
+        if ( role != null && role.allows( name, perms ) ) {
+          retval = true;
+          break;
+        }
       }
+
+      // TODO: Check the login for specific permissions
+
+      // TODO: Now check for revocations at the login level
     }
-
-    // TODO: Check the login for specific permissions
-
-    // TODO: Now check for revocations at the login level
-
     return retval;
   }
 
@@ -200,5 +231,20 @@ public class GenericSecurityContext implements SecurityContext {
     } // login ! null
     return null;
   }
+
+
+
+
+  /**
+   * @see coyote.commons.security.SecurityContext#getName()
+   */
+  @Override
+  public String getName() {
+    return _name;
+  }
+
+
+
+
 
 }

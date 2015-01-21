@@ -387,8 +387,8 @@ public class UriUtilTest {
   public void testGetHostAddress1() {
     try {
       URI uri = new URI( "blp://sdcote@linkage.bralyn.net:5529/root/home/stuff" );
-      InetAddress addr = UriUtil.getHostAddress( uri );
-      assertTrue( addr != null );
+      //InetAddress addr = UriUtil.getHostAddress( uri ); // DNS can break this test
+      //assertTrue( addr != null );
       assertTrue( uri.getScheme().equals( "blp" ) );
       assertTrue( uri.getRawUserInfo().equals( "sdcote" ) );
       assertTrue( uri.getHost().equals( "linkage.bralyn.net" ) );

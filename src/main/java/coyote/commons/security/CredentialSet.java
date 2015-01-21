@@ -14,9 +14,11 @@ package coyote.commons.security;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,7 +33,7 @@ import java.util.Map.Entry;
  * 
  * <p>Data in this class is stored as bytes so future systems can store a 
  * variety of data (e.g. biometric) in this class. This class can even help 
- * with public-private key management.</p>
+ * with some public-private key management schemes.</p>
  * 
  * <p>Credentials should not be stored in memory in their raw state to help
  * prevent accidental exposure should a memory dump occurs or memory become
@@ -49,11 +51,8 @@ public class CredentialSet {
   private static final String MD5 = "MD5";
   private static final String UTF8 = "UTF8";
 
-  // Identifier key
-  public static final String IDENT = "identifier";
-
-  // Account key
-  public static final String ACCOUNT = "account";
+  // Identifying key
+  public static final String KEY = "key";
 
   // Password key
   public static final String PASSWORD = "password";
@@ -161,21 +160,55 @@ public class CredentialSet {
 
 
   /**
-   * Constructor which populates an account name and a password.
+   * Constructor which populates a named credential with the UTF-8 byte encoded 
+   * given value.
+   * 
+   * <p>This stores credentials as cleartext in memory and can represent a 
+   * security risk. Consider using {@link #CredentialSet(String, String, int)} 
+   * to store credentials as MD5 digested values.</p>
    * 
    * <p>This is a convenience method for one of the most common use case 
-   * scenarios for this class; username / account and a password.</p>
+   * scenarios for this class.</p>
    * 
-   * <p>The account and password values are stored in UTF8 encoding, again 
-   * addressing the most common character sets.</p>
+   * <p>The value is stored in UTF8 encoding, again addressing the most common 
+   * character set use case.</p>
    *
-   * @param acct The name of the account
-   * @param passwd The authenticating data
+   * @param name The name of the credential being set
+   * @param value The authenticating data
    */
-  public CredentialSet( String acct, String passwd ) {
+  public CredentialSet( String name, String value ) {
     try {
-      add( ACCOUNT, acct.getBytes( UTF8 ) );
-      add( PASSWORD, passwd.getBytes( UTF8 ) );
+      add( name, value.getBytes( UTF8 ) );
+    } catch ( UnsupportedEncodingException e ) {}
+  }
+
+
+
+
+  /**
+   * Constructor which populates a named credential with the UTF-8 byte encoded 
+   * given value after passing it through the given number of rounds of MD5.
+   * 
+   * <p>This is a convenience method for one of the most common secure use case 
+   * scenarios for this class.</p>
+   * 
+   * <p>The value is converted to UTF8 encoding and stored as an MD5 hash to 
+   * help reduce the exposure of the clear test credential value.</p>
+   *
+   * @param name The name of the credential being set
+   * @param value The authenticating data
+   * @param rounds The number of times the value is digested. Negative values will default to 1 round.
+   */
+  public CredentialSet( String name, String value, int rounds ) {
+    if ( rounds >= 0 ) {
+      this._rounds = rounds;
+    } else {
+      // negative numbers will default to 1
+      _rounds = 1;
+    }
+
+    try {
+      add( name, value.getBytes( UTF8 ) );
     } catch ( UnsupportedEncodingException e ) {}
   }
 
@@ -236,4 +269,13 @@ public class CredentialSet {
     return retval;
   }
 
+
+
+
+  /**
+   * @return a list of credential names in this credential set.
+   */
+  public List<String> getNames() {
+    return new ArrayList<String>( _credentials.keySet() );
+  }
 }

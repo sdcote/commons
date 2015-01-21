@@ -78,7 +78,7 @@ public class CredentialSetTest {
    */
   @Test
   public void testCredentialSetStringString() {
-    CredentialSet creds = new CredentialSet( "username", "password" );
+    CredentialSet creds = new CredentialSet( CredentialSet.PASSWORD, "p45Sw0rD" );
     assertNotNull( creds );
   }
 
@@ -94,9 +94,8 @@ public class CredentialSetTest {
     assertNotNull( creds );
     creds.add( "test", "data".getBytes() );
     assertTrue( creds.contains( "test" ) );
-    creds = new CredentialSet( "username", "password" );
-    assertTrue( creds.contains( creds.ACCOUNT ) );
-    assertTrue( creds.contains( creds.PASSWORD ) );
+    creds = new CredentialSet( "password", "123abc" );
+    assertTrue( creds.contains( "password" ) );
   }
 
 }

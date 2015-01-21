@@ -34,6 +34,19 @@ public class Login {
   HashSet<String> roles = new HashSet<String>();
 
 
+  /**
+   * Constructs a Login with a security principal with the given name and a 
+   * credential set with the given password.
+   * 
+   * @param name
+   * @param password
+   */
+  public Login( String name, String password ) {
+    principal = new GenericSecurityPrincipal(name);
+    credentials = new CredentialSet(CredentialSet.PASSWORD, password);
+  }
+
+
 
 
   public Login( SecurityPrincipal principal, CredentialSet creds ) {
@@ -179,6 +192,28 @@ public class Login {
    */
   public void setPrincipal( SecurityPrincipal principal ) {
     this.principal = principal;
+  }
+
+
+
+
+  /**
+   * @return the credentials for this login
+   */
+  public CredentialSet getCredentials() {
+    return credentials;
+  }
+
+
+
+
+  /**
+   * Set (replace) the credentials with this set of credentials.
+   * 
+   * @param credentialset the credentials to set
+   */
+  public void setCredentials( CredentialSet credentialset ) {
+    this.credentials = credentialset;
   }
 
 }
