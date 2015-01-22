@@ -107,7 +107,10 @@ public class CredentialSetTest {
 
 
   /**
-   * @throws Exception
+   * Tests the ability to extract the credential values from the set, both 
+   * clear-text and MD5 hash.
+   * 
+   * @throws Exception if the system does not support UTF8 string encoding
    */
   @Test
   public void testDataAccess() throws Exception {
@@ -130,7 +133,6 @@ public class CredentialSetTest {
 
     // convert the MD5 hash to a hex string, no delimiters between hex values
     String dbValue = ByteUtil.bytesToHex( value, null );
-    // Check to see if the value is what is expected
     assertTrue( EXPECTED_HASH.equals( dbValue ) );
   }
 }
