@@ -1,4 +1,5 @@
 [![Build Status](https://drone.io/github.com/sdcote/commons/status.png)](https://drone.io/github.com/sdcote/commons/latest)
+[ ![Download](https://api.bintray.com/packages/sdcote/maven/Commons/images/download.svg)](https://bintray.com/sdcote/maven/Commons/_latestVersion)
 
 Coyote Commons
 ==============
