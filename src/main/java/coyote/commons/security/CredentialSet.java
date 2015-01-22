@@ -278,4 +278,21 @@ public class CredentialSet {
   public List<String> getNames() {
     return new ArrayList<String>( _credentials.keySet() );
   }
+
+
+
+
+  /**
+   * Return the value of the credential with the given name.
+   * 
+   * @param name The name of the credential to return.
+   * 
+   * @return the value of the named credential of null if the name is null or the credential value was not found.
+   */
+  public byte[] getValue( String name ) {
+    if ( name != null ) {
+      return _credentials.get( name );
+    }
+    return null;
+  }
 }

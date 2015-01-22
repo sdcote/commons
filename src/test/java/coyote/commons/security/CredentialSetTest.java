@@ -11,10 +11,14 @@
  */
 package coyote.commons.security;
 
+//import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import coyote.commons.ByteUtil;
 
 
 /**
@@ -96,6 +100,37 @@ public class CredentialSetTest {
     assertTrue( creds.contains( "test" ) );
     creds = new CredentialSet( "password", "123abc" );
     assertTrue( creds.contains( "password" ) );
+
   }
 
+
+
+
+  /**
+   * @throws Exception
+   */
+  @Test
+  public void testDataAccess() throws Exception {
+    String PASSWORD = "123abc{$&";
+    String EXPECTED_HASH = "2CF492AB948FD5941451172BD23FE9D9";
+    CredentialSet creds = new CredentialSet( CredentialSet.PASSWORD, PASSWORD );
+    byte[] value = creds.getValue( CredentialSet.PASSWORD );
+    assertNotNull( value );
+    String newString = new String( value, "UTF8" );
+    assertTrue( PASSWORD.equals( newString ) );
+
+    // store credentials in memory as MD5 hashed values, 1 round of calculations
+    creds = new CredentialSet( CredentialSet.PASSWORD, PASSWORD, 1 );
+    value = creds.getValue( CredentialSet.PASSWORD );
+    assertNotNull( value );
+
+    // Make sure that the stored credential is NOT cleartext
+    newString = new String( value, "UTF-8" );
+    assertFalse( PASSWORD.equals( newString ) );
+
+    // convert the MD5 hash to a hex string, no delimiters between hex values
+    String dbValue = ByteUtil.bytesToHex( value, null );
+    // Check to see if the value is what is expected
+    assertTrue( EXPECTED_HASH.equals( dbValue ) );
+  }
 }
