@@ -11,7 +11,10 @@
  */
 package coyote.commons.security;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,7 +53,7 @@ public class GenericSecurityContextTest {
     context.add( role );
 
     // Add some logins to the context
-    Login login = new Login( new GenericSecurityPrincipal( "ID:12345", "user1" ), new CredentialSet( "user1", "SeCr3t" ) );
+    Login login = new Login( new GenericSecurityPrincipal( "ID:12345", "user1" ), new CredentialSet( CredentialSet.PASSWORD, "SeCr3t" ) );
 
     // add a role to the login
     login.addRole( ADMIN_ROLE );
@@ -102,19 +105,19 @@ public class GenericSecurityContextTest {
     assertNotNull( "admin role cold not be retrieved", newRole );
 
     // Now some login tests...
-    
+
     Login login = null;
 
     // Now try to get a login with some invalid credentials
-    login = context.getLogin( new CredentialSet( "user5", "MyPa55w04d" ) );
+    login = context.getLogin( "user5", new CredentialSet( CredentialSet.PASSWORD, "MyPa55w04d" ) );
     assertNull( "Should not be able to get a login for user5", login );
 
     // try a valid username but slightly different password
-    login = context.getLogin( new CredentialSet( "user1", "SeCr3T" ) );
+    login = context.getLogin( "user1", new CredentialSet( CredentialSet.PASSWORD, "SeCr3T" ) );
     assertNull( "Should not be able to get a login for user1", login );
 
     // This should work
-    login = context.getLogin( new CredentialSet( "user1", "SeCr3t" ) );
+    login = context.getLogin( "user1", new CredentialSet( CredentialSet.PASSWORD, "SeCr3t" ) );
     assertNotNull( "user1 could not be validated", login );
 
     // Make sure we can get a security principal associated to this login
@@ -142,7 +145,7 @@ public class GenericSecurityContextTest {
     assertNotNull( "Could not retrieve a session for by its identifier", userSession );
 
     // Try to retrieve the login from an identified session
-    Login userLogin = context.getLogin( sessionId );
+    Login userLogin = context.getLoginBySession( sessionId );
     assertNotNull( "Could not retrieve a login for by its session identifier", userLogin );
 
     // Try to retrieve the session for the login

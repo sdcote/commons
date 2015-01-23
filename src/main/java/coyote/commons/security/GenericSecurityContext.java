@@ -73,28 +73,8 @@ public class GenericSecurityContext implements SecurityContext {
         }
       }
     }
-    
+
     // no login found with the security principal with that name
-    return null;
-  }
-
-
-
-
-  /**
-   * This is essentially an authentication operation.
-   * 
-   * @see coyote.commons.security.SecurityContext#getLogin(coyote.commons.security.Credentials)
-   */
-  public Login getLogin( CredentialSet creds ) {
-    if ( creds != null ) {
-      // for each credential in the given set, see if there is a login which contains a match for each
-      for ( Login login : logins ) {
-        if ( login.matchCredentials( creds ) ) {
-          return login;
-        }
-      }
-    }
     return null;
   }
 
@@ -105,8 +85,8 @@ public class GenericSecurityContext implements SecurityContext {
    * @see coyote.commons.security.SecurityContext#add(coyote.commons.security.Login)
    */
   public void add( Login login ) {
-    // if the login is not currently found in the context...
-    if ( getLogin( login.credentials ) == null ) {
+    // if the login has a name and is not currently found in the context...
+    if ( login != null && login.getPrincipal() != null && login.getPrincipal().getName() != null && getLoginByName( login.getPrincipal().getName() ) == null ) {
       logins.add( login ); // ...add the login
     }
   }
@@ -126,10 +106,10 @@ public class GenericSecurityContext implements SecurityContext {
 
 
   /**
-   * @see coyote.commons.security.SecurityContext#getLogin(java.lang.String)
+   * @see coyote.commons.security.SecurityContext#getLoginBySession(java.lang.String)
    */
   @Override
-  public Login getLogin( String sessionId ) {
+  public Login getLoginBySession( String sessionId ) {
     Session session = sessions.get( sessionId );
     if ( session != null ) {
       return session.getLogin();
@@ -246,5 +226,20 @@ public class GenericSecurityContext implements SecurityContext {
 
 
 
+  /**
+   * @see coyote.commons.security.SecurityContext#getLoginByName(java.lang.String)
+   */
+  @Override
+  public Login getLoginByName( String name ) {
+    if ( name != null ) {
+      // for each login see if there is a login with the given name
+      for ( Login login : logins ) {
+        if ( login.getPrincipal() != null && name.equals( login.getPrincipal().getName() ) ) {
+          return login;
+        }
+      }
+    }
+    return null;
+  }
 
 }

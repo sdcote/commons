@@ -49,23 +49,6 @@ public interface SecurityContext {
 
 
   /**
-   * Retrieve a login using the given credential set for authentication.
-   * 
-   * <p>This method uses the given credentials to find the associated login. 
-   * All the credentials much match, so in cases of multi-factor authentication
-   * several credentials may be passed to this method to return the appropriate
-   * login.</p>
-   * 
-   * @param creds The set of credentials to use in locating the login
-   * 
-   * @return The login which has a match to the given credentials
-   */
-  public Login getLogin( CredentialSet creds );
-
-
-
-
-  /**
    * Retrieve a login using the given session identifier.
    * 
    * <p>Not all contexts are required to support sessions. Even if they do, the 
@@ -77,7 +60,7 @@ public interface SecurityContext {
    * @return The session in this context with the given identifier or null if 
    * no session could be found.
    */
-  public Login getLogin( String sessionId );
+  public Login getLoginBySession( String sessionId );
 
 
 
@@ -188,12 +171,49 @@ public interface SecurityContext {
 
 
   /**
-   * The most common use case, username and password (via credential set).
+   * Retrieve a login using the given login name.
    * 
-   * @param string
-   * @param credentialSet
-   * @return
+   * <p>The given name is assumed to be unique in the context. The login name 
+   * is normally an email address but can be any string convenient for the 
+   * user. Because the Context itself is named, it is possible to have many 
+   * security contexts in a system. This allows for a multi-tenant security 
+   * context with a composite key of context and login name.</p>
+   * 
+   * @param name the login name to retrieve
+   * @return The login which has a match to the given credentials
    */
-  public Login getLogin( String string, CredentialSet credentialSet );
+  public Login getLoginByName( String name );
+
+
+
+
+  /**
+   * Retrieve a login using the given login name and credential set for 
+   * authentication.
+   * 
+   * <p>This method centralizes all credential matching login in one location 
+   * to assure uniform credential matching throughout the context. If all the 
+   * given credentials do not match the login contained in the context, no 
+   * login is returned. Partial matches do not count.</p>
+   * 
+   * <p>The given name is assumed to be unique in the context. The login name 
+   * is normally an email address but can be any string convenient for the 
+   * user. Because the Context itself is named, it is possible to have many 
+   * security contexts in a system. This allows for a multi-tenant security 
+   * context with a composite key of context and login name.</p>
+   * 
+   * <p>This method uses the given credentials to find the associated login. 
+   * All the credentials much match, so in cases of multi-factor authentication
+   * several credentials may be passed to this method to return the appropriate
+   * login.</p>
+   * 
+   * <p>It is recommended that context implementations reject null or empty 
+   * credentials as a security measure.</p> 
+   *
+   * @param creds The set of credentials which must match.
+   * 
+   * @return The named login which has a match to the all the given credentials or null if not found or a partial match is found.
+   */
+  public Login getLogin( String name, CredentialSet credentialSet );
 
 }
