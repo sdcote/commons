@@ -34,16 +34,25 @@ public class Login {
   HashSet<String> roles = new HashSet<String>();
 
 
+
+
   /**
    * Constructs a Login with a security principal with the given name and a 
    * credential set with the given password.
    * 
-   * @param name
-   * @param password
+   * <p>The password is saved as a single round MD5 hash of its UTF8 encoding. 
+   * This is to help ensure that the password is not stored in an easily 
+   * retrievable format. This implies that the clear text password is not used 
+   * in the system for authentication and that if the password is exposed by 
+   * the system, the viewer of the password value will not have the original 
+   * password provided by the user.</p>  
+   * 
+   * @param name name of the security principal (i.e. username)
+   * @param password authentication credential
    */
   public Login( String name, String password ) {
-    principal = new GenericSecurityPrincipal(name);
-    credentials = new CredentialSet(CredentialSet.PASSWORD, password);
+    principal = new GenericSecurityPrincipal( name );
+    credentials = new CredentialSet( CredentialSet.PASSWORD, password, 1 );
   }
 
 
@@ -51,13 +60,6 @@ public class Login {
 
   public Login( SecurityPrincipal principal, CredentialSet creds ) {
     this.principal = principal;
-    credentials = creds;
-  }
-
-
-
-
-  public Login( CredentialSet creds ) {
     credentials = creds;
   }
 
