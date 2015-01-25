@@ -20,9 +20,14 @@ import java.security.Principal;
  * <p>Permissions are assigned to roles and permission checks are performed 
  * against roles as opposed to individuals to keep the number of permission 
  * collections to a minimum. This makes permission management easier.</p>
+ * 
+ * <p>In some simplified security schemes, components only check for the role 
+ * to grant access to components function. For example, if the 'admin' role is 
+ * presented, then the component may allow access to all its functions.</p>
  */
 public final class Role extends PermissionEnabledSubject implements Principal {
   private String _name = null;
+  private String _desc = null;
 
 
 
@@ -34,8 +39,38 @@ public final class Role extends PermissionEnabledSubject implements Principal {
 
 
 
+  public Role( String name, String description ) {
+    _name = name;
+    _desc = description;
+  }
+
+
+
+
   public String getName() {
     return _name;
+  }
+
+
+
+
+  /**
+   * @return the description of the role.
+   */
+  public String getDescription() {
+    return _desc;
+  }
+
+
+
+
+  /**
+   * Set the description of the role.
+   * 
+   * @param _desc the description to set
+   */
+  public void setDescription( String _desc ) {
+    this._desc = _desc;
   }
 
 }
