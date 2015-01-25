@@ -22,8 +22,15 @@ import java.security.Principal;
  * collections to a minimum. This makes permission management easier.</p>
  * 
  * <p>In some simplified security schemes, components only check for the role 
- * to grant access to components function. For example, if the 'admin' role is 
- * presented, then the component may allow access to all its functions.</p>
+ * to grant access to resources. For example, if the 'admin' role is presented, 
+ * the component may allow access to all its resources. Just the use of 
+ * resources can implement a RBAC security model.</p>
+ * 
+ * <p>In more complex security models, roles are not as important as are the 
+ * permissions assigned to them. In these cases, components aggregate all the 
+ * permissions from all the roles presented to determine access to its 
+ * resources. This approach then uses roles as collections of permissions and 
+ * use roles as a way to better manage large collections of permissions.</p>
  */
 public final class Role extends PermissionEnabledSubject implements Principal {
   private String _name = null;
