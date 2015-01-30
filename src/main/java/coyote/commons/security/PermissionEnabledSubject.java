@@ -39,11 +39,35 @@ public class PermissionEnabledSubject {
 
 
   public void addPermission( Permission perm ) {
-    Permission p = permissions.get( perm.getTarget() );
-    if ( p != null ) {
-      p.addAction( perm.getAction() );
-    } else {
-      permissions.put( perm.getTarget(), perm );
+    if ( perm != null ) {
+      Permission p = permissions.get( perm.getTarget() );
+      if ( p != null ) {
+        p.addAction( perm.getAction() );
+      } else {
+        permissions.put( perm.getTarget(), perm );
+      }
+    }
+  }
+
+
+
+
+  public void addPermissions( List<Permission> permissions ) {
+    if ( permissions != null ) {
+      for ( Permission permission : permissions ) {
+        addPermission( permission );
+      }
+    }
+  }
+
+
+
+
+  public void revokePermissions( List<Permission> permissions ) {
+    if ( permissions != null ) {
+      for ( Permission permission : permissions ) {
+        revokePermission( permission );
+      }
     }
   }
 
@@ -58,9 +82,11 @@ public class PermissionEnabledSubject {
 
 
   public void revokePermission( Permission perm ) {
-    Permission p = permissions.get( perm.getTarget() );
-    if ( p != null ) {
-      p.revokeAction( perm.getAction() );
+    if ( perm != null ) {
+      Permission p = permissions.get( perm.getTarget() );
+      if ( p != null ) {
+        p.revokeAction( perm.getAction() );
+      }
     }
   }
 
