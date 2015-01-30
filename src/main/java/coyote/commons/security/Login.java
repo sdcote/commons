@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * This class models a list of roles and their associated permissions.
  */
-public class Login {
+public class Login  extends PermissionEnabledSubject {
 
   /** This logins identifier */
   String id;
