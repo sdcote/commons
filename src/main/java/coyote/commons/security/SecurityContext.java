@@ -55,10 +55,20 @@ public interface SecurityContext {
    * identifier of the session may not be static; they may change frequently as
    * in the case of a session nonce.
    * 
+   * <p>The login returned may be a shallow reference; and not contain any 
+   * Roles or Permissions as this would require additional resources to 
+   * retrieve which is oftentimes unnecessary. The values are only populated 
+   * when a call to check authorization is made and roles and permissions are 
+   * needed for that operation. Authorization references (roles and 
+   * permissions) are usually only retrieve on authorization checks (see the 
+   * {@code allows} method).</p>
+   * 
    * @param id the identifier of the session to retrieve
    * 
    * @return The session in this context with the given identifier or null if 
    * no session could be found.
+   * 
+   * @see #allows(Login, long, String)
    */
   public Login getLoginBySession( String sessionId );
 
@@ -122,6 +132,13 @@ public interface SecurityContext {
   /**
    * Check to see if the given login has the given named permissions.
    * 
+   * <p><strong>Side Effect:</strong> If the login passed is a shallow object 
+   * (no Role or Permission references populated) it will have its values
+   * populated with the appropriate security references for this security 
+   * context. This implies that a performance hit is taken on first calling 
+   * this method with a shallow object but subsequent calls will check 
+   * permissions based on the populated values.</p>
+   * 
    * <p>This is a basic authorization check. The underlying implementation can 
    * choose to perform the check using a variety of strategies including, but 
    * not limited to, Role Based Access Control (RBAC) or individualized 
@@ -138,6 +155,10 @@ public interface SecurityContext {
    * @param name The name of the permission
    * 
    * @return True if the given login has the given permissions, false otherwise.
+   * 
+   * @see #getLogin(String, CredentialSet)
+   * @see #getLoginByName(String)
+   * @see #getLoginBySession(String)
    */
   public boolean allows( Login login, long perms, String name );
 
@@ -171,7 +192,16 @@ public interface SecurityContext {
 
 
   /**
-   * Retrieve a login using the given login name.
+   * Retrieve a shallow login using the given login name - authorization 
+   * references are NOT populated.
+   * 
+   * <p>Shallow logins are objects without all of its references to other 
+   * objects populated. This keeps retrieval fast and light. In this case, the 
+   * login retrieved only contains a security principal and credential set. 
+   * Roles and Permissions are not retrieved as these may not be needed and 
+   * their retrieval and population can slow the system down unnecessarily 
+   * since many components only want authentication and do not need 
+   * authorization capabilities.</p>
    * 
    * <p>The given name is assumed to be unique in the context. The login name 
    * is normally an email address but can be any string convenient for the 
@@ -188,8 +218,16 @@ public interface SecurityContext {
 
 
   /**
-   * Retrieve a login using the given login name and credential set for 
-   * authentication.
+   * Retrieve a shallow login using the given login name and credential set for 
+   * authentication - authorization references are NOT populated.
+   * 
+   * <p>Shallow logins are objects without all of its references to other 
+   * objects populated. This keeps retrieval fast and light. In this case, the 
+   * login retrieved only contains a security principal and credential set. 
+   * Roles and Permissions are not retrieved as these may not be needed and 
+   * their retrieval and population can slow the system down unnecessarily 
+   * since many components only want authentication and do not need 
+   * authorization capabilities.</p>
    * 
    * <p>This method centralizes all credential matching login in one location 
    * to assure uniform credential matching throughout the context. If all the 
@@ -212,7 +250,8 @@ public interface SecurityContext {
    *
    * @param creds The set of credentials which must match.
    * 
-   * @return The named login which has a match to the all the given credentials or null if not found or a partial match is found.
+   * @return The named login which has a match to the all the given credentials 
+   * or null if not found or a partial match is found.
    */
   public Login getLogin( String name, CredentialSet credentialSet );
 
