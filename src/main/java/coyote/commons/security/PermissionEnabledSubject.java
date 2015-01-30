@@ -11,7 +11,9 @@
  */
 package coyote.commons.security;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -19,7 +21,7 @@ import java.util.HashMap;
  * assigned.
  * 
  * <p>This is intended to be the base class for both the Role class which 
- * represents a group of security subject and the Login, which represents an 
+ * represents a group of security subjects and the Login, which represents an 
  * individual security subject. This allows permissions to be assigned at 
  * both the group and individual levels.</p>
  */
@@ -30,12 +32,7 @@ public class PermissionEnabledSubject {
 
 
   public void addPermission( String target, long action ) {
-    Permission perm = permissions.get( target );
-    if ( perm != null ) {
-      perm.addAction( action );
-    } else {
-      permissions.put( target, new Permission( target, action ) );
-    }
+    addPermission( new Permission( target, action ) );
   }
 
 
@@ -47,6 +44,23 @@ public class PermissionEnabledSubject {
       p.addAction( perm.getAction() );
     } else {
       permissions.put( perm.getTarget(), perm );
+    }
+  }
+
+
+
+
+  public void revokePermission( String target, long action ) {
+    revokePermission( new Permission( target, action ) );
+  }
+
+
+
+
+  public void revokePermission( Permission perm ) {
+    Permission p = permissions.get( perm.getTarget() );
+    if ( p != null ) {
+      p.revokeAction( perm.getAction() );
     }
   }
 
@@ -67,5 +81,15 @@ public class PermissionEnabledSubject {
       return true;
 
     return false;
+  }
+
+
+
+
+  /**
+   * @return list of permissions in this subject.
+   */
+  public List<Permission> getPermissions() {
+    return new ArrayList<Permission>( permissions.values() );
   }
 }

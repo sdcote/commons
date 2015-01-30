@@ -32,29 +32,28 @@ package coyote.commons.security;
 public final class Permission {
   public static final long ALL = -1;
   public static final long NONE = 0;
-  public static final long CREATE = 1;
-  public static final long READ = 2;
-  public static final long UPDATE = 4;
-  public static final long DELETE = 8;
-  public static final long EXECUTE = 16;
-  public static final long ACCEPT = 32;
-  public static final long CONNECT = 64;
-  public static final long LISTEN = 128;
-  public static final long ASSIGN = 256;
-  public static final long RESOLVE = 512;
-  public static final long CLOSE = 1024;
-  public static final long OPEN = 2048;
-  public static final long OWN = 4096;
-  public static final long SEE = 8192;
-  public static final long GRANT = 16384;
-  public static final long REVOKE = 32768;
+  public static final long CREATE = 1 << 0;
+  public static final long READ = 1 << 1;
+  public static final long UPDATE = 1 << 2;
+  public static final long DELETE = 1 << 3;
+  public static final long EXECUTE = 1 << 4;
+  public static final long ACCEPT = 1 << 5;
+  public static final long CONNECT = 1 << 6;
+  public static final long LISTEN = 1 << 7;
+  public static final long ASSIGN = 1 << 8;
+  public static final long RESOLVE = 1 << 9;
+  public static final long CLOSE = 1 << 10;
+  public static final long OPEN = 1 << 12;
+  public static final long OWN = 1 << 13;
+  public static final long SEE = 1 << 14; // you know it exists, but cannot read its details
+  public static final long GRANT = 1 << 15;
+  public static final long REVOKE = 1 << 16;
 
-  // There is room for 16 more custom permissions which can be represented thusly
-  // public static final long FOO = 65536;
-  // public static final long BAR = 131072;
-  // public static final long BAZ = 262144;
-  // ... all the way to the largest unsigned long ...
-  // public static final long LAST = 2147483648L;
+  // There is room for lots more custom permissions which can be represented thusly
+  // public static final long FOO = 1 << 23;
+  // public static final long BAR = 1 << 24;
+  // public static final long BAZ = 1 << 25;
+  // ... all the way to 1 << 63... 1<<64 is  -1 and used for ALL above 
 
   private String _target = null;
   private long _action = NONE;
@@ -89,6 +88,21 @@ public final class Permission {
    */
   void addAction( long action ) {
     _action |= action;
+  }
+
+
+
+
+  /**
+   * Remove the given action from the permission.
+   * 
+   * <p>Has package access so other security objects may perform this function 
+   * but outside objects must go through the security package.</p>
+   * 
+   * @param action the action(s) to remove from this mask.
+   */
+  void revokeAction( long action ) {
+    _action = ~( ~( _action ) | action );
   }
 
 

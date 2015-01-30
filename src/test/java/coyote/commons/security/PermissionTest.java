@@ -42,6 +42,33 @@ public class PermissionTest {
     assertTrue( perm.allows( Permission.UPDATE ) );
     assertTrue( perm.allows( Permission.READ ) );
     assertFalse( perm.allows( Permission.EXECUTE ) );
+
+    // Use the add to effectively OR the permission
+    perm.addAction( Permission.EXECUTE );
+    System.out.println( "added permission: " + perm );
+    assertTrue( perm.allows( Permission.UPDATE ) );
+    assertTrue( perm.allows( Permission.READ ) );
+    assertTrue( perm.allows( Permission.EXECUTE ) );
+  }
+
+
+
+  @Test
+  public void testRevoke() {
+
+    Permission perm = new Permission( "test", Permission.UPDATE );
+    perm = new Permission( "test", Permission.READ | Permission.UPDATE );
+    perm.addAction( Permission.EXECUTE );
+
+    assertTrue( perm.allows( Permission.UPDATE ) );
+    assertTrue( perm.allows( Permission.READ ) );
+    assertTrue( perm.allows( Permission.EXECUTE ) );
+
+    perm.revokeAction( Permission.READ );
+    assertTrue( perm.allows( Permission.UPDATE ) );
+    assertFalse( perm.allows( Permission.READ ) );
+    assertTrue( perm.allows( Permission.EXECUTE ) );
+
   }
 
 }
