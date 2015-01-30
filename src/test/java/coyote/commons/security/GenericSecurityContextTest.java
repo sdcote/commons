@@ -56,7 +56,7 @@ public class GenericSecurityContextTest {
     Login login = new Login( new GenericSecurityPrincipal( "ID:12345", "user1" ), new CredentialSet( CredentialSet.PASSWORD, "SeCr3t" ) );
 
     // add a role to the login
-    login.addRole( ADMIN_ROLE );
+    login.addRole( role );
 
     // Add the login to the context
     context.add( login );

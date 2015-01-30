@@ -12,7 +12,7 @@
 package coyote.commons.security;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 
 
@@ -31,7 +31,7 @@ public class Login extends PermissionEnabledSubject {
   SecurityPrincipal principal;
 
   /** A map of role names this login assumes. */
-  HashSet<String> roles = new HashSet<String>();
+  Hashtable<String, Role> roles = new Hashtable<String, Role>();
 
 
 
@@ -79,9 +79,20 @@ public class Login extends PermissionEnabledSubject {
    * 
    * @param role The name of the role to add.
    */
-  public void addRole( String role ) {
-    if ( role != null && role.length() > 0 ) {
-      roles.add( role );
+  public void addRole( Role role ) {
+    if ( role != null ) {
+      roles.put( role.getName(), role );
+    }
+  }
+
+
+
+
+  public void addRoles( List<Role> roles ) {
+    if ( roles != null ) {
+      for ( Role role : roles ) {
+        addRole( role );
+      }
     }
   }
 
@@ -149,7 +160,7 @@ public class Login extends PermissionEnabledSubject {
    * @return a list of role names to which this login belongs.
    */
   public List<String> getRoles() {
-    return new ArrayList<String>( roles );
+    return new ArrayList<String>( roles.keySet() );
   }
 
 
