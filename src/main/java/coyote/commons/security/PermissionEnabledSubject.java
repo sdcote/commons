@@ -93,6 +93,13 @@ public class PermissionEnabledSubject {
 
 
 
+  public boolean hasPermissions() {
+    return permissions.size() > 0;
+  }
+
+
+
+
   /**
    * Check to see if the given target allows the given action in this role.
    * 
