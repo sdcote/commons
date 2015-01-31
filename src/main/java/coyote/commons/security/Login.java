@@ -58,6 +58,12 @@ public class Login extends PermissionEnabledSubject {
 
 
 
+  /**
+   * Construct a login with the given security principal and credential set.
+   * 
+   * @param principal The principal (entity) of this login.
+   * @param creds The credentials used to authenticate this login
+   */
   public Login( SecurityPrincipal principal, CredentialSet creds ) {
     this.principal = principal;
     credentials = creds;
@@ -88,6 +94,13 @@ public class Login extends PermissionEnabledSubject {
 
 
 
+  /**
+   * Add the given list of roles to this login.
+   * 
+   * <p>Duplicates are ignored.</p>
+   * 
+   * @param roles The list of roles to add
+   */
   public void addRoles( List<Role> roles ) {
     if ( roles != null ) {
       for ( Role role : roles ) {
@@ -100,8 +113,37 @@ public class Login extends PermissionEnabledSubject {
 
 
   /**
-   * @see java.lang.Object#toString()
+   * @return true if there is at least one role assigned to this login, false 
+   * if there are no roles assigned.
    */
+  public boolean hasRoles() {
+    return roles.size() > 0;
+  }
+
+
+
+
+  /**
+   * Remove the named role from the login.
+   * 
+   * @param name The name of the role to remove
+   * 
+   * @return the role removed, null if no role was found with that name.
+   */
+  public Role removeRole( String name ) {
+    try {
+      return roles.remove( name );
+    } catch ( Exception e ) {
+      return null;
+    }
+  }
+
+
+
+
+  /**
+  * @see java.lang.Object#toString()
+  */
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder( "Login: Principal=" );
