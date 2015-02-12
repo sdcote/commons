@@ -51,9 +51,9 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method read
+   * Read the next char
    *
-   * @return
+   * @return the char read
    */
   public int read() {
     return ( next < length ) ? string.charAt( next++ ) : -1;
@@ -63,13 +63,13 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method read
+   * Read data into the buffer
    *
    * @param buffer the destination character array
-   * @param offset
-   * @param length
+   * @param offset offset in this reader
+   * @param length how many bytes to read
    *
-   * @return
+   * @return the number of bytes read
    */
   public int read( char buffer[], int offset, int length ) {
     if ( length == 0 ) {
@@ -94,7 +94,7 @@ public final class SimpleReader extends Reader {
   /**
    * Method skip
    *
-   * @param amount
+   * @param amount the number of bytes to skip
    *
    * @return The number skipped
    */
@@ -113,9 +113,9 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method ready
+   * Is the reader ready
    *
-   * @return
+   * @return always returns true
    */
   public boolean ready() {
     return true;
@@ -125,9 +125,9 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method markSupported
-   *
-   * @return
+   * Is mark supported?
+   * 
+   * @return always returns true
    */
   public boolean markSupported() {
     return true;
@@ -149,7 +149,7 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method reset
+   * reset the next character to the mark.
    */
   public void reset() {
     next = mark;
@@ -159,7 +159,7 @@ public final class SimpleReader extends Reader {
 
 
   /**
-   * Method close
+   * Close the reader
    */
   public void close() {
     string = null;

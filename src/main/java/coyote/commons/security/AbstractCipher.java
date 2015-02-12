@@ -48,7 +48,7 @@ public abstract class AbstractCipher implements Cipher {
    * 
    * @return a new array of data containing the original data and the padding
    * 
-   * @see (@link #trim(byte[])
+   * @see #trim(byte[])
    */
   public static byte[] pad( final byte[] data ) {
     // pad the data as necessary using a PKCS5 (or RFC1423) padding scheme
@@ -80,7 +80,7 @@ public abstract class AbstractCipher implements Cipher {
    * 
    * @return The trimmed array.
    * 
-   * @see (@link #pad(byte[])
+   * @see #pad(byte[])
    */
   public static byte[] trim( final byte[] data ) {
     if ( data.length > 0 ) {

@@ -38,11 +38,11 @@ public interface Cipher {
   /**
    * Returns the decrypted bytes for the given enciphered bytes.
    * 
-   * @param bytes The data to decipher.
+   * @param data The data to decipher.
    * 
    * @return The decrypted data.
    * 
-   * @see #encrypt(byte[], String)
+   * @see #encrypt(byte[])
    */
   public byte[] decrypt( final byte[] data );
 

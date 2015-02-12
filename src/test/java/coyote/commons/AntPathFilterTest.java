@@ -63,10 +63,10 @@ public class AntPathFilterTest {
     assertEquals( "/*.html", filter.combine( "/**", "/*.html" ) );
     assertEquals( "/*.html", filter.combine( "/*", "/*.html" ) );
     assertEquals( "/*.html", filter.combine( "/*.*", "/*.html" ) );
-    assertEquals( "/{foo}/bar", filter.combine( "/{foo}", "/bar" ) ); 
-    assertEquals( "/user/user", filter.combine( "/user", "/user" ) ); 
+    assertEquals( "/{foo}/bar", filter.combine( "/{foo}", "/bar" ) );
+    assertEquals( "/user/user", filter.combine( "/user", "/user" ) );
     assertEquals( "/{foo:.*[^0-9].*}/edit/", filter.combine( "/{foo:.*[^0-9].*}", "/edit/" ) );
-    assertEquals( "/1.0/foo/test", filter.combine( "/1.0", "/foo/test" ) ); 
+    assertEquals( "/1.0/foo/test", filter.combine( "/1.0", "/foo/test" ) );
   }
 
 
@@ -95,8 +95,8 @@ public class AntPathFilterTest {
     assertEquals( "/docs/commit.html", filter.extractPathWithinPattern( "*.html", "/docs/commit.html" ) );
     assertEquals( "/docs/commit.html", filter.extractPathWithinPattern( "**/*.*", "/docs/commit.html" ) );
     assertEquals( "/docs/commit.html", filter.extractPathWithinPattern( "*", "/docs/commit.html" ) );
-   // assertEquals( "/docs/cvs/other/commit.html", filter.extractPathWithinPattern( "**/commit.html", "/docs/cvs/other/commit.html" ) );
-//    assertEquals( "cvs/other/commit.html", filter.extractPathWithinPattern( "/docs/**/**/**/**", "/docs/cvs/other/commit.html" ) );
+    // assertEquals( "/docs/cvs/other/commit.html", filter.extractPathWithinPattern( "**/commit.html", "/docs/cvs/other/commit.html" ) );
+    //    assertEquals( "cvs/other/commit.html", filter.extractPathWithinPattern( "/docs/**/**/**/**", "/docs/cvs/other/commit.html" ) );
 
     assertEquals( "docs/cvs/commit", filter.extractPathWithinPattern( "/d?cs/*", "/docs/cvs/commit" ) );
     assertEquals( "cvs/commit.html", filter.extractPathWithinPattern( "/docs/c?s/*.html", "/docs/cvs/commit.html" ) );
@@ -279,7 +279,6 @@ public class AntPathFilterTest {
 
 
 
-
   @Test
   public void patternComparator() {
     final Comparator<String> comparator = filter.getPatternComparator( "/orders/new" );
@@ -449,7 +448,6 @@ public class AntPathFilterTest {
     // Cache keeps being alive due to the explicit cache setting
     assertTrue( filter.stringMatcherCache.size() > 65536 );
   }
-
 
 
 

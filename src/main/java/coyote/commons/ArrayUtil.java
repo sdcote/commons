@@ -97,7 +97,7 @@ public final class ArrayUtil {
    * @param array An array
    * @param element The element to append.
    *
-   * @return
+   * @return the array with the new element
    */
   public static Object addElement( Object array, Object element ) {
     int length = Array.getLength( array );
@@ -120,7 +120,7 @@ public final class ArrayUtil {
    * @param array An array
    * @param element The element to append.
    *
-   * @return
+   * @return a new array that is a copy of the array plus a new integer element.
    */
   public static int[] addElement( int[] array, int element ) {
     int length = array.length;
@@ -141,7 +141,7 @@ public final class ArrayUtil {
    * @param array An array
    * @param element The element to append.
    *
-   * @return
+   * @return a new array that is a copy of the array plus a new long element.
    */
   public static long[] addElement( long[] array, long element ) {
     long[] newarray = new long[array.length + 1];
@@ -195,7 +195,7 @@ public final class ArrayUtil {
    * @param array1 The first array.
    * @param array2 The second array.
    *
-   * @return
+   * @return a new array that is the union of the elements in array1 and array2
    */
   public static Object addElements( Object array1, Object array2 ) {
     int length1 = Array.getLength( array1 );
@@ -219,7 +219,7 @@ public final class ArrayUtil {
    * @param array An array
    * @param element The element to append.
    *
-   * @return
+   * @return a new array that is a copy of the array plus a new element.
    */
   public static Object insertElement( Object array, Object element ) {
     int length = Array.getLength( array );
@@ -239,7 +239,7 @@ public final class ArrayUtil {
    * @param array
    * @param element
    *
-   * @return
+   * @return a new array with the element removed
    */
   public static Object removeElement( Object array, Object element ) {
     int length = Array.getLength( array );
@@ -262,7 +262,7 @@ public final class ArrayUtil {
    * @param oldarray
    * @param index
    *
-   * @return
+   * @return a new array with the element removed
    */
   public static Object removeElementAt( Object oldarray, int index ) {
     int length = Array.getLength( oldarray );
@@ -281,10 +281,10 @@ public final class ArrayUtil {
    *
    * <p>Works like the String method of the same name.</p>
    *
-   * @param value
-   * @param array
+   * @param value the value for which to search
+   * @param array the array to search
    *
-   * @return
+   * @return the index of the given value in the given array
    */
   public static int indexOf( int value, int[] array ) {
     for ( int i = 0; i < array.length; i++ ) {
@@ -304,10 +304,10 @@ public final class ArrayUtil {
    *
    * <p>Works like the String method of the same name.</p>
    *
-   * @param value
-   * @param array
+   * @param value the value for which to search
+   * @param array the array to search
    *
-   * @return
+   * @return the index of the given value in the given array
    */
   public static int indexOf( Object value, Object[] array ) {
     for ( int i = 0; i < array.length; i++ ) {
@@ -331,7 +331,7 @@ public final class ArrayUtil {
    * @param value
    * @param array
    *
-   * @return
+   * @return true if the value object is contained within the array, false otherwise.
    */
   public static boolean contains( Object value, Object[] array ) {
     return ( indexOf( value, array ) != -1 );
@@ -344,7 +344,7 @@ public final class ArrayUtil {
    * @param array1
    * @param array2
    *
-   * @return
+   * @return true if both arrays are equivalent false otherwise
    */
   public static boolean equals( Object[] array1, Object[] array2 ) {
     if ( array1.length != array2.length ) {
@@ -367,7 +367,7 @@ public final class ArrayUtil {
    * @param object1
    * @param object2
    *
-   * @return
+   * @return true if both objects are equivalent, false otherwise.
    */
   public static boolean equals( Object object1, Object object2 ) {
     if ( ( object1 == null ) && ( object2 == null ) ) {
@@ -388,7 +388,7 @@ public final class ArrayUtil {
    * @param array1
    * @param array2
    *
-   * @return
+   * @return true if bot arrays are equivalent, false otherwise.
    */
   public static boolean equals( byte[] array1, byte[] array2 ) {
     if ( array1.length != array2.length ) {

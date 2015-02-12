@@ -13,7 +13,6 @@ import org.junit.Test;
 
 public class OptionPropertyTest {
 
-
   @Test
   public void testGetOptionProperties() throws Exception {
     final String[] args = new String[] { "-Dparam1=value1", "-Dparam2=value2", "-Dparam3", "-Dparam4=value4", "-D", "--property", "foo=bar" };

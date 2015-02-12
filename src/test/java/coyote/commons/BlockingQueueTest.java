@@ -25,7 +25,7 @@ public class BlockingQueueTest {
     BlockingQueue queue = new BlockingQueue( capacity );
 
     try {
-      for( int i = 0; i < queue.capacity(); i++ ) {
+      for ( int i = 0; i < queue.capacity(); i++ ) {
         queue.put( new String( "string" ), 2 );
 
         int size = i + 1;
@@ -34,8 +34,7 @@ public class BlockingQueueTest {
         assertTrue( "Size should be " + size + " is " + queue.size(), queue.size() == size );
         assertTrue( "Load should be " + load + " is " + queue.load(), queue.load() == load );
       }
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "Exception" );
     }
     finally {
@@ -56,7 +55,7 @@ public class BlockingQueueTest {
     BlockingQueue queue = new BlockingQueue( capacity );
 
     try {
-      for( int i = 0; i < queue.capacity(); i++ ) {
+      for ( int i = 0; i < queue.capacity(); i++ ) {
         queue.put( new String( "string" ), 2 );
       }
 
@@ -64,13 +63,11 @@ public class BlockingQueueTest {
         // try to put one more object in the queue, but it should time out
         queue.put( new String( "string" ), 20 );
         fail( "Should have timed out" );
-      }
-      catch( Exception ignore ) {
+      } catch ( Exception ignore ) {
         // Since there is nothing to remove anything from the queue, the put
         // should fail by timing out
       }
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "Exception: " + e.getMessage() );
     }
     finally {
@@ -96,8 +93,7 @@ public class BlockingQueueTest {
       Object obj = queue.get( 20 );
 
       assertNull( "GET should have timed out", obj );
-    }
-    catch( Exception ignore ) {
+    } catch ( Exception ignore ) {
       fail( "Should not have been interrupted" );
     }
     finally {

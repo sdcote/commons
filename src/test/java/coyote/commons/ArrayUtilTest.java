@@ -29,10 +29,10 @@ public class ArrayUtilTest {
 
     System.out.print( "Intersection = (" );
 
-    for( int x = 0; x < intersect.length; x++ ) {
+    for ( int x = 0; x < intersect.length; x++ ) {
       System.out.print( intersect[x] );
 
-      if( x + 1 < intersect.length ) {
+      if ( x + 1 < intersect.length ) {
         System.out.print( "," );
       } else {
         System.out.println( ")" );

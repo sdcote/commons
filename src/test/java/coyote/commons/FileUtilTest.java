@@ -29,14 +29,13 @@ public class FileUtilTest {
   public void testFileToStringOne() {
     assertTrue( "testFileToStringOne", FileUtil.stringToFile( "This is test named testFileToStringOne", "test.txt" ) );
 
-    if( FileUtil.fileToString( "test.txt" ) == null ) {
+    if ( FileUtil.fileToString( "test.txt" ) == null ) {
       fail( "File not found" );
     }
 
     try {
       FileUtil.delFile( "test.txt" );
-    }
-    catch( Exception ex ) {}
+    } catch ( Exception ex ) {}
   }
 
 
@@ -47,7 +46,7 @@ public class FileUtilTest {
    */
   @Test
   public void testFileToStringTwo() {
-    if( FileUtil.fileToString( "Does-Not-Exist.txt" ) != null ) {
+    if ( FileUtil.fileToString( "Does-Not-Exist.txt" ) != null ) {
       fail( "Something else found" );
     }
   }
@@ -82,8 +81,7 @@ public class FileUtilTest {
     try {
       List<File> list = FileUtil.getAllFiles( ".", "java", false );
       assertTrue( list.size() == 0 );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "getAllFiles: " + e.getMessage() );
     }
 
@@ -91,8 +89,7 @@ public class FileUtilTest {
     try {
       List<File> list = FileUtil.getAllFiles( ".", null, false );
       assertTrue( list.size() > 0 );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "getAllFiles: " + e.getMessage() );
     }
 
@@ -101,8 +98,7 @@ public class FileUtilTest {
       List<File> list = FileUtil.getAllFiles( ".", "java", true );
       assertTrue( list.size() > 0 );
       //for( File file : list ) System.out.println( ">" + file.getAbsolutePath() );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "getAllFiles: " + e.getMessage() );
     }
 
@@ -120,8 +116,7 @@ public class FileUtilTest {
       String filename = "C:\\WINNT\\Profiles\\cotes.000\\pub\\data\\comments.txt";
       File subject = new File( filename );
       FileUtil.touch( subject );
-    }
-    catch( Exception e ) {
+    } catch ( Exception e ) {
       fail( "testTouch: " + e.getMessage() );
     }
   }

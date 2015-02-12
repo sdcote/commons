@@ -223,7 +223,7 @@ public class CredentialSet {
 
 
   /**
-   * @return
+   * @return the number of credentials in the set
    */
   public int size() {
     return _credentials.size();

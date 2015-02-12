@@ -63,7 +63,7 @@ public interface SecurityContext {
    * permissions) are usually only retrieve on authorization checks (see the 
    * {@code allows} method).</p>
    * 
-   * @param id the identifier of the session to retrieve
+   * @param sessionId the identifier of the session to retrieve
    * 
    * @return The session in this context with the given identifier or null if 
    * no session could be found.
@@ -210,6 +210,7 @@ public interface SecurityContext {
    * context with a composite key of context and login name.</p>
    * 
    * @param name the login name to retrieve
+   * 
    * @return The login which has a match to the given credentials
    */
   public Login getLoginByName( String name );
@@ -248,7 +249,8 @@ public interface SecurityContext {
    * <p>It is recommended that context implementations reject null or empty 
    * credentials as a security measure.</p> 
    *
-   * @param creds The set of credentials which must match.
+   * @param name the login name to retrieve
+   * @param credentialSet The set of credentials which must match.
    * 
    * @return The named login which has a match to the all the given credentials 
    * or null if not found or a partial match is found.

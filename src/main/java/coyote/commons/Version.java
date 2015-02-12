@@ -14,7 +14,7 @@ package coyote.commons;
 /**
  * Simple version reporting mechanism.
  * 
- * @see http://semver.org/
+ * see also semver.org
  */
 public class Version {
 
@@ -50,9 +50,9 @@ public class Version {
   /**
    * Constructor Version
    *
-   * @param maj
-   * @param min
-   * @param pch
+   * @param maj major level version
+   * @param min minor level version
+   * @param pch patch level version
    */
   public Version( int maj, int min, int pch ) {
     major = maj;
@@ -64,6 +64,14 @@ public class Version {
 
 
 
+  /**
+   * Constructor Version
+   *
+   * @param maj major level version
+   * @param min minor level version
+   * @param pch patch level version
+   * @param rls release level version
+   */
   public Version( int maj, int min, int pch, short rls ) {
     major = maj;
     minor = min;
@@ -77,11 +85,14 @@ public class Version {
 
 
   /**
-   * Method createVersion
+   * Create a version by parsing the major, minor, patch and release out of the
+   * given string.
+   * 
+   * This will never return null. If the string contains invalid data, the levels will be set to 0.
    *
-   * @param text
+   * @param text the text containing the version string
    *
-   * @return TODO finish documentation.
+   * @return a new Version object with its levels populated from the parsed string
    */
   public static Version createVersion( String text ) {
     Version retval = new Version();
@@ -147,9 +158,7 @@ public class Version {
 
 
   /**
-   * Method getMajor
-   *
-   * @return TODO finish documentation.
+   * @return the major level of this release.
    */
   public int getMajor() {
     return major;
@@ -159,9 +168,7 @@ public class Version {
 
 
   /**
-   * Method getMinor
-   *
-   * @return TODO finish documentation.
+   * @return The minor level of the release.
    */
   public int getMinor() {
     return minor;
@@ -171,9 +178,7 @@ public class Version {
 
 
   /**
-   * Method getPatch
-   *
-   * @return TODO finish documentation.
+   * @return the patch level of this release.
    */
   public int getPatch() {
     return patch;
@@ -183,9 +188,9 @@ public class Version {
 
 
   /**
-   * Method setMajor
+   * Set the major level of this release
    *
-   * @param i
+   * @param i the level to set
    */
   public void setMajor( int i ) {
     major = i;
@@ -195,9 +200,9 @@ public class Version {
 
 
   /**
-   * Method setMinor
+   * Set the minor level of this release
    *
-   * @param i
+   * @param i the level to set
    */
   public void setMinor( int i ) {
     minor = i;
@@ -207,9 +212,9 @@ public class Version {
 
 
   /**
-   * Method setPatch
+   * Set the patch level of this release
    *
-   * @param i
+   * @param i the level to set
    */
   public void setPatch( int i ) {
     patch = i;
@@ -219,10 +224,9 @@ public class Version {
 
 
   /**
-   * Method toString
-   *
-   * @return TODO finish documentation.
+   * @return a string representation of the version suitable for display, logging and later parsing.
    */
+  @Override
   public String toString() {
     StringBuffer retval = new StringBuffer( major + "." + minor );
 
@@ -240,9 +244,16 @@ public class Version {
 
 
 
-  public static String getReleaseString( short code ) {
-    if ( code < GENERAL ) {
-      return releaseNames[code];
+  /**
+   * Return the standard string representation of the given release level.
+   *  
+   * @param level the release level to represent.
+   * 
+   * @return human readable string representation of the release level
+   */
+  public static String getReleaseString( short level ) {
+    if ( level < GENERAL ) {
+      return releaseNames[level];
     }
     return releaseNames[GENERAL];
   }

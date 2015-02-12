@@ -104,15 +104,14 @@ public class NetUtil {
   /**
    * Just test to see if the given string can be parse into a URI.
    *
-   * @param uri
+   * @param uri The string to parse
    *
-   * @return
+   * @return the URI or null if the string could not be parsed.
    */
   public static URI validateURI( String uri ) {
     try {
       // We could try to open it, but even if it succeeds now, it may fail
-      // later
-      // or if it fails right now, it may succeede later. So what is the
+      // later or if it fails right now, it may succeede later. So what is the
       // use?
       return new URI( uri );
     } catch ( Exception mfue ) {
@@ -130,9 +129,9 @@ public class NetUtil {
    * Return a port number that can be used to create a socket on the given
    * address starting with port 1.
    *
-   * @param address
+   * @param address The address on which to find the next available port 
    *
-   * @return
+   * @return the next available port on the given address
    */
   public static int getNextAvailablePort( InetAddress address ) {
     return getNextAvailablePort( address, 1 );
@@ -144,10 +143,14 @@ public class NetUtil {
   /**
    * Return a port number that can be used to create a socket with the given
    * port on the local address.
+   * 
+   * <p>If you are looking for port 80, but it is taken, this method will 
+   * return the next higher port starting with that port.  This will keep your 
+   * ports grouped together.</p>
    *
-   * @param port
+   * @param port The number of the port on which to start looking
    *
-   * @return
+   * @return the next available port on the local address.
    */
   public static int getNextAvailablePort( int port ) {
     return getNextAvailablePort( null, port );
@@ -170,10 +173,10 @@ public class NetUtil {
    * the <code>getNextServerSocket(address,port)</code> method if it desired to
    * obtain the next available server.</p>
    *
-   * @param address
-   * @param port
+   * @param address The address on which to find the next available port 
+   * @param port The number of the port on which to start looking
    *
-   * @return
+   * @return the next available port on the given address.
    */
   public static int getNextAvailablePort( InetAddress address, int port ) {
     ServerSocket socket = getNextServerSocket( address, port, 0 );
@@ -201,11 +204,11 @@ public class NetUtil {
    * Return a TCP server socket on the given address and port, incrementing the
    * port until a server socket can be opened.
    *
-   * @param address
-   * @param port
-   * @param backlog
+   * @param address The address on which to find the next available port 
+   * @param port The number of the port on which to start looking
+   * @param backlog requested maximum length of the queue of incoming connections.
    *
-   * @return
+   * @return the next available port on the local address.
    */
   public static ServerSocket getNextServerSocket( InetAddress address, int port, int backlog ) {
     int i = port;
@@ -362,10 +365,11 @@ public class NetUtil {
 
 
   /**
+   * Resolve the given string into an actual IP address.
+   * 
+   * @param address the dotted quad address to resolve
    *
-   * @param address
-   *
-   * @return
+   * @return the actual IP address or null if the string could not be resolved
    */
   public static InetAddress resolveAddress( String address ) {
     try {
@@ -383,10 +387,13 @@ public class NetUtil {
 
 
   /**
+   * Determine if the given string represents a valid port.
+   * 
+   * This essentially parses the string into an integer and then checks its range.
+   * 
+   * @param port the string to validate
    *
-   * @param port
-   *
-   * @return
+   * @return the integer value of the parsed string, or 0 if the string could not be parsed or is outside of the valid range for a port.
    */
   public static int validatePort( String port ) {
     try {
@@ -420,10 +427,11 @@ public class NetUtil {
 
 
   /**
+   * Validate if the port is within the valid range for an IP port.
+   * 
+   * @param port the port to check
    *
-   * @param port
-   *
-   * @return
+   * @return the value of the port if it is within range, 0 otherwise.
    */
   public static int validatePort( int port ) {
     if ( ( port < 0 ) || ( port > 0xFFFF ) ) {
@@ -437,11 +445,13 @@ public class NetUtil {
 
 
   /**
-   * Method decodeAddress
+   * Decode an array of bytes into an IP address
    *
-   * @param data
+   * @param data the bytes to decode
    *
-   * @return
+   * @return the decoded IP Address
+   * 
+   * @throws IllegalArgumentException of the bytes do not represent a valid IP address
    */
   public static InetAddress decodeAddress( byte[] data ) {
     if ( data.length < 4 ) {
@@ -461,11 +471,11 @@ public class NetUtil {
 
 
   /**
-   * Method addressToHex
+   * Represent the given IP address and a hex string
    *
-   * @param address
+   * @param address the address to convert
    *
-   * @return
+   * @return the hex representation of the address or null if the address could not be represented in hex
    */
   public static String addressToHex( InetAddress address ) {
     if ( address != null ) {
@@ -479,11 +489,11 @@ public class NetUtil {
 
 
   /**
-   * Method hostToHex
+   * Convert the given hostname to its IP address in hex
+   * 
+   * @param host The hostname to resolve and represent in hex
    *
-   * @param host
-   *
-   * @return
+   * @return the hex representation of the address or null if the address could not be represented in hex
    */
   public static String hostToHex( InetAddress host ) {
     if ( host != null ) {
@@ -497,12 +507,12 @@ public class NetUtil {
 
 
   /**
-   * Method hostPortToHex
+   * Represent the given host and port as a hexadecimal string.
    *
-   * @param host
-   * @param port
+   * @param host ip address to convert
+   * @param port ip port to convert
    *
-   * @return
+   * @return the hex representation of the host and port or null if the pair could not be represented.
    */
   public static String hostPortToHex( InetAddress host, int port ) {
     if ( host != null ) {
@@ -520,11 +530,11 @@ public class NetUtil {
 
 
   /**
-   * Method hostPortToHex
+   * Represent the local host and given port as a hexadecimal string.
    *
-   * @param port
+   * @param port ip port to convert
    *
-   * @return
+   * @return the hex representation of the local host and given port or null if the pair could not be represented.
    */
   public static String hostPortToHex( int port ) {
     return hostPortToHex( getLocalAddress(), port );
@@ -534,11 +544,11 @@ public class NetUtil {
 
 
   /**
-   * Method hostPortToHex
+   * Represent the host and port of the given URI as a hexadecimal string.
    *
-   * @param uri
+   * @param uri the URI from which to extrach the host and port to convert
    *
-   * @return
+   * @return the hex representation of the host and port in the given URI or null if the pair could not be represented.
    */
   public static String hostPortToHex( URI uri ) {
     if ( uri != null ) {
@@ -558,7 +568,7 @@ public class NetUtil {
    * which can take several seconds!</p>
    *
    *
-   * @param uri
+   * @param uri the URI to parse for host information
    *
    * @return The InetAddress of the host specified in the URI. Will return null
    *         if DNS lookup fails, if the URI reference is null or if no host is
@@ -582,11 +592,11 @@ public class NetUtil {
 
 
   /**
-   * Method hexToAddress
+   * Convert the given hex string into a IP address
    *
-   * @param hex
+   * @param hex the hex string to convert
    *
-   * @return
+   * @return a valid IP address or null if the string could not be parsed into an IP address
    */
   public static InetAddress hexToAddress( String hex ) {
     if ( ( hex != null ) && ( hex.length() > 7 ) ) {
@@ -619,7 +629,9 @@ public class NetUtil {
 
   /**
    * Convert hex representation of bytes to an array bytes
+   * 
    * @param s The string to parse
+   * 
    * @return an array of bytes represented by the string
    */
   // Quick hack, need to clean up and test
@@ -654,11 +666,12 @@ public class NetUtil {
 
 
   /**
-   * Method hexToAddressString
+   * Convert the given hexadecimal string into a dotted-quad address IP address 
+   * string.
    *
-   * @param hex
+   * @param hex the hexadecimal string to parse
    *
-   * @return
+   * @return a dotted-quad IP address
    */
   public static String hexToAddressString( String hex ) {
     if ( ( hex != null ) && ( hex.length() > 7 ) ) {
@@ -733,9 +746,9 @@ public class NetUtil {
   /**
    * Return the hostname of the given IP address in lowercase.
    *
-   * @param addr
+   * @param addr the address to resolve
    *
-   * @return
+   * @return lowercase representation of the hostname for the given address or null if it does not resolve
    */
   public static String getRelativeHostName( InetAddress addr ) {
     return addr.getHostName().toLowerCase();
@@ -745,11 +758,11 @@ public class NetUtil {
 
 
   /**
-   * Method getRelativeHostName
+   * Return the hostname of the given IP address in lowercase.
    *
-   * @param addr
+   * @param addr the address to resolve
    *
-   * @return
+   * @return lowercase representation of the hostname for the given address or null if it does not resolve
    */
   public static String getRelativeHostName( String addr ) {
     try {
@@ -767,9 +780,9 @@ public class NetUtil {
 
 
   /**
-   * Method getLocalRelativeHostName
+   * Return the hostname of the localhost in lowercase.
    *
-   * @return
+   * @return lowercase representation of the local host or null if it does not resolve
    */
   public static String getLocalRelativeHostName() {
     return getRelativeHostName( getLocalAddress() );
@@ -799,7 +812,7 @@ public class NetUtil {
   /**
    * Method getLocalDomain
    *
-   * @return
+   * @return the local domain
    */
   public static String getLocalDomain() {
     return getDomain( getLocalAddress() );
@@ -809,11 +822,11 @@ public class NetUtil {
 
 
   /**
-   * Method getDomain
+   * Get the domain name of the given IP address
    *
-   * @param addr
+   * @param addr the address to resolve
    *
-   * @return
+   * @return the domain name of the given address or null if the given address does not resolve
    */
   public static String getDomain( InetAddress addr ) {
     if ( addr != null ) {
@@ -967,7 +980,7 @@ public class NetUtil {
    *
    * @param mask Valid dotted-quad netmask.
    *
-   * @return
+   * @return the broadcast address string or the global broadcast (255.255.255.255) if the mask could produce an address
    */
   public static String getLocalBroadcastString( String mask ) {
     String retval = "255.255.255.255";
@@ -990,11 +1003,11 @@ public class NetUtil {
    * Return a UDP server socket on the given address and port, incrementing the
    * port until a server socket can be opened.
    *
-   * @param address
-   * @param port
-   * @param reuse
+   * @param address The address on which the socket should be bound
+   * @param port the port on which datagrams should be received
+   * @param reuse true to allow the address/port to be used for other datagram sockets
    *
-   * @return
+   * @return the datagram socket from which datagrams can be read, null if the socket could not be bound
    */
   public static DatagramSocket getNextDatagramSocket( InetAddress address, int port, boolean reuse ) {
     int i = port;
@@ -1050,11 +1063,11 @@ public class NetUtil {
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
    * to obtain the next available datagram server.</p>
    *
-   * @param address
-   * @param port
+   * @param address the address to which the datagram socket should be bound
+   * @param port the port to use as the starting point for binding
    * @param reuse allow reuse of a socket via the SO_REUSEADDR socket option
    *
-   * @return
+   * @return the next port to which a datagram socket can be bound.
    */
   public static int getNextAvailableUdpPort( InetAddress address, int port, boolean reuse ) {
     DatagramSocket dgramsocket = getNextDatagramSocket( address, port, reuse );
@@ -1076,12 +1089,23 @@ public class NetUtil {
 
 
   /**
-   * Method getNextAvailableUdpPort
+   * Return a port number that can be used to create a datagram socket on the
+   * given address starting with the given port.
    *
-   * @param address
-   * @param port
+   * <p>If the given port can be used to create a datagram socket (UDP) then
+   * that port number will be used, otherwise, the port number will be
+   * incremented and tested until a free port is found.</p>
    *
-   * @return
+   * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
+   * yet when a call is made to open a socket at that port, another thread may
+   * have already opened a socket on that port. A better way would be to use
+   * the <code>getNextDatagramSocket(address,port)</code> method if it desired
+   * to obtain the next available datagram server.</p>
+   *
+   * @param address the address to which the datagram socket should be bound
+   * @param port the port to use as the starting point for binding
+   *
+   * @return the next port to which a datagram socket can be bound.
    */
   public static int getNextAvailableUdpPort( InetAddress address, int port ) {
     DatagramSocket dgramsocket = getNextDatagramSocket( address, port, false );
@@ -1103,12 +1127,22 @@ public class NetUtil {
 
 
   /**
-   * Return a port number that can be used to create a datagram socket with the
-   * given port on the local address.
+   * Return a port number that can be used to create a datagram socket on the
+   * local address starting with the given port.
    *
-   * @param port
+   * <p>If the given port can be used to create a datagram socket (UDP) then
+   * that port number will be used, otherwise, the port number will be
+   * incremented and tested until a free port is found.</p>
    *
-   * @return
+   * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
+   * yet when a call is made to open a socket at that port, another thread may
+   * have already opened a socket on that port. A better way would be to use
+   * the <code>getNextDatagramSocket(address,port)</code> method if it desired
+   * to obtain the next available datagram server.</p>
+   *
+   * @param port the port to use as the starting point for binding
+   *
+   * @return the next port to which a datagram socket can be bound.
    */
   public static int getNextAvailableUdpPort( int port ) {
     return getNextAvailableUdpPort( null, port );
@@ -1121,9 +1155,19 @@ public class NetUtil {
    * Return a port number that can be used to create a datagram socket on the
    * given address starting with port 1.
    *
-   * @param address
+   * <p>If the given port can be used to create a datagram socket (UDP) then
+   * that port number will be used, otherwise, the port number will be
+   * incremented and tested until a free port is found.</p>
    *
-   * @return
+   * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
+   * yet when a call is made to open a socket at that port, another thread may
+   * have already opened a socket on that port. A better way would be to use
+   * the <code>getNextDatagramSocket(address,port)</code> method if it desired
+   * to obtain the next available datagram server.</p>
+   *
+   * @param address the address to which the datagram socket should be bound
+   *
+   * @return the next port to which a datagram socket can be bound.
    */
   public static int getNextAvailableUdpPort( InetAddress address ) {
     return getNextAvailableUdpPort( address, 1 );
@@ -1228,7 +1272,7 @@ public class NetUtil {
    * Parse through the output of Windows IP configuration stats and locate the
    * DNS Server entries
    *
-   * @param in
+   * @param in the input stream to parse
    */
   private static void findWin( InputStream in ) {
     BufferedReader br = new BufferedReader( new InputStreamReader( in ) );

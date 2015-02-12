@@ -11,14 +11,15 @@ import java.util.regex.Pattern;
 
 
 /**
- * PathFilter implementation for Ant-style path patterns. Examples are provided below.
+ * PathFilter implementation for Ant-style path patterns.
  *
- * <p>Part of this mapping code has been kindly borrowed from <a href="http://ant.apache.org">Apache Ant</a>.
+ * <p>Part of this mapping code has been borrowed from 
+ * <a href="http://ant.apache.org">Apache Ant</a>.
  *
  * <p>The mapping matches URLs using the following rules:<br><ul>
  * <li>? matches one character</li>
  * <li>* matches zero or more characters</li>
- * <li>** matches zero or more 'directories' in a path</li></ul></p>
+ * <li>** matches zero or more nodes (directories) in a path</li></ul></p>
  *
  * <p>Some examples:<br><ul>
  * <li>{@code net/t?st.jsp} - matches {@code net/test.jsp} but also {@code net/tast.jsp} or {@code net/txst.jsp}</li>
@@ -30,9 +31,12 @@ import java.util.regex.Pattern;
 public class AntPathFilter implements PathFilter {
 
   /**
-   * Tests whether or not a string matches against a pattern via a {@link Pattern}.
-   * <p>The pattern may contain special characters: '*' means zero or more characters; '?' means one and
-   * only one character; '{' and '}' indicate a URI template pattern. For example <tt>/users/{user}</tt>.
+   * Tests whether or not a string matches against a pattern via a 
+   * {@link Pattern}.
+   * 
+   * <p>The pattern may contain special characters: '*' means zero or more 
+   * characters; '?' means one and only one character; '{' and '}' indicate a 
+   * URI template pattern. For example <tt>/users/{user}</tt>.
    */
   protected static class AntPathStringMatcher {
 
@@ -48,8 +52,9 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
+     * Constructor
      * 
-     * @param pattern
+     * @param pattern the pattern for this matcher
      */
     public AntPathStringMatcher( final String pattern ) {
       final StringBuilder patternBuilder = new StringBuilder();
@@ -86,7 +91,7 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
-     * Main entry point.
+     * Check to see if the string matches against the pattern.
      * 
      * @return {@code true} if the string matches against the pattern, or {@code false} otherwise.
      */
@@ -111,13 +116,6 @@ public class AntPathFilter implements PathFilter {
 
 
 
-    /**
-     * 
-     * @param s
-     * @param start
-     * @param end
-     * @return
-     */
     private String quote( final String s, final int start, final int end ) {
       if ( start == end ) {
         return "";
@@ -137,8 +135,8 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
-     * 
-     * @param path
+     * Constructor 
+     * @param path the path to use
      */
     public AntPatternComparator( final String path ) {
       this.path = path;
@@ -148,7 +146,7 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
-     * 
+     * Compare the given patterns with the path set in this comparator
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
@@ -210,7 +208,7 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
-     * Returns the length of the given pattern, where template variables are considered to be 1 long.
+     * @return the length of the given pattern, where template variables are considered to be 1 long.
      */
     private int getPatternLength( final String pattern ) {
       return VARIABLE_PATTERN.matcher( pattern ).replaceAll( "#" ).length();
@@ -220,9 +218,11 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
+     * Return the number of wildcard occurrences in the given string.
+     *  
+     * @param pattern the string in which to to search for wildcards.
      * 
-     * @param pattern
-     * @return
+     * @return the number of wildcard occurrences 
      */
     private int getWildCardCount( String pattern ) {
       if ( pattern.endsWith( ".*" ) ) {
@@ -235,9 +235,12 @@ public class AntPathFilter implements PathFilter {
 
 
     /**
+     * Chec to see if the pgiven pattern is null or the capture all (/**) 
+     * pattern.
      * 
-     * @param pattern
-     * @return
+     * @param pattern the pattern to check
+     * 
+     * @return true if null or the capture all pattern
      */
     private boolean isNullOrCaptureAllPattern( final String pattern ) {
       return ( pattern == null ) || "/**".equals( pattern );
@@ -354,10 +357,12 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Actually match the given {@code path} against the given {@code pattern}.
+   * 
    * @param pattern the pattern to match against
    * @param path the path String to test
-   * @param fullMatch whether a full pattern match is required (else a pattern match
-   * as far as the given base path goes is sufficient)
+   * @param fullMatch whether a full pattern match is required (else a pattern 
+   * match as far as the given base path goes is sufficient)
+   * 
    * @return {@code true} if the supplied {@code path} matched, {@code false} if it didn't
    */
   protected boolean doMatch( final String pattern, final String path, final boolean fullMatch, final Map<String, String> uriTemplateVariables ) {
@@ -485,7 +490,9 @@ public class AntPathFilter implements PathFilter {
 
 
   /**
-   * Given a pattern and a full path, determine the pattern-mapped part. <p>For example: <ul>
+   * Given a pattern and a full path, determine the pattern-mapped part. 
+   * 
+   * <p>For example: <ul>
    * <li>'{@code /docs/cvs/commit.html}' and '{@code /docs/cvs/commit.html} -> ''</li>
    * <li>'{@code /docs/*}' and '{@code /docs/cvs/commit} -> '{@code cvs/commit}'</li>
    * <li>'{@code /docs/cvs/*.html}' and '{@code /docs/cvs/commit.html} -> '{@code commit.html}'</li>
@@ -493,9 +500,10 @@ public class AntPathFilter implements PathFilter {
    * <li>'{@code /docs/**\/*.html}' and '{@code /docs/cvs/commit.html} -> '{@code cvs/commit.html}'</li>
    * <li>'{@code /*.html}' and '{@code /docs/cvs/commit.html} -> '{@code docs/cvs/commit.html}'</li>
    * <li>'{@code *.html}' and '{@code /docs/cvs/commit.html} -> '{@code /docs/cvs/commit.html}'</li>
-   * <li>'{@code *}' and '{@code /docs/cvs/commit.html} -> '{@code /docs/cvs/commit.html}'</li> </ul>
-   * <p>Assumes that {@link #match} returns {@code true} for '{@code pattern}' and '{@code path}', but
-   * does <strong>not</strong> enforce this.
+   * <li>'{@code *}' and '{@code /docs/cvs/commit.html} -> '{@code /docs/cvs/commit.html}'</li> </ul></p>
+   * 
+   * <p>Assumes that {@link #match} returns {@code true} for '{@code pattern}' 
+   * and '{@code path}', but does <strong>not</strong> enforce this.</p>
    */
   @Override
   public String extractPathWithinPattern( final String pattern, final String path ) {
@@ -546,15 +554,26 @@ public class AntPathFilter implements PathFilter {
 
 
   /**
-   * Given a full path, returns a {@link Comparator} suitable for sorting patterns in order of explicitness.
-   * <p>The returned {@code Comparator} will {@linkplain java.util.Collections#sort(java.util.List,
-   * java.util.Comparator) sort} a list so that more specific patterns (without uri templates or wild cards) come before
-   * generic patterns. So given a list with the following patterns: <ol> <li>{@code /orders/new}</li>
-   * <li>{@code /orders/{order}}</li> <li>{@code /orders/*}</li> </ol> the returned comparator will sort this
-   * list so that the order will be as indicated.
-   * <p>The full path given as parameter is used to test for exact matches. So when the given path is {@code /orders/2},
-   * the pattern {@code /orders/2} will be sorted before {@code /orders/1}.
+   * Given a full path, returns a {@link Comparator} suitable for sorting 
+   * patterns in order of explicitness.
+   * 
+   * <p>The returned {@code Comparator} will 
+   * {@linkplain java.util.Collections#sort(java.util.List, 
+   * java.util.Comparator) sort} a list so that more specific patterns (without 
+   * uri templates or wild cards) come before generic patterns. So given a list 
+   * with the following patterns: 
+   * <ol><li>{@code /orders/new}</li>
+   * <li>{@code /orders/{order}}</li>
+   * <li>{@code /orders/*}</li> </ol> 
+   * the returned comparator will sort this list so that the order will be as 
+   * indicated.</p>
+   * 
+   * <p>The full path given as parameter is used to test for exact matches. So 
+   * when the given path is {@code /orders/2}, the pattern {@code /orders/2} 
+   * will be sorted before {@code /orders/1}.</p>
+   * 
    * @param path the full path to use for comparison
+   * 
    * @return a comparator capable of sorting patterns in order of explicitness
    */
   @Override
@@ -567,15 +586,20 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Build or retrieve an {@link AntPathStringMatcher} for the given pattern.
+   * 
    * <p>The default implementation checks this AntPathFilter's internal cache
-   * (see {@link #setCachePatterns}), creating a new AntPathStringMatcher instance
-   * if no cached copy is found.
-   * When encountering too many patterns to cache at runtime (the threshold is 65536),
-   * it turns the default cache off, assuming that arbitrary permutations of patterns
-   * are coming in, with little chance for encountering a reoccurring pattern.
-   * <p>This method may get overridden to implement a custom cache strategy.
+   * (see {@link #setCachePatterns}), creating a new AntPathStringMatcher 
+   * instance if no cached copy is found. When encountering too many patterns 
+   * to cache at runtime (the threshold is 65536), it turns the default cache 
+   * off, assuming that arbitrary permutations of patterns are coming in, with 
+   * little chance for encountering a recurring pattern.</p>
+   * 
+   * <p>This method may get overridden to implement a custom cache strategy.</p>
+   * 
    * @param pattern the pattern to match against (never {@code null})
+   * 
    * @return a corresponding AntPathStringMatcher (never {@code null})
+   * 
    * @see #setCachePatterns
    */
   protected AntPathStringMatcher getStringMatcher( final String pattern ) {
@@ -638,9 +662,13 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Tests whether or not a string matches against a pattern.
+   * 
    * @param pattern the pattern to match against (never {@code null})
-   * @param str the String which must be matched against the pattern (never {@code null})
-   * @return {@code true} if the string matches against the pattern, or {@code false} otherwise
+   * @param str the String which must be matched against the pattern (never 
+   * {@code null})
+   * 
+   * @return {@code true} if the string matches against the pattern, or 
+   * {@code false} otherwise
    */
   private boolean matchStrings( final String pattern, final String str, final Map<String, String> uriTemplateVariables ) {
     return getStringMatcher( pattern ).matchStrings( str, uriTemplateVariables );
@@ -651,13 +679,15 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Specify whether to cache parsed pattern metadata for patterns passed
-   * into this matcher's {@link #match} method. A value of {@code true}
-   * activates an unlimited pattern cache; a value of {@code false} turns
-   * the pattern cache off completely.
+   * into this matcher's {@link #match} method. 
+   * 
+   * <p>A value of {@code true} activates an unlimited pattern cache; a value 
+   * of {@code false} turns the pattern cache off completely.</p>
+   * 
    * <p>Default is for the cache to be on, but with the variant to automatically
    * turn it off when encountering too many patterns to cache at runtime
    * (the threshold is 65536), assuming that arbitrary permutations of patterns
-   * are coming in, with little chance for encountering a reoccurring pattern.
+   * are coming in, with little chance for encountering a recurring pattern.</p>
    * @see #getStringMatcher(String)
    */
   public void setCachePatterns( final boolean cachePatterns ) {
@@ -669,6 +699,7 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Set the path separator to use for pattern parsing.
+   * 
    * Default is "/", as in Ant.
    */
   public void setPathSeparator( final String pathSeparator ) {
@@ -680,6 +711,7 @@ public class AntPathFilter implements PathFilter {
 
   /**
    * Specify whether to trim tokenized paths and patterns.
+   * 
    * Default is {@code true}.
    */
   public void setTrimTokens( final boolean trimTokens ) {
@@ -690,10 +722,12 @@ public class AntPathFilter implements PathFilter {
 
 
   /**
+   * Concatenate the two paths while attempting to avoid duplicate path delimiters.
    * 
    * @param path1
    * @param path2
-   * @return
+   * 
+   * @return The concatenated path
    */
   private String slashConcat( final String path1, final String path2 ) {
     if ( path1.endsWith( "/" ) || path2.startsWith( "/" ) ) {

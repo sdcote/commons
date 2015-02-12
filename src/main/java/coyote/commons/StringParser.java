@@ -108,7 +108,7 @@ public class StringParser {
   /**
    * Checks to see if we are at the end of the file
    *
-   * @return
+   * @return true if at the end of file, false otherwise.
    *
    * @throws IOException
    */
@@ -277,9 +277,9 @@ public class StringParser {
   /**
    * Method peekToChar
    *
-   * @param stop
+   * @param stop the sentinel character, when to stop
    *
-   * @return
+   * @return all the characters up to the sentinel character
    *
    * @throws IOException
    */
@@ -654,7 +654,7 @@ public class StringParser {
 
 
   /**
-   * @return
+   * @return true if the parser is consuming comments, false otherwise
    */
   public boolean isConsumingCodeComments() {
     return consumingCodeComments;
@@ -664,10 +664,10 @@ public class StringParser {
 
 
   /**
-   * @param b
+   * @param flag
    */
-  public void setConsumingCodeComments( boolean b ) {
-    consumingCodeComments = b;
+  public void setConsumingCodeComments( boolean flag ) {
+    consumingCodeComments = flag;
   }
 
 

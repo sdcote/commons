@@ -98,6 +98,13 @@ public class IpAddress {
 
 
 
+  /**
+   * Construct a new IpAddress object from the byte representation of the address
+   * 
+   * @param data the bytes to parse
+   * 
+   * @throws IpAddressException if data is null, empty, or an odd number of bytes
+   */
   public IpAddress( byte[] data ) throws IpAddressException {
     if ( data == null )
       throw new IpAddressException( "Null argument in constructor" );
@@ -145,7 +152,7 @@ public class IpAddress {
   /**
    * Constructor IpAddress
    *
-   * @param octets
+   * @param octets the numeric values for each portion of the address
    */
   protected IpAddress( short[] octets ) {
     this.octets = octets;
@@ -155,11 +162,12 @@ public class IpAddress {
 
 
   /**
-   * Method equals
+   * Tests to see if the given dotted representation of an address matches 
+   * this instance.
    *
-   * @param Octets
+   * @param Octets the dotted representation of the address to test (i.e. "X.X.X.X")
    *
-   * @return
+   * @return true if the address is equivalent, false otherwise
    */
   public boolean equals( String Octets ) {
     return this.toString().equals( Octets );
@@ -169,11 +177,11 @@ public class IpAddress {
 
 
   /**
-   * Method equals
+   * Tests to see if the given address is equivalent to this address.
    *
-   * @param addr
+   * @param addr the address to test
    *
-   * @return
+   * @return true if the address is equivalent, false otherwise
    */
   public boolean equals( IpAddress addr ) {
     if ( addr == null ) {
@@ -198,9 +206,7 @@ public class IpAddress {
 
 
   /**
-   * Return the IP Address as an array of Shorts.
-   *
-   * @return
+   * @return the IP Address as an array of Shorts.
    */
   public short[] getOctets() {
     return octets;
@@ -210,10 +216,9 @@ public class IpAddress {
 
 
   /**
-   * Return the dotted notation of the IP Address as a string.
-   *
-   * @return
+   * @return the dotted notation of the IP Address as a string.
    */
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
@@ -252,6 +257,9 @@ public class IpAddress {
 
 
 
+  /**
+   * @return a new InetAddress object representing this IpAddress.
+   */
   public InetAddress toInetAddress() {
     if ( netAddress == null ) {
       netAddress = toInetAddress( this );
@@ -262,6 +270,13 @@ public class IpAddress {
 
 
 
+  /**
+   * Represent the given IP Address as a standard InetAddress.
+   * 
+   * @param addr the address to represent
+   * 
+   * @return a new InetAddress object representing the given IpAddress.
+   */
   public static InetAddress toInetAddress( IpAddress addr ) {
     if ( addr != null ) {
       try {
@@ -275,6 +290,9 @@ public class IpAddress {
 
 
 
+  /**
+   * @return the binary representation of the IP address.
+   */
   public byte[] getBytes() {
     byte[] bytes = new byte[octets.length];
 
@@ -288,13 +306,13 @@ public class IpAddress {
 
 
   /**
-   * Helper method to convert a string representation into a short[] array.
+   * Helper method to convert a dotted string representation into a short[] array.
    *
-   * @param addr
+   * @param addr the string representation of the address to convert
    *
-   * @return
+   * @return an array of octets representing the given address
    *
-   * @throws IpAddressException
+   * @throws IpAddressException if the string could not be parsed
    */
   public static short[] getOctets( String addr ) throws IpAddressException {
     int octetCount = 0;
@@ -364,11 +382,11 @@ public class IpAddress {
    * <p>For example: 192.168.100.195 netmask 255.255.255.224 returns
    * 192.168.100.192</p>
    *
-   * @param mask
+   * @param mask the string representation of the network mask to apply
    *
-   * @return
+   * @return the IpAddress representing the network
    *
-   * @throws IpAddressException
+   * @throws IpAddressException if there were problems parsing the mask
    */
   public IpAddress applyNetMask( String mask ) throws IpAddressException {
     return applyNetMask( new IpAddress( mask ) );
@@ -388,9 +406,9 @@ public class IpAddress {
    * // returns "192.168.0.0"
    * </CODE></p>
    *
-   * @param netmask
+   * @param netmask the network mask to apply
    *
-   * @return
+   * @return the IpAddress representing the network
    */
   public IpAddress applyNetMask( IpAddress netmask ) {
     short[] retval;

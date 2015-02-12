@@ -782,7 +782,7 @@ public final class StringUtil {
    * @param array
    * @param default_loc
    * 
-   * @returns the location of search string in the array or default_loc if not
+   * @return the location of search string in the array or default_loc if not
    *          found.
    */
   public static final int findStringInArray( final String search_str, final String[] array, final int default_loc ) {

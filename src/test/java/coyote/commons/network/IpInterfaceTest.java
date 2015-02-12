@@ -13,22 +13,23 @@ package coyote.commons.network;
 
 import org.junit.Test;
 
+
 /**
  * 
  */
 public class IpInterfaceTest {
 
-	/**
-	 * Test method for {@link coyote.commons.network.IpInterface#getPrimary()}.
-	 */
-	@Test
-	public void testGetPrimary() {
-		try {
-			IpInterface intrfc = IpInterface.getPrimary();
-			System.out.println(intrfc);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+  /**
+   * Test method for {@link coyote.commons.network.IpInterface#getPrimary()}.
+   */
+  @Test
+  public void testGetPrimary() {
+    try {
+      IpInterface intrfc = IpInterface.getPrimary();
+      System.out.println( intrfc );
+    } catch ( Exception e ) {
+      e.printStackTrace();
+    }
+  }
 
 }

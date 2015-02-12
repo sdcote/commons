@@ -520,7 +520,7 @@ public class IpInterface {
   /**
    * Return the first IpInterface with the given name.
    * 
-   * @param addr The name of the interface to retrieve.
+   * @param name The name of the interface to retrieve.
    *  
    * @return the first interface with the given name or null if the name is not 
    *         found in any of the discovered interfaces.
@@ -735,6 +735,7 @@ public class IpInterface {
    *  
    * @see java.lang.Object#toString()
    */
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append( name );
@@ -835,9 +836,6 @@ public class IpInterface {
 
 
 
-  /**
-   * @param args
-   */
   public static void main( String[] args ) {
     System.out.println( IpInterface.dump() );
     // System.out.println( IpInterface.getPrimary() );
@@ -949,7 +947,8 @@ public class IpInterface {
    *
    * @return the string read in without any CR or LF characters, null if the
    *         stream is EOF or closed
-   * @throws IOException
+   *         
+   * @throws IOException if there are problems reading from the stream
    */
   private static String readLine( InputStream inputstream ) throws IOException {
     StringBuffer stringbuffer = new StringBuffer();
@@ -986,7 +985,7 @@ public class IpInterface {
    * @param array An array
    * @param element The element to append.
    *
-   * @return
+   * @return the array with the added element
    */
   private static Object addElement( Object array, Object element ) {
     int length = Array.getLength( array );
@@ -1006,7 +1005,7 @@ public class IpInterface {
    * @param oldarray
    * @param index
    *
-   * @return
+   * @return the array without the element
    */
   private static Object removeElementAt( Object oldarray, int index ) {
     int length = Array.getLength( oldarray );

@@ -160,7 +160,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * <p>Finally, the data is stripped of padding using a PKCS5 DES CBC padding 
    * scheme described in section 1.1 of RFC-1423.</p>
    * 
-   * @param bytes The data to decipher.
+   * @param data The data to decipher.
    * @param key The key to use in the generation of the deciphered text.
    * 
    * @return The decrypted data.

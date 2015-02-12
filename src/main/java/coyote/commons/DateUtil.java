@@ -116,7 +116,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted date
    */
   public static String RFC822Format( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -150,7 +150,7 @@ public class DateUtil {
   /**
    * Method RFC822Format
    *
-   * @return
+   * @return the formatted date
    */
   public static String RFC822Format() {
     return RFC822Format( new Date() );
@@ -162,7 +162,7 @@ public class DateUtil {
   /**
    * Return the current time in ISO8601 format adjusted to standard time.
    *
-   * @return
+   * @return the formatted date
    */
   public static String ISO8601Format() {
     return ISO8601Format( new Date(), true, TimeZone.getDefault() );
@@ -298,12 +298,13 @@ public class DateUtil {
 
 
   /**
-   * Method zeropad
+   * return a string representation of the number padded with zeros to a length 
+   * of characters. 
    *
-   * @param num
-   * @param size
+   * @param num the number to format
+   * @param size the total size of the result in characters
    *
-   * @return
+   * @return the zero padded string representation of the number
    */
   private static String zeropad( int num, int size ) {
     String value = Integer.toString( num );
@@ -542,7 +543,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted date
    */
   public static String toExtendedGMT( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -594,7 +595,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted date
    */
   public static String toBasicGMTDate( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -636,7 +637,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted date
    */
   public static String toExtendedGMTDate( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -679,7 +680,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted date
    */
   public static String toBasicGMTTime( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -722,7 +723,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted time
    */
   public static String toExtendedGMTTime( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -768,7 +769,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted time
    */
   public static String toBasicGMTTimestamp( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -814,7 +815,7 @@ public class DateUtil {
    *
    * @param date
    *
-   * @return
+   * @return the formatted time
    */
   public static String toExtendedGMTTimestamp( Date date ) {
     Calendar cal = GregorianCalendar.getInstance( GMT );
@@ -916,7 +917,7 @@ public class DateUtil {
    *
    * @param stamp
    *
-   * @return
+   * @return the timestamp of the start of the day
    */
   public static java.sql.Timestamp getDayStart( java.sql.Timestamp stamp ) {
     return getDayStart( stamp, 0 );
@@ -931,7 +932,7 @@ public class DateUtil {
    * @param stamp
    * @param daysLater
    *
-   * @return
+   * @return the time stamp of the start of the day
    */
   public static java.sql.Timestamp getDayStart( java.sql.Timestamp stamp, int daysLater ) {
     Calendar tempCal = Calendar.getInstance();
@@ -951,7 +952,7 @@ public class DateUtil {
    *
    * @param stamp
    *
-   * @return
+   * @return the time stamp of the start of the next day
    */
   public static java.sql.Timestamp getNextDayStart( java.sql.Timestamp stamp ) {
     return getDayStart( stamp, 1 );
@@ -965,7 +966,7 @@ public class DateUtil {
    *
    * @param stamp
    *
-   * @return
+   * @return the time stamp of the end of the day
    */
   public static java.sql.Timestamp getDayEnd( java.sql.Timestamp stamp ) {
     return getDayEnd( stamp, 0 );
@@ -980,7 +981,7 @@ public class DateUtil {
    * @param stamp
    * @param daysLater
    *
-   * @return
+   * @return the timestamp of the end of the day
    */
   public static java.sql.Timestamp getDayEnd( java.sql.Timestamp stamp, int daysLater ) {
     Calendar tempCal = Calendar.getInstance();
@@ -1729,7 +1730,7 @@ public class DateUtil {
    *
    * @param time
    *
-   * @return
+   * @return the epoch milliseconds
    */
   public static long getNextTime( String time ) {
     Calendar cal = getCalendar( time );
@@ -1758,7 +1759,7 @@ public class DateUtil {
    *
    * @param time
    *
-   * @return
+   * @return the epoch milliseconds
    */
   public static long getLastTime( String time ) {
     Calendar cal = getCalendar( time );

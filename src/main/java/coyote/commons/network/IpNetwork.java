@@ -255,7 +255,7 @@ public class IpNetwork extends IpAddress {
   /**
    * Returns the numbers representing each of the octets in this network address.
    *
-   * @param the number of bits required
+   * @param num_bits_desired the number of bits required
    *
    * @return the requested number of octets from this network address.
    */

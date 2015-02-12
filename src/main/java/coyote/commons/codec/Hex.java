@@ -13,7 +13,7 @@ import coyote.commons.StringUtil;
 */
 public class Hex implements BinaryEncoder, BinaryDecoder {
 
-  /** Default charset name is {@link CharEncoding#UTF_8} */
+  /** Default charset name is {@link StringUtil#UTF_8} */
   public static final String DEFAULT_CHARSET_NAME = StringUtil.UTF_8;
 
   /** Used to build output as Hex */

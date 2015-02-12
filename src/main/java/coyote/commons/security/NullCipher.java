@@ -35,7 +35,7 @@ public class NullCipher extends AbstractCipher implements Cipher {
   /**
    * Returns the data passed to this method.
    * 
-   * @param bytes The data to ignore.
+   * @param data The data to ignore.
    * 
    * @return The data passed to this method.
    */

@@ -72,9 +72,9 @@ public class ClasspathUtil implements ServletContextListener {
    * empty. useless entries so they can be removed providing more room for new 
    * entries.</p>
    * 
-   * @see {@link #getShadowedClasses}
-   * @see {@link #getShadowClassDetails}
-   * @see {@link #getMissingClasspathEntries}
+   * @see #getShadowedClasses()
+   * @see #getShadowClassDetails()
+   * @see #getMissingClasspathEntries()
    * 
    * @return True if the class path is clean, false if there are invalid entries.
    */

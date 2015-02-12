@@ -2135,7 +2135,7 @@ public final class FileUtil {
    * Close the given group of closable objects quietly consuming 
    * any exceptions.
    * 
-   * @param closables the closable objects to close
+   * @param closeables the closable objects to close
    */
   public static void closeQuietly( final Closeable... closeables ) {
     if ( closeables == null ) {

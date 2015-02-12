@@ -427,7 +427,7 @@ public class Config implements Cloneable, Serializable {
   /**
    * Returns the first occurrence of a named section.
    *
-   * @param type The node name to match.
+   * @param name The node name to match.
    *
    * @return Reference to the first child configuration (section) with the 
    *         given node name.

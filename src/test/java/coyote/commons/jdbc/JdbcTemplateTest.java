@@ -151,7 +151,6 @@ public class JdbcTemplateTest {
     // System.out.println( "Found " + emps.size() + " records" );
     assertTrue( emps.size() == 2 );
 
-
     emps = template.query( "SELECT * FROM EMPLOYEE WHERE emp_no= ?;", Arrays.<Object> asList( 1001 ), employeeDataMapper );
     // System.out.println( "Found " + emps.size() + " records" );
     // System.out.println( emps.get( 0 ) );

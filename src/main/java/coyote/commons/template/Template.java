@@ -277,7 +277,7 @@ public class Template extends StringParser {
   /**
    * Method getSymbols
    *
-   * @return
+   * @return the symbol table
    */
   public SymbolTable getSymbols() {
     return symbols;

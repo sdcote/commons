@@ -85,9 +85,7 @@ public final class TemplateException extends Exception {
 
 
   /**
-   * Method getContext
-   *
-   * @return
+   * @return the context
    */
   public String getContext() {
     return context;
