@@ -32,6 +32,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -89,6 +91,14 @@ public final class FileUtil {
 
   /** Standard byte formatter. */
   public static DecimalFormat byteFormat = new DecimalFormat( "0.00" );
+
+  /** The MD5 Message Digest we use to calculate file hashes */
+  static MessageDigest md;
+  static {
+    try {
+      md = MessageDigest.getInstance( "MD5" );
+    } catch ( NoSuchAlgorithmException e ) {}
+  }
 
 
 
@@ -900,20 +910,22 @@ public final class FileUtil {
     if ( suffix != null )
       upperSuffix = suffix.toUpperCase();
 
-    for ( int i = 0; i < listOfFiles.length; i++ ) {
-      if ( listOfFiles[i].isFile() ) {
-        if ( ( upperSuffix == null ) || listOfFiles[i].getName().toUpperCase().endsWith( upperSuffix ) ) {
-          list.add( listOfFiles[i] );
-        }
-      } else if ( listOfFiles[i].isDirectory() ) {
-        if ( recurse ) {
-          try {
-            list.addAll( getAllFiles( listOfFiles[i].getCanonicalPath(), suffix, recurse ) );
-          } catch ( IOException e ) {
-            e.printStackTrace();
+    if ( listOfFiles != null ) {
+      for ( int i = 0; i < listOfFiles.length; i++ ) {
+        if ( listOfFiles[i].isFile() ) {
+          if ( ( upperSuffix == null ) || listOfFiles[i].getName().toUpperCase().endsWith( upperSuffix ) ) {
+            list.add( listOfFiles[i] );
           }
-        }
+        } else if ( listOfFiles[i].isDirectory() ) {
+          if ( recurse ) {
+            try {
+              list.addAll( getAllFiles( listOfFiles[i].getCanonicalPath(), suffix, recurse ) );
+            } catch ( IOException e ) {
+              e.printStackTrace();
+            }
+          }
 
+        }
       }
     }
     return list;
@@ -2160,6 +2172,46 @@ public final class FileUtil {
       if ( closeable != null )
         closeable.close();
     } catch ( final IOException ignore ) {}
+  }
+
+
+
+
+  /**
+   * Return the MD5 hash for the given file.
+   * 
+   * <p>This reads in the file and computes the MD% hash for its contents. The
+   * hash can be compared to the hash values of other files to determine if 
+   * their contents are equivalent.  It is possible to detect duplicate files 
+   * by computing the hash values for all the files in a give set and testing 
+   * their equivalence.</p> 
+   * 
+   * @param file The file to read and process.
+   * 
+   * @return the hash value of the file
+   */
+  public static byte[] getHash( File file ) {
+    synchronized( md ) {
+      byte[] dataBytes = new byte[1024];
+
+      if ( file != null && file.exists() && file.canRead() && file.isFile() ) {
+        try (FileInputStream fis = new FileInputStream( file );) {
+          md.reset();
+          int nread = 0;
+          while ( ( nread = fis.read( dataBytes ) ) != -1 ) {
+            md.update( dataBytes, 0, nread );
+          };
+        } catch ( Exception e ) {
+          e.printStackTrace();
+        }
+
+        byte[] mdbytes = md.digest();
+
+        return mdbytes;
+      } else {
+        return new byte[0];
+      }
+    }
   }
 
 }
