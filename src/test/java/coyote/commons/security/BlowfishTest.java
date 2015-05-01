@@ -55,7 +55,7 @@ public class BlowfishTest {
     // Encrypt the text with the UTF16 encoded bytes our our clear text string 
     byte[] cipherdata = cipher.encrypt( cleartext.getBytes( "UTF8" ) );
 
-    //System.out.println("Data has been converted into "+cipherdata.length+" bytes of data");
+    System.out.println("Data has been converted into "+cipherdata.length+" bytes of data");
 
     // - - - Decrypt the data - - - 
 
@@ -70,8 +70,8 @@ public class BlowfishTest {
 
     String newtext = new String( cleardata, "UTF8" );
 
-    //System.out.println( cleartext );
-    //System.out.println( newtext );
+    System.out.println( cleartext );
+    System.out.println( newtext );
     assertEquals( cleartext, newtext );
 
   }

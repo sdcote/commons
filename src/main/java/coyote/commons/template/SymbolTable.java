@@ -124,8 +124,8 @@ public class SymbolTable extends HashMap {
         return DateUtil.ISO8601GMT( new Date() );
       } else if ( symbol.equals( "CR" ) ) {
         return StringUtil.CR;
-      } else if ( symbol.equals( "LF" ) ) {
-        return StringUtil.LF;
+      } else if ( symbol.equals( "NL" ) ) {
+        return StringUtil.NL;
       } else if ( symbol.equals( "CRLF" ) ) {
         return StringUtil.CRLF;
       } else if ( symbol.equals( "FS" ) ) {

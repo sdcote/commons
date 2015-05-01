@@ -31,9 +31,6 @@ public final class StringUtil {
   /** CarriageReturn string */
   public static final String CR = "\r";
 
-  /** LineFeed string */
-  public static final String LF = "\n";
-
   /** The space string */
   public static final String SP = " ";
 
@@ -77,8 +74,7 @@ public final class StringUtil {
   /** Seven-bit ASCII, also known as ISO646-US, also known as the Basic Latin block of the Unicode character set. */
   public static final String US_ASCII = "US-ASCII";
 
-  /** Sixteen-bit Unicode Transformation Format, The byte order specified by a mandatory initial byte-order mark (either order accepted on input, big-endian used on output)
-   */
+  /** Sixteen-bit Unicode Transformation Format, The byte order specified by a mandatory initial byte-order mark (either order accepted on input, big-endian used on output) */
   public static final String UTF_16 = "UTF-16";
 
   /** Sixteen-bit Unicode Transformation Format, big-endian byte order. */

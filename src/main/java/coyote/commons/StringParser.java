@@ -50,19 +50,19 @@ public class StringParser {
    */
   private String defaultDelimiters = " \t\n";
 
-  /** Field consumingCodeComments */
+  /** flag indicating the parser is consuming/ignoring comments */
   boolean consumingCodeComments = false;
 
-  /** Field comment */
+  /** the currently collected comment */
   StringBuffer comment;
 
 
 
 
   /**
-   * Constructor StringParser
+   * Creat a parser out of a string
    *
-   * @param string
+   * @param string the string to parse
    */
   public StringParser( String string ) {
     this.reader = new SimpleReader( string );
@@ -72,7 +72,9 @@ public class StringParser {
 
 
   /**
-   * @param reader
+   * Create a parser out of a reader
+   * 
+   * @param reader the reader to read
    */
   public StringParser( Reader reader ) {
     this.reader = reader;
@@ -82,8 +84,10 @@ public class StringParser {
 
 
   /**
-   * @param reader
-   * @param defaultDelimiters
+   * Create a parser out of a reader using the given token delimiters.
+   * 
+   * @param reader the reader to read
+   * @param defaultDelimiters the token delimiters to use while parsing
    */
   public StringParser( Reader reader, String defaultDelimiters ) {
     this.reader = reader;
@@ -94,8 +98,10 @@ public class StringParser {
 
 
   /**
-   * @param string
-   * @param defaultDelimiters
+   * Create a parser out of a string using the given token delimiters.
+   * 
+   * @param string the string to parse
+   * @param defaultDelimiters the token delimiters to use while parsing
    */
   public StringParser( String string, String defaultDelimiters ) {
     this.reader = new SimpleReader( string );
@@ -110,7 +116,7 @@ public class StringParser {
    *
    * @return true if at the end of file, false otherwise.
    *
-   * @throws IOException
+   * @throws IOException if we exceed our data (already at or past EOF)
    */
   public boolean eof() throws IOException {
     // skipWhitespace();
@@ -169,12 +175,12 @@ public class StringParser {
   /**
    * Skip ahead in the buffer the given amount.
    *
-   * @param length
+   * @param length the amount to skip ahead
    *
-   * @throws IOException
+   * @throws IOException if we exceed our data
    */
   public void skip( int length ) throws IOException {
-    // Just read the requested numbwer of characters in the buffer
+    // Just read the requested number of characters in the buffer
     for ( int i = 0; i < length; i++ ) {
       read();
     }
@@ -188,7 +194,7 @@ public class StringParser {
    *
    * @return the character read.
    *
-   * @throws IOException
+   * @throws IOException if we exceed our data
    */
   public int read() throws IOException {
     // If the last character we found was a newline character...
@@ -230,7 +236,7 @@ public class StringParser {
    *
    * @return the character the next read operation will return
    *
-   * @throws IOException
+   * @throws IOException if we exceed our data
    */
   public int peek() throws IOException {
     reader.mark( 1 );
@@ -248,7 +254,7 @@ public class StringParser {
    * Return the string represented by the next given length characters in the
    * reader without advancing the reader.
    *
-   * @param length
+   * @param length how far ahead to peek
    *
    * @return the character the next read operation will return
    *
@@ -275,13 +281,13 @@ public class StringParser {
 
 
   /**
-   * Method peekToChar
+   * Return all the text data up to the next occurrence of the given character.
    *
    * @param stop the sentinel character, when to stop
    *
    * @return all the characters up to the sentinel character
    *
-   * @throws IOException
+   * @throws IOException if we exceed our data
    */
   public String peekToChar( char stop ) throws IOException {
     reader.mark( Integer.MAX_VALUE );
@@ -309,7 +315,7 @@ public class StringParser {
   /**
    * Peek ahead in the parser and return the characters, in the given buffer.
    *
-   * <p>The distance of the peek will be the the lenght of the given buffer.</p>
+   * <p>The distance of the peek will be the the length of the given buffer.</p>
    *
    * @param buffer the array of integers to fill.
    *
@@ -335,8 +341,8 @@ public class StringParser {
    *          while still preserving the mark. After reading this many
    *          characters, attempting to reset the stream may fail.
    *
-   * @throws IOException If the stream does not support mark(), or if some other
-   *           I/O error occurs
+   * @throws IOException If the stream does not support mark(), or if some 
+   *         other I/O error occurs
    */
   public void mark( int readAheadLimit ) throws IOException {
     reader.mark( readAheadLimit );
@@ -367,13 +373,13 @@ public class StringParser {
 
 
   /**
-   * Return a string that shows where the parser is curently within the reader.
+   * Return a string that shows where the parser is currently within the reader.
    *
    * <p>The history window displays the previous characters read by the parser,
    * so the next character that is to be read is not yet in the history
    * window.</p>
    *
-   * @return Context information used primarlly during exceptions and debugging
+   * @return Context information used primarily during exceptions and debugging
    */
   public String getPosition() {
     StringBuffer buffer = new StringBuffer();
@@ -431,7 +437,7 @@ public class StringParser {
     // Skip all the whitespace
     skipWhitespace();
 
-    // read the nect non-whitespace character
+    // read the next non-whitespace character
     int ch = read();
 
     // If we are at the end of the file...
@@ -457,6 +463,7 @@ public class StringParser {
    *
    * @return The string representing everything we read up to, but not
    *         including, that given character
+   *
    * @throws IOException
    */
   public String readTo( int stop ) throws IOException {
@@ -505,8 +512,12 @@ public class StringParser {
 
 
   /**
-   * @param expected
-   * @throws IOException
+   * Read the next token and throw an error if it does not match what is 
+   * expected.
+   * 
+   * @param expected the expected token
+   * 
+   * @throws IOException if the read token does not match what is expected
    */
   public void readToken( String expected ) throws IOException {
     String got = readToken();
@@ -529,6 +540,7 @@ public class StringParser {
    *
    * @return The string of characters up, but not including the delimiter that
    *         marked the end of the token
+   *
    * @throws IOException
    */
   public String readToDelimiter( String delimiters ) throws IOException {
@@ -583,6 +595,7 @@ public class StringParser {
    *
    * @return all the characters, including whitespace that has been read up to
    *         the stop pattern or the end of the string we are parsing.
+   *
    * @throws IOException if the EOF is unexpectedly reached during peeks
    */
   public String readToPattern( String pattern ) throws IOException {
@@ -664,7 +677,10 @@ public class StringParser {
 
 
   /**
-   * @param flag
+   * Set the parser to consuming (reading through) comments.
+   * 
+   * @param flag true to set the parser to consume/ignore comments, false to 
+   *        treat them as retrievable tokens
    */
   public void setConsumingCodeComments( boolean flag ) {
     consumingCodeComments = flag;
@@ -717,7 +733,7 @@ public class StringParser {
 
   /**
    * Read all the data into the comment buffer until a multi-line comment
-   * termination string (asterisk followed by a slash) sombination is found.
+   * termination string (asterisk followed by a slash) combination is found.
    *
    * @throws IOException if no comment termination is before EOF.
    */

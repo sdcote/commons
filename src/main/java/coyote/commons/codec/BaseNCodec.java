@@ -122,7 +122,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
 
   /**
    * Checks if a byte value is whitespace or not.
-   * Whitespace is taken to mean: space, tab, CR, LF
+   * Whitespace is taken to mean: space, tab, CR, NL
    * 
    * @param byteToCheck the byte to check
    * 

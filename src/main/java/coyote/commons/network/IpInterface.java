@@ -935,7 +935,7 @@ public class IpInterface {
 
   /**
    * Construct a string by reading bytes in from the given inputstream until
-   * the LF sequence is observed.
+   * the NL sequence is observed.
    *
    * <p>All CR characters will be ignored and stripped from the returned
    * string.</p>
@@ -945,7 +945,7 @@ public class IpInterface {
    *
    * @param inputstream The stream to read
    *
-   * @return the string read in without any CR or LF characters, null if the
+   * @return the string read in without any CR or NL characters, null if the
    *         stream is EOF or closed
    *         
    * @throws IOException if there are problems reading from the stream

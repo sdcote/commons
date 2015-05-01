@@ -562,7 +562,7 @@ public class Base64 extends BaseNCodec {
    * "-1" call is not necessary when decoding, but does no harm.</p>
    * 
    * <p>Ignores all non-base64 characters. This is how chunked (e.g. 76 
-   * character) data is handled, since CR and LF are silently ignored, but has 
+   * character) data is handled, since CR and NL are silently ignored, but has 
    * implications for other bytes, too. This method will not check the 
    * provided data for validity.</p>
    *
