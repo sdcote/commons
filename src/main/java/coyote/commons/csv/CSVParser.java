@@ -156,7 +156,7 @@ public class CSVParser {
    * Parses an incoming String and returns an array of elements.
    *
    * @param nextLine the string to parse
-   * @param multi
+   * @param multi support multiple lines in values
    * 
    * @return the comma delimited list of elements, or null if nextLine is null
    * 
@@ -291,14 +291,14 @@ public class CSVParser {
   /**
    * precondition: sb.length() > 0
    *
-   * @param sb A sequence of characters to examine
+   * @param cs A sequence of characters to examine
    * 
    * @return true if every character in the sequence is whitespace
    */
-  protected boolean isAllWhiteSpace( final CharSequence sb ) {
+  protected boolean isAllWhiteSpace( final CharSequence cs ) {
     final boolean result = true;
-    for ( int i = 0; i < sb.length(); i++ ) {
-      final char c = sb.charAt( i );
+    for ( int i = 0; i < cs.length(); i++ ) {
+      final char c = cs.charAt( i );
 
       if ( !Character.isWhitespace( c ) ) {
         return false;
