@@ -354,11 +354,11 @@ public class UriUtil {
 
 
   /**
-   * Return a file reference for the given URI
+   * Return a file reference for the given URI if it is a file or jar URI
    *
-   * @param uri
+   * @param uri the URI to process
    *
-   * @return TODO Complete Documentation
+   * @return the file path portion of the URI or null if it is not a FILE or JAR URI
    */
   public static File getFile( final URI uri ) {
     if ( uri == null ) {
@@ -401,7 +401,8 @@ public class UriUtil {
   /**
    * This returns a path suitable for the local file system
    *
-   * @param uri
+   * @param uri the URI to process
+   * 
    * @return a path suitable for the local file system
    */
   public static String getFilePath( final URI uri ) {
@@ -484,9 +485,9 @@ public class UriUtil {
    * Replace all the file separator characters (either '/' or '\') with the
    * proper file separator for this platform.
    *
-   * @param path
+   * @param path the path to process
    *
-   * @return TODO Complete Documentation
+   * @return string representing the normalized path for this platform
    */
   public static String normalizeSlashes( String path ) {
     if ( path == null ) {
@@ -507,7 +508,7 @@ public class UriUtil {
    * path string.
    *
    * <p>Takes a string like &quot;\home\work\bin\..\lib&quot; and returns a
-   * path like &quot;\home\work\lib&quot;
+   * path like &quot;\home\work\lib&quot;</p>
    *
    * @param path The representative path with possible relational dot notation
    *
@@ -867,8 +868,9 @@ public class UriUtil {
   /**
    * Is the URI representing a file??
    *
-   * @param uri
-   * @return True if the URI is representing a file
+   * @param uri the URI to process
+   * 
+   * @return true if the URI is representing a file, false otherwise
    */
   public static boolean isFile( final URI uri ) {
     if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
@@ -899,11 +901,11 @@ public class UriUtil {
 
 
   /**
-   * Is the URI representing a JAR file??
+   * Is the URI representing a JAR file?
    *
-   *
-   * @param uri
-   * @return True if the URI is representing a JAR file
+   * @param uri the URI to process
+   * 
+   * @return true if the URI is representing a JAR file, false otherwise
    */
   public static boolean isJar( final URI uri ) {
     if ( ( uri != null ) && ( uri.getScheme() != null ) ) {
