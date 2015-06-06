@@ -19,7 +19,7 @@ public interface ResultMapper<E> {
    * representing generated keys.  In these cases, domain objects are not 
    * technically created, but object encapsulating the keys.</p>
    *   
-   * @param rs The result set proxy which contains extended methods to make working with the Java SQL {@code ResutSet} easier.
+   * @param rs The typed result set wrapping the Java SQL {@code ResutSet}.
    * 
    * @return a domain object
    * 
