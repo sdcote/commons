@@ -14,7 +14,7 @@ import java.util.List;
  * A class which uses a list of objects to use as arguments in 
  * {@code PreparedStatements}
  */
-public class SimplePreparedStatementSetter implements PreparedStatementSetter {
+public class DefaultPreparedStatementSetter implements PreparedStatementSetter {
 
   private final List<?> argList;
 
@@ -26,7 +26,7 @@ public class SimplePreparedStatementSetter implements PreparedStatementSetter {
    * 
    * @param argList The list of objects to use when setting prepared statements.
    */
-  public SimplePreparedStatementSetter( final List<?> argList ) {
+  public DefaultPreparedStatementSetter( final List<?> argList ) {
     this.argList = argList;
   }
 

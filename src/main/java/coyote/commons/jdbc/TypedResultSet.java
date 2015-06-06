@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * and Double) retrieve methods, from which the result will be {@code null} if 
  * the value from the database is SQL NULL.
  */
-public interface ExtendedResultSet extends ResultSet {
+public interface TypedResultSet extends ResultSet {
 
   /**
    * Retrieves the value of the designated column in the current row of this 

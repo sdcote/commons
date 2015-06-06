@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-class ExtendedResultSetImpl extends ResultSetWrapper implements ExtendedResultSet {
+class DefaultTypedResultSet extends ResultSetWrapper implements TypedResultSet {
 
-  ExtendedResultSetImpl( final ResultSet resultSet ) {
+  DefaultTypedResultSet( final ResultSet resultSet ) {
     super( resultSet );
   }
 
