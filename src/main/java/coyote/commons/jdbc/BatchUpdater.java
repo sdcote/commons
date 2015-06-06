@@ -24,10 +24,10 @@ public class BatchUpdater {
 
 
 
-  public BatchUpdater addBatch( final List<?> parameters ) throws DataAccessException {
+  public BatchUpdater addBatch( final List<?> parameters ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return addBatch( setter );
 
   }
@@ -35,7 +35,7 @@ public class BatchUpdater {
 
 
 
-  public BatchUpdater addBatch( final PreparedStatementSetter setter ) throws DataAccessException {
+  public BatchUpdater addBatch( final StatementSetter setter ) throws DataException {
     Assert.notNull( setter, "setter must not be null" );
 
     try {
@@ -45,29 +45,29 @@ public class BatchUpdater {
       return this;
     } catch ( final SQLException ex ) {
       closePreparedStatement( ps );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
   }
 
 
 
 
-  private void closePreparedStatement( final PreparedStatement ps ) throws DataAccessException {
+  private void closePreparedStatement( final PreparedStatement ps ) throws DataException {
     try {
       ps.close();
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
   }
 
 
 
 
-  public int[] doBatch() throws DataAccessException {
+  public int[] doBatch() throws DataException {
     try {
       return ps.executeBatch();
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closePreparedStatement( ps );
@@ -77,8 +77,8 @@ public class BatchUpdater {
 
 
 
-  public <K> List<K> doBatch( final ResultMapper<K> keyMapper ) throws DataAccessException {
-    Assert.notNull( keyMapper, "keyMapper must not be null" );
+  public <K> List<K> doBatch( final ResultMapper<K> resultMapper ) throws DataException {
+    Assert.notNull( resultMapper, "Result Mapper must not be null" );
 
     try {
       int initArraySize = 0;
@@ -92,11 +92,11 @@ public class BatchUpdater {
       final ResultSet keyRs = ps.getGeneratedKeys();
       final List<K> keys = new ArrayList<K>( initArraySize );
       while ( keyRs.next() ) {
-        keys.add( keyMapper.map( new DefaultTypedResultSet( keyRs ) ) );
+        keys.add( resultMapper.map( new DefaultTypedResultSet( keyRs ) ) );
       }
       return keys;
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
   }
 }
