@@ -66,7 +66,7 @@ public class JdbcTemplate {
       return new BatchUpdater( ps );
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -82,13 +82,13 @@ public class JdbcTemplate {
    * 
    * @param connection the connection to be closed
    * 
-   * @throws DataAccessException if SQLException is thrown during the close phase.
+   * @throws DataException if SQLException is thrown during the close phase.
    */
-  protected void closeConnection( final Connection connection ) throws DataAccessException {
+  protected void closeConnection( final Connection connection ) throws DataException {
     try {
       connection.close();
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( "failed to close the connection", ex );
+      throw new DataException( "failed to close the connection", ex );
     }
   }
 
@@ -108,7 +108,7 @@ public class JdbcTemplate {
       final Connection connection = dataSource.getConnection();
       return new CloseOnCompletionConnection( connection );
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( "failed to get a connection from the data source", ex );
+      throw new DataException( "failed to get a connection from the data source", ex );
     }
   }
 
@@ -131,9 +131,9 @@ public class JdbcTemplate {
    * 
    * @return a list of entity objects of type E produced by the query.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataException {
     return query( sql, parameters, dataMapper, new LinkedList<E>() );
   }
 
@@ -151,12 +151,12 @@ public class JdbcTemplate {
    * 
    * @return the resultList which is passed in the parameter list. The resultList will contain the entity objects produced by the query.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return query( sql, setter, dataMapper, resultList );
   }
 
@@ -173,14 +173,14 @@ public class JdbcTemplate {
    * instead.</p>
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
    * 
    * @return a list of entity objects of type E produced by the query.
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final StatementSetter setter, final ResultMapper<E> dataMapper ) throws DataException {
     return query( sql, setter, dataMapper, new LinkedList<E>() );
   }
 
@@ -193,16 +193,16 @@ public class JdbcTemplate {
    * <p>TheresultList will contain the entity objects produced by the query.</p>
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param resultList the result list to be returned by this method. This is list must not be unmodifiable. Otherwise, an UnsupportedOperationException is likely to be thrown.
    * @param <E> the type of the entity class
    * 
    * @return the resultList which is passed in the parameter list. 
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final StatementSetter setter, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataException {
     Assert.notNull( setter, "setter cannot be null" );
     Assert.notNull( dataMapper, "dataMapper cannot be null" );
 
@@ -231,7 +231,7 @@ public class JdbcTemplate {
       return resultList;
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -256,9 +256,9 @@ public class JdbcTemplate {
    * 
    * @return a list of entity objects of type E produced by the query.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper ) throws DataException {
     return query( sql, dataMapper, new LinkedList<E>() );
   }
 
@@ -280,9 +280,9 @@ public class JdbcTemplate {
    * 
    * @return a list of entity objects of type E produced by the query.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
+  public <E> List<E> query( final String sql, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataException {
     Assert.notNull( dataMapper, "ResultMapper must not be null" );
     Assert.notNull( resultList, "result list must not be null" );
 
@@ -309,7 +309,7 @@ public class JdbcTemplate {
       return resultList;
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -333,12 +333,12 @@ public class JdbcTemplate {
    * 
    * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
    * 
-   * @throws DataAccessException  if any exception occurs during the data access of the database
+   * @throws DataException  if any exception occurs during the data access of the database
    */
-  public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return queryOne( sql, setter, dataMapper );
   }
 
@@ -353,15 +353,15 @@ public class JdbcTemplate {
    * returned.</p>
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
    * @param <E> the type of the entity class
    * 
    * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
    * 
-   * @throws DataAccessException  if any exception occurs during the data access of the database
+   * @throws DataException  if any exception occurs during the data access of the database
    */
-  public <E> E queryOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final StatementSetter setter, final ResultMapper<E> dataMapper ) throws DataException {
     Assert.notNull( setter, "setter cannot be null" );
     Assert.notNull( dataMapper, "dataMapper cannot be null" );
 
@@ -386,7 +386,7 @@ public class JdbcTemplate {
       }
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -409,9 +409,9 @@ public class JdbcTemplate {
    * 
    * @return the single entity produced by the query. If no result return from the query, {@code NULL} will be returned.
    * 
-   * @throws DataAccessException  if any exception occurs during the data access of the database
+   * @throws DataException  if any exception occurs during the data access of the database
    */
-  public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataAccessException {
+  public <E> E queryOne( final String sql, final ResultMapper<E> dataMapper ) throws DataException {
     Assert.notNull( dataMapper, "dataMapper must not be null" );
 
     final Connection connection = getConnection();
@@ -433,7 +433,7 @@ public class JdbcTemplate {
       }
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -452,15 +452,15 @@ public class JdbcTemplate {
    * 
    * @param connection the connection to rollback
    * 
-   * @throws DataAccessException if SQLException is thrown during the rollback
+   * @throws DataException if SQLException is thrown during the rollback
    */
-  protected void rollbackConnection( final Connection connection ) throws DataAccessException {
+  protected void rollbackConnection( final Connection connection ) throws DataException {
     try {
       if ( !connection.getAutoCommit() ) {
         connection.rollback();
       }
     } catch ( final SQLException ex ) {
-      throw new DataAccessException( "failed to rollback the connection", ex );
+      throw new DataException( "failed to rollback the connection", ex );
     }
   }
 
@@ -475,12 +475,12 @@ public class JdbcTemplate {
    * 
    * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
    * 
-   * @throws DataAccessException  if any exception occurs during the data access of the database
+   * @throws DataException  if any exception occurs during the data access of the database
    */
-  public int update( final String sql, final List<?> parameters ) throws DataAccessException {
+  public int update( final String sql, final List<?> parameters ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return update( sql, setter );
   }
 
@@ -498,13 +498,13 @@ public class JdbcTemplate {
    * 
    * @return a list of generated keys to this update.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
     Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return update( sql, setter, resultMapper );
   }
 
@@ -515,13 +515,13 @@ public class JdbcTemplate {
    * Execute the update with supplied parameters.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * 
    * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public int update( final String sql, final PreparedStatementSetter setter ) throws DataAccessException {
+  public int update( final String sql, final StatementSetter setter ) throws DataException {
     Assert.notNull( setter, "setter cannot be null" );
 
     final Connection connection = getConnection();
@@ -539,7 +539,7 @@ public class JdbcTemplate {
       }
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -557,15 +557,15 @@ public class JdbcTemplate {
    * still return null depending on the driver being used.</p>
    *  
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
    * 
    * @return a list of generated keys to this update.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <K> List<K> update( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
+  public <K> List<K> update( final String sql, final StatementSetter setter, final ResultMapper<K> resultMapper ) throws DataException {
     Assert.notNull( setter, "setter cannot be null" );
     Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
@@ -593,7 +593,7 @@ public class JdbcTemplate {
       }
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
@@ -621,13 +621,13 @@ public class JdbcTemplate {
    * 
    * @return only a single key object to this update.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final List<?> parameters, final ResultMapper<K> resultMapper ) throws DataException {
     Assert.notNull( parameters, "parameters cannot be null" );
     Assert.notNull( resultMapper, "ResultMapper cannot be null" );
 
-    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
+    final StatementSetter setter = new DefaultStatementSetter( parameters );
     return updateOne( sql, setter, resultMapper );
   }
 
@@ -646,15 +646,15 @@ public class JdbcTemplate {
    * returned.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
-   * @param setter a PreparedStatementSetter instance to fill the placeholders of the SQL
+   * @param setter a StatementSetter instance to fill the placeholders of the SQL
    * @param resultMapper the dataMapper instance which acts as a mapper between the result set and the generated key
    * @param <K> the type of the key
    * 
    * @return only a single key object to this update.
    * 
-   * @throws DataAccessException if any exception occurs during the data access of the database
+   * @throws DataException if any exception occurs during the data access of the database
    */
-  public <K> K updateOne( final String sql, final PreparedStatementSetter setter, final ResultMapper<K> resultMapper ) throws DataAccessException {
+  public <K> K updateOne( final String sql, final StatementSetter setter, final ResultMapper<K> resultMapper ) throws DataException {
     Assert.notNull( setter, "setter cannot be null" );
     Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
@@ -678,7 +678,7 @@ public class JdbcTemplate {
       }
     } catch ( final SQLException ex ) {
       rollbackConnection( connection );
-      throw new DataAccessException( ex );
+      throw new DataException( ex );
     }
     finally {
       closeConnection( connection );
