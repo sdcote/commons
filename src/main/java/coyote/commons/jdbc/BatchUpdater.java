@@ -27,7 +27,7 @@ public class BatchUpdater {
   public BatchUpdater addBatch( final List<?> parameters ) throws DataAccessException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return addBatch( setter );
 
   }
@@ -92,7 +92,7 @@ public class BatchUpdater {
       final ResultSet keyRs = ps.getGeneratedKeys();
       final List<K> keys = new ArrayList<K>( initArraySize );
       while ( keyRs.next() ) {
-        keys.add( keyMapper.map( new ExtendedResultSetImpl( keyRs ) ) );
+        keys.add( keyMapper.map( new DefaultTypedResultSet( keyRs ) ) );
       }
       return keys;
     } catch ( final SQLException ex ) {

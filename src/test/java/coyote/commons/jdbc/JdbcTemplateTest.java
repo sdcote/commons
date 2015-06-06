@@ -130,7 +130,7 @@ public class JdbcTemplateTest {
 
     ResultMapper<Employee> employeeDataMapper = new ResultMapper<Employee>() {
       @Override
-      public Employee map( ExtendedResultSet rs ) throws SQLException {
+      public Employee map( TypedResultSet rs ) throws SQLException {
 
         //System.out.println( "Pos:" + rs.getRow() );
 

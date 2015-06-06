@@ -156,7 +156,7 @@ public class JdbcTemplate {
   public <E> List<E> query( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper, final List<E> resultList ) throws DataAccessException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return query( sql, setter, dataMapper, resultList );
   }
 
@@ -216,7 +216,7 @@ public class JdbcTemplate {
         final ResultSet rs = ps.executeQuery();
         try {
           while ( rs.next() ) {
-            final E entity = dataMapper.map( new ExtendedResultSetImpl( rs ) );
+            final E entity = dataMapper.map( new DefaultTypedResultSet( rs ) );
             resultList.add( entity );
           }
         }
@@ -294,7 +294,7 @@ public class JdbcTemplate {
         final ResultSet rs = stmt.executeQuery( sql );
         try {
           while ( rs.next() ) {
-            final E entity = dataMapper.map( new ExtendedResultSetImpl( rs ) );
+            final E entity = dataMapper.map( new DefaultTypedResultSet( rs ) );
             resultList.add( entity );
           }
         }
@@ -338,7 +338,7 @@ public class JdbcTemplate {
   public <E> E queryOne( final String sql, final List<?> parameters, final ResultMapper<E> dataMapper ) throws DataAccessException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return queryOne( sql, setter, dataMapper );
   }
 
@@ -375,7 +375,7 @@ public class JdbcTemplate {
 
         final ResultSet rs = ps.executeQuery();
         try {
-          return ( rs.next() ) ? dataMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+          return ( rs.next() ) ? dataMapper.map( new DefaultTypedResultSet( rs ) ) : null;
         }
         finally {
           rs.close();
@@ -422,7 +422,7 @@ public class JdbcTemplate {
         final ResultSet rs = stmt.executeQuery( sql );
 
         try {
-          return ( rs.next() ) ? dataMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+          return ( rs.next() ) ? dataMapper.map( new DefaultTypedResultSet( rs ) ) : null;
         }
         finally {
           rs.close();
@@ -480,7 +480,7 @@ public class JdbcTemplate {
   public int update( final String sql, final List<?> parameters ) throws DataAccessException {
     Assert.notNull( parameters, "parameters cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return update( sql, setter );
   }
 
@@ -504,7 +504,7 @@ public class JdbcTemplate {
     Assert.notNull( parameters, "parameters cannot be null" );
     Assert.notNull( resultMapper, "resultMapper cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return update( sql, setter, resultMapper );
   }
 
@@ -582,7 +582,7 @@ public class JdbcTemplate {
 
         final ResultSet rs = ps.getGeneratedKeys();
         while ( rs.next() ) {
-          final K key = resultMapper.map( new ExtendedResultSetImpl( rs ) );
+          final K key = resultMapper.map( new DefaultTypedResultSet( rs ) );
           keyList.add( key );
         }
         rs.close();
@@ -627,7 +627,7 @@ public class JdbcTemplate {
     Assert.notNull( parameters, "parameters cannot be null" );
     Assert.notNull( resultMapper, "ResultMapper cannot be null" );
 
-    final PreparedStatementSetter setter = new SimplePreparedStatementSetter( parameters );
+    final PreparedStatementSetter setter = new DefaultPreparedStatementSetter( parameters );
     return updateOne( sql, setter, resultMapper );
   }
 
@@ -669,7 +669,7 @@ public class JdbcTemplate {
         ps.executeUpdate();
 
         final ResultSet rs = ps.getGeneratedKeys();
-        final K result = ( rs.next() ) ? resultMapper.map( new ExtendedResultSetImpl( rs ) ) : null;
+        final K result = ( rs.next() ) ? resultMapper.map( new DefaultTypedResultSet( rs ) ) : null;
         rs.close();
         return result;
       }

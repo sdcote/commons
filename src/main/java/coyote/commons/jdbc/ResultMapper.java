@@ -25,7 +25,7 @@ public interface ResultMapper<E> {
    * 
    * @throws SQLException
    * 
-   * @see coyote.commons.jdbc.ExtendedResultSet
+   * @see coyote.commons.jdbc.TypedResultSet
    */
-  public E map( ExtendedResultSet rs ) throws SQLException;
+  public E map( TypedResultSet rs ) throws SQLException;
 }
