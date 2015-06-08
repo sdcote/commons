@@ -174,7 +174,7 @@ public class SymbolTable extends HashMap {
    * <p>This method is used when a symbol naming convention is used which 
    * involves segmented names in the form of tokens representing levels and 
    * some token delimiter. This models a hierarchy of values common in complex 
-   * property files. Using this method, it is possible to retrive all the keys 
+   * property files. Using this method, it is possible to retrieve all the keys 
    * for a specific level in the tree.</p>
    *
    * @param prefix The prefix of the symbol for which to search (e.g. "log.config.file.")
