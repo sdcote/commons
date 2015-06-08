@@ -86,7 +86,6 @@ public final class StringUtil {
   /** Eight-bit Unicode Transformation Format. */
   public static final String UTF_8 = "UTF-8";
 
-
   /** Field ISO8859_1 */
   public static String ISO8859_1;
   static {
@@ -103,6 +102,9 @@ public final class StringUtil {
       }
     }
   }
+
+
+
 
   /**
    * Private constructor because everything is static
@@ -843,8 +845,6 @@ public final class StringUtil {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* * * * * * * * * These methods are still being tested. * * * * * * * * * * */
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
- 
 
   private static final char[] LOWERCASES = { '\000', '\001', '\002', '\003', '\004', '\005', '\006', '\007', '\010', '\011', '\012', '\013', '\014', '\015', '\016', '\017', '\020', '\021', '\022', '\023', '\024', '\025', '\026', '\027', '\030', '\031', '\032', '\033', '\034', '\035', '\036', '\037', '\040', '\041', '\042', '\043', '\044', '\045', '\046', '\047', '\050', '\051', '\052', '\053', '\054', '\055', '\056', '\057', '\060', '\061', '\062', '\063', '\064', '\065', '\066', '\067', '\070', '\071', '\072', '\073', '\074', '\075', '\076', '\077', '\100', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171', '\172', '\133', '\134', '\135', '\136', '\137', '\140', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171',
       '\172', '\173', '\174', '\175', '\176', '\177' };
@@ -1782,12 +1782,19 @@ public final class StringUtil {
 
 
   /**
-   * Method zeropad
+   * Add zeros to the beginning of the given number to make it the requested 
+   * length.
    * 
-   * @param num
-   * @param size
+   * <p>The requested string may be longer than requested if the string 
+   * representation of the number is longer than the requested length. In 
+   * effect, the size argument is therefore a requested minimum size and no 
+   * truncation of the given number will occur.</p>
    * 
-   * @return TODO Complete Documentation
+   * @param num the number to represent
+   * @param size the requested length of the string to be returned
+   * 
+   * @return a string representing the given number padded with zeros to the 
+   *         requested length.
    */
   public static String zeropad( final short num, final int size ) {
     return StringUtil.zeropad( (long)num, size );
@@ -1797,12 +1804,19 @@ public final class StringUtil {
 
 
   /**
-   * Method zeropad
+   * Add zeros to the beginning of the given number to make it the requested 
+   * length.
    * 
-   * @param num
-   * @param size
+   * <p>The requested string may be longer than requested if the string 
+   * representation of the number is longer than the requested length. In 
+   * effect, the size argument is therefore a requested minimum size and no 
+   * truncation of the given number will occur.</p>
    * 
-   * @return TODO Complete Documentation
+   * @param num the number to represent
+   * @param size the requested length of the string to be returned
+   * 
+   * @return a string representing the given number padded with zeros to the 
+   *         requested length.
    */
   public static String zeropad( final int num, final int size ) {
     return StringUtil.zeropad( (long)num, size );
@@ -1812,12 +1826,19 @@ public final class StringUtil {
 
 
   /**
-   * Method zeropad
+   * Add zeros to the beginning of the given number to make it the requested 
+   * length.
    * 
-   * @param num
-   * @param size
+   * <p>The requested string may be longer than requested if the string 
+   * representation of the number is longer than the requested length. In 
+   * effect, the size argument is therefore a requested minimum size and no 
+   * truncation of the given number will occur.</p>
    * 
-   * @return TODO Complete Documentation
+   * @param num the number to represent
+   * @param size the requested length of the string to be returned
+   * 
+   * @return a string representing the given number padded with zeros to the 
+   *         requested length.
    */
   public static String zeropad( final long num, final int size ) {
     final String value = Long.toString( num );

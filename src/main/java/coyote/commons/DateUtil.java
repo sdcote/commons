@@ -263,14 +263,14 @@ public class DateUtil {
     }
 
     StringBuffer retval = new StringBuffer();
-    retval.append( zeropad( cal.get( Calendar.YEAR ), 4 ) );
-    retval.append( zeropad( cal.get( Calendar.MONTH ) + 1, 2 ) );
-    retval.append( zeropad( cal.get( Calendar.DATE ), 2 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.YEAR ), 4 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.MONTH ) + 1, 2 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.DATE ), 2 ) );
     retval.append( "T" );
-    retval.append( zeropad( cal.get( Calendar.HOUR_OF_DAY ), 2 ) );
-    retval.append( zeropad( cal.get( Calendar.MINUTE ), 2 ) );
-    retval.append( zeropad( cal.get( Calendar.SECOND ), 2 ) );
-    retval.append( zeropad( cal.get( Calendar.MILLISECOND ), 3 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.HOUR_OF_DAY ), 2 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.MINUTE ), 2 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.SECOND ), 2 ) );
+    retval.append( StringUtil.zeropad( cal.get( Calendar.MILLISECOND ), 3 ) );
 
     int offset = ( cal.get( Calendar.ZONE_OFFSET ) / 1000 );
     int hours = offset / ( 60 * 60 );
@@ -287,38 +287,11 @@ public class DateUtil {
         retval.append( "+" );
       }
 
-      retval.append( zeropad( hours, 2 ) );
-      retval.append( zeropad( minutes, 2 ) );
+      retval.append( StringUtil.zeropad( hours, 2 ) );
+      retval.append( StringUtil.zeropad( minutes, 2 ) );
     }
 
     return retval.toString();
-  }
-
-
-
-
-  /**
-   * return a string representation of the number padded with zeros to a length 
-   * of characters. 
-   *
-   * @param num the number to format
-   * @param size the total size of the result in characters
-   *
-   * @return the zero padded string representation of the number
-   */
-  private static String zeropad( int num, int size ) {
-    String value = Integer.toString( num );
-
-    if ( value.length() >= size ) {
-      return value;
-    }
-
-    StringBuffer buf = new StringBuffer( size );
-    for ( int i = 0; i++ < ( size - value.length() ); buf.append( '0' ) );
-
-    buf.append( value );
-
-    return buf.toString();
   }
 
 
