@@ -100,6 +100,23 @@ public final class FileUtil {
     } catch ( NoSuchAlgorithmException e ) {}
   }
 
+  /**
+   * The Unix separator character.
+   */
+  private static final char UNIX_SEPARATOR = '/';
+
+  /**
+   * The Windows separator character.
+   */
+  private static final char WINDOWS_SEPARATOR = '\\';
+
+  /**
+   * The default buffer size ({@value}) to use for 
+   * {@link #copyLarge(InputStream, OutputStream)}
+   */
+  private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+  private static final int EOF = -1;
+
 
 
 
@@ -1652,11 +1669,11 @@ public final class FileUtil {
 
   /**
    * Replace all the file separator characters (either '/' or '\') with the
-   * proper file serparator for this platform.
+   * proper file separator for this platform.
    *
    * @param path
    *
-   * @return TODO Complete Documentation
+   * @return normalized path
    */
   public static String normalizeSlashes( String path ) {
     if ( path == null ) {
@@ -2180,7 +2197,7 @@ public final class FileUtil {
   /**
    * Return the MD5 hash for the given file.
    * 
-   * <p>This reads in the file and computes the MD% hash for its contents. The
+   * <p>This reads in the file and computes the MD5 hash for its contents. The
    * hash can be compared to the hash values of other files to determine if 
    * their contents are equivalent.  It is possible to detect duplicate files 
    * by computing the hash values for all the files in a give set and testing 
