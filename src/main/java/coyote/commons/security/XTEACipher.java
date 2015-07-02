@@ -1,14 +1,3 @@
-/*
- * Copyright (c) 2014 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
- * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
- */
 package coyote.commons.security;
 
 import java.io.UnsupportedEncodingException;
@@ -329,7 +318,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
 
 
   /**
-   * Generate XTEA subkeys for the cipher alogrithm.
+   * Generate XTEA subkeys for the cipher algorithm.
    * 
    * @param key the key to use as the seed for subkey generation.
    * 

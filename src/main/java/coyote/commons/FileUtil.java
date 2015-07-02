@@ -386,7 +386,7 @@ public final class FileUtil {
    *
    * <p>NOTE: This method uses the default file separator for the system.</p>
    *
-   * @param fileName Original pathname to get the base name from.
+   * @param fileName Original pathname from which the base name is to come.
    *
    * @return The base file name
    */
@@ -2179,7 +2179,7 @@ public final class FileUtil {
 
 
   /**
-   * Closes a <code>Closeable</code> object quietly consuming any exceptions 
+   * Closes a {@code Closeable} object quietly consuming any exceptions 
    * thrown. Useful in finally blocks.
    * 
    * @param closeable the object to close, may be null or already closed
