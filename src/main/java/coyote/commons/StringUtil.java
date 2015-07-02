@@ -117,15 +117,15 @@ public final class StringUtil {
   /**
    * Replace a list of tokens in a string.
    * 
-   * <p> String <code>2i</code> is replaced with String <code>2i+1</code>.
+   * <p> String {@code 2i} is replaced with String {@code 2i+1}.
    * Order is very important. If you want to convert &lt; to &amp;lt; and you
    * also want to convert &amp to &amp;amp; then it is important that you
    * first convert &amp; to &amp;amp; before converting &lt; to &amp;lt;. If
    * you do not, then the &amp in &amp;lt; will be converted to &amp;amp;lt;.
    * </p>
    * 
-   * @param tokens is an array of strings such that string <code>2i</code> is
-   *            replaced with string <code>2i+1</code>.
+   * @param tokens is an array of strings such that string {@code 2i} is
+   *            replaced with string {@code 2i+1}.
    * @param string is the string to be searched.
    * @param fromStart If true, the substitution will be performed from the
    *            begining , otherwise the replacement will begin from the end
@@ -397,7 +397,7 @@ public final class StringUtil {
    * 
    * @param str the String to check, may be null
    * 
-   * @return <code>true</code> if the String is not empty and not null and not
+   * @return {@code true} if the String is not empty and not null and not
    *         whitespace
    * 
    * @see #isBlank(String)
@@ -414,7 +414,7 @@ public final class StringUtil {
    * 
    * @param str the String to check, may be null
    * 
-   * @return <code>true</code> if the String is not empty and not null and not
+   * @return {@code true} if the String is not empty and not null and not
    *         whitespace
    */
   public static boolean isBlank( String str ) {
@@ -1129,9 +1129,9 @@ public final class StringUtil {
   /**
    * Format an array of Object as a list with commas.
    * 
-   * <p> Example:<br> <code>String[] list = { "apples", "oranges", "pumpkins",
+   * <p> Example:<br> {@code String[] list = { "apples", "oranges", "pumpkins",
    * "bananas" };
-   * System.out.println(StringUtil.arrayToCommaList(list));</code>
+   * System.out.println(StringUtil.arrayToCommaList(list));}
    * 
    * @param array
    * 
@@ -2040,14 +2040,14 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the given charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the given charset.
    * 
    * <p>This method catches {@link UnsupportedEncodingException} and re-throws it as {@link IllegalStateException}, which should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.</p>
    * 
-   * @param bytes The bytes to be decoded into characters, may be <code>null</code>
+   * @param bytes The bytes to be decoded into characters, may be {@code null}
    * @param charsetName The name of a required {@link java.nio.charset.Charset}
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the given charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the given charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a required charset name.
    * 
@@ -2068,11 +2068,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-8 charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the UTF-8 charset.
    * 
    * @param bytes The bytes to be decoded into characters
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-8 charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the UTF-8 charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2084,11 +2084,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the ISO-8859-1 charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the ISO-8859-1 charset.
    * 
-   * @param bytes The bytes to be decoded into characters, may be <code>null</code>
+   * @param bytes The bytes to be decoded into characters, may be {@code null}
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the ISO-8859-1 charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the ISO-8859-1 charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2100,11 +2100,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the US-ASCII charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the US-ASCII charset.
    * 
    * @param bytes The bytes to be decoded into characters
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the US-ASCII charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the US-ASCII charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2116,11 +2116,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16 charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the UTF-16 charset.
    * 
    * @param bytes The bytes to be decoded into characters
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-16 charset or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the UTF-16 charset or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2132,11 +2132,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16BE charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the UTF-16BE charset.
    * 
    * @param bytes The bytes to be decoded into characters
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-16BE charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the UTF-16BE charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2148,11 +2148,11 @@ public final class StringUtil {
 
 
   /**
-   * Constructs a new <code>String</code> by decoding the specified array of bytes using the UTF-16LE charset.
+   * Constructs a new {@code String} by decoding the specified array of bytes using the UTF-16LE charset.
    * 
    * @param bytes The bytes to be decoded into characters
    * 
-   * @return A new <code>String</code> decoded from the specified array of bytes using the UTF-16LE charset, or <code>null</code> if the input byte array was <code>null</code>.
+   * @return A new {@code String} decoded from the specified array of bytes using the UTF-16LE charset, or {@code null} if the input byte array was {@code null}.
    * 
    * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen since the charset is required.
    */
@@ -2166,9 +2166,9 @@ public final class StringUtil {
   /**
    * Encodes the given string into a sequence of bytes using the ISO-8859-1 charset, storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was {@code null}
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
@@ -2182,9 +2182,9 @@ public final class StringUtil {
   /**
    * Encodes the given string into a sequence of bytes using the US-ASCII charset, storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was {@code null}
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
@@ -2198,9 +2198,9 @@ public final class StringUtil {
   /**
    * Encodes the given string into a sequence of bytes using the UTF-16 charset, storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was {@code null}
    * 
    * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
    */
@@ -2212,13 +2212,15 @@ public final class StringUtil {
 
 
   /**
-   * Encodes the given string into a sequence of bytes using the UTF-16BE charset, storing the result into a new byte array.
+   * Encodes the given string into a sequence of bytes using the UTF-16BE 
+   * charset, storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was {@code null}
    * 
-   * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
+   * @throws IllegalStateException Thrown when the charset is missing, which 
+   *         should be never according the the Java specification.
    */
   public static byte[] getBytesUtf16Be( String string ) {
     return StringUtil.getBytesUnchecked( string, StringUtil.UTF_16BE );
@@ -2228,13 +2230,16 @@ public final class StringUtil {
 
 
   /**
-   * Encodes the given string into a sequence of bytes using the UTF-16LE charset, storing the result into a new byte array.
+   * Encodes the given string into a sequence of bytes using the UTF-16LE 
+   * charset, storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was 
+   *         {@code null}
    * 
-   * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
+   * @throws IllegalStateException Thrown when the charset is missing, which 
+   *         should be never according the the Java specification.
    */
   public static byte[] getBytesUtf16Le( String string ) {
     return StringUtil.getBytesUnchecked( string, StringUtil.UTF_16LE );
@@ -2244,13 +2249,16 @@ public final class StringUtil {
 
 
   /**
-   * Encodes the given string into a sequence of bytes using the UTF-8 charset, storing the result into a new byte array.
+   * Encodes the given string into a sequence of bytes using the UTF-8 charset, 
+   * storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * @param string the String to encode, may be {@code null}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was 
+   *         {@code null}
    * 
-   * @throws IllegalStateException Thrown when the charset is missing, which should be never according the the Java specification.
+   * @throws IllegalStateException Thrown when the charset is missing, which 
+   *         should be never according the the Java specification.
    */
   public static byte[] getBytesUtf8( String string ) {
     return StringUtil.getBytesUnchecked( string, StringUtil.UTF_8 );
@@ -2260,15 +2268,22 @@ public final class StringUtil {
 
 
   /**
-   * Encodes the given string into a sequence of bytes using the named charset, storing the result into a new byte array.
-   * <p> This method catches {@link UnsupportedEncodingException} and rethrows it as {@link IllegalStateException}, which should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.</p>
+   * Encodes the given string into a sequence of bytes using the named charset, 
+   * storing the result into a new byte array.
    * 
-   * @param string the String to encode, may be <code>null</code>
+   * <p>This method catches {@link UnsupportedEncodingException} and rethrows 
+   * it as {@link IllegalStateException}, which should never happen for a 
+   * required charset name. Use this method when the encoding is required to be 
+   * in the JRE.</p>
+   * 
+   * @param string the String to encode, may be {@code null}
    * @param charsetName The name of a required {@link java.nio.charset.Charset}
    * 
-   * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+   * @return encoded bytes, or {@code null} if the input string was {@code null}
    * 
-   * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a required charset name.
+   * @throws IllegalStateException Thrown when a {@link 
+   *         UnsupportedEncodingException} is caught, which should never happen 
+   *         for a required charset name.
    */
   public static byte[] getBytesUnchecked( String string, String charsetName ) {
     if ( string == null ) {
@@ -2293,9 +2308,13 @@ public final class StringUtil {
    * delimiters, consider using {@code delimitedListToStringArray}</p>
    * 
    * @param str the String to tokenize
-   * @param delimiters the delimiter characters, assembled as String (each of those characters is individually considered as delimiter)
+   * @param delimiters the delimiter characters, assembled as String (each of 
+   *        those characters is individually considered as delimiter)
    * @param trimTokens trim the tokens via String's {@code trim}
-   * @param ignoreEmptyTokens omit empty tokens from the result array (only applies to tokens that are empty after trimming; StringTokenizer will not consider subsequent delimiters as token in the first place).
+   * @param ignoreEmptyTokens omit empty tokens from the result array (only 
+   *        applies to tokens that are empty after trimming; StringTokenizer 
+   *        will not consider subsequent delimiters as token in the first 
+   *        place).
    * 
    * @return an array of the tokens ({@code null} if the input String was {@code null})
    */

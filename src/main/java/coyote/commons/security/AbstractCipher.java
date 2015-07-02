@@ -54,7 +54,7 @@ public abstract class AbstractCipher implements Cipher {
     // pad the data as necessary using a PKCS5 (or RFC1423) padding scheme
     int padding = 8 - ( data.length % 8 );
 
-    // There is alway padding even it it is not needed
+    // There is always padding even it it is not needed
     if ( padding == 0 )
       padding = 8;
 
