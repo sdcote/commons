@@ -391,36 +391,10 @@ public class XTEACipher extends AbstractCipher implements Cipher {
 
     byte[] bytes = text.getBytes();
 
-    /*
-     * <p>First the data is padded to blocks of data using a PKCS5 DES CBC 
-     * encryption padding scheme described in section 1.1 of RFC-1423.</p>
-     * 
-     * <p>The last byte of the stream is ALWAYS the number of bytes added to 
-     * the end of the data. If the data ends on a boundary, then there will be 
-     * eight bytes of padding:<code><pre>
-     * 88888888 - all of the last block is padding.
-     * X7777777 - the last seven bytes are padding.
-     * XX666666 - etc.
-     * XXX55555 - etc.
-     * XXXX4444 - etc.
-     * XXXXX333 - etc.
-     * XXXXXX22 - etc.
-     * XXXXXXX1 - only the last byte is padding.</pre></code></p>
-     * 
-     * <p>According to RFC1423 section 1.1:<blockquote>The input to the DES CBC 
-     * encryption process shall be padded to a multiple of 8 octets, in the 
-     * following manner. Let n be the length in octets of the input. Pad the 
-     * input by appending 8-(n mod 8) octets to the end of the message, each 
-     * having the value 8-(n mod 8), the number of octets being added. In 
-     * hexadecimal, the possible paddings are:  01, 0202, 030303, 04040404, 
-     * 0505050505, 060606060606, 07070707070707, and 0808080808080808. All 
-     * input is padded with 1 to 8 octets to produce a multiple of 8 octets in 
-     * length. The padding can be removed unambiguously after decryption.
-     * </blockquote></p>
-     */
     System.out.println( "Data length: " + bytes.length );
     System.out.println( "Modulo[" + cipher.getBlockSize() + "]: " + ( bytes.length % cipher.getBlockSize() ) );
 
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     // pad the data as necessary using a PKCS5 (or RFC1423) padding scheme
     int padding = cipher.getBlockSize() - ( bytes.length % cipher.getBlockSize() );
 
@@ -439,7 +413,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
       bytes = tmp;
       System.out.println( "padded data:\r\n" + ByteUtil.dump( bytes ) );
     }
-    /* ********************************************************************** */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     final byte[] data = cipher.encrypt( bytes );
 

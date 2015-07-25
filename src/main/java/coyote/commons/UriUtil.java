@@ -578,7 +578,7 @@ public class UriUtil {
 
 
   /**
-   * Return just the host portion of the URI if applicapable.
+   * Return just the host portion of the URI if applicable.
    *
    * @param uri The URI to parse
    * 
