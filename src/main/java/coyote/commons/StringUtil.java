@@ -115,6 +115,28 @@ public final class StringUtil {
 
 
   /**
+   * Convert the given string into ISO 8859-1 encoding.
+   * 
+   * <p>This is the defacto standard for string encoding on the Internet</p>
+   * 
+   * @param text the text to encode
+   * 
+   * @return the bytes representing the encoded text or null if the text is null
+   */
+  public static byte[] getBytes( String text ) {
+    byte[] retval = null;
+    if ( text != null ) {
+      try {
+        retval = text.getBytes( StringUtil.ISO8859_1 );
+      } catch ( final Exception ex ) {}
+    }
+    return retval;
+  }
+
+
+
+
+  /**
    * Replace a list of tokens in a string.
    * 
    * <p> String {@code 2i} is replaced with String {@code 2i+1}.
