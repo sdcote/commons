@@ -26,7 +26,7 @@ public class CSVWriterTest {
     csvw.writeNext( line );
     csvw.close();
 
-    assertEquals( "\"Foo\",\"bar''s\"\n", sw.toString() );
+    assertEquals( "\"Foo\",\"bar''s\"\r\n", sw.toString() );
   }
 
 
@@ -40,7 +40,7 @@ public class CSVWriterTest {
     csvw.writeNext( line );
     csvw.close();
 
-    assertEquals( "\"Foo\",\"Bar\"\n", sw.toString() );
+    assertEquals( "\"Foo\",\"Bar\"\r\n", sw.toString() );
   }
 
 
@@ -49,7 +49,7 @@ public class CSVWriterTest {
   @Test
   public void testNestedQuotes() {
     final String[] data = new String[] { "\"\"", "test" };
-    final String oracle = new String( "\"\"\"\"\"\",\"test\"\n" );
+    final String oracle = new String( "\"\"\"\"\"\",\"test\"\r\n" );
 
     CSVWriter writer = null;
     File tempFile = null;
@@ -161,27 +161,27 @@ public class CSVWriterTest {
     // test normal case
     final String[] normal = { "a", "b", "c" };
     String output = invokeWriter( normal );
-    assertEquals( "'a','b','c'\n", output );
+    assertEquals( "'a','b','c'\r\n", output );
 
     // test quoted commas
     final String[] quoted = { "a", "b,b,b", "c" };
     output = invokeWriter( quoted );
-    assertEquals( "'a','b,b,b','c'\n", output );
+    assertEquals( "'a','b,b,b','c'\r\n", output );
 
     // test empty elements
     final String[] empty = {,};
     output = invokeWriter( empty );
-    assertEquals( "\n", output );
+    assertEquals( "\r\n", output );
 
     // test multiline quoted
     final String[] multiline = { "This is a \n multiline entry", "so is \n this" };
     output = invokeWriter( multiline );
-    assertEquals( "'This is a \n multiline entry','so is \n this'\n", output );
+    assertEquals( "'This is a \n multiline entry','so is \n this'\r\n", output );
 
     // test quoted line
     final String[] quoteLine = { "This is a \" multiline entry", "so is \n this" };
     output = invokeWriter( quoteLine );
-    assertEquals( "'This is a \"\" multiline entry','so is \n this'\n", output );
+    assertEquals( "'This is a \"\" multiline entry','so is \n this'\r\n", output );
 
   }
 
@@ -193,7 +193,7 @@ public class CSVWriterTest {
     // test quoted line
     final String[] quoteLine = { "This is a 'multiline' entry", "so is \n this" };
     final String output = invokeWriter( quoteLine );
-    assertEquals( "'This is a \"'multiline\"' entry','so is \n this'\n", output );
+    assertEquals( "'This is a \"'multiline\"' entry','so is \n this'\r\n", output );
   }
 
 
@@ -211,22 +211,22 @@ public class CSVWriterTest {
     // test normal case
     final String[] normal = { "a", "b", "c" };
     String output = invokeNoEscapeWriter( normal );
-    assertEquals( "'a','b','c'\n", output );
+    assertEquals( "'a','b','c'\r\n", output );
 
     // test quoted commas
     final String[] quoted = { "a", "b,b,b", "c" };
     output = invokeNoEscapeWriter( quoted );
-    assertEquals( "'a','b,b,b','c'\n", output );
+    assertEquals( "'a','b,b,b','c'\r\n", output );
 
     // test empty elements
     final String[] empty = {,};
     output = invokeNoEscapeWriter( empty );
-    assertEquals( "\n", output );
+    assertEquals( "\r\n", output );
 
     // test multi-line quoted
     final String[] multiline = { "This is a \n multiline entry", "so is \n this" };
     output = invokeNoEscapeWriter( multiline );
-    assertEquals( "'This is a \n multiline entry','so is \n this'\n", output );
+    assertEquals( "'This is a \n multiline entry','so is \n this'\r\n", output );
 
   }
 
@@ -237,7 +237,7 @@ public class CSVWriterTest {
   public void parseLineWithNoEscapeCharAndQuotes() throws IOException {
     final String[] quoteLine = { "This is a \" 'multiline' entry", "so is \n this" };
     final String output = invokeNoEscapeWriter( quoteLine );
-    assertEquals( "'This is a \" 'multiline' entry','so is \n this'\n", output );
+    assertEquals( "'This is a \" 'multiline' entry','so is \n this'\r\n", output );
   }
 
 
@@ -289,7 +289,7 @@ public class CSVWriterTest {
     final String result = sw.toString();
     csvw.close();
 
-    assertEquals( "Foo,Bar,Baz\n", result );
+    assertEquals( "Foo,Bar,Baz\r\n", result );
   }
 
 
@@ -310,7 +310,7 @@ public class CSVWriterTest {
     final String result = sw.toString();
     csvw.close();
 
-    assertEquals( "Foo,Bar,Baz\n", result );
+    assertEquals( "Foo,Bar,Baz\r\n", result );
   }
 
 
@@ -331,7 +331,7 @@ public class CSVWriterTest {
     final String result = sw.toString();
     csvw.close();
 
-    assertEquals( "\"Foo\",,\"Bar\",\"baz\"\n", result );
+    assertEquals( "\"Foo\",,\"Bar\",\"baz\"\r\n", result );
 
   }
 
