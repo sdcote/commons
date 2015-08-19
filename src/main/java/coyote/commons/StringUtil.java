@@ -137,6 +137,26 @@ public final class StringUtil {
 
 
   /**
+   * Convert the given byte array into a string using  ISO 8859-1 encoding.
+   *  
+   * @param bytes array of bytes to decode into a string
+   * 
+   * @return the decoded string or null if the passed data was null.
+   */
+  public static String getString( byte[] bytes ) {
+    String retval = null;
+    try {
+      retval = new String( bytes, StringUtil.ISO8859_1 );
+    } catch ( UnsupportedEncodingException e ) {
+      e.printStackTrace();
+    }
+    return retval;
+  }
+
+
+
+
+  /**
    * Replace a list of tokens in a string.
    * 
    * <p> String {@code 2i} is replaced with String {@code 2i+1}.
