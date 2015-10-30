@@ -60,7 +60,7 @@ public class StringParser {
 
 
   /**
-   * Creat a parser out of a string
+   * Create a parser out of a string
    *
    * @param string the string to parse
    */
@@ -251,6 +251,51 @@ public class StringParser {
 
 
   /**
+   * Return the next token in the reader
+   * 
+   * @return the token the next {@code readToken()} operation will return
+   *
+   * @throws IOException if we exceed our data
+   */
+  public String peekToken() throws IOException {
+
+    // mark our position; readAheadLimit does not matter to our simple reader 
+    reader.mark( 1 );
+
+    // move past any whitespace
+    skipWhitespace();
+    
+    // read to the next delimiter
+    String retval = readToDelimiter( defaultDelimiters );
+
+    // reset the reader
+    reader.reset();
+
+    // return what was read
+    return retval;
+
+  }
+
+
+
+
+  /**
+   * Read the next token, consuming it and peek the next token after that, 
+   * returning it.
+   * 
+   * @return the next token to be read (i.e. {@code peekToken()})
+   * 
+   * @throws IOException
+   */
+  public String readAndPeekToken() throws IOException {
+    readToken();
+    return peekToken();
+  }
+
+
+
+
+  /**
    * Return the string represented by the next given length characters in the
    * reader without advancing the reader.
    *
@@ -360,7 +405,6 @@ public class StringParser {
    * to its starting point.  Not all character-input streams support the
    * reset() operation, and some support reset() without supporting mark().<p>
    *
-
    * @throws IOException If the stream has not been marked, or if the mark
    *         has been invalidated, or if the stream does not support 
    *         reset(), or if some other I/O error occurs.
@@ -407,7 +451,7 @@ public class StringParser {
 
     buffer.append( line.reverse() );
 
-    buffer.append( "... next char: " );
+    buffer.append( " next char: " );
 
     try {
       if ( !eof() ) {
@@ -448,6 +492,22 @@ public class StringParser {
 
     // return the character
     return ch;
+  }
+
+
+
+
+  /**
+   * Read the next character, consuming it and peek the next character, 
+   * returning it.
+   * 
+   * @return the next character to be read (i.e. {@code peek()})
+   * 
+   * @throws IOException
+   */
+  public int readAndPeek() throws IOException {
+    read();
+    return peek();
   }
 
 
@@ -498,13 +558,14 @@ public class StringParser {
 
 
   /**
-   * read the next token, or grouping of non-whitespace characters.
+   * Read the next token, or grouping of non-whitespace characters.
    *
    * @return a grouping of non-whitespace characters
    *
    * @throws IOException if life is bad at the moment.
    */
   public String readToken() throws IOException {
+    skipWhitespace();
     return readToDelimiter( defaultDelimiters );
   }
 
@@ -544,40 +605,31 @@ public class StringParser {
    * @throws IOException
    */
   public String readToDelimiter( String delimiters ) throws IOException {
-    skipWhitespace();
 
     StringBuffer buffer = new StringBuffer();
 
     while ( true ) {
       int next = peek();
 
+      // if we are at the end of the string, return the buffer
       if ( next == -1 ) {
         if ( buffer.length() <= 0 ) {
           throw new IOException( "unexpected EOF" );
         }
-
         read();
-
         return buffer.toString();
       }
 
+      // if the next character is one of the delimiters return the buffer
       if ( delimiters.indexOf( next ) != -1 ) {
         if ( buffer.length() == 0 ) {
           buffer.append( (char)read() );
         }
-
         return buffer.toString();
       }
 
-      // Unless a whitespace character is one of the delimiters, we really
-      // should keep going
-      // if( Character.isWhitespace( (char)next ) )
-      // {
-      // return buffer.toString();
-      // }
-
+      // read the next character into the buffer
       buffer.append( (char)read() );
-
     }
   }
 
