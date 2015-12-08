@@ -11,6 +11,10 @@
  */
 package coyote.commons.template;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -27,10 +31,18 @@ import coyote.commons.StringUtil;
  * 
  * <p>This table has some utility functions to manage the data in the table 
  * such as placing system properties in and removing them from the table.</p>
+ * 
+ * <p>The following variables are ignored for security reasons:<ul>
+ * <li>{@code http.proxyPassword} - potential password exposure</li>
+ * </ul></p>
  */
 public class SymbolTable extends HashMap {
 
   private static final long serialVersionUID = -3448311765253950903L;
+
+  // Hash Maps of formatters under the (possibly mistaken) assumption that construction and garbage collection may be more expensive than caching and searching
+  private HashMap<String, DateFormat> dateFormatMap = new HashMap<String, DateFormat>();
+  private HashMap<String, NumberFormat> numberFormatMap = new HashMap<String, NumberFormat>();
 
 
 
@@ -48,6 +60,14 @@ public class SymbolTable extends HashMap {
    */
   public synchronized void readSystemProperties() {
     readProperties( System.getProperties() );
+    cleanse();
+  }
+
+
+
+
+  private void cleanse() {
+    remove( "http.proxyPassword" );
   }
 
 
@@ -97,18 +117,9 @@ public class SymbolTable extends HashMap {
 
 
 
-  /**
-   * Return the String value of the named symbol from the table.
-   *
-   * @param symbol the symbol to lookup in the table
-   *
-   * @return the value of the symbol or an empty string if the value was not found.
-   */
-  public synchronized String getString( String symbol ) {
+  private String getStaticValue( String symbol ) {
     if ( symbol != null ) {
-      if ( containsKey( symbol ) ) {
-        return get( symbol ).toString();
-      } else if ( symbol.equals( "time" ) ) {
+      if ( symbol.equals( "time" ) ) {
         return DateUtil.toExtendedTime( new Date() );
       } else if ( symbol.equals( "currentMilliseconds" ) ) {
         return Long.toString( System.currentTimeMillis() );
@@ -142,6 +153,128 @@ public class SymbolTable extends HashMap {
     }
 
     return "";
+  }
+
+
+
+
+  /**
+   * Return the String value of the named symbol from the table.
+   *
+   * @param symbol the symbol to lookup in the table
+   *
+   * @return the value of the symbol or an empty string if the value was not found.
+   */
+  public synchronized String getString( String symbol ) {
+    if ( symbol != null ) {
+      if ( containsKey( symbol ) ) {
+        return get( symbol ).toString();
+      } else {
+        return this.getStaticValue( symbol );
+      }
+    }
+
+    return "";
+  }
+
+
+
+
+  /**
+   * Return the String value of the named symbol from the table applying the 
+   * given formatting.
+   *
+   * @param symbol the symbol to lookup in the table
+   * @param format the format pattern to use
+   *
+   * @return the value of the symbol or an empty string if the value was not found.
+   */
+  public synchronized String getString( String symbol, String format ) {
+    if ( symbol != null ) {
+      if ( containsKey( symbol ) ) {
+        Object retval = get( symbol );
+
+        // check to see if there is formatting to be applied to the value
+        if ( StringUtil.isNotBlank( format ) ) {
+
+          // apply formatting based on type type of object it is
+          if ( retval instanceof Number ) {
+            // If retval is numeric, then use a number format
+            return formatNumber( (Number)retval, format );
+          } else if ( retval instanceof Date ) {
+            // if retval is a date, then use a date format
+            return formatDate( (Date)retval, format );
+          }
+        }
+
+        // either the format string was empty or returned value is not format-able
+        return retval.toString();
+
+      } else {
+        // we do not have the symbol in our table, so try a static value
+        return this.getStaticValue( symbol );
+      }
+    }
+
+    return "";
+  }
+
+
+
+
+  /**
+   * Format the given date with the given format string.
+   * 
+   * @param date the date to format
+   * @param format the format string
+   * 
+   * @return the formatted date string or an empty string if the date is null 
+   */
+  private String formatDate( Date date, String format ) {
+    if ( date != null ) {
+
+      // retrieve an existing formatter
+      DateFormat formatter = dateFormatMap.get( format );
+
+      // if one was not found, create one and cache it for later
+      if ( formatter == null ) {
+        formatter = new SimpleDateFormat( format );
+        dateFormatMap.put( format, formatter );
+      }
+
+      // return the formatted date 
+      return formatter.format( date );
+    } else {
+      return "";
+    }
+  }
+
+
+
+
+  /**
+   * Format the given number with the given format string.
+   * 
+   * @param number the date to format
+   * @param format the format string
+   * 
+   * @return the formatted number string or an empty string if the number is null 
+   */
+  private String formatNumber( Number number, String format ) {
+    if ( number != null ) {
+      NumberFormat formatter = numberFormatMap.get( format );
+
+      // if one was not found, create one and cache it for later
+      if ( formatter == null ) {
+        formatter = new DecimalFormat( format );
+        numberFormatMap.put( format, formatter );
+      }
+
+      // return the formatted number 
+      return formatter.format( number );
+    } else {
+      return "";
+    }
   }
 
 
@@ -208,8 +341,14 @@ public class SymbolTable extends HashMap {
     StringBuffer retval = new StringBuffer();
 
     for ( Iterator it = keySet().iterator(); it.hasNext(); ) {
+      retval.append( "'" );
       String key = (String)it.next();
-      retval.append( "'" + key + "' = '" + get( key ).toString() + "'\r\n" );
+      retval.append( key );
+      retval.append( "' = " );
+      Object value = get( key );
+      if ( value != null )
+        retval.append( value.toString() );
+      retval.append( StringUtil.LINE_FEED );
     }
 
     return retval.toString();
