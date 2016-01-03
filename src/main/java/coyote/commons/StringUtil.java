@@ -476,6 +476,46 @@ public final class StringUtil {
 
 
   /**
+   * Checks if a string is null or empty ("").
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is empty or null, false othersize
+   * 
+   * @see #isNotEmpty(String)
+   */
+  public static boolean isEmpty( String str ) {
+    if ( str == null || str.length() == 0 ) {
+      return true;
+    }
+    return false;
+  }
+
+
+
+
+  /**
+   * Checks if a string is not null and not empty ("").
+   * 
+   * <p>Whitespace is allowed.</p>
+   * 
+   * <p>This is a convenience wrapper around {@code isEmpty(String)} to make 
+   * code slightly more readable.</p>
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is not empty and not null, false othersize
+   * 
+   * @see #isEmpty(String)
+   */
+  public static boolean isNotEmpty( String str ) {
+    return !StringUtil.isEmpty( str );
+  }
+
+
+
+
+  /**
    * Convert a number to a letter (1..26) to (a..z).
    * 
    * <p> This method is useful for creating lists that use letters instead of
@@ -1525,7 +1565,7 @@ public final class StringUtil {
    * Return the string after the last occurrence of the given character in the
    * given string.
    * 
-   * <p> Useful for getting extensions from filenames. Also used to retrieve
+   * <p>Useful for getting extensions from filenames. Also used to retrieve
    * the last segment of an IP address. </p>
    * 
    * @param text

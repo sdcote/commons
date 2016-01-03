@@ -13,6 +13,7 @@ package coyote.commons;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -258,7 +259,10 @@ public class StringUtilTest {
     assertEquals( "-foo", StringUtil.stripLeadingHyphens( "---foo" ) );
     assertNull( StringUtil.stripLeadingHyphens( null ) );
   }
-  
+
+
+
+
   @Test
   public void fixedLengthTest() {
     String text = "Coyote";
@@ -320,5 +324,24 @@ public class StringUtilTest {
     assertEquals( field, "yote" );
   }
 
+
+
+
+  @Test
+  public void empty() {
+    assertTrue( StringUtil.isEmpty( "" ) );
+    assertTrue( StringUtil.isEmpty( null ) );
+    assertFalse( StringUtil.isEmpty( " " ) );
+  }
+
+
+
+
+  @Test
+  public void notEmpty() {
+    assertFalse( StringUtil.isNotEmpty( "" ) );
+    assertFalse( StringUtil.isNotEmpty( null ) );
+    assertTrue( StringUtil.isNotEmpty( " " ) );
+  }
 
 }
