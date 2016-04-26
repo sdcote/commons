@@ -58,10 +58,10 @@ public final class StringUtil {
    * <ul> <li>&amp; - &amp;amp; <li>&lt; - &amp;lt; <li>&gt; - &amp;gt;
    * <li>&quote; - &amp;quote; <li>&apos; - &amp;apos; </ul>
    */
-  public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;" };
+  public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
   /** Same as XML but there is no entity reference for an apostrophe. */
-  public static final String HTML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;" };
+  public static final String HTML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
   /** Soundex Character Mapping */
   private static final char soundex_map[] = "01230120032455012623010202".toCharArray();
