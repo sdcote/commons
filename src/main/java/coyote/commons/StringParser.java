@@ -264,7 +264,7 @@ public class StringParser {
 
     // move past any whitespace
     skipWhitespace();
-    
+
     // read to the next delimiter
     String retval = readToDelimiter( defaultDelimiters );
 
