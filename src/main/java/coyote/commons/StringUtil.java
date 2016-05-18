@@ -1735,12 +1735,17 @@ public final class StringUtil {
 
 
   /**
-   * Method readColumn
+   * Tokenize the given string and return the string at given column index.
    * 
-   * @param text
-   * @param col
+   * <p>Often text will be retuned as a set of text separated by whitespace, 
+   * this offers a quick method to return the token at a given location.</p>
    * 
-   * @return TODO Complete Documentation
+   * @param text the line of text to tokenize
+   * @param col the index of the
+   * 
+   * @return the token at the given column location or an empty string if the 
+   *         column index was greater than the number of tokens in the text. 
+   *         This will never return null.
    */
   public static String readColumn( final String text, final int col ) {
     final StringTokenizer stringtokenizer = new StringTokenizer( text );
