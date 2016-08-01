@@ -1,10 +1,12 @@
 buildscript {
-    repositories {
-        jcenter()
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-    }
+  }
+  dependencies {
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1"
+  }
 }
 
 
@@ -12,9 +14,9 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
-apply plugin: 'bintray'
+apply plugin: 'com.jfrog.bintray'
 
-
+// call the bintray target to publish to bintray
 defaultTasks 'clean', 'build', 'jacocoTestReport'
 
 
@@ -71,8 +73,6 @@ dependencies {
 	// Servlet support
 	compile "javax.servlet:servlet-api:$servletVersion"
 	runtime "javax.servlet:servlet-api:$servletVersion"
-
-	
     
 }
 
@@ -121,5 +121,7 @@ uploadArchives {
 	}
 }
 
-
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.14'
+}
  
