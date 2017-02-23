@@ -228,11 +228,11 @@ public final class Assert {
   /**
    * Assert a number is positive or zero.
    * 
-   * <pre class="code">Assert.isPositive(i);</pre>
+   * <pre>Assert.isPositive(i);</pre>
    * 
    * @param number a number to check
    * 
-   * @throws IllegalArgumentException if number is < 0
+   * @throws IllegalArgumentException if number is &lt; 0
    */
   public static void isPositive( final int number ) {
     isPositive( number, "[Assertion Failure] - this expression must be true" );
@@ -240,16 +240,15 @@ public final class Assert {
 
 
 
-
   /**
    * Assert a number is positive or zero.
    * 
-   * <pre class="code">Assert.isPositive(i, "The value must be greater than or equal to zero");</pre>
+   * <pre>Assert.isPositive(i, "The value must be greater than or equal to zero");</pre>
    * 
    * @param number a number to check
    * @param msg the exception message to use if the assertion fails
    * 
-   * @throws IllegalArgumentException if number is < 0
+   * @throws IllegalArgumentException if number is &lt; 0
    */
   public static void isPositive( final int number, final String msg ) {
     if ( number <= 0 ) {
@@ -281,7 +280,7 @@ public final class Assert {
    * Assert a boolean expression, throwing {@code IllegalArgumentException}
    * if the test result is {@code false}.
    * 
-   * <pre class="code">Assert.isTrue(i &gt; 0, "The value must be greater than zero");</pre>
+   * <pre>Assert.isTrue(i &gt; 0, "The value must be greater than zero");</pre>
    * 
    * @param expression a boolean expression
    * @param msg the exception message to use if the assertion fails
@@ -378,7 +377,7 @@ public final class Assert {
   /**
    * Assert that an array has no null elements.
    * 
-   * <p><strong>Note:</strong> Does not complain if the array is empty.</p>
+   * <p><strong>Note:</strong> Does not complain if the array is empty.
    * 
    * <pre class="code">Assert.noNullElements(array);</pre>
    * 
@@ -396,7 +395,7 @@ public final class Assert {
   /**
    * Assert that an array has no null elements.
    * 
-   * <p><strong>Note:</strong> Does not complain if the array is empty.</p>
+   * <p><strong>Note:</strong> Does not complain if the array is empty.
    * 
    * <pre class="code">Assert.noNullElements(array, "The array must have non-null elements");</pre>
    * 
@@ -571,7 +570,7 @@ public final class Assert {
    * test result is {@code false}.
    * 
    * <p>Call {@link #isTrue(boolean)} if you wish to throw 
-   * {@link IllegalArgumentException} on an assertion failure.</p>
+   * {@link IllegalArgumentException} on an assertion failure.
    * 
    * <pre class="code">Assert.state(id == null);</pre>
    * 
@@ -591,7 +590,7 @@ public final class Assert {
    * test result is {@code false}.
    *  
    * <p>Call {@link #isTrue(boolean)} if you wish to throw 
-   * IllegalArgumentException on an assertion failure.</p>
+   * IllegalArgumentException on an assertion failure.
    * 
    * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
    * 

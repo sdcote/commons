@@ -27,7 +27,7 @@ import coyote.commons.StringUtil;
  * login memberships.
  * 
  * <p>This version of the context is a fully functional security context which
- * can be used in a variety of applications.</p>
+ * can be used in a variety of applications.
  */
 public class GenericSecurityContext implements SecurityContext {
   private String _name = null;

@@ -20,16 +20,16 @@ import java.util.Random;
  * <p>It is known that pass-phrases of multiple words are better than short 
  * passwords that are hard to remember. As a result, there are pass-phrase 
  * generators that string together a number of words. The problem with this 
- * approach is that these phrases are still prone to dictionary attacks.</p>
+ * approach is that these phrases are still prone to dictionary attacks.
  * 
  * <p>One solution is to use uncommon words. It's even better to use words 
  * that don't actually exist in dictionaries. The problem is, these words can 
  * be too difficult to remember and the result is little more than groups of
- * randomized characters delimited with spaces.</p>
+ * randomized characters delimited with spaces.
  * 
  * One way to make these words easier to remember is to make your brain think
  * they are words by grouping characters into "pronounceable" tokens making 
- * them easier to remember.</p>
+ * them easier to remember.
  * 
  * This program uses statistics on the frequency of three-letter sequences in 
  * English to generate passwords. 
@@ -51,7 +51,7 @@ public class PPG {
    * 
    * <p>Anecdotal evidence seems to indicate using pass-phrases of only 2 to 4 
    * tokens of 3 to 5 characters each. When performed correctly, many think the 
-   * result is a Latin phrase.</p> 
+   * result is a Latin phrase. 
    * 
    * @param tokens Number of tokens in the phrase
    * @param min minimum length of the tokens in the phrase
@@ -80,7 +80,7 @@ public class PPG {
    * <p>Because this algorithm uses 3-character patterns to generate "words" so
    * if a length of 1 or 2 is requested, a return value of 3 characters in 
    * length. Requesting a length of zero or less results in an empty string 
-   * being returned.</p>  
+   * being returned.  
    * 
    * @param length length of the token to create
    * 

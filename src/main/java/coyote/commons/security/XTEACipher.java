@@ -144,10 +144,10 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * <p>Next, the resulting blocked data is run through 32-round Feistel cipher 
    * which uses operations from mixed (orthogonal) algebraic groups - XORs and 
    * additions in this case. It decrypts 64 data bits at a time using the 
-   * 128-bit key.</p>
+   * 128-bit key.
    * 
    * <p>Finally, the data is stripped of padding using a PKCS5 DES CBC padding 
-   * scheme described in section 1.1 of RFC-1423.</p>
+   * scheme described in section 1.1 of RFC-1423.
    * 
    * @param data The data to decipher.
    * @param key The key to use in the generation of the deciphered text.
@@ -230,12 +230,12 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * are used to represent the key.<p>
    *  
    * <p>Next the data is padded to 8-byte blocks of data using a PKCS5 DES CBC 
-   * encryption padding scheme described in section 1.1 of RFC-1423.</p>
+   * encryption padding scheme described in section 1.1 of RFC-1423.
    * 
    * <p>Finally, the resulting blocked data is run through 32-round Feistel 
    * cipher which uses operations from mixed (orthogonal) algebraic groups - 
    * XORs and additions in this case. It encrypts 64 data bits at a time using 
-   * the key.</p>
+   * the key.
    * 
    * @param bytes The data to encipher.
    * @param key The key to use in the generation of the enciphered text.
@@ -260,7 +260,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
   /**
    * Encrypt the given data.
    * 
-   * <p>This instance MUST be initialized prior to making this call.</p>
+   * <p>This instance MUST be initialized prior to making this call.
    * 
    * @see coyote.commons.security.Cipher#encrypt(byte[])
    */
@@ -288,7 +288,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    * Generate a key from the given string.
    * 
    * <p>Return the first 16 bytes of the MD5 digest of the given key string 
-   * encoded using UTF-16.</p>
+   * encoded using UTF-16.
    * 
    * @param key The string to use as the key.
    * 
@@ -355,7 +355,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
 
   /**
    * <p>The most common method for initializing this cipher is to pick a string 
-   * and an encoding and convert the string to bytes using that encoding.</p>
+   * and an encoding and convert the string to bytes using that encoding.
    * 
    * @see coyote.commons.security.Cipher#init(byte[])
    */

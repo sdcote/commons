@@ -74,7 +74,7 @@ public class IpNetwork extends IpAddress {
    * information on how many bits are used for the network prefix. For example,
    * in the CIDR address 206.13.01.48/25, the "/25" indicates the first 25 bits
    * are used to identify the unique network leaving the remaining bits to
-   * identify the specific host.</p>
+   * identify the specific host.
    *
    * @param prefix CIDR notation of the network block
    *

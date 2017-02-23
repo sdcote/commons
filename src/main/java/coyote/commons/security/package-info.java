@@ -6,6 +6,6 @@
  * applicability for a given purpose. These methods are fine for development 
  * purposes, but the reader is strongly advised to carefully consider their 
  * choice in using encryption libraries. These are fine for proof of concept 
- * systems but are not intended for critical systems.</p>
+ * systems but are not intended for critical systems.
  */
 package coyote.commons.security;

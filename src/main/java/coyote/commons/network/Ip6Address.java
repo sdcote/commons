@@ -26,7 +26,7 @@ public class Ip6Address {
    * For instance, if <code>address</code> contains the value 
    * "1111:2222:3333:4444:5555:6666:7777:8888",
    *  <code>isValidIPv6(address)</code> will return 'true'.
-   * </p>
+   * 
    * 
    * @param address A string that may contain an IPv6 address in colon-separated
    *          notation.
@@ -66,7 +66,7 @@ public class Ip6Address {
    * "0011:2222:0033:0444:0005:0066:0007:8888",
    * <code>stripIPv6LeadZeros(address)</code> will return
    * "11:2222:33:444:5:66:7:8888".
-   * </p>
+   * 
    * 
    * @param address A string that may contain an IPv6 address in colon-separated
    *          notation.
@@ -104,7 +104,7 @@ public class Ip6Address {
    * For instance, if <code>address</code> contains the value 
    * "11:2222:33:444:5:66:7:8888", <code>addIPv6LeadZeros(address)</code> will 
    * return "0011:2222:0033:0444:0005:0066:0007:8888".
-   * </p>
+   * 
    * 
    * @param address A string that may contain an IPv6 address in colon-separated
    *          notation.
@@ -144,7 +144,7 @@ public class Ip6Address {
    * For instance if <code>address</code> contains the value 
    * "11:2222:33:444:5:66:7:8888", <code>IPv6ptrQueryString(addr)</code> will 
    * return '8888.7000.6600.5000.4440.3300.2222.1100.ip6.int'.
-   * </p>
+   * 
    * 
    * @param address
    * @return A string representing a reverse lookup of the address passed in.

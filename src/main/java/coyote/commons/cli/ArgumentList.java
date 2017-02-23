@@ -16,10 +16,10 @@ import coyote.commons.StringUtil;
  *
  * <p>It allows querying of a boolean {@link #hasOption(String opt)}, in 
  * addition to retrieving the {@link #getOptionValue(String opt)} for options 
- * requiring arguments.</p>
+ * requiring arguments.
  *
  * <p>Additionally, any left-over or unrecognized arguments, are available for 
- * further processing.</p>
+ * further processing.
  */
 public class ArgumentList implements Serializable {
   private static final long serialVersionUID = 1L;

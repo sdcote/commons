@@ -9,7 +9,7 @@ import coyote.commons.StringUtil;
  * 
  * <p>BASE32 characters are 5 bits in length. They are formed by taking a block 
  * of five octets to form a 40-bit string, which is converted into eight 
- * BASE32 characters.</p>
+ * BASE32 characters.
  * 
  * <p> The class can be parameterized in the following manner with various 
  * constructors:
@@ -19,16 +19,16 @@ import coyote.commons.StringUtil;
  * <li>Line length: Default 76. Line length that aren't multiples of 8 will 
  * still essentially end up being multiples of 8 in the encoded data.</li>
  * <li>Line separator: Default is CRLF ("\r\n")</li>
- * </ul></p>
+ * </ul>
  * 
- * <p>This class operates directly on byte streams, and not character streams.</p>
+ * <p>This class operates directly on byte streams, and not character streams.
  * 
- * <p> This class is not thread-safe. Each thread should use its own instance.</p>
+ * <p> This class is not thread-safe. Each thread should use its own instance.
  * 
  * <p>The static final fields in theis calss are used for the original static 
  * byte[] methods on Base32. The private member fields are used with the 
  * streaming approach, which requires some state be preserved between calls to 
- * the encode() and decode() methods.</p>
+ * the encode() and decode() methods.
  */
 public class Base32 extends BaseNCodec {
 
@@ -121,7 +121,7 @@ public class Base32 extends BaseNCodec {
   /**
    * Creates a Base32 codec used for decoding and encoding.
    * 
-   * <p>When encoding the line length is 0 (no chunking).</p>
+   * <p>When encoding the line length is 0 (no chunking).
    */
   public Base32() {
     this( false );
@@ -133,7 +133,7 @@ public class Base32 extends BaseNCodec {
   /**
    * Creates a Base32 codec used for decoding and encoding.
    * 
-   * <p>When encoding the line length is 0 (no chunking).</p>
+   * <p>When encoding the line length is 0 (no chunking).
    * 
    * @param useHex if {@code true} then use Base32 Hex alphabet
    */
@@ -147,7 +147,7 @@ public class Base32 extends BaseNCodec {
   /**
    * Creates a Base32 codec used for decoding and encoding.
    * 
-   * <p>When encoding the line length is 0 (no chunking).</p>
+   * <p>When encoding the line length is 0 (no chunking).
    * 
    * @param useHex if {@code true} then use Base32 Hex alphabet
    * @param pad byte used as padding byte.
@@ -162,7 +162,7 @@ public class Base32 extends BaseNCodec {
   /**
    * Creates a Base32 codec used for decoding and encoding.
    * 
-   * <p>When encoding the line length is 0 (no chunking).</p>
+   * <p>When encoding the line length is 0 (no chunking).
    * 
    * @param pad byte used as padding byte.
    */
@@ -177,7 +177,7 @@ public class Base32 extends BaseNCodec {
    * Creates a Base32 codec used for decoding and encoding.
    * 
    * <p>When encoding the line length is given in the constructor, the line 
-   * separator is CRLF.</p>
+   * separator is CRLF.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 8). If lineLength &lt;= 0, 
@@ -195,10 +195,10 @@ public class Base32 extends BaseNCodec {
    * Creates a Base32 codec used for decoding and encoding.
    * 
    * <p>When encoding the line length and line separator are given in the 
-   * constructor.</p>
+   * constructor.
    * 
    * <p>Line lengths that aren't multiples of 8 will still essentially end up 
-   * being multiples of 8 in the encoded data.</p>
+   * being multiples of 8 in the encoded data.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 8). If lineLength &lt;= 0, 
@@ -220,10 +220,10 @@ public class Base32 extends BaseNCodec {
    * Creates a Base32 / Base32 Hex codec used for decoding and encoding.
    * 
    * <p>When encoding the line length and line separator are given in the 
-   * constructor.</p>
+   * constructor.
    * 
    * <p>Line lengths that aren't multiples of 8 will still essentially end up 
-   * being multiples of 8 in the encoded data.</p>
+   * being multiples of 8 in the encoded data.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 8). If lineLength &lt;= 0, 
@@ -249,10 +249,10 @@ public class Base32 extends BaseNCodec {
    * Creates a Base32 / Base32 Hex codec used for decoding and encoding.
    * 
    * <p>When encoding the line length and line separator are given in the 
-   * constructor.</p>
+   * constructor.
    * 
    * <p>Line lengths that aren't multiples of 8 will still essentially end up 
-   * being multiples of 8 in the encoded data.</p>
+   * being multiples of 8 in the encoded data.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 8). If lineLength &lt;= 0, 
@@ -308,15 +308,15 @@ public class Base32 extends BaseNCodec {
    * 
    * <p>Should be called at least twice: once with the data to decode, and once 
    * with inAvail set to "-1" to alert decoder that EOF has been reached. The 
-   * "-1" call is not necessary when decoding, but does no harm.</p>
+   * "-1" call is not necessary when decoding, but does no harm.
    * 
    * <p>Ignores all non-Base32 characters. This is how chunked (e.g. 76 
    * character) data is handled, since CR and NL are silently ignored, but has 
    * implications for other bytes, too. This method will not check the provided 
-   * data for validity.</p>
+   * data for validity.
    * 
    * <p>Output is written to {@link Context#buffer} as 8-bit octets, using 
-   * {@link Context#pos} as the buffer position.</p>
+   * {@link Context#pos} as the buffer position.
    *
    * @param in byte[] array of ascii data to Base32 decode.
    * @param inPos Position to start reading data from.
@@ -413,7 +413,7 @@ public class Base32 extends BaseNCodec {
    * 
    * <p>Must be called at least twice: once with the data to encode, and once 
    * with inAvail set to "-1" to alert encoder that EOF has been reached, so 
-   * flush last remaining bytes (if not multiple of 5).</p>
+   * flush last remaining bytes (if not multiple of 5).
    *
    * @param in byte[] array of binary data to Base32 encode.
    * @param inPos Position to start reading data from.

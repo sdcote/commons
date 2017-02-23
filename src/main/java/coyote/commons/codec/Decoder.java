@@ -4,12 +4,12 @@ package coyote.commons.codec;
  * <p>Provides the highest level of abstraction for Decoders. 
  * 
  * <p>This is the sister interface of {@link Encoder}. All Decoders implement 
- * this common generic interface.</p>
+ * this common generic interface.
  * 
  * <p>Allows a user to pass a generic Object to any Decoder implementation in 
- * the codec package.</p>
+ * the codec package.
  * 
- * <p>One of the two interfaces at the center of the codec package.</p>
+ * <p>One of the two interfaces at the center of the codec package.
  */
 public interface Decoder {
 
@@ -19,7 +19,7 @@ public interface Decoder {
    * <p>Note that the implementation of this interface will try to cast the 
    * Object parameter to the specific type expected by a particular Decoder 
    * implementation. If a {@link ClassCastException} occurs this decode method 
-   * will throw a DecoderException.</p>
+   * will throw a DecoderException.
    * 
    * @param source the object to decode
    * 

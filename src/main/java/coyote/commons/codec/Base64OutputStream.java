@@ -8,25 +8,25 @@ import java.io.OutputStream;
  * 
  * <p>When encoding the default lineLength is 76 characters and the default 
  * lineEnding is CRLF, but these can be overridden by using the appropriate
- * constructor.</p>
+ * constructor.
  * 
  * <p>The default behavior of the Base64OutputStream is to ENCODE, whereas the 
  * default behavior of the Base64InputStream is to DECODE. But this behavior 
- * can be overridden by using a different constructor.</p>
+ * can be overridden by using a different constructor.
  * 
  * <p>This class implements section <cite>6.8. Base64 
  * Content-Transfer-Encoding</cite> from RFC 2045 <cite>Multipurpose Internet 
  * Mail Extensions (MIME) Part One: Format of Internet Message Bodies</cite> by 
- * Freed and Borenstein.</p>
+ * Freed and Borenstein.
  * 
  * <p>Since this class operates directly on byte streams, and not character 
  * streams, it is hard-coded to only encode/decode character encodings which 
  * are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, 
- * UTF-8, etc).</p>
+ * UTF-8, etc).
  * 
  * <p><strong>NOTE:</strong> It is mandatory to close the stream after the last 
  * byte has been written to it, otherwise the final padding will be omitted and 
- * the resulting data will be incomplete/inconsistent. </p>
+ * the resulting data will be incomplete/inconsistent. 
  *
  * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
  */

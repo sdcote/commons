@@ -8,7 +8,7 @@ import java.io.PrintStream;
  * 
  * Logging is controlled by system properties:
  * <pre>System.getProperties().setProperty( "coyote.commons.Log.trace", "true" );
- * <pre>System.getProperties().setProperty( "coyote.commons.Log.debug", "true" );</pre>
+ * System.getProperties().setProperty( "coyote.commons.Log.debug", "true" );</pre>
  */
 public final class Log {
 

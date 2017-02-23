@@ -347,7 +347,7 @@ public class FileUtilTest {
    * <p>
    * We only remove the relations, not any extra file separators that the user
    * may want or expect. Makse sure the trailing separator remains.
-   * </p>
+   * 
    */
   @Test
   public void testRemoveRelations5() {

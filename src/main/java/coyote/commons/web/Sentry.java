@@ -15,7 +15,7 @@ public interface Sentry {
    * directive of either ALLOW or DENY for that network. For example:
    * <pre>192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY</pre>Where everything 
    * coming from the 192.168.0.0/255.255.0.0 network is allowed, 
-   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.</p>
+   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.
    * 
    * @param rules the string containing the network specifications and their ability to access.
    * 
@@ -30,7 +30,7 @@ public interface Sentry {
    * Check to see if the given request is allowed access.
    * 
    * <p>This method checks the remote IP address of the request against the 
-   * current ACL rules and determines if the request is allowed access.</p>
+   * current ACL rules and determines if the request is allowed access.
    * 
    * @param req the HTTP servlet request requesting access
    * 

@@ -58,8 +58,8 @@ public final class StringUtil {
   /**
    * An "XML Safe" string require thats certain strings (or more correctly,
    * characters) be substituted for others. See page 257 of "XML by Example".
-   * <ul> <li>&amp; - &amp;amp; <li>&lt; - &amp;lt; <li>&gt; - &amp;gt;
-   * <li>&quote; - &amp;quote; <li>&apos; - &amp;apos; </ul>
+   * <ul> <li>&#38; - &#38;&#38; <li>&lt; - &amp;lt; <li>&gt; - &amp;&gt;
+   * <li>&quot; - &#38;&quot; <li>&#39; - &#38;&#39; </ul>
    */
   public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
@@ -70,7 +70,7 @@ public final class StringUtil {
   private static final char soundex_map[] = "01230120032455012623010202".toCharArray();
 
   /**
-   * CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. </p>
+   * CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. 
    */
   public static final String ISO_8859_1 = "ISO-8859-1";
 
@@ -120,7 +120,7 @@ public final class StringUtil {
   /**
    * Convert the given string into ISO 8859-1 encoding.
    * 
-   * <p>This is the defacto standard for string encoding on the Internet</p>
+   * <p>This is the defacto standard for string encoding on the Internet
    * 
    * @param text the text to encode
    * 
@@ -164,10 +164,10 @@ public final class StringUtil {
    * 
    * <p> String {@code 2i} is replaced with String {@code 2i+1}.
    * Order is very important. If you want to convert &lt; to &amp;lt; and you
-   * also want to convert &amp to &amp;amp; then it is important that you
-   * first convert &amp; to &amp;amp; before converting &lt; to &amp;lt;. If
-   * you do not, then the &amp in &amp;lt; will be converted to &amp;amp;lt;.
-   * </p>
+   * also want to convert &#38; to &#38;&#38; then it is important that you
+   * first convert &#38; to &#38; before converting &lt; to &#38;lt;. If
+   * you do not, then the &#38; in &#38;&lt; will be converted to &#38;&#38;&lt;.
+   * 
    * 
    * @param tokens is an array of strings such that string {@code 2i} is
    *            replaced with string {@code 2i+1}.
@@ -305,7 +305,7 @@ public final class StringUtil {
    * Check that the given String is neither {@code null} nor of length 0.
    * 
    * <p><strong>Note:</strong> This will return {@code true} for a String that 
-   * consists entirely of whitespace.</p>
+   * consists entirely of whitespace.
    * 
    * @param str the String to check (may be {@code null})
    * 
@@ -322,7 +322,7 @@ public final class StringUtil {
    * Check whether the given CharSequence has actual text.
    * 
    * <p>Returns {@code true} if the string not {@code null}, its length is 
-   * greater than 0, and it contains at least one non-whitespace character.</p>
+   * greater than 0, and it contains at least one non-whitespace character.
    * 
    * <pre class="code">
    * StringUtils.hasText(null) = false
@@ -356,7 +356,7 @@ public final class StringUtil {
    * Check whether the given String has actual text.
    * 
    * <p>Returns {@code true} if the string not {@code null}, its length is 
-   * greater than 0, and it contains at least one non-whitespace character.</p>
+   * greater than 0, and it contains at least one non-whitespace character.
    * 
    * @param str the String to check (may be {@code null})
    * 
@@ -438,7 +438,7 @@ public final class StringUtil {
    * Checks if a string is not null, empty ("") and not only whitespace.
    * 
    * <p>This is a convenience wrapper around isBlank(String) to make code 
-   * slightly more readable.</p>
+   * slightly more readable.
    * 
    * @param str the String to check, may be null
    * 
@@ -500,10 +500,10 @@ public final class StringUtil {
   /**
    * Checks if a string is not null and not empty ("").
    * 
-   * <p>Whitespace is allowed.</p>
+   * <p>Whitespace is allowed.
    * 
    * <p>This is a convenience wrapper around {@code isEmpty(String)} to make 
-   * code slightly more readable.</p>
+   * code slightly more readable.
    * 
    * @param str the String to check, may be null
    * 
@@ -523,10 +523,10 @@ public final class StringUtil {
    * 
    * <p> This method is useful for creating lists that use letters instead of
    * numbers, such as a, b, c, d...instead of 1, 2, 3, 4. Valid numbers are
-   * from 1 to 26, corresponding to the 26 letters of the alphabet. </p>
+   * from 1 to 26, corresponding to the 26 letters of the alphabet. 
    * 
    * <p> By default, the letter is returned as a lowercase, but if the boolean
-   * upperCaseFlag is true, the letter will be returned as an uppercase. </p>
+   * upperCaseFlag is true, the letter will be returned as an uppercase. 
    * 
    * @param number int representing the number to transform
    * @param upperCaseFlag
@@ -593,7 +593,7 @@ public final class StringUtil {
    * Return if a string is numeric by trying to parse it.
    * 
    * <p> The goal of this method is to give a simple test for whole numbers
-   * that are used as identifiers. </p>
+   * that are used as identifiers. 
    * 
    * @param string the string to check
    * 
@@ -691,7 +691,7 @@ public final class StringUtil {
    * This will return a 6-character soundex code for the given string.
    * 
    * <p> This is useful in detecting alternate spellings of the same name,
-   * helping to detect duplicates. </p>
+   * helping to detect duplicates. 
    * 
    * <p>
    * 
@@ -700,7 +700,7 @@ public final class StringUtil {
    * 0; indx &lt; string.length; indx++) System.out.println(string[indx] +
    * &quot; = &quot; + StringUtil.soundex(string[indx])); </pre>
    * 
-   * </p>
+   * 
    * 
    * @param in The string from which the code is to be generated.
    * 
@@ -754,7 +754,7 @@ public final class StringUtil {
   /**
    * Justify a string to a certain width.
    * 
-   * <p> The string is never truncated. </p>
+   * <p> The string is never truncated. 
    * 
    * @param width
    * @param string
@@ -794,7 +794,7 @@ public final class StringUtil {
   /**
    * Center-justify a string to a certain width.
    * 
-   * <p> The string is never truncated. </p>
+   * <p> The string is never truncated. 
    * 
    * @param width the number of characters wide the string should be
    * @param text the original text
@@ -811,7 +811,7 @@ public final class StringUtil {
   /**
    * Left-justify a string to a certain width.
    * 
-   * <p> The string is never truncated. </p>
+   * <p> The string is never truncated. 
    * 
    * @param width the number of characters wide the string should be
    * @param text the original text
@@ -829,7 +829,7 @@ public final class StringUtil {
    * Right-justify a string to a certain width. Useful in generating column
    * labels.
    * 
-   * <p> The string is never truncated. </p>
+   * <p> The string is never truncated. 
    * 
    * @param width the number of characters wide the string should be
    * @param text the original text
@@ -848,7 +848,7 @@ public final class StringUtil {
    * indexed value if the original index is out of bounds.
    * 
    * <p> It is safe insofar as it will not throu an index out of bounds
-   * exception. </p>
+   * exception. 
    * 
    * @param index the index of the string to return
    * @param array the array of strings serving as the source of strings
@@ -1002,7 +1002,7 @@ public final class StringUtil {
    * location in the string.
    * 
    * <p>Useful when the indata string contains a whole files worth of data,
-   * including the returns.</p>
+   * including the returns.
    * 
    * @param indata data to search.
    * @param startloc starting location within the search string.
@@ -1214,9 +1214,9 @@ public final class StringUtil {
   /**
    * Format an array of Object as a list with commas.
    * 
-   * <p> Example:<br> {@code String[] list = { "apples", "oranges", "pumpkins",
+   * <p> Example:<pre>String[] list = { "apples", "oranges", "pumpkins",
    * "bananas" };
-   * System.out.println(StringUtil.arrayToCommaList(list));}
+   * System.out.println(StringUtil.arrayToCommaList(list));}</pre>
    * 
    * @param array
    * 
@@ -1334,7 +1334,7 @@ public final class StringUtil {
    * <p> All characters of the name are lowercase unless they are preceded by
    * a space, in which case the space will be removed and the next character
    * will be converted to uppercase. This should make the sentence into a
-   * standard Java identifier suitable for JavaBean naming. </p>
+   * standard Java identifier suitable for JavaBean naming. 
    * 
    * @param string the sentence to convert
    * 
@@ -1355,7 +1355,7 @@ public final class StringUtil {
    * <p>All characters of the name are lowercase unless the character is the
    * first character in the sequence or is preceded by a space, in which case
    * the space will be removed and the next character will be converted to
-   * uppercase.</p>
+   * uppercase.
    * 
    * @param string the sentence to convert
    * 
@@ -1569,7 +1569,7 @@ public final class StringUtil {
    * given string.
    * 
    * <p>Useful for getting extensions from filenames. Also used to retrieve
-   * the last segment of an IP address. </p>
+   * the last segment of an IP address. 
    * 
    * @param text
    * @param ch
@@ -1588,7 +1588,7 @@ public final class StringUtil {
    * Return the string before the last occurrence of the given character in
    * the given string.
    * 
-   * <p> Useful for getting the body of a filename. </p>
+   * <p> Useful for getting the body of a filename. 
    * 
    * @param string
    * @param ch
@@ -1607,7 +1607,7 @@ public final class StringUtil {
    * Appends the node to the path with the &quot;/&quot; delimiter
    * 
    * <p> Useful for adding a directory or filename to the end of a directory
-   * path. </p>
+   * path. 
    * 
    * @param path
    * @param node
@@ -1688,7 +1688,7 @@ public final class StringUtil {
    * no &quot;/&quot; in the string, retun an empty string NOT a null.
    * 
    * <p> This is useful in determining the endpoints or servlet contexts in
-   * URI or URI strings. </p>
+   * URI or URI strings. 
    * 
    * @param uri
    * 
@@ -1738,7 +1738,7 @@ public final class StringUtil {
    * Tokenize the given string and return the string at given column index.
    * 
    * <p>Often text will be retuned as a set of text separated by whitespace, 
-   * this offers a quick method to return the token at a given location.</p>
+   * this offers a quick method to return the token at a given location.
    * 
    * @param text the line of text to tokenize
    * @param col the index of the
@@ -1878,7 +1878,7 @@ public final class StringUtil {
    * <p>The requested string may be longer than requested if the string 
    * representation of the number is longer than the requested length. In 
    * effect, the size argument is therefore a requested minimum size and no 
-   * truncation of the given number will occur.</p>
+   * truncation of the given number will occur.
    * 
    * @param num the number to represent
    * @param size the requested length of the string to be returned
@@ -1900,7 +1900,7 @@ public final class StringUtil {
    * <p>The requested string may be longer than requested if the string 
    * representation of the number is longer than the requested length. In 
    * effect, the size argument is therefore a requested minimum size and no 
-   * truncation of the given number will occur.</p>
+   * truncation of the given number will occur.
    * 
    * @param num the number to represent
    * @param size the requested length of the string to be returned
@@ -1922,7 +1922,7 @@ public final class StringUtil {
    * <p>The requested string may be longer than requested if the string 
    * representation of the number is longer than the requested length. In 
    * effect, the size argument is therefore a requested minimum size and no 
-   * truncation of the given number will occur.</p>
+   * truncation of the given number will occur.
    * 
    * @param num the number to represent
    * @param size the requested length of the string to be returned
@@ -2132,7 +2132,7 @@ public final class StringUtil {
   /**
    * Constructs a new {@code String} by decoding the specified array of bytes using the given charset.
    * 
-   * <p>This method catches {@link UnsupportedEncodingException} and re-throws it as {@link IllegalStateException}, which should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.</p>
+   * <p>This method catches {@link UnsupportedEncodingException} and re-throws it as {@link IllegalStateException}, which should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.
    * 
    * @param bytes The bytes to be decoded into characters, may be {@code null}
    * @param charsetName The name of a required {@link java.nio.charset.Charset}
@@ -2364,7 +2364,7 @@ public final class StringUtil {
    * <p>This method catches {@link UnsupportedEncodingException} and rethrows 
    * it as {@link IllegalStateException}, which should never happen for a 
    * required charset name. Use this method when the encoding is required to be 
-   * in the JRE.</p>
+   * in the JRE.
    * 
    * @param string the String to encode, may be {@code null}
    * @param charsetName The name of a required {@link java.nio.charset.Charset}
@@ -2395,7 +2395,7 @@ public final class StringUtil {
    * <p>The given delimiters string is supposed to consist of any number of
    * delimiter characters. Each of those characters can be used to separate
    * tokens. A delimiter is always a single character; for multi-character
-   * delimiters, consider using {@code delimitedListToStringArray}</p>
+   * delimiters, consider using {@code delimitedListToStringArray}
    * 
    * @param str the String to tokenize
    * @param delimiters the delimiter characters, assembled as String (each of 
@@ -2433,7 +2433,7 @@ public final class StringUtil {
   /**
    * Copy the given Collection into a String array.
    * 
-   * <p>The Collection must contain String elements only.</p>
+   * <p>The Collection must contain String elements only.
    * 
    * @param collection the Collection to copy
    * 
@@ -2481,7 +2481,7 @@ public final class StringUtil {
    * of the text will be lost. WHich portion depends on the alignment. Right 
    * justified text will result in the beginning (left side) of the text being 
    * lost. Left justified text will result in the end of the text being lost 
-   * and centered text will result in both sides of the text being lost.</p>
+   * and centered text will result in both sides of the text being lost.
    * 
    * @param text the text to represent
    * @param length the length of the string to return
@@ -2504,7 +2504,7 @@ public final class StringUtil {
    * of the text will be lost. WHich portion depends on the alignment. Right 
    * justified text will result in the beginning (left side) of the text being 
    * lost. Left justified text will result in the end of the text being lost 
-   * and centered text will result in both sides of the text being lost.</p>
+   * and centered text will result in both sides of the text being lost.
    * 
    * @param text the text to represent
    * @param length the length of the string to return

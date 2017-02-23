@@ -10,7 +10,7 @@ import java.util.List;
  * 
  * <p>It maintains information regarding the short-name of the option, the 
  * long-name, if any exists, a flag indicating if an argument is required for
- * this option, and a self-documenting description of the option.</p>
+ * this option, and a self-documenting description of the option.
  *
  * <p>An Option is not created independently, but is created through
  * an instance of {@link Options}.<p>

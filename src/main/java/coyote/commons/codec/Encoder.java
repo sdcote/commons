@@ -3,11 +3,11 @@ package coyote.commons.codec;
 /**
  * Provides the highest level of abstraction for Encoders. 
  * 
- * <p>This is the sister interface of {@link Decoder}.</p>
+ * <p>This is the sister interface of {@link Decoder}.
  * 
  * <p>Every implementation of Encoder provides this common generic interface 
  * which allows a user to pass a generic Object to any Encoder implementation 
- * in the codec package.</p>
+ * in the codec package.
  */
 public interface Encoder {
 
@@ -15,7 +15,7 @@ public interface Encoder {
    * Encodes an "Object" and returns the encoded content as an Object.
    * 
    * <p>The Objects here may just be {@code byte[]} or {@code String}s 
-   * depending on the implementation used.</p>
+   * depending on the implementation used.
    *   
    * @param source An object to encode
    * 

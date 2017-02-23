@@ -31,7 +31,7 @@ import java.net.UnknownHostException;
  * } catch (IpAddressException ipae) {
  * }
  * </PRE>
- * </p>
+ * 
  */
 public class IpAddress {
   protected final static int IP4_OCTETS = 4;
@@ -62,7 +62,7 @@ public class IpAddress {
    * <p>A common format for an IP Address is: 192.168.117.32, but this
    * constructor will allow truncated addresses in the form of 192.168 which
    * can be used to specify a network, as the remaining octets of the address
-   * will be populated with zeros.</p>
+   * will be populated with zeros.
    *
    * @param addr the string representation of the "dotted-quad" address
    *
@@ -380,7 +380,7 @@ public class IpAddress {
    * address.
    *
    * <p>For example: 192.168.100.195 netmask 255.255.255.224 returns
-   * 192.168.100.192</p>
+   * 192.168.100.192
    *
    * @param mask the string representation of the network mask to apply
    *
@@ -404,7 +404,7 @@ public class IpAddress {
    * addr.applyNetMask("255.255.255.0");
    * System.out.println(addr.toString());
    * // returns "192.168.0.0"
-   * </CODE></p>
+   * </CODE>
    *
    * @param netmask the network mask to apply
    *
@@ -433,7 +433,7 @@ public class IpAddress {
    * <p>It is important to keep in mind that the return value will depend upon 
    * this host name resolver. If this IP address is located in a local host 
    * resolver file, then the return value will be whatever is specified in that 
-   * file and a DNS lookup may never take place.</p>
+   * file and a DNS lookup may never take place.
    * 
    * @return The name to which this address resolves on this hosts resolver, or 
    *         null if the address is not valid or in DNS or the hosts resolver.

@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * <p>The mapping matches URLs using the following rules:<br><ul>
  * <li>? matches one character</li>
  * <li>* matches zero or more characters</li>
- * <li>** matches zero or more nodes (directories) in a path</li></ul></p>
+ * <li>** matches zero or more nodes (directories) in a path</li></ul>
  *
  * <p>Some examples:<br><ul>
  * <li>{@code net/t?st.jsp} - matches {@code net/test.jsp} but also {@code net/tast.jsp} or {@code net/txst.jsp}</li>
@@ -273,9 +273,9 @@ public class AntPathFilter implements PathFilter {
    * <p>This implementation simply concatenates the two patterns, unless the 
    * first pattern contains a file extension match (such as {@code *.html}. In 
    * that case, the second pattern should be included in the first, or an 
-   * {@code IllegalArgumentException} is thrown.</p>
+   * {@code IllegalArgumentException} is thrown.
    * 
-   * <p>For example:<table>
+   * <p>For example:<table><caption>examples</caption>
    * <tr><th>Pattern 1</th><th>Pattern 2</th><th>Result</th></tr>
    * <tr><td>/orders</td><td>{@code null}</td><td>/orders</td></tr>
    * <tr><td>{@code null}</td><td>/orders</td><td>/orders</td></tr>
@@ -493,17 +493,17 @@ public class AntPathFilter implements PathFilter {
    * Given a pattern and a full path, determine the pattern-mapped part. 
    * 
    * <p>For example: <ul>
-   * <li>'{@code /docs/cvs/commit.html}' and '{@code /docs/cvs/commit.html} -> ''</li>
-   * <li>'{@code /docs/*}' and '{@code /docs/cvs/commit} -> '{@code cvs/commit}'</li>
-   * <li>'{@code /docs/cvs/*.html}' and '{@code /docs/cvs/commit.html} -> '{@code commit.html}'</li>
-   * <li>'{@code /docs/**}' and '{@code /docs/cvs/commit} -> '{@code cvs/commit}'</li>
-   * <li>'{@code /docs/**\/*.html}' and '{@code /docs/cvs/commit.html} -> '{@code cvs/commit.html}'</li>
-   * <li>'{@code /*.html}' and '{@code /docs/cvs/commit.html} -> '{@code docs/cvs/commit.html}'</li>
-   * <li>'{@code *.html}' and '{@code /docs/cvs/commit.html} -> '{@code /docs/cvs/commit.html}'</li>
-   * <li>'{@code *}' and '{@code /docs/cvs/commit.html} -> '{@code /docs/cvs/commit.html}'</li> </ul></p>
+   * <li>'{@code /docs/cvs/commit.html}' and '{@code /docs/cvs/commit.html} -&gt; ''</li>
+   * <li>'{@code /docs/*}' and '{@code /docs/cvs/commit} -&gt; '{@code cvs/commit}'</li>
+   * <li>'{@code /docs/cvs/*.html}' and '{@code /docs/cvs/commit.html} -&gt; '{@code commit.html}'</li>
+   * <li>'{@code /docs/**}' and '{@code /docs/cvs/commit} -&gt; '{@code cvs/commit}'</li>
+   * <li>'{@code /docs/**\/*.html}' and '{@code /docs/cvs/commit.html} -&gt; '{@code cvs/commit.html}'</li>
+   * <li>'{@code /*.html}' and '{@code /docs/cvs/commit.html} -&gt; '{@code docs/cvs/commit.html}'</li>
+   * <li>'{@code *.html}' and '{@code /docs/cvs/commit.html} -&gt; '{@code /docs/cvs/commit.html}'</li>
+   * <li>'{@code *}' and '{@code /docs/cvs/commit.html} -&gt; '{@code /docs/cvs/commit.html}'</li> </ul>
    * 
    * <p>Assumes that {@link #match} returns {@code true} for '{@code pattern}' 
-   * and '{@code path}', but does <strong>not</strong> enforce this.</p>
+   * and '{@code path}', but does <strong>not</strong> enforce this.
    */
   @Override
   public String extractPathWithinPattern( final String pattern, final String path ) {
@@ -563,14 +563,14 @@ public class AntPathFilter implements PathFilter {
    * uri templates or wild cards) come before generic patterns. So given a list 
    * with the following patterns: 
    * <ol><li>{@code /orders/new}</li>
-   * <li>{@code /orders/{order}}</li>
+   * <li>{@code /orders/[order]}</li>
    * <li>{@code /orders/*}</li> </ol> 
    * the returned comparator will sort this list so that the order will be as 
-   * indicated.</p>
+   * indicated.
    * 
    * <p>The full path given as parameter is used to test for exact matches. So 
    * when the given path is {@code /orders/2}, the pattern {@code /orders/2} 
-   * will be sorted before {@code /orders/1}.</p>
+   * will be sorted before {@code /orders/1}.
    * 
    * @param path the full path to use for comparison
    * 
@@ -592,9 +592,9 @@ public class AntPathFilter implements PathFilter {
    * instance if no cached copy is found. When encountering too many patterns 
    * to cache at runtime (the threshold is 65536), it turns the default cache 
    * off, assuming that arbitrary permutations of patterns are coming in, with 
-   * little chance for encountering a recurring pattern.</p>
+   * little chance for encountering a recurring pattern.
    * 
-   * <p>This method may get overridden to implement a custom cache strategy.</p>
+   * <p>This method may get overridden to implement a custom cache strategy.
    * 
    * @param pattern the pattern to match against (never {@code null})
    * 
@@ -682,12 +682,12 @@ public class AntPathFilter implements PathFilter {
    * into this matcher's {@link #match} method. 
    * 
    * <p>A value of {@code true} activates an unlimited pattern cache; a value 
-   * of {@code false} turns the pattern cache off completely.</p>
+   * of {@code false} turns the pattern cache off completely.
    * 
    * <p>Default is for the cache to be on, but with the variant to automatically
    * turn it off when encountering too many patterns to cache at runtime
    * (the threshold is 65536), assuming that arbitrary permutations of patterns
-   * are coming in, with little chance for encountering a recurring pattern.</p>
+   * are coming in, with little chance for encountering a recurring pattern.
    * @see #getStringMatcher(String)
    */
   public void setCachePatterns( final boolean cachePatterns ) {
@@ -758,7 +758,7 @@ public class AntPathFilter implements PathFilter {
    * settings.
    * 
    * <p>Performs caching based on {@link #setCachePatterns}, delegating to
-   * {@link #tokenizePath(String)} for the actual tokenization algorithm.</p>
+   * {@link #tokenizePath(String)} for the actual tokenization algorithm.
    * 
    * @param pattern the pattern to tokenize
    * 

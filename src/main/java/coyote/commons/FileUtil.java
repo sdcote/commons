@@ -249,11 +249,11 @@ public final class FileUtil {
 
   /**
    * CleanDirs is a utility method for cleaning up temporary directories, used
-   * by various methods to hold & process files on the file system.
+   * by various methods to hold and process files on the file system.
    *
    * <p>CleanDir takes a directory name as an argument, and checks for any
    * empty directories within that directory. If it finds any, it remove the
-   * empty directory & checks again until no empty directories are found.</p>
+   * empty directory and checks again until no empty directories are found.
    *
    * @param fileName
    *
@@ -292,12 +292,12 @@ public final class FileUtil {
 
 
   /**
-   * Utility method to copy a file from one place to another & delete the
+   * Utility method to copy a file from one place to another and delete the
    * original.
    *
    * <p>If we fail, we throw IOException, also reporting what username this
    * process is running with to assist System Admins in setting appropriate
-   * permissions.</p>
+   * permissions.
    *
    * @param sourceFile Source file pathname
    * @param destFile Destination file pathname
@@ -311,12 +311,12 @@ public final class FileUtil {
 
 
   /**
-   * Utility method to copy a file from one place to another & delete the
+   * Utility method to copy a file from one place to another and delete the
    * original.
    *
    * <p>If we fail, we throw IOException, also reporting what username this
    * process is running with to assist System Admins in setting appropriate
-   * permissions.</p>
+   * permissions.
    *
    * @param sourceFile Source file pathname
    * @param destFile Destination file pathname
@@ -382,9 +382,9 @@ public final class FileUtil {
   /**
    * Get the base filename of a file (e.g. no directory or extension)
    *
-   * <p>Returns "readme" from "T:\projects\src\readme.txt".</p>
+   * <p>Returns "readme" from "T:\projects\src\readme.txt".
    *
-   * <p>NOTE: This method uses the default file separator for the system.</p>
+   * <p>NOTE: This method uses the default file separator for the system.
    *
    * @param fileName Original pathname from which the base name is to come.
    *
@@ -604,7 +604,7 @@ public final class FileUtil {
    *
    * <p>The returned string should represent a relative path to the base class
    * or source file with the simple adding of a &quot;.class&quot; or a
-   * &quot;.java&quot; respectively.</p>
+   * &quot;.java&quot; respectively.
    *
    * @param classname The fully-qualified name of a class.
    *
@@ -717,10 +717,10 @@ public final class FileUtil {
    * Get the path of a file name.
    *
    * <p>If the filename is relative, the result will be a relative path. If the
-   * filename is absolute, the path returned will be absolute.</p>
+   * filename is absolute, the path returned will be absolute.
    *
    * <p>The path separator for the current platform will be used as a path
-   * delimiter of the returned path.</p>
+   * delimiter of the returned path.
    *
    * @param fileName Original pathname
    *
@@ -1144,15 +1144,15 @@ public final class FileUtil {
    *
    * <p>Calling this with clrdir=false and clrsub=true will result in all files
    * in all the subdirectories of the given directory being deleted, but the
-   * entire directory structure will remain on the file system.</p>
+   * entire directory structure will remain on the file system.
    *
    * <p>Calling this with clrdir=true and clrsub=true will result in all files
    * and all the subdirectories of the given directory being deleted as well as
-   * the fiven directory.</p>
+   * the fiven directory.
    *
    * <p>Calling this with clrdir=false and clrsub=false will result in all
    * files of the current directory being deleted with all the subdirectories
-   * reamining untouched.</p>
+   * reamining untouched.
    *
    * TODO Calling this with clrdir=true and clrsub=false will result in all files of the current directory being deleted with all the subdirectories being moved to the parent directory. The orphans of the current directory should not be lost in the clearing operation.
    *
@@ -1468,7 +1468,7 @@ public final class FileUtil {
   /**
    * Make a directory with the given name.
    *
-   * <p>If the operation failed, a partial path may exist.</p>
+   * <p>If the operation failed, a partial path may exist.
    *
    * @param directory any valid directory path with slashes, back-slashes, 
    * relational dots and whatever.
@@ -1522,7 +1522,7 @@ public final class FileUtil {
   /**
    * Make all the directories required to create the named file.
    *
-   * <p>If the operation failed, a partial path may exist.</p>
+   * <p>If the operation failed, a partial path may exist.
    *
    * @param filename any valid file name with slashes, back-slashes, relational
    * dots and whatever.
@@ -2052,11 +2052,11 @@ public final class FileUtil {
    * modified time of all its children. The reasoning is if a subdirectory has
    * a file that was last modified 10 seconds ago, then the parent directory
    * has been logically modified (if only through its path) the same 10 seconds
-   * ago.</p>
+   * ago.
    *
    * <p>There is no way to tell if a file was recently modified and then
    * deleted from the directory unless the underlying operating system records
-   * the activity in the last modified attribute of the directory entry.</p>
+   * the activity in the last modified attribute of the directory entry.
    *
    * @param file The file to query.
    *
@@ -2129,7 +2129,7 @@ public final class FileUtil {
   * <p>This method opens an {@code InputStream} for the file.
   * When you have finished with the iterator you should close the stream
   * to free internal resources. This can be done by calling the
-  * {@link LineIterator#close()} method.</p>
+  * {@link LineIterator#close()} method.
   * 
   * <p>If an exception occurs during the creation of the iterator, the
   * underlying stream is closed.
@@ -2255,7 +2255,7 @@ public final class FileUtil {
    * hash can be compared to the hash values of other files to determine if 
    * their contents are equivalent.  It is possible to detect duplicate files 
    * by computing the hash values for all the files in a give set and testing 
-   * their equivalence.</p> 
+   * their equivalence. 
    * 
    * @param file The file to read and process.
    * 

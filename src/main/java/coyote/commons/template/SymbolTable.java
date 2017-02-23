@@ -30,11 +30,11 @@ import coyote.commons.StringUtil;
  * Simply a table of named string values.
  * 
  * <p>This table has some utility functions to manage the data in the table 
- * such as placing system properties in and removing them from the table.</p>
+ * such as placing system properties in and removing them from the table.
  * 
  * <p>The following variables are ignored for security reasons:<ul>
  * <li>{@code http.proxyPassword} - potential password exposure</li>
- * </ul></p>
+ * </ul>
  */
 public class SymbolTable extends HashMap {
 
@@ -308,7 +308,7 @@ public class SymbolTable extends HashMap {
    * involves segmented names in the form of tokens representing levels and 
    * some token delimiter. This models a hierarchy of values common in complex 
    * property files. Using this method, it is possible to retrieve all the keys 
-   * for a specific level in the tree.</p>
+   * for a specific level in the tree.
    *
    * @param prefix The prefix of the symbol for which to search (e.g. "log.config.file.")
    *

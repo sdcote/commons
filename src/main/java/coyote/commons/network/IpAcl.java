@@ -60,7 +60,7 @@ public class IpAcl {
    * Construct a new Access Control List.
    *
    * <p>The default mode is to ALLOW anything that isn't explicitly blocked by
-   * a rule. This means the ACL is a blacklist by default.</p>
+   * a rule. This means the ACL is a blacklist by default.
    */
   public IpAcl() {
     this( IpAcl.DEFAULT_MODE );
@@ -73,16 +73,16 @@ public class IpAcl {
    * Construct a new Access Control List with a given default mode.
    *
    * <p>This mode specifies what should happen if a check does not match any
-   * rules.</p>
+   * rules.
    * 
    * <p>If set to TRUE (IpAcl.ALLOW) this ACL is setup as a blacklist, allowing 
    * everything unless there is an entry which matches in which case the entry 
    * will be disallowed. Essentially, you only place entries in this list you 
-   * want to reject or disallow.</p>
+   * want to reject or disallow.
    * 
    * <p>If set to FALSE (IpAcl.DENY) this ACL is setup as a whitelist, only 
    * allowing those entries in this ACL. This is the most secure approach but 
-   * more difficult to maintain.</p>
+   * more difficult to maintain.
    *
    * @param defaultMode the default mode for non-matched checks
    */
@@ -101,13 +101,13 @@ public class IpAcl {
    * Where "network" is a CIDR representation of a network against which a
    * match is to be made, and "allowed" is either 'ALLOW' or 'DENY'. There is a
    * special expression of 'DEFAULT' which represents the default rule (what
-   * should  happen if no expression is matched when performing a check).</p>
+   * should  happen if no expression is matched when performing a check).
    *
    * <p>The rules are a semicolon delimited list of CIDR networks with a 
    * directive of either ALLOW or DENY for that network. For 
    * example:<pre>192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY</pre>Where 
    * everything coming from the 192.168.0.0/255.255.0.0 network is allowed, 
-   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.</p>
+   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.
    * 
    * @param rules the string containing the network specifications and their ability to access.
    * 
@@ -181,7 +181,7 @@ public class IpAcl {
    * Changes the default allow mode of the ACL. 
    * 
    * <p>This is what the check will return if it does not find an explicit rule 
-   * to match against.</p>
+   * to match against.
    * 
    * @param allow  The new default mode: True = allow by default, false = deny by default.
    */
@@ -290,7 +290,7 @@ public class IpAcl {
    * Append the entries of the given ACL to the end of our own list.
    *
    * <p>The result is the ACLRules are shared between the two lists. A copy of
-   * the ACLRule is <strong>NOT</strong> made.</p>
+   * the ACLRule is <strong>NOT</strong> made.
    *
    * @param newacl The ACL to append to this list.
    */

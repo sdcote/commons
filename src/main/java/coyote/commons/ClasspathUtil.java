@@ -36,7 +36,7 @@ import javax.servlet.ServletContextListener;
  * included in a web.xml or other servlet context file:<pre>&lt;listener&gt;
  *   &lt;listener-class&gt;com.mgh.mt.userimport.util.ClasspathUtil&lt;/listener-class&gt;
  * &lt;/listener&gt;
- * </pre>to perform a validation of your context's class path.</p> 
+ * </pre>to perform a validation of your context's class path. 
  */
 public class ClasspathUtil implements ServletContextListener {
 
@@ -54,7 +54,7 @@ public class ClasspathUtil implements ServletContextListener {
    * 
    * <p>Go through each entry in the class path and verify that it is actually 
    * on the file system, can be read, and if it is a JAR or ZIP, verify that 
-   * the entries can be read.</p>
+   * the entries can be read.
    * 
    * <p>This method will also generate a hashmap of classes that appear in more 
    * than one path entry. These shadow classes should not be the cause of 
@@ -70,7 +70,7 @@ public class ClasspathUtil implements ServletContextListener {
    * OS environment variables (Windows) and older systems have empty class path 
    * entries which are no longer needed. This feature can be used to identify 
    * empty. useless entries so they can be removed providing more room for new 
-   * entries.</p>
+   * entries.
    * 
    * @see #getShadowedClasses()
    * @see #getShadowClassDetails()
@@ -177,7 +177,7 @@ public class ClasspathUtil implements ServletContextListener {
    * Get a listing of libraries missing from the class path.
    * 
    * <p>This is a listing of all the files or directories specified on the 
-   * class path but could not be found or read from the file system.</p>
+   * class path but could not be found or read from the file system.
    *  
    * @return An array of class path entries that do not exist on the file 
    *         system.
@@ -203,7 +203,7 @@ public class ClasspathUtil implements ServletContextListener {
    * <p>This not necessarily an error, but it can allow an application to 
    * determine why a version of a class is not loading as expected. This may be 
    * the case when an older version of the class appears first on the class 
-   * path.</p>
+   * path.
    * 
    * @return an array of fully qualified class names that appear more than one 
    *         in the class path.
@@ -234,21 +234,21 @@ public class ClasspathUtil implements ServletContextListener {
    * <p>This not necessarily an error, but it can allow an application to 
    * determine why a version of a class is not loading as expected. This may be 
    * the case when an older version of the class appears first on the class 
-   * path.</p>
+   * path.
    * 
    * The format is: <pre>
-   * <tt>&lt;class&gt;</tt> found in <tt>&lsquo;&lt;initial&gt;</tt>&rsquo;;shadowed in &lsquo;<tt>&lt;secondary&gt;</tt>&rsquo;<br></pre></p>
+   * <tt>&lt;class&gt;</tt> found in <tt>&lsquo;&lt;initial&gt;</tt>&rsquo;;shadowed in &lsquo;<tt>&lt;secondary&gt;</tt>&rsquo;<br></pre>
    * 
    * <p>Where: <tt>&lt;class&gt;</tt> is the fully-qualified class name that 
    * appears more than once in the class path, <tt>&lt;initial&gt;</tt> is the 
    * class path entry where the class was first located and from where it will 
    * probably be found by the class loader, and <tt>&lt;secondary&gt;</tt> is 
-   * the class path entry when a copy of the class was found.</p>
+   * the class path entry when a copy of the class was found.
    * 
    * <p>This will show each class that occurs more than once in the class path 
    * listing; both the first class path entry from which the class will 
    * probably be loaded and the class path entry contains a shadow copy of the 
-   * entry.</p>
+   * entry.
    * 
    * @return an array of shadowed class entries.
    */

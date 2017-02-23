@@ -509,7 +509,7 @@ public class UriUtil {
    * path string.
    *
    * <p>Takes a string like &quot;\home\work\bin\..\lib&quot; and returns a
-   * path like &quot;\home\work\lib&quot;</p>
+   * path like &quot;\home\work\lib&quot;
    *
    * @param path The representative path with possible relational dot notation
    *
@@ -613,7 +613,7 @@ public class UriUtil {
    * Get the address of the host.
    *
    * <p><b>NOTE</b>: This may take a long time as it will perform a DNS lookup
-   * which can take several seconds!</p>
+   * which can take several seconds!
    *
    *
    * @param uri
@@ -691,7 +691,7 @@ public class UriUtil {
    * Return the port specified by the given URI.
    * 
    * <p>If there is no port specified in the URI, this code will attempt to 
-   * determine the port based upon the scheme portion of the argument URI.</p>
+   * determine the port based upon the scheme portion of the argument URI.
    *
    * @param uri The URI to parse
    *
@@ -738,7 +738,7 @@ public class UriUtil {
    *
    * <p>If the protocol of the URI is &quot;https&quot;, (case insensitive) then
    * a new URI will be returned with &quot;ssl&quot; as the protocol, the same
-   * hostname and port, but with the rest blank.</p>
+   * hostname and port, but with the rest blank.
    *
    * @param uri
    *
@@ -812,7 +812,7 @@ public class UriUtil {
    * given URI.
    *
    * <p>This method will always return a hashtable even if the URI does not
-   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   * contain a query string. In such cases, the Hashtable will be empty.
    *
    * @param uri The HTTP query string to parse
    *
@@ -835,11 +835,11 @@ public class UriUtil {
    * strings keyed by parameter name.
    *
    * <p>This method will always return a hashtable even if the URI does not
-   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   * contain a query string. In such cases, the Hashtable will be empty.
    *
    * <p>Before parsing the query string, a check is made to determine if the
    * query delimiter exists in the string. If one does, only the data after the
-   * LAST occurence of the '?' is parsed.</p>
+   * LAST occurence of the '?' is parsed.
    *
    * @param query The HTTP query string to parse
    *
@@ -1055,7 +1055,7 @@ public class UriUtil {
    * <p>This only returns true of is UDP returns false, as there is a very
    * short list of schemes that are UDP-only. This means that a scheme of 'dns'
    * wil return true as it is not a UDP-only service and can translate to a TCP
-   * port.</p>
+   * port.
    *
    * @param uri
    * @return TODO Complete Documentation
@@ -1075,7 +1075,7 @@ public class UriUtil {
    * Is the URI representing a UDP-only scheme?
    *
    * <p>If the URI starts with UDP or one of the other of a short list of
-   * schemes that represent a UDP-only service, then this will return true.</p>
+   * schemes that represent a UDP-only service, then this will return true.
    *
    * @param uri
    *
@@ -1097,17 +1097,14 @@ public class UriUtil {
    * Provide a no-exception throwing URI creation convenience method.
    *
    * <p>This is handy for use in declarations and other static contexts where a
-   * null check is fine for checking for a valid URI or URI syntax.</p>
+   * null check is fine for checking for a valid URI or URI syntax.
    *
-   * <p> Consider:<br><tt>
-   * <pre>
+   * <p> Consider:<pre>
    * if( UriUtil.parse( text ) != null )
    * {
    *   System.out.println( &quot;The text '&quot; + text + &quot;' represents a valid URI&quot; );
    * }
-   * </pre><br></tt> As opposed to: <br>
-   * <tt>
-   * <pre>
+   * </pre> As opposed to:<pre>
    * try
    * {
    *   new URI( text );
@@ -1117,8 +1114,8 @@ public class UriUtil {
    * {
    *   // ignore
    * }
-   * </pre><br></tt>
-   * </p>
+   * </pre>
+   * 
    *
    * @param text The text to parse into a URI
    *
@@ -1190,7 +1187,7 @@ public class UriUtil {
    * given URI.
    *
    * <p>This method will always return a hashtable even if the URI does not
-   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   * contain a query string. In such cases, the Hashtable will be empty.
    *
    * @param uri The HTTP query string to parse
    *
@@ -1213,11 +1210,11 @@ public class UriUtil {
    * strings keyed by parameter name.
    *
    * <p>This method will always return a hashtable even if the URI does not
-   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   * contain a query string. In such cases, the Hashtable will be empty.
    *
    * <p>Before parsing the query string, a check is made to determine if the
    * query delimiter exists in the string. If one does, only the data after the
-   * LAST occurence of the '?' is parsed.</p>
+   * LAST occurence of the '?' is parsed.
    *
    * @param query The HTTP query string to parse
    *

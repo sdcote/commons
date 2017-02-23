@@ -9,7 +9,7 @@ import coyote.commons.StringUtil;
 * Converts hexadecimal Strings. 
 * 
 * <p>The charset used for certain operation can be set, the default is set in 
-* {@link #DEFAULT_CHARSET_NAME}</p>
+* {@link #DEFAULT_CHARSET_NAME}
 */
 public class Hex implements BinaryEncoder, BinaryDecoder {
 
@@ -31,7 +31,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * 
    * <p>The returned array will be half the length of the passed array, as it 
    * takes two characters to represent any given byte. An exception is thrown 
-   * if the passed char array has an odd number of elements.</p>
+   * if the passed char array has an odd number of elements.
    * 
    * @param data An array of characters containing hexadecimal digits
    * 
@@ -71,7 +71,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * hexadecimal values of each byte in order.
    * 
    * <p>The returned array will be double the length of the passed array, as it 
-   * takes two characters to represent any given byte.</p>
+   * takes two characters to represent any given byte.
    * 
    * @param data a byte[] to convert to Hex characters
    * 
@@ -89,7 +89,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * hexadecimal values of each byte in order.
    * 
    * <p>The returned array will be double the length of the passed array, as it 
-   * takes two characters to represent any given byte.</p>
+   * takes two characters to represent any given byte.
    * 
    * @param data a byte[] to convert to Hex characters
    * @param toLowerCase <code>true</code> converts to lowercase, {@code false} 
@@ -109,7 +109,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * hexadecimal values of each byte in order.
    * 
    * <p>The returned array will be double the length of the passed array, as it 
-   * takes two characters to represent any given byte.</p>
+   * takes two characters to represent any given byte.
    * 
    * @param data a byte[] to convert to Hex characters
    * @param toDigits the output alphabet
@@ -135,7 +135,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * values of each byte in order. 
    * 
    * <p>The returned String will be double the length of the passed array, as 
-   * it takes two characters to represent any given byte.</p>
+   * it takes two characters to represent any given byte.
    * 
    * @param data a byte[] to convert to Hex characters
    * 
@@ -201,7 +201,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * 
    * <p>The returned array will be half the length of the passed array, as it 
    * takes two characters to represent any given byte. An exception is thrown 
-   * if the passed char array has an odd number of elements.</p>
+   * if the passed char array has an odd number of elements.
    * 
    * @param array An array of character bytes containing hexadecimal digits
    * 
@@ -230,7 +230,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * <p>The returned array will be half the length of the passed String or 
    * array, as it takes two characters to represent any given byte. An 
    * exception is thrown if the passed char array has an odd number of 
-   * elements.</p>
+   * elements.
    * 
    * @param object A String or, an array of character bytes containing 
    * hexadecimal digits
@@ -259,10 +259,10 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * representing the hexadecimal values of each byte in order. 
    * 
    * <p>The returned array will be double the length of the passed array, as it 
-   * takes two characters to represent any given byte.</p>
+   * takes two characters to represent any given byte.
    * 
    * <p>The conversion from hexadecimal characters to the returned bytes is 
-   * performed with the charset named by {@link #getCharsetName()}. </p>
+   * performed with the charset named by {@link #getCharsetName()}. 
    * 
    * @param array a byte[] to convert to Hex characters
    * 
@@ -285,10 +285,10 @@ public class Hex implements BinaryEncoder, BinaryDecoder {
    * representing the hexadecimal values of each byte in order. 
    * 
    * <p>The returned array will be double the length of the passed String or 
-   * array, as it takes two characters to represent any given byte.</p>
+   * array, as it takes two characters to represent any given byte.
    * 
    * <p>The conversion from hexadecimal characters to bytes to be encoded to 
-   * performed with the charset named by {@link #getCharsetName()}. </p>
+   * performed with the charset named by {@link #getCharsetName()}. 
    * 
    * @param object a String, or byte[] to convert to Hex characters
    * 

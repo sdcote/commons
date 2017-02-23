@@ -10,9 +10,9 @@ import java.util.Date;
  * Allows Options to be created from a single String.
  * 
  * <p>The pattern contains various single character flags and via an optional 
- * punctuation character, their expected type.</p>
+ * punctuation character, their expected type.
  *
- * <table border="1">
+ * <table border="1"><caption>examples</caption>
  * <tr><td>a</td><td>-a flag</td></tr>
  * <tr><td>b@</td><td>-b [classname]</td></tr>
  * <tr><td>c&gt;</td><td>-c [filename]</td></tr>
@@ -24,7 +24,7 @@ import java.util.Date;
  *
  * <p>For example, the following allows command line flags of '-v -p 
  * string-value -f /dir/file'. The exclamation mark precede a mandatory 
- * option.</p>
+ * option.
  * 
  * <pre>Options options = PatternOptionBuilder.parsePattern("vp:!f/");</pre>
  */

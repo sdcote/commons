@@ -122,7 +122,7 @@ public class ConfigSlot {
   /**
    * Set the description of this configuration element.
    * 
-   * <p>This is useful in UIs which prompt the user for configuration input.</p>
+   * <p>This is useful in UIs which prompt the user for configuration input.
    *
    * @param description The description of the configuration slot.
    */
@@ -143,7 +143,7 @@ public class ConfigSlot {
    * completed. In such cases, the ability to pass a user-defined message field
    * is useful as in the case where value failed some validity check and the
    * ConfigSlot is passed back to the GUI with the invalid value in the
-   * defaultValue field and an error message in the Message field.</p>
+   * defaultValue field and an error message in the Message field.
    *
    * @param message
    */

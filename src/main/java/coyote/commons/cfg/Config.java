@@ -39,12 +39,12 @@ import org.w3c.dom.Node;
  * 
  * <p>The primary goal of this class is to allow hierarchical configurations to
  * be specified using XML as a formatting strategy. Basic File and network
- * protocol I/O is supported in a simple interface.</p>
+ * protocol I/O is supported in a simple interface.
  * 
  * <p>This is designed to be a simple class to perform a simple task. It is NOT 
  * designed to be all things to all people. There is no concept of data types,
  * inheritance, modification listeners, structure validation or data integrity
- * in this class.</p>
+ * in this class.
  */
 public class Config implements Cloneable, Serializable {
 
@@ -222,7 +222,7 @@ public class Config implements Cloneable, Serializable {
    * Add a child configuration object to the list of children.
    * 
    * <p>Note: No check is made to see if the config has already been added. It
-   * is therefore possible to add the same configuration multiple times.</p>
+   * is therefore possible to add the same configuration multiple times.
    *
    * @param config config to be added
    *
@@ -356,10 +356,10 @@ public class Config implements Cloneable, Serializable {
    * 
    * <p>It is possible for this method to return null as an empty node may be 
    * stored with the given name. In this case, the default value will NOT be 
-   * returned as that null value is the true value of the named node.</p>
+   * returned as that null value is the true value of the named node.
    * 
    * <p>The default argument will only be returned if the named element is not 
-   * found.</p>
+   * found.
    *
    * @param name String which represents the name of the data to retrieve
    * @param deflt default value to return if there is no element found with
@@ -459,7 +459,7 @@ public class Config implements Cloneable, Serializable {
   /**
    * Returns an Iterator through the child configurations.
    *
-   * <p>The Iterator will allow one to access each child configuration.</p>
+   * <p>The Iterator will allow one to access each child configuration.
    *
    * @return Iterator through the child configurations.
    */
@@ -475,10 +475,10 @@ public class Config implements Cloneable, Serializable {
    * the given name.
    *
    * <p>The Iterator will allow one to access each child configuration whose node
-   * type (XML element name) matches the given type.</p>
+   * type (XML element name) matches the given type.
    * 
    * <p>If the argument of '*' is passed as the type argument, then all child 
-   * configurations will be returned.</p>
+   * configurations will be returned.
    *
    * @param type The node name to match or '*" for all children.
    *
@@ -632,7 +632,7 @@ public class Config implements Cloneable, Serializable {
    * Parse the XML into sub-configs and elements.
    *
    * <p>This method is NOT thread-safe. It is designed to be externally
-   * synchronized.</p>
+   * synchronized.
    *
    * @param node XML node to parse for data
    * @param lvl the level this node is in the configuration
@@ -738,7 +738,7 @@ public class Config implements Cloneable, Serializable {
    * Set and possibly over write an existing element with the given name with 
    * the given value.
    * 
-   * <p>Used to avoid duplicate elements.</p>
+   * <p>Used to avoid duplicate elements.
    * 
    * @param name Name of the value to set.
    * @param value The value to set
@@ -820,7 +820,7 @@ public class Config implements Cloneable, Serializable {
    * Convert this configuration into an indented XML string.
    *
    * <p>This will start the XML at position 0 and indent all child nodes two
-   * spaces. This is the same as calling <code>toIndentedXML( 0 )</code></p>
+   * spaces. This is the same as calling <code>toIndentedXML( 0 )</code>
    *
    * @return String XML which represents this configuration
    */
@@ -837,7 +837,7 @@ public class Config implements Cloneable, Serializable {
    * <p>If the indent argument is negative, then no indenting will occur and
    * all the XML will be placed in a single line. If the indent argument is
    * zero or greater, then the resultant XML will be indented the given number
-   * of spaces with its children being indented incrementally by 2 spaces.</p>
+   * of spaces with its children being indented incrementally by 2 spaces.
    *
    * @param indent The number of spaces to indent this configuration
    *

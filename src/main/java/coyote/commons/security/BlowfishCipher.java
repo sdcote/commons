@@ -13,7 +13,7 @@ import coyote.commons.ByteUtil;
  * 
  * <p>The Blowfish algorithm is a symmetric block cipher that can be used as a 
  * drop-in replacement for DES or IDEA. It takes a variable-length key, from 32 
- * bits to 448 bits, making it ideal for both domestic and exportable use.</p>
+ * bits to 448 bits, making it ideal for both domestic and exportable use.
  * 
  * <h3>Blowfish Encryption</h3>
  * <p>Blowfish takes 64 bit plaintext blocks as input and creates as output 
@@ -32,7 +32,7 @@ import coyote.commons.ByteUtil;
  * </pre>
  * Where P is the sub-keys and F is the complex function. L17 and R17 contain 
  * the ciphertext. Notice that there are 16 iterations hence 16 rounds of 
- * XoR'ing and operations of F.</p>
+ * XoR'ing and operations of F.
  * 
  * <h3>Blowfish Decryption</h3>
  * <p>Decryption for Blowfish is relatively straight forward. Ironically, 
@@ -54,20 +54,20 @@ import coyote.commons.ByteUtil;
  * Considering that the key can be 32 to 448 bits there can exist 1 to 14 
  * 32-bit words. This key is then used to make 4 SBoxes and 18 32 bit sub-keys. 
  * The SBoxes have an 8 x 32 structure which totals 256 32 bit elements. The 
- * P-Array stores the sub-keys.</p>
+ * P-Array stores the sub-keys.
  * 
  * <p><strong>Step 1</strong>: The P-Array becomes initialized in an orderly 
  * fashion by using bits from the constant pi. For instance, P1 is assigned the 
  * leftmost 32 bits of pi and so forth. Next the 4 SBoxes becomes 
- * initialized.</p>
+ * initialized.
  * <p><strong>Step 2</strong>: An XoR is conducted with the array elements of 
  * the key and the sub-keys P-Array elements and then reassigned into the 
- * P-Array elements. For instance, Pi = Pi XoR Kj...</p>
+ * P-Array elements. For instance, Pi = Pi XoR Kj...
  * <p><strong>Step 3</strong>: There should now be a 64 bit block (of all zeros 
  * for the first case). Take this block and encrypt it using the Blowfish 
  * process. Pi and Pi+1 will then be replaced with this result and then 
  * increment i. Continue this step until all P-Array elements have been 
- * replaced and then in order all 4 SBoxes have been replaced likewise.</p>
+ * replaced and then in order all 4 SBoxes have been replaced likewise.
  * 
  * <h3>Benefits of Blowfish</h3>
  * <p>Blowfish has been known to be very fast and compact only requiring 5K of 
@@ -76,19 +76,19 @@ import coyote.commons.ByteUtil;
  * performing operations on both halves of its input word per round which is 
  * different than the classical Feistal process. Finally, Blowfish provides a 
  * very strong avalanche affect in that every left-side input bit affects every 
- * right-side input bit per round. </p>
+ * right-side input bit per round. 
  * 
  * <h3>Status of Blowfish</h3>
  * <p>Blowfish is classified as public domain; as such it has been analyzed 
  * extensively and gone through years of peer review. At no point since it's 
  * initial release in 1993 has the Blowfish code ever been cracked. This is 
  * significant when you consider that the source code to the algorithm is 
- * freely available.</p>
+ * freely available.
  * 
  * <p>The relative strength of the encryption algorithm is based on key length. 
  * Bruce Schneier, creator of the Blowfish encryption algorithm, has calculated 
  * that according to what we know of quantum mechanics today, that the entire 
- * energy output of the sun is insufficient to break a 197-bit key.</p>
+ * energy output of the sun is insufficient to break a 197-bit key.
  * 
  * <p>Here is a more generalized example:<br/>The most common key lengths used 
  * by today's web browsers are "40-bit" and "128-bit." As a comparison, a 
@@ -96,19 +96,19 @@ import coyote.commons.ByteUtil;
  * computer. However, a 128-bit key would take one BILLION powerful computers, 
  * each capable of trying one BILLION keys per second. In other words, it would 
  * take MILLIONS of years to try every possible combination of bits in a 
- * 128-bit key.</p>
+ * 128-bit key.
  * 
  * <p>In the preceding example, the 128-bit encryption is not just three times 
  * stronger than 40-bit encryption - it is 
  * 309,485,009,821,345,068,724,781,056 times stronger. Performing this same 
  * analysis on a 448-bit encryption key yields an encryption strength that is 
- * 2.1X10^96 times stronger than a 128-bit key.</p>
+ * 2.1X10^96 times stronger than a 128-bit key.
  * 
- * <p>Ported to Java from the C-code reference implementation.</p>
+ * <p>Ported to Java from the C-code reference implementation.
  * 
  * <p>References:<ol>
  * <li>Applied Cryptography --2nd Edition. Bruce Schneier; John Wiley & Sons
- * 1996, 336-339.</ul></p>
+ * 1996, 336-339.</ul>
  * <li><a href="http://www.counterpane.com/blowfish.html">The Blowfish 
  * Encryption Algorithm.</a></li>
  * </ol>
@@ -172,7 +172,7 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
 
     /*
      * <p>First the data is padded to blocks of data using a PKCS5 DES CBC 
-     * encryption padding scheme described in section 1.1 of RFC-1423.</p>
+     * encryption padding scheme described in section 1.1 of RFC-1423.
      * 
      * <p>The last byte of the stream is ALWAYS the number of bytes added to 
      * the end of the data. If the data ends on a boundary, then there will be 
@@ -184,7 +184,7 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
      * XXXX4444 - etc.
      * XXXXX333 - etc.
      * XXXXXX22 - etc.
-     * XXXXXXX1 - only the last byte is padding.</pre></code></p>
+     * XXXXXXX1 - only the last byte is padding.</pre></code>
      * 
      * <p>According to RFC1423 section 1.1:<blockquote>The input to the DES CBC 
      * encryption process shall be padded to a multiple of 8 octets, in the 
@@ -195,7 +195,7 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
      * 0505050505, 060606060606, 07070707070707, and 0808080808080808. All 
      * input is padded with 1 to 8 octets to produce a multiple of 8 octets in 
      * length. The padding can be removed unambiguously after decryption.
-     * </blockquote></p>
+     * </blockquote>
      */
     System.out.println( "Data length: " + bytes.length );
     System.out.println( "Modulo[" + BlowfishCipher.BLOCK_SIZE + "]: " + ( bytes.length % BlowfishCipher.BLOCK_SIZE ) );
@@ -256,7 +256,7 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
 
 
   /**
-   * Constructs a BlowfishCipher cipher object.</p>
+   * Constructs a BlowfishCipher cipher object.
    */
   public BlowfishCipher() {}
 
@@ -267,15 +267,15 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
    * The normal entry to the decryption process. 
    * 
    * <p>It is guaranteed to be called with enough bytes in the input to carry 
-   * on a decryption of one full block.</p>
+   * on a decryption of one full block.
    * 
    * <p>Because the Blowfish cipher engine is designed to handle two 32-bit 
    * blocks, this method's purpose is to transform on entry and exit the data 
-   * to/from 32-bit blocks; ie. Java.int.</p>
+   * to/from 32-bit blocks; ie. Java.int.
    * 
    * <p>The input becomes two 32-bit blocks as Left and Right halves onto which 
    * the Blowfish cipher function is applied ROUNDS times in reverse order to 
-   * that of the encryption.</p>
+   * that of the encryption.
    *
    * @param in input byte array of cipher text.
    * @param off index in in of where to start considering data.
@@ -320,14 +320,14 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
    * The normal entry to the encryption process. 
    * 
    * <p>It is guaranteed to be called with enough bytes in the input to carry 
-   * on an encryption of one full block.</p>
+   * on an encryption of one full block.
    * 
    * <p>The code of the Blowfish encryption engine, found here, is also 
    * replicated in the makeSessionKey method found later. The reasons for this 
    * duplication is performance. This method, outputs the result in a byte 
    * array form, suitable for the user data encryption operations, while 
    * makeSessionKey outputs its result as an int array suitable for, and used 
-   * during, the expansion of the user-key into a Blowfish session key.</p>
+   * during, the expansion of the user-key into a Blowfish session key.
    *
    * @param in input byte array of plain text.
    * @param off index in in of where to start considering data.
@@ -457,11 +457,11 @@ class BlowfishCipher extends AbstractCipher implements Cipher {
    * 
    * <p>The key bytes are fist extracted from the user-key and then used, 
    * repetitively if need be, to build the contents of this session key and 
-   * S-boxes values.</p>
+   * S-boxes values.
    * 
    * <p>The method's only exceptions are when the user-key's contents is a null 
    * Java object or a byte array of zero length. Otherwise the key data -up to 
-   * 56 bytes- are used repetitively.</p>
+   * 56 bytes- are used repetitively.
    *
    * @param key the user-key object to use for this session.
    * 

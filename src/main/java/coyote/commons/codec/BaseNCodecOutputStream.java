@@ -12,7 +12,7 @@ import coyote.commons.codec.BaseNCodec.Context;
 /**
  * Abstract superclass for Base-N output streams.
  * 
- * <p>To write the EOF marker without closing the stream, call {@link #eof()}</p>
+ * <p>To write the EOF marker without closing the stream, call {@link #eof()}
  */
 public class BaseNCodecOutputStream extends FilterOutputStream {
 
@@ -40,7 +40,7 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
    * Closes this output stream and releases any system resources associated 
    * with the stream.
    * 
-   * <p>To write the EOF marker without closing the stream, call {@link #eof()}</p>
+   * <p>To write the EOF marker without closing the stream, call {@link #eof()}
    *
    * @throws IOException if an I/O error occurs.
    */
@@ -88,7 +88,7 @@ public class BaseNCodecOutputStream extends FilterOutputStream {
    * Flushes this output stream and forces any buffered output bytes to be 
    * written out to the stream. 
    * 
-   * <p>If propagate is true, the wrapped stream will also be flushed.</p>
+   * <p>If propagate is true, the wrapped stream will also be flushed.
    *
    * @param propagate boolean flag to indicate whether the wrapped OutputStream 
    * should also be flushed.

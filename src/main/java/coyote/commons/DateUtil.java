@@ -112,7 +112,7 @@ public class DateUtil {
    * amount of offset from UT; the other uses common  3-character strings for
    * indicating time zones in North America.
    * </pre>
-   * </p>
+   * 
    *
    * @param date
    *
@@ -220,7 +220,7 @@ public class DateUtil {
    * Return the given Date object in ISO8601 format adjusted to standard GMT.
    *
    * <p>Take the given date, remove daylight savings time and the offset from
-   * GMT resulting in a universally coordinated time in ISO8601 format.</p>
+   * GMT resulting in a universally coordinated time in ISO8601 format.
    *
    * @param date the Date object to format
    *
@@ -302,7 +302,7 @@ public class DateUtil {
    * seconds delimited with the colon ':' character.
    *
    * <p>This returns a number like 290636:7:20 representing 290,636 hours past
-   * the epoch.</p>
+   * the epoch.
    *
    * @param millis The number of milliseconds representing an elapsed time
    *
@@ -326,7 +326,7 @@ public class DateUtil {
    * seconds and milliseconds delimited with the colon ':' character.
    *
    * <p>This returns a number like 290636:7:20 representing 290,636 hours past
-   * the epoch.</p>
+   * the epoch.
    *
    * @param millis The number of milliseconds representing an elapsed time
    *
@@ -396,7 +396,7 @@ public class DateUtil {
   /**
    * Get a formatted string representing the difference between the two times.
    * 
-   * <p>The output is in the format of X wks X days X hrs X min X.XXX sec.</p>
+   * <p>The output is in the format of X wks X days X hrs X min X.XXX sec.
    * 
    * @param millis number of elapsed milliseconds.
    * 
@@ -1400,7 +1400,7 @@ public class DateUtil {
    * Makes a time String in the format HH:MM:SS from a separate ints for hour,
    * minute, and second.
    *
-   * <p>If the seconds are 0, then the output is in HH:MM.</p>
+   * <p>If the seconds are 0, then the output is in HH:MM.
    *
    * @param hour The hour int
    * @param minute The minute int
@@ -1445,7 +1445,7 @@ public class DateUtil {
    * Makes a combined date and time string in the format "MM/DD/YYYY HH:MM:SS"
    * from a Date.
    *
-   * <p>If the seconds are 0 they are left off.</p>
+   * <p>If the seconds are 0 they are left off.
    *
    * @param date The Date
    *
@@ -1496,7 +1496,7 @@ public class DateUtil {
    * <p>This is the two most significant units of time. Form will be something
    * like "3h 26m" indicating 3 hours 26 minutes and some insignificant number
    * of seconds. Formats are Xd Xh (days-hours), Xh Xm (Hours-minutes), Xm Xs
-   * (minutes-seconds) and Xs (seconds).</p>
+   * (minutes-seconds) and Xs (seconds).
    *
    * @param seconds number of elapsed seconds NOT milliseconds.
    *
@@ -1555,7 +1555,7 @@ public class DateUtil {
    * Calculate the phase of the moon for a given date.
    *
    * <p>Code heavily influenced by hacklib.c in
-   * <a href="http://www.nethack.org/">Nethack</a></p>
+   * <a href="http://www.nethack.org/">Nethack</a>
    *
    * <p>The Algorithm:
    *
@@ -1601,11 +1601,11 @@ public class DateUtil {
    * Return a gregorian calendar instance for the current date and set to the
    * time represented by the given time string.
    *
-   * <p>The argument MUST be in HH:MM:SS, HH:MM or SS format.</p>
+   * <p>The argument MUST be in HH:MM:SS, HH:MM or SS format.
    *
    * <p>The returned calendar object can then be used to roll dates up and down
    * with the proper conversions being made; i.e. 12/31 + one day should result
-   * in a calendar representation of 1/1.</p>
+   * in a calendar representation of 1/1.
    *
    * @param time The string in HH:MM:SS format.
    *

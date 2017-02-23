@@ -13,7 +13,7 @@ public interface PathFilter {
    * Combines two patterns into a new pattern that is returned.
    * 
    * <p>The full algorithm used for combining the two pattern depends on the 
-   * underlying implementation.</p>
+   * underlying implementation.
    * 
    * @param pattern1 the first pattern
    * @param pattern2 the second pattern
@@ -33,19 +33,19 @@ public interface PathFilter {
    * <p>This method is supposed to find out which part of the path is matched
    * dynamically through an actual pattern, that is, it strips off a statically
    * defined leading path from the given full path, returning only the actually
-   * pattern-matched part of the path.</p>
+   * pattern-matched part of the path.
    * 
    * <p>For example: For "service/*.html" as pattern and "service/method.html"
    * as full path, this method should return "method.html". The detailed
    * determination rules are specified to this PathFilter's matching 
-   * strategy.</p>
+   * strategy.
    * 
    * <p>A simple implementation may return the given full path as-is in case
    * of an actual pattern, and the empty String in case of the pattern not
    * containing any dynamic parts (i.e. the {@code pattern} parameter being
    * a static path that wouldn't qualify as an actual {@link #isPattern pattern}).
    * A sophisticated implementation will differentiate between the static parts
-   * and the dynamic parts of the given path pattern.</p>
+   * and the dynamic parts of the given path pattern.
    * 
    * @param pattern the path pattern
    * @param path the full path to introspect
@@ -62,7 +62,7 @@ public interface PathFilter {
    * 
    * <p>URI template variables are expressed through curly brackets ('{' and 
    * '}').  For example: For pattern "/orders/{order}" and path "/orders/1", 
-   * this method will return a map containing "order"->"1".</p>
+   * this method will return a map containing "order"-&gt;"1".
    * 
    * @param pattern the path pattern, possibly containing URI templates
    * @param path the full path to extract template variables from
@@ -81,7 +81,7 @@ public interface PathFilter {
    * <p>The full algorithm used depends on the underlying implementation, but 
    * generally, the returned {@code Comparator} will 
    * {@linkplain java.util.Collections#sort(java.util.List, java.util.Comparator) sort}
-   * a list so that more specific patterns come before generic patterns.</p>
+   * a list so that more specific patterns come before generic patterns.
    * 
    * @param path the full path to use for comparison
    * 
@@ -98,7 +98,7 @@ public interface PathFilter {
    * 
    * <p>If the return value is {@code false}, then the {@link #match} method 
    * does not have to be used because direct equality comparisons on the static 
-   * path Strings will lead to the same result.</p>
+   * path Strings will lead to the same result.
    * 
    * @param path the path String to check
    * 
@@ -129,7 +129,7 @@ public interface PathFilter {
    * {@code pattern}, according to this PathFilter's matching strategy.
    * 
    * <p>Determines whether the pattern at least matches as far as the given 
-   * base path goes, assuming that a full path may then match as well.</p>
+   * base path goes, assuming that a full path may then match as well.
    * 
    * @param pattern the pattern to match against
    * @param path the path String to test

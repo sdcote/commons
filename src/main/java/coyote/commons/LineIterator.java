@@ -60,7 +60,7 @@ public class LineIterator implements Iterator<String> {
    * Indicates whether the <code>Reader</code> has more lines.
    * 
    * <p>If there is an <code>IOException</code> then {@link #close()} will
-   * be called on this instance.</p>
+   * be called on this instance.
    *
    * @return {@code true} if the Reader has more lines
    * 
@@ -131,7 +131,7 @@ public class LineIterator implements Iterator<String> {
    * 
    * <p>This method is useful if you only want to process the first few lines 
    * of a file. If you do not close the iterator then the {@code Reader} 
-   * remains open. This method can safely be called multiple times.</p>
+   * remains open. This method can safely be called multiple times.
    */
   public void close() {
     _done = true;
@@ -159,10 +159,10 @@ public class LineIterator implements Iterator<String> {
    * 
    * <p>The {@link #hasNext()} method will call this method to determine if 
    * this line is valid for return to the user. If this method returns false, 
-   * the line will be skipped and another line read.</p>
+   * the line will be skipped and another line read.
    * 
    * <p>This implementation always returns true. This method be overridden 
-   * with other implementations which can check for empty or blank lines.</p>
+   * with other implementations which can check for empty or blank lines.
    * 
    * @param line the line that is to be validated
    * 

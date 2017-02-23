@@ -15,7 +15,7 @@ package coyote.commons;
  * Blocking queue. 
  *
  * <p>Implemented as circular buffer in an array of objects. Synchronized on 
- * the array to avoid double synchronization.</p>
+ * the array to avoid double synchronization.
  * 
  * TODO Remove an object from the queue "argument.equals(slots[i])"
  * TODO Remove all object from the queue that matches the argument
@@ -149,7 +149,7 @@ public class BlockingQueue {
   /**
    * Put object in queue.
    *
-   * <p>Block indefinitely if the queue is full.</p>
+   * <p>Block indefinitely if the queue is full.
    *
    * @param o Object to place in the queue
    *
@@ -179,7 +179,7 @@ public class BlockingQueue {
   /**
    * Put object in queue.
    *
-   * <p>Block for time-out if the queue is full.</p>
+   * <p>Block for time-out if the queue is full.
    *
    * @param timeout If timeout expires, throw InterruptedException
    * @param o Object
@@ -213,7 +213,7 @@ public class BlockingQueue {
   /**
    * Get object from queue.
    *
-   * <p>Block indefinitely if there are no objects to get.</p>
+   * <p>Block indefinitely if there are no objects to get.
    *
    * @return The next object in the queue.
    *
@@ -247,7 +247,7 @@ public class BlockingQueue {
   /**
    * Get from queue.
    *
-   * <p>Block for time-out if there are no objects to get.</p>
+   * <p>Block for time-out if there are no objects to get.
    *
    * @param millis the time to wait for a job
    * @return The next object in the queue, or null if timedout.
@@ -286,7 +286,7 @@ public class BlockingQueue {
   /**
    * Peek at the first element in queue but does not remove it.
    *
-   * <p>Block indefinitely if there are no objects to peek.</p>
+   * <p>Block indefinitely if there are no objects to peek.
    *
    * @return The next object in the queue, or null if queue is empty.
    *
@@ -312,7 +312,7 @@ public class BlockingQueue {
   /**
    * Peek at the first element in queue but does not remove it.
    *
-   * <p>Block for time-out if there are no objects to peek.</p>
+   * <p>Block for time-out if there are no objects to peek.
    *
    * @param millis the time to wait for a job
    *

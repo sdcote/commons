@@ -54,7 +54,7 @@ public class BaseNCodecInputStream extends FilterInputStream {
   /**
    * Marks the current position in this input stream.
    * 
-   * <p>The {@link #mark} method of {@link BaseNCodecInputStream} does nothing.</p>
+   * <p>The {@link #mark} method of {@link BaseNCodecInputStream} does nothing.
    *
    * @param readLimit the maximum limit of bytes that can be read before the mark position becomes invalid.
    */

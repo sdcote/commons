@@ -24,7 +24,7 @@ import java.util.Date;
  * <p>Particularly useful in command line argument processing, this class 
  * supports several shorthand 'token' which are interpreted into different 
  * dates. For example, 'now' means the present time and noon means today at 
- * noon.</p>
+ * noon.
  */
 public class DateParser {
 
@@ -44,16 +44,15 @@ public class DateParser {
   /**
    * Parse the given string into a Date object. 
    * <p>This allows for the uniform specification and handling of date/time 
-   * strings in all actions.</p>
+   * strings in all actions.
    * 
    * <p>Supports the following tokens:<ul>
    * <li>now - the current instant in time.</li>
    * <li>noon - Today at 12:00:00.000</li>
-   * <li>today or startoftoday - the time representing today at 00:00:00.000</li></ul>
-   * <li>yesterday - the time representing yesterday at 00:00:00.000</li></ul>
-   * <li>5,10...60ago - increments of 5 minutes in the past</li></ul>
+   * <li>today or startoftoday - the time representing today at 00:00:00.000</li>
+   * <li>yesterday - the time representing yesterday at 00:00:00.000</li>
+   * <li>5,10...60ago - increments of 5 minutes in the past</li>
    * <li>5,10...60fromnow - increments of 5 minutes in the future</li></ul>
-   * </p> 
    * 
    * @param token The string to parse
    * 

@@ -18,7 +18,7 @@ import org.junit.Test;
  *   <li>Groovy</li>
  *   <li>man</li>
  * </ul>
- * </p>
+ * 
  */
 public class ApplicationTest {
 

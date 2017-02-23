@@ -9,16 +9,16 @@ import java.io.InputStream;
  * 
  * <p>When encoding the default lineLength is 76 characters and the default 
  * lineEnding is CRLF, but these can be overridden by using the appropriate
- * constructor.</p>
+ * constructor.
  * 
  * <p>The default behavior of the Base32InputStream is to DECODE, whereas the 
  * default behavior of the Base32OutputStream is to ENCODE, but this behavior 
- * can be overridden by using a different constructor.</p>
+ * can be overridden by using a different constructor.
  * 
  * <p>Since this class operates directly on byte streams, and not character 
  * streams, it is hard-coded to only encode/decode character encodings which 
  * are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, 
- * UTF-8, etc).</p>
+ * UTF-8, etc).
  */
 public class Base32InputStream extends BaseNCodecInputStream {
 

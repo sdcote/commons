@@ -24,38 +24,38 @@ import coyote.commons.StringParser;
  * <p>This utility searches for tags delimited by the opening &quot;[#&quot;
  * and the closing &quot;[#&quot; string sequences. This parser then replaces
  * the tokens within the delimiters with the string values those tokens
- * represent.</p>
+ * represent.
  *
  * <p> If the token is preceded with a &quot;$&quot;, then the token is treated
  * as a key to be used to lookup an object in a symbol table. That object's
  * <code>toString</code> method is called and the returning value placed in the
  * position where the token was found. This is analogous to a variable lookup.
  * If the token is not found in the table or the symbols object returns a null
- * string, then the string &quot;null&quot; is returned.</p>
+ * string, then the string &quot;null&quot; is returned.
  *
  * <p>Tokens that are not preceded with a &quot;$&quot; are treated as class
  * tokens when encountered, the parser attempts to create a new instance if
  * that class, calling the new instances <code>toString</code> method after
  * it's constructor. If the class is not found, a string value of
- * &quot;null&quot; is returned.</p>
+ * &quot;null&quot; is returned.
  *
  * <p>If a class token contains the &quot;.&quot; character, then special
  * processing will take place. Specifically, if the last token delimited by the
  * &quot;.&quot; character in the class token starts with a lowercase alpha
  * character, then that sub-token will be treated as a method name, and the
  * remaining symbols in that tag will be resolved and passed to that method
- * after that method's class is instantiated.</p>
+ * after that method's class is instantiated.
  *
  * <p>Classes that are created during the parsing of a template string are
  * cached and re-used by the instance of the Template class. This means the
  * template can be effectively initialized by one template string, loading the
- * classes needed for later template parsing operations.</p>
+ * classes needed for later template parsing operations.
  *
  * <p>Pre-initialized class references may be placed into the class cache in an
  * effort to give the template visibility into component frameworks. This
  * allows templates to call into generic, sharable facilities such as Data
  * Access Objects (DAO), data repositories, and any other specialized object
- * that is designed to present data in a string format.</p>
+ * that is designed to present data in a string format.
  */
 public class Template extends StringParser {
   private static SymbolTable symbols = new SymbolTable();

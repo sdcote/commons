@@ -77,7 +77,7 @@ public class PosixParser extends Parser {
 
   /**
    * <p>An implementation of {@link Parser}'s abstract
-   * {@link Parser#flatten(Options,String[],boolean) flatten} method.</p>
+   * {@link Parser#flatten(Options,String[],boolean) flatten} method.
    *
    * <p>The following are the rules used by this flatten method:<ol>
    * <li>if {@code stopAtNonOption} is <b>true</b> then do not burst anymore of
@@ -99,7 +99,7 @@ public class PosixParser extends Parser {
    * entry to determine its constituents.</li>
    * <li>if the current {@code arguments} entry is not handled by any of the 
    * previous rules, then the entry is added to the list of processed 
-   * tokens.</li></ol></p>
+   * tokens.</li></ol>
    *
    * @param options The command line {@link Options}
    * @param arguments The command line arguments to be parsed
@@ -212,11 +212,11 @@ public class PosixParser extends Parser {
 
   /**
    * <p>If an {@link Option} exists for {@code token} then
-   * add the token to the processed list.</p>
+   * add the token to the processed list.
    *
    * <p>If an {@link Option} does not exist and {@code stopAtNonOption}
    * is set then add the remaining tokens to the processed tokens list
-   * directly.</p>
+   * directly.
    *
    * @param token The current option token
    * @param stopAtNonOption Specifies whether flattening should halt

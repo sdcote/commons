@@ -22,7 +22,7 @@ import coyote.commons.jdbc.datasource.CloseOnCompletionConnection;
  * source, preparing a statement with placeholders, filling in the arguments, 
  * executing a query or an update task, and finally transforming the result set 
  * returned from the execution into a entity object or a list of entity objects 
- * can be condensed down into just one method call.</p>
+ * can be condensed down into just one method call.
  */
 public class JdbcTemplate {
 
@@ -49,7 +49,7 @@ public class JdbcTemplate {
   /**
    * Returns a BatchUpdater object with the supplied SQL. 
    * 
-   * <p>The placeholder is set in the BatchUpdater instance returned.</p>
+   * <p>The placeholder is set in the BatchUpdater instance returned.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * 
@@ -99,7 +99,7 @@ public class JdbcTemplate {
    * A factory method of the connection from the data source.
    * 
    * <p>This returns a wrapper around a java SQL connection which will handle 
-   * the closing of resources when it is closed.</p>
+   * the closing of resources when it is closed.
    *  
    * @return a connection from the data source.
    */
@@ -170,7 +170,7 @@ public class JdbcTemplate {
    * {@link java.util.LinkedList}. To specify the desired instance to be 
    * returned, use 
    * {@link #query(String, java.util.List, ResultMapper, java.util.List)} 
-   * instead.</p>
+   * instead.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param setter a StatementSetter instance to fill the placeholders of the SQL
@@ -190,7 +190,7 @@ public class JdbcTemplate {
   /**
    * Query for a list of entity of type E.
    * 
-   * <p>TheresultList will contain the entity objects produced by the query.</p>
+   * <p>TheresultList will contain the entity objects produced by the query.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param setter a StatementSetter instance to fill the placeholders of the SQL
@@ -324,7 +324,7 @@ public class JdbcTemplate {
    * 
    * <p>If there is multiple results returned from the query, the first one 
    * will be returned. If there are no results, {@code NULL} will be 
-   * returned.</p>
+   * returned.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param parameters a list of parameters to fill the placeholders of the SQL
@@ -350,7 +350,7 @@ public class JdbcTemplate {
    * 
    * <p>If there is multiple results returned from the query, the first one 
    * will be returned. If there are no results, {@code NULL} will be 
-   * returned.</p>
+   * returned.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param setter a StatementSetter instance to fill the placeholders of the SQL
@@ -401,7 +401,7 @@ public class JdbcTemplate {
    * 
    * <p>If there is multiple results returned from the query, the first one 
    * will be returned. If there are no results, {@code NULL} will be 
-   * returned.</p>
+   * returned.
    * 
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param dataMapper a dataMapper instance which acts as a mapper between the result set and the entity object
@@ -448,7 +448,7 @@ public class JdbcTemplate {
    * during the execution.
    * 
    * <p>When the auto-commit is not disabled (by default), the {@code 
-   * connection.rollback()} will not be executed.</p>
+   * connection.rollback()} will not be executed.
    * 
    * @param connection the connection to rollback
    * 
@@ -554,7 +554,7 @@ public class JdbcTemplate {
    * object to this update.
    * 
    * <p>Not all drivers return keys after an update. Successful updates may 
-   * still return null depending on the driver being used.</p>
+   * still return null depending on the driver being used.
    *  
    * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
    * @param setter a StatementSetter instance to fill the placeholders of the SQL
@@ -608,7 +608,7 @@ public class JdbcTemplate {
    * object to this update.
    * 
    * <p>Not all drivers return keys after an update. Successful updates may 
-   * still return null depending on the driver being used.</p>
+   * still return null depending on the driver being used.
    *  
    * <p>If there are multiple keys returned after the update, the first key 
    * will be returned. And if there is no key returned, {@code NULL} will be 
@@ -639,7 +639,7 @@ public class JdbcTemplate {
    * object to this update.
    * 
    * <p>Not all drivers return keys after an update. Successful updates may 
-   * still return null depending on the driver being used.</p>
+   * still return null depending on the driver being used.
    *  
    * <p>If there are multiple keys returned after the update, the first key 
    * will be returned. And if there is no key returned, {@code NULL} will be 

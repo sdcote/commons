@@ -25,11 +25,11 @@ public class Ip4Address extends IpAddress {
    * For a string to be considered valid, it must contain four numbers with 
    * values between 0 and 255, separated by dots - i.e. standard IPv4 dotted-
    * decimal notation.
-   * </p>
+   * 
    * <p>
    * For instance, if <code>addr</code> contains the value "202.122.3.1",
    * <code>isValidIP(addr)</code> will return 'true'.
-   * </p>
+   * 
    * 
    * @param addr A string that may contain an IPv4 address in dotted-decimal
    *          notation.
@@ -48,7 +48,7 @@ public class Ip4Address extends IpAddress {
    * <p>
    * For instance if <code>addr</code> contains the value "202.122.3", 
    * <code>isIPv4DottedDecimal(addr)</code> will return 'true'.
-   * </p>
+   * 
    * 
    * @param addr A string that may contain an IPv4 addresss in dotted-decimal
    *          notation.
@@ -122,7 +122,7 @@ public class Ip4Address extends IpAddress {
    * For instance if <code>addr</code> contains the value "202.122.3.1", 
    * <code>IPv4ptrQueryString(addr)</code> will return
    * '1.3.122.202.in-addr.arpa'.
-   * </p>
+   * 
    * 
    * @param addr The IPv4 address or address fragment that you which to find an
    *          PTR record for.

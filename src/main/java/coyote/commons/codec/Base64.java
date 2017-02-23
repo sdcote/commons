@@ -16,19 +16,19 @@ import coyote.commons.StringUtil;
  * <p> This class implements section <cite>6.8. Base64 
  * Content-Transfer-Encoding</cite> from RFC 2045 <cite>Multipurpose Internet 
  * Mail Extensions (MIME) Part One: Format of Internet Message Bodies</cite> by 
- * Freed and Borenstein.</p>
+ * Freed and Borenstein.
  * 
  * <p>The class can be parameterized in the following manner with various 
  * constructors:<ul>
  * <li>URL-safe mode: Default off.</li>
  * <li>Line length: Default 76. Line length that aren't multiples of 4 will 
  * still essentially end up being multiples of 4 in the encoded data.
- * <li>Line separator: Default is CRLF ("\r\n")</li></ul></p>
+ * <li>Line separator: Default is CRLF ("\r\n")</li></ul>
  * 
  * <p>Since this class operates directly on byte streams, and not character 
  * streams, it is hard-coded to only encode/decode character encodings which 
  * are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, 
- * UTF-8, etc).</p>
+ * UTF-8, etc).
  */
 public class Base64 extends BaseNCodec {
 
@@ -74,7 +74,7 @@ public class Base64 extends BaseNCodec {
    * Decodes Base64 data into octets.
    * 
    * <p><strong>Note:</strong> this method seamlessly handles data encoded in 
-   * URL-safe or normal mode.</p>
+   * URL-safe or normal mode.
    *
    * @param base64Data Byte array containing Base64 data
    * 
@@ -91,7 +91,7 @@ public class Base64 extends BaseNCodec {
    * Decodes a Base64 String into octets.
    * 
    * <p><strong>Note:</strong> this method seamlessly handles data encoded in 
-   * URL-safe or normal mode.</p>
+   * URL-safe or normal mode.
    *
    * @param base64String String containing Base64 data
    * 
@@ -155,8 +155,8 @@ public class Base64 extends BaseNCodec {
    * Encodes binary data using the base64 algorithm, optionally chunking the 
    * output into 76 character blocks.
    * 
-   * <p><sttong>Note:</strong> no padding is added when encoding using the 
-   * URL-safe alphabet.</p>
+   * <p><strong>Note:</strong> no padding is added when encoding using the 
+   * URL-safe alphabet.
    *
    * @param binaryData Array containing binary data to encode.
    * @param isChunked if {@code true} this encoder will chunk the base64 
@@ -181,7 +181,7 @@ public class Base64 extends BaseNCodec {
    * output into 76 character blocks.
    * 
    * <p><strong>Note:</strong> no padding is added when encoding using the 
-   * URL-safe alphabet.</p>
+   * URL-safe alphabet.
    *
    * @param binaryData Array containing binary data to encode.
    * @param isChunked if {@code true} this encoder will chunk the base64 output 
@@ -247,9 +247,9 @@ public class Base64 extends BaseNCodec {
    * Encodes binary data using a URL-safe variation of the base64 algorithm but 
    * does not chunk the output. 
    * 
-   * <p>The url-safe variation emits - and _ instead of + and / characters.</p>
+   * <p>The url-safe variation emits - and _ instead of + and / characters.
    * 
-   * <p><strong>Note:</strong> no padding is added.</p>
+   * <p><strong>Note:</strong> no padding is added.
    * 
    * @param binaryData binary data to encode
    * 
@@ -266,9 +266,9 @@ public class Base64 extends BaseNCodec {
    * Encodes binary data using a URL-safe variation of the base64 algorithm but 
    * does not chunk the output. 
    * 
-   * <p>The url-safe variation emits - and _ instead of + and / characters.</p>
+   * <p>The url-safe variation emits - and _ instead of + and / characters.
    * 
-   * <p><strong>Note:</strong> no padding is added.</p>
+   * <p><strong>Note:</strong> no padding is added.
    * 
    * @param binaryData binary data to encode
    * 
@@ -318,7 +318,7 @@ public class Base64 extends BaseNCodec {
    * Tests a given byte array to see if it contains only valid characters 
    * within the Base64 alphabet. 
    * 
-   * <p>Currently the method treats whitespace as valid.</p>
+   * <p>Currently the method treats whitespace as valid.
    *
    * @param arrayOctet byte array to test
    * 
@@ -420,9 +420,9 @@ public class Base64 extends BaseNCodec {
    * URL-unsafe mode.
    * 
    * <p>When encoding the line length is 0 (no chunking), and the encoding 
-   * table is STANDARD_ENCODE_TABLE.</p>
+   * table is STANDARD_ENCODE_TABLE.
    *
-   * <p>When decoding all variants are supported.</p>
+   * <p>When decoding all variants are supported.
    */
   public Base64() {
     this( 0 );
@@ -436,9 +436,9 @@ public class Base64 extends BaseNCodec {
    * given URL-safe mode.
    * 
    * <p>When encoding the line length is 76, the line separator is CRLF, and 
-   * the encoding table is STANDARD_ENCODE_TABLE.</p>
+   * the encoding table is STANDARD_ENCODE_TABLE.
    *
-   * <p>When decoding all variants are supported.</p>
+   * <p>When decoding all variants are supported.
    *
    * @param urlSafe if {@code true}, URL-safe encoding is used. In most cases 
    * this should be set to {@code false}.
@@ -455,12 +455,12 @@ public class Base64 extends BaseNCodec {
    * URL-unsafe mode.
    * 
    * <p>When encoding the line length is given in the constructor, the line 
-   * separator is CRLF, and the encoding table is STANDARD_ENCODE_TABLE.</p>
+   * separator is CRLF, and the encoding table is STANDARD_ENCODE_TABLE.
    * 
    * <p>Line lengths that aren't multiples of 4 will still essentially end up 
-   * being multiples of 4 in the encoded data.</p>
+   * being multiples of 4 in the encoded data.
    * 
-   * <p>When decoding all variants are supported.</p>
+   * <p>When decoding all variants are supported.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 4). If lineLength &lt;= 0, 
@@ -479,12 +479,12 @@ public class Base64 extends BaseNCodec {
    * URL-unsafe mode.
    * 
    * <p>When encoding the line length and line separator are given in the 
-   * constructor, and the encoding table is STANDARD_ENCODE_TABLE.</p>
+   * constructor, and the encoding table is STANDARD_ENCODE_TABLE.
    * 
    * <p>Line lengths that aren't multiples of 4 will still essentially end up 
-   * being multiples of 4 in the encoded data.</p>
+   * being multiples of 4 in the encoded data.
    * 
-   * <p>When decoding all variants are supported.</p>
+   * <p>When decoding all variants are supported.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 4). If lineLength &lt;= 0, 
@@ -506,12 +506,12 @@ public class Base64 extends BaseNCodec {
    * URL-unsafe mode.
    * 
    * <p> When encoding the line length and line separator are given in the 
-   * constructor, and the encoding table is STANDARD_ENCODE_TABLE.</p>
+   * constructor, and the encoding table is STANDARD_ENCODE_TABLE.
    * 
    * <p>Line lengths that aren't multiples of 4 will still essentially end up 
-   * being multiples of 4 in the encoded data.</p>
+   * being multiples of 4 in the encoded data.
    * 
-   * <p>When decoding all variants are supported.</p>
+   * <p>When decoding all variants are supported.
    *
    * @param lineLength Each line of encoded data will be at most of the given 
    * length (rounded down to nearest multiple of 4). If lineLength &lt;= 0, 
@@ -559,12 +559,12 @@ public class Base64 extends BaseNCodec {
    * 
    * <p>Should be called at least twice: once with the data to decode, and once 
    * with inAvail set to "-1" to alert decoder that EOF has been reached. The 
-   * "-1" call is not necessary when decoding, but does no harm.</p>
+   * "-1" call is not necessary when decoding, but does no harm.
    * 
    * <p>Ignores all non-base64 characters. This is how chunked (e.g. 76 
    * character) data is handled, since CR and NL are silently ignored, but has 
    * implications for other bytes, too. This method will not check the 
-   * provided data for validity.</p>
+   * provided data for validity.
    *
    * @param in byte[] array of ascii data to base64 decode.
    * @param inPos Position to start reading data from.
@@ -638,10 +638,10 @@ public class Base64 extends BaseNCodec {
    * 
    * <p>Must be called at least twice: once with the data to encode, and once 
    * with inAvail set to "-1" to alert encoder that EOF has been reached, to 
-   * flush last remaining bytes (if not multiple of 3).</p>
+   * flush last remaining bytes (if not multiple of 3).
    * 
    * <p><strong>Note:</strong> no padding is added when encoding using the 
-   * URL-safe alphabet.</p>
+   * URL-safe alphabet.
    *
    * @param in byte[] array of binary data to base64 encode.
    * @param inPos Position to start reading data from.

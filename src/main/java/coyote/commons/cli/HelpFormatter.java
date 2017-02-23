@@ -152,7 +152,7 @@ public class HelpFormatter {
    * Appends the usage clause for an OptionGroup to a StringBuffer.
    *   
    * <p>The clause is wrapped in square brackets if the group is required. The 
-   * display of the options is handled by appendOption.</p>
+   * display of the options is handled by appendOption.
    * 
    * @param buff the StringBuffer to append to
    * @param group the group to append
@@ -364,7 +364,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.  
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param width the number of characters to be displayed on each line
    * @param cmdLineSyntax the syntax for this application
@@ -382,7 +382,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.  
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param width the number of characters to be displayed on each line
    * @param cmdLineSyntax the syntax for this application
@@ -471,7 +471,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param cmdLineSyntax the syntax for this application
    * @param options the Options instance
@@ -486,7 +486,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param cmdLineSyntax the syntax for this application
    * @param options the Options instance
@@ -503,7 +503,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param cmdLineSyntax the syntax for this application
    * @param header the banner to display at the beginning of the help
@@ -520,7 +520,7 @@ public class HelpFormatter {
   /**
    * Print the help for {@code options} with the specified command line syntax.
    * 
-   * <p>This method prints help information to System.out.</p>
+   * <p>This method prints help information to System.out.
    *
    * @param cmdLineSyntax the syntax for this application
    * @param header the banner to display at the beginning of the help
@@ -574,7 +574,7 @@ public class HelpFormatter {
 
 
   /**
-   * <p>Prints the usage statement for the specified application.</p>
+   * <p>Prints the usage statement for the specified application.
    *
    * @param pw The PrintWriter to print the usage statement 
    * @param width The number of characters to display per line

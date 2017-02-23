@@ -74,11 +74,11 @@ public class NetUtil {
    * <li><strong>http.proxyUser</strong> - the user name credential</li>
    * <li><strong>http.proxyPassword</strong> - the password credential</li>
    * <li><strong>http.proxyHost</strong> - the host name of the network proxy</li>
-   * </ul></p>
+   * </ul>
    * 
    * <p>The optional <strong>http.proxyPort</strong> property is only needed 
    * by the JVM if the port is not the default, but it is a good practice to 
-   * set it.</p>
+   * set it.
    * 
    * @return true of an authenticator was installed, false otherwise.
    */
@@ -146,7 +146,7 @@ public class NetUtil {
    * 
    * <p>If you are looking for port 80, but it is taken, this method will 
    * return the next higher port starting with that port.  This will keep your 
-   * ports grouped together.</p>
+   * ports grouped together.
    *
    * @param port The number of the port on which to start looking
    *
@@ -165,13 +165,13 @@ public class NetUtil {
    *
    * <p>If the given port can be used to create a server socket (TCP) then that
    * port number will be used, otherwise, the port number will be incremented
-   * and tested until a free port is found.</p>
+   * and tested until a free port is found.
    *
    * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextServerSocket(address,port)</code> method if it desired to
-   * obtain the next available server.</p>
+   * obtain the next available server.
    *
    * @param address The address on which to find the next available port 
    * @param port The number of the port on which to start looking
@@ -250,10 +250,10 @@ public class NetUtil {
    * Get the IP Address by which the rest of the world knows us.
    *
    * <p>This is useful in helping insure that we don't accidently start binding
-   * to or otherwise using the local loopback address.</p>
+   * to or otherwise using the local loopback address.
    *
    * <p>This requires some type of IP address resolver to be installed, like
-   * DNS, NIS or at least hostname lookup.</p>
+   * DNS, NIS or at least hostname lookup.
    *
    * @return The InetAddress representing the host on the network and NOT the
    *         loopback address.
@@ -304,10 +304,10 @@ public class NetUtil {
    * Get the IP Address by which the rest of the world knows us as a string.
    *
    * <p>This is useful in helping insure that we don't accidently start binding
-   * to or otherwise using the local loopback address.</p>
+   * to or otherwise using the local loopback address.
    *
    * <p>This requires some type of IP address resolver to be installed, like
-   * DNS, NIS or at least hostname lookup.</p>
+   * DNS, NIS or at least hostname lookup.
    *
    * @return The InetAddress representing the host on the network and NOT the
    *         loopback address.
@@ -565,7 +565,7 @@ public class NetUtil {
    * Get the address of the host.
    *
    * <p><b>NOTE</b>: This may take a long time as it will perform a DNS lookup
-   * which can take several seconds!</p>
+   * which can take several seconds!
    *
    *
    * @param uri the URI to parse for host information
@@ -857,7 +857,7 @@ public class NetUtil {
    * Return a InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the local
-   * address to calculate the broadcast address for the given subnet mask.</p>
+   * address to calculate the broadcast address for the given subnet mask.
    *
    * @param mask Valid dotted-quad netmask.
    *
@@ -880,7 +880,7 @@ public class NetUtil {
    * Return a InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
-   * address to calculate the broadcast address for the given subnet mask.</p>
+   * address to calculate the broadcast address for the given subnet mask.
    *
    * @param addr InetAddress representing a node in a subnet.
    * @param mask Valid dotted-quad netmask.
@@ -909,7 +909,7 @@ public class NetUtil {
    * Return a InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
-   * address to calculate the broadcast address for the given subnet mask.</p>
+   * address to calculate the broadcast address for the given subnet mask.
    *
    * @param addr InetAddress representing a node in a subnet.
    * @param mask Valid dotted-quad netmask.
@@ -947,7 +947,7 @@ public class NetUtil {
    * Return a InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
-   * address to calculate the broadcast address for the given subnet mask.</p>
+   * address to calculate the broadcast address for the given subnet mask.
    *
    * @param addr InetAddress representing a node in a subnet.
    * @param mask Valid dotted-quad netmask.
@@ -976,7 +976,7 @@ public class NetUtil {
    * Return a InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the local
-   * address to calculate the broadcast address for the given subnet mask.</p>
+   * address to calculate the broadcast address for the given subnet mask.
    *
    * @param mask Valid dotted-quad netmask.
    *
@@ -1055,13 +1055,13 @@ public class NetUtil {
    *
    * <p>If the given port can be used to create a datagram socket (UDP) then
    * that port number will be used, otherwise, the port number will be
-   * incremented and tested until a free port is found.</p>
+   * incremented and tested until a free port is found.
    *
    * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.</p>
+   * to obtain the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    * @param port the port to use as the starting point for binding
@@ -1094,13 +1094,13 @@ public class NetUtil {
    *
    * <p>If the given port can be used to create a datagram socket (UDP) then
    * that port number will be used, otherwise, the port number will be
-   * incremented and tested until a free port is found.</p>
+   * incremented and tested until a free port is found.
    *
    * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.</p>
+   * to obtain the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    * @param port the port to use as the starting point for binding
@@ -1132,13 +1132,13 @@ public class NetUtil {
    *
    * <p>If the given port can be used to create a datagram socket (UDP) then
    * that port number will be used, otherwise, the port number will be
-   * incremented and tested until a free port is found.</p>
+   * incremented and tested until a free port is found.
    *
    * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.</p>
+   * to obtain the next available datagram server.
    *
    * @param port the port to use as the starting point for binding
    *
@@ -1157,13 +1157,13 @@ public class NetUtil {
    *
    * <p>If the given port can be used to create a datagram socket (UDP) then
    * that port number will be used, otherwise, the port number will be
-   * incremented and tested until a free port is found.</p>
+   * incremented and tested until a free port is found.
    *
    * <p>This is not thread-safe nor fool-proof. A valid value can be returned,
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.</p>
+   * to obtain the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    *

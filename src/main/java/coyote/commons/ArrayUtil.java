@@ -92,7 +92,7 @@ public final class ArrayUtil {
    * Return a new array that is a copy of the array plus a new element.
    *
    * <p>The component type of the array must be the same as that type of the
-   * element.</p>
+   * element.
    *
    * @param array An array
    * @param element The element to append.
@@ -115,7 +115,7 @@ public final class ArrayUtil {
    * Return a new array that is a copy of the array plus a new integer element.
    *
    * <p>The component type of the array must be the same as that type of the
-   * element.</p>
+   * element.
    *
    * @param array An array
    * @param element The element to append.
@@ -159,7 +159,7 @@ public final class ArrayUtil {
    * Perform an intersection of two long arrays.
    *
    * <p>This will return an array of longs values that are contained in both
-   * arrays.</p>
+   * arrays.
    *
    * @param primary The primary array containing primitive long values.
    * @param secondary The primary secondary containing primitive long values.
@@ -190,7 +190,7 @@ public final class ArrayUtil {
   /**
    * Return a new array that is the union of the elements in array1 and array2.
    *
-   * <p>The component types of both arrays must be the same.</p>
+   * <p>The component types of both arrays must be the same.
    *
    * @param array1 The first array.
    * @param array2 The second array.
@@ -214,7 +214,7 @@ public final class ArrayUtil {
    * Return a new array that is a copy of the array plus a new element.
    *
    * <p>The component type of the array must be the same as that type of the
-   * element.</p>
+   * element.
    *
    * @param array An array
    * @param element The element to append.
@@ -279,7 +279,7 @@ public final class ArrayUtil {
   /**
    * Find where a particular integer is within an array of integers.
    *
-   * <p>Works like the String method of the same name.</p>
+   * <p>Works like the String method of the same name.
    *
    * @param value the value for which to search
    * @param array the array to search
@@ -302,7 +302,7 @@ public final class ArrayUtil {
   /**
    * Find where a particular object is within an array of objects.
    *
-   * <p>Works like the String method of the same name.</p>
+   * <p>Works like the String method of the same name.
    *
    * @param value the value for which to search
    * @param array the array to search
@@ -326,7 +326,7 @@ public final class ArrayUtil {
    * Returns true if the value object is contained within the array.
    *
    * <p>NOTE that this is not a test for reference equality, but rather value
-   * equality.</p>
+   * equality.
    *
    * @param value
    * @param array
@@ -415,11 +415,11 @@ public final class ArrayUtil {
    * representing those primitives.
    *
    * <p>For example take a byte[] and convert it to a Byte[] or an int[] and
-   * return an Integer[].</p>
+   * return an Integer[].
    *
    * <p>If the primitive array argument contains no elements, then the returned
    * array will contain no elements, ie. it will be an empty array and NOT
-   * null.</p>
+   * null.
    *
    * @param obj the array of primitives to use to populate the return values
    *

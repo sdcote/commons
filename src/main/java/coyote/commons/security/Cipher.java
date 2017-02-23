@@ -66,7 +66,7 @@ public interface Cipher {
    * blocks to use.
    * 
    * <p>This method allows callers to always send the properly-sized chunks of
-   * data to be processed.</p>
+   * data to be processed.
    * 
    * @return The current block size of the cipher. May return 0 (zero).
    */

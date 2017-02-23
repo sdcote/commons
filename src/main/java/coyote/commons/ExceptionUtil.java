@@ -44,7 +44,7 @@ public class ExceptionUtil {
    *
    * <p>Return the message of the inner-most exception that is wrapped by this
    * and any nested exceptions therein. This will delegate the event call to
-   * the first exception in the chain and return its value.</p>
+   * the first exception in the chain and return its value.
    *
    * @return The message of the core exception.
    */
@@ -60,7 +60,7 @@ public class ExceptionUtil {
    *
    * <p>Return the inner-most exception that is wrapped by this and any nested
    * exceptions therein. This will delegate the event call to the first
-   * exception in the chain and return its reference.</p>
+   * exception in the chain and return its reference.
    *
    * @return The message of the core exception.
    */

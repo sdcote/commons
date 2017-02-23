@@ -89,7 +89,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * MIME chunk size per RFC 2045 section 6.8.
    *
    * <p>The {@value} character limit does not count the trailing CRLF, but 
-   * counts all other characters, including any equal signs.</p>
+   * counts all other characters, including any equal signs.
    */
   public static final int MIME_CHUNK_SIZE = 76;
 
@@ -97,7 +97,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * PEM chunk size per RFC 1421 section 4.3.2.4.
    *
    * <p> The {@value} character limit does not count the trailing CRLF, but 
-   * counts all other characters, including any equal signs.</p>
+   * counts all other characters, including any equal signs.
    */
   public static final int PEM_CHUNK_SIZE = 64;
 
@@ -173,7 +173,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * Note {@code lineLength} is rounded down to the nearest multiple of 
    * {@link #encodedBlockSize}. 
    * 
-   * <p>If {@code chunkSeparatorLength} is zero, then chunking is disabled.</p>
+   * <p>If {@code chunkSeparatorLength} is zero, then chunking is disabled.
    * 
    * @param unencodedBlockSize the size of an unencoded block (e.g. Base64 = 3)
    * @param encodedBlockSize the size of an encoded block (e.g. Base64 = 4)
@@ -191,7 +191,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * Note {@code lineLength} is rounded down to the nearest multiple of 
    * {@link #encodedBlockSize}
    * 
-   * <p>If {@code chunkSeparatorLength} is zero, then chunking is disabled.</p>
+   * <p>If {@code chunkSeparatorLength} is zero, then chunking is disabled.
    * 
    * @param unencodedBlockSize the size of an unencoded block (e.g. Base64 = 3)
    * @param encodedBlockSize the size of an encoded block (e.g. Base64 = 4)
@@ -284,7 +284,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * 
    * <p>This method is provided in order to satisfy the requirements of the 
    * {@link Decoder} interface, and will throw a DecoderException if the 
-   * supplied object is not of type byte[] or String.</p>
+   * supplied object is not of type byte[] or String.
    *
    * @param obj Object to decode
    * @return An object (of type byte[]) containing the binary data which 
@@ -436,7 +436,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * Calculates the amount of space needed to encode the supplied array.
    * 
    * <p>Returns a long since a max-len array will require &gt; 
-   * Integer.MAX_VALUE</p>
+   * Integer.MAX_VALUE
    *
    * @param pArray byte[] array which will later be encoded
    *
@@ -473,7 +473,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
   /**
    * Returns whether or not the {@code octet} is in the current alphabet.
    * 
-   * <p>Does not allow whitespace or pad.</p>
+   * <p>Does not allow whitespace or pad.
    *
    * @param value The value to test
    *
@@ -489,7 +489,7 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * Tests a given byte array to see if it contains only valid characters 
    * within the alphabet.
    * 
-   * <p>The method optionally treats whitespace and pad as valid.</p>
+   * <p>The method optionally treats whitespace and pad as valid.
    *
    * @param arrayOctet byte array to test
    * @param allowWSPad if {@code true}, then whitespace and PAD are also allowed
@@ -533,9 +533,9 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
    * Extracts buffered data into the provided byte[] array, starting at 
    * position bPos, up to a maximum of bAvail bytes. 
    * 
-   * <p>Returns how many bytes were actually extracted.</p>
+   * <p>Returns how many bytes were actually extracted.
    * 
-   * <p>Package protected for access from I/O streams.</p>
+   * <p>Package protected for access from I/O streams.
    *
    * @param b byte[] array to extract the buffered data into.
    * @param bPos position in byte[] array to start extraction at.

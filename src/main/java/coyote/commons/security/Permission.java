@@ -18,14 +18,14 @@ package coyote.commons.security;
  * <p>Target names are meaningful only to an application and can represent any
  * object instance or logical construct. This design allows a generic 
  * permission object to be applied to anything and not require specialized 
- * permission classes like FilePermission or SocketPermission.</p>
+ * permission classes like FilePermission or SocketPermission.
  * 
  * <p>The action of a permission is a set of standard actions that can be 
  * performed on a variety of objects. Each action is represented by a single 
  * bit in a field of bits and checking an action or set of actions is extremely 
  * fast as action masks are ORed as 64-bit fields. This far out-performs many
  * permission checking implementations that rely on if-else logic or create
- * collections of permissions against which to check.</p>
+ * collections of permissions against which to check.
  * 
  * <p>Extending this class, it is possible to create additional permissions by assigning additional 
  */
@@ -82,7 +82,7 @@ public final class Permission {
    * Add the given action mask to the permission.
    * 
    * <p>Has package access so other security objects may perform this function 
-   * but outside objects must go through the security package.</p>
+   * but outside objects must go through the security package.
    * 
    * @param action the action(s) to add to this mask.
    */
@@ -97,7 +97,7 @@ public final class Permission {
    * Remove the given action from the permission.
    * 
    * <p>Has package access so other security objects may perform this function 
-   * but outside objects must go through the security package.</p>
+   * but outside objects must go through the security package.
    * 
    * @param action the action(s) to remove from this mask.
    */
@@ -135,14 +135,14 @@ public final class Permission {
    * For example passing the value of 3 (binary 11) represents both the CREATE 
    * and READ actions. If this permission allows both actions, then the result 
    * of true will be returned. If either CREATE(01) or READ (10) are not set in 
-   * this permission, then a value of false will be returned.</p>
+   * this permission, then a value of false will be returned.
    * 
    * <p>Suppose a request to write to a TCP socket is requested. Calling this 
    * method once with a check on the permissions of OPEN, WRITE and CLOSE may 
    * be performed before the entire operation is started, as even if the OPEN 
    * and WRITE permissions are allowed, the logic would disallow the closing of 
    * the TCP socket causing problems later. Also, checking once saves the other 
-   * two calls later.</p>
+   * two calls later.
    * 
    * @param action The mask of actions to check this permission against.
    * 

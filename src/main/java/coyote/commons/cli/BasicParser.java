@@ -7,10 +7,10 @@ package coyote.commons.cli;
 public class BasicParser extends Parser {
   /**
    * <p>A simple implementation of {@link Parser}'s abstract
-   * {@link Parser#flatten(Options, String[], boolean) flatten} method.</p>
+   * {@link Parser#flatten(Options, String[], boolean) flatten} method.
    *
    * <p><b>Note:</b> <code>options</code> and <code>stopAtNonOption</code>
-   * are not used in this <code>flatten</code> method.</p>
+   * are not used in this <code>flatten</code> method.
    *
    * @param options The argument list {@link Options}
    * @param arguments The command-line arguments to be parsed

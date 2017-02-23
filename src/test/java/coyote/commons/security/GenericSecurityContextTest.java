@@ -95,7 +95,7 @@ public class GenericSecurityContextTest {
 
 
   /**
-   * Test method for {@link coyote.commons.security.SecurityContext#getLogin(coyote.commons.security.CredentialSet)}.
+   * 
    */
   @Test
   public void testBasic() {

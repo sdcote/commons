@@ -25,11 +25,11 @@ import java.util.ResourceBundle;
  * 
  * <p>This class allows very complex configuration to be managed in a simple 
  * fashion. Resource bundles can be merged with this fixture providing the 
- * single point of reference for all resources.</p>
+ * single point of reference for all resources.
  * 
  * <p>The various static methods on this fixture provide generic configuration
  * utilities like validating a work directory and setting up a work directory 
- * in the home of the account executing the runtime.</p>
+ * in the home of the account executing the runtime.
  */
 public class ConfigUtil {
 
@@ -119,7 +119,7 @@ public class ConfigUtil {
    * resource bundle.
    * 
    * <p>The method can be useful for getting mnemonics. If the key is not
-   * defined, it returns the first char of the key itself.</p>
+   * defined, it returns the first char of the key itself.
    *
    * @param key
    * 
@@ -137,7 +137,7 @@ public class ConfigUtil {
    * Returns the actual language text out of the resource bundle and formats it
    * accordingly with the given Object array.
    * 
-   * <p>If the key is not defined it returns the key itself.</p>
+   * <p>If the key is not defined it returns the key itself.
    *
    * @param key
    * @param obj
@@ -168,7 +168,7 @@ public class ConfigUtil {
    * 
    * @return A reference to a file allowing access to the working directory
    * 
-   * @throws ChainedException If the working directory could not be created
+   * @throws ConfigException If the working directory could not be created
    */
   public static File initHomeWorkDirectory( String dirname ) throws ConfigException {
     // if the name was null, create a directory named "work"
@@ -191,7 +191,7 @@ public class ConfigUtil {
    * 
    * @return A reference to a file representing the directory.
    * 
-   * @throws ChainedException if the directory could not be made.
+   * @throws ConfigException if the directory could not be made.
    */
   public static File validateWorkDirectory( String dirname ) throws ConfigException {
     // if the name was null, create a directory named "work"

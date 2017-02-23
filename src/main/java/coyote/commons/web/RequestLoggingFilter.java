@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * </pre>
  * 
  * <p>Use of Java Logging is assumed. Make sure you logging framework is 
- * registered with the Java framework for unified logging.</p>
+ * registered with the Java framework for unified logging.
  */
 public class RequestLoggingFilter implements Filter {
   private final static Logger LOG = Logger.getLogger( RequestLoggingFilter.class.getName() );
