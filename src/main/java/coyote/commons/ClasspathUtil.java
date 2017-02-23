@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -45,6 +46,9 @@ public class ClasspathUtil implements ServletContextListener {
   private static HashMap<String, String> shadowClasses = new HashMap<String, String>();
 
   private static ArrayList<String> missingLibraries = new ArrayList<String>();
+
+  /** Map of classes (key) to a JAR (value */
+  private static HashMap<String, String> jarMap = new HashMap<String, String>();
 
 
 
@@ -82,6 +86,7 @@ public class ClasspathUtil implements ServletContextListener {
     checkedClasspathAlready = true;
 
     HashMap<String, String> classMap = new HashMap<String, String>();
+    HashMap<String, String> jarMap = new HashMap<String, String>();
     HashMap<String, String> shadows = new HashMap<String, String>();
     ArrayList<String> missing = new ArrayList<String>();
 
@@ -104,6 +109,7 @@ public class ClasspathUtil implements ServletContextListener {
               for ( Enumeration<JarEntry> en = jarfile.entries(); en.hasMoreElements(); ) {
                 JarEntry jentry = (JarEntry)en.nextElement();
                 Log.trace( "    '" + jentry.getName() + "' " + jentry.getCrc() );
+                jarMap.put( jentry.getName(), entry );
                 if ( jentry.getName().endsWith( ".class" ) && classMap.containsKey( jentry.getName() ) ) {
                   shadows.put( jentry.getName() + " found in '" + classMap.get( jentry.getName() ) + "'; shadowed in '" + entry + "'", jentry.getName() );
                 } else {
@@ -166,6 +172,7 @@ public class ClasspathUtil implements ServletContextListener {
 
     ClasspathUtil.shadowClasses = shadows;
     ClasspathUtil.missingLibraries = missing;
+    ClasspathUtil.jarMap = jarMap;
 
     return retval;
   }
@@ -269,50 +276,130 @@ public class ClasspathUtil implements ServletContextListener {
 
 
   /**
+   * Get a list of JAR files in which the given fully qualified class name 
+   * resides.
+   * 
+   * @param fqrn the fully qualified name of the resource for which to search.
+   * 
+   * @return an array of fully-qualified jar file names in which the class was found
+   */
+  public static String[] findJarForResource( String fqrn ) {
+    if ( !checkedClasspathAlready )
+      ClasspathUtil.verifyClasspath();
+
+    ArrayList<String> list = new ArrayList<String>();
+
+    for ( Map.Entry<String, String> entry : jarMap.entrySet() ) {
+      if ( entry.getKey().equals( fqrn ) ) {
+        list.add( entry.getValue() );
+      }
+    }
+
+    String[] retval = new String[list.size()];
+    for ( int x = 0; x < retval.length; retval[x] = list.get( x++ ) );
+
+    return retval;
+  }
+
+
+
+
+  public static String[] findJarForType( String string ) {
+    String type;
+    if ( string != null && string.trim().length() > 0 ) {
+      type = string.trim();
+      ArrayList<String> list = new ArrayList<String>();
+
+      if ( type.indexOf( '/' ) > 0 ) {
+        type = type.substring( type.indexOf( '/' ) );
+      }
+
+      for ( Map.Entry<String, String> entry : jarMap.entrySet() ) {
+        if ( entry.getKey().endsWith( type ) ) {
+          list.add( entry.getValue() );
+        }
+      }
+      String[] retval = new String[list.size()];
+      for ( int x = 0; x < retval.length; retval[x] = list.get( x++ ) );
+      return retval;
+    }
+    return new String[0];
+  }
+
+
+
+
+  /**
    * Perform a basic class path verification, logging any irregularities,
    * 
-   * @param args - ignored.
+   * @param args - fully qualified names of resources for which to search.
    */
   public static void main( String[] args ) {
-    System.getProperties().setProperty( "coyote.commons.Log.trace", "true" );
+    //System.getProperties().setProperty( "coyote.commons.Log.trace", "true" );
 
-    if ( ClasspathUtil.verifyClasspath() ) {
-      Log.info( "Class path checks out O.K." );
+    if ( args.length > 0 ) {
+      for ( int x = 0; x < args.length; x++ ) {
+        String[] results = ClasspathUtil.findJarForResource( args[x] );
+        if ( results.length == 0 ) {
+          results = ClasspathUtil.findJarForType( args[x] );
+          if ( results.length > 0 ) {
+            StringBuilder buffer = new StringBuilder( "The following jars contain the type of " );
+            buffer.append( args[x] );
+            buffer.append( "\n" );
+            for ( int i = 0; i < results.length; buffer.append( results[i++] + "\n" ) );
+            Log.info( buffer );
+          } else {
+            Log.info( "Could not find '" + args[x] + "' in any JAR in the currently set classpath" );
+          }
+        } else {
+          StringBuilder buffer = new StringBuilder( "The following jars contain the fully qualified class of " );
+          buffer.append( args[x] );
+          buffer.append( "\n" );
+          for ( int i = 0; i < results.length; buffer.append( results[i++] + "\n" ) );
+          Log.info( buffer );
+        }
+      }
+
     } else {
-      Log.warn( "Class path has some problems. Check the logs for details. Summary follows:" );
 
-      // Get a listing of classes that appear more than once in the class path
-      String[] shadowedClasses = ClasspathUtil.getShadowedClasses();
-
-      // print them out
-      if ( shadowedClasses.length > 0 ) {
-        StringBuilder buffer = new StringBuilder( "The following classes appear more than once in the class path:\n" );
-        for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedClasses[x++] + "\n" ) );
-        Log.warn( buffer );
+      if ( ClasspathUtil.verifyClasspath() ) {
+        Log.info( "Class path checks out O.K." );
       } else {
-        Log.info( "No shadowed classes were found" );
-      }
+        Log.warn( "Class path has some problems. Check the logs for details. Summary follows:" );
 
-      // Get a detailed listing of classes that appear more than once in the class path
-      String[] shadowedDetails = ClasspathUtil.getShadowClassDetails();
+        // Get a listing of classes that appear more than once in the class path
+        String[] shadowedClasses = ClasspathUtil.getShadowedClasses();
 
-      // print them out
-      if ( shadowedDetails.length > 0 ) {
-        StringBuilder buffer = new StringBuilder( "Details of shadowed classes:\n" );
-        for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedDetails[x++] + "\n" ) );
-        Log.warn( buffer );
-      } else {
-        Log.info( "No shadowed classes were found" );
-      }
+        // print them out
+        if ( shadowedClasses.length > 0 ) {
+          StringBuilder buffer = new StringBuilder( "The following classes appear more than once in the class path:\n" );
+          for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedClasses[x++] + "\n" ) );
+          Log.warn( buffer );
+        } else {
+          Log.info( "No shadowed classes were found" );
+        }
 
-      String[] missing = ClasspathUtil.getMissingClasspathEntries();
-      // print them out
-      if ( missing.length > 0 ) {
-        StringBuilder buffer = new StringBuilder( "Missing class path entries:\n" );
-        for ( int x = 0; x < missing.length; buffer.append( missing[x++] + "\n" ) );
-        Log.warn( buffer );
-      } else {
-        Log.info( "No missing entries were found" );
+        // Get a detailed listing of classes that appear more than once in the class path
+        String[] shadowedDetails = ClasspathUtil.getShadowClassDetails();
+
+        // print them out
+        if ( shadowedDetails.length > 0 ) {
+          StringBuilder buffer = new StringBuilder( "Details of shadowed classes:\n" );
+          for ( int x = 0; x < shadowedClasses.length; buffer.append( shadowedDetails[x++] + "\n" ) );
+          Log.warn( buffer );
+        } else {
+          Log.info( "No shadowed classes were found" );
+        }
+
+        String[] missing = ClasspathUtil.getMissingClasspathEntries();
+        // print them out
+        if ( missing.length > 0 ) {
+          StringBuilder buffer = new StringBuilder( "Missing class path entries:\n" );
+          for ( int x = 0; x < missing.length; buffer.append( missing[x++] + "\n" ) );
+          Log.warn( buffer );
+        } else {
+          Log.info( "No missing entries were found" );
+        }
       }
     }
   }
