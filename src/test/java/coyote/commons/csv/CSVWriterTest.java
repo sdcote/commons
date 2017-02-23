@@ -13,11 +13,16 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 
 
 public class CSVWriterTest {
 
+	@AfterClass
+	public static void cleanUp(){
+		
+	}
   @Test
   public void testAlternateEscapeChar() throws IOException {
     final String[] line = { "Foo", "bar's" };
@@ -341,17 +346,20 @@ public class CSVWriterTest {
   @Test
   public void testStreamFlushing() throws IOException {
 
-    final String WRITE_FILE = "myfile.csv";
-
-    final String[] nextLine = new String[] { "aaaa", "bbbb", "cccc", "dddd" };
-
-    final FileWriter fileWriter = new FileWriter( WRITE_FILE );
-    final CSVWriter writer = new CSVWriter( fileWriter );
-
-    writer.writeNext( nextLine );
-
-    // If this line is not executed, it is not written in the file.
-    writer.close();
+    try {
+		final String WRITE_FILE = "myfile.csv";
+		final String[] nextLine = new String[] { "aaaa", "bbbb", "cccc", "dddd" };
+		final FileWriter fileWriter = new FileWriter(WRITE_FILE);
+		final CSVWriter writer = new CSVWriter(fileWriter);
+		writer.writeNext(nextLine);
+		// If this line is not executed, it is not written in the file.
+		writer.close();
+	} finally {
+		File myFile = new File("myfile.csv");
+		if( myFile.exists() ){
+			myFile.deleteOnExit();
+		}
+	}
 
   }
 
