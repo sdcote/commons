@@ -1,16 +1,14 @@
 package coyote.commons;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Class ArrayUtilTest
- * 
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision:$
  */
 public class ExceptionUtilTest {
 
@@ -27,9 +25,28 @@ public class ExceptionUtilTest {
     Exception nested = new Exception( NESTED, root );
     Exception ex = new Exception( TOP, nested );
 
-    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( ex ) ) );
-    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( nested ) ) );
-    assertTrue( ROOT.equals( ExceptionUtil.getRootMessage( root ) ) );
+      assertEquals(ROOT, ExceptionUtil.getRootMessage(ex));
+      assertEquals(ROOT, ExceptionUtil.getRootMessage(nested));
+      assertEquals(ROOT, ExceptionUtil.getRootMessage(root));
+  }
+  
+  /**
+   * Test method for {@link coyote.commons.ExceptionUtil#getLocalJavaName(java.lang.String)}.
+   */
+  @Test
+  public void testGetLocalJavaName() {
+    assertNotNull( ExceptionUtil.getLocalJavaName( this.getClass().getName() ) );
+      assertEquals("ExceptionUtilTest", ExceptionUtil.getLocalJavaName(this.getClass().getName()));
+  }
+
+  @Test
+  public void testGetAbbreviatedClassname() {
+      assertEquals("c.c.ExceptionUtilTest", ExceptionUtil.getAbbreviatedClassname(this.getClass().getName()));
+      assertEquals("ThisClass", ExceptionUtil.getAbbreviatedClassname("ThisClass"));
+    assertNotNull( ExceptionUtil.getAbbreviatedClassname( "" ) );
+      assertEquals("", ExceptionUtil.getAbbreviatedClassname(""));
+    assertNotNull( ExceptionUtil.getAbbreviatedClassname( null ) );
+      assertEquals("", ExceptionUtil.getAbbreviatedClassname(null));
   }
 
 }

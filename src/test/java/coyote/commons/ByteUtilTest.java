@@ -3,22 +3,11 @@
  */
 package coyote.commons;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -26,38 +15,8 @@ import org.junit.Test;
  */
 public class ByteUtilTest {
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {}
 
 
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
-
-
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception {}
-
-
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception {}
 
 
 
@@ -233,13 +192,13 @@ public class ByteUtilTest {
     data = ByteUtil.renderBoolean( value );
 
     assertTrue( data.length == 1 );
-    assertTrue( "Byte0=" + data[0], data[0] == 1 );
+    assertTrue(  data[0] == 1,"Byte0=" + data[0] );
 
     value = false;
     data = ByteUtil.renderBoolean( value );
 
     assertTrue( data.length == 1 );
-    assertTrue( "Byte0=" + data[0], data[0] == 0 );
+    assertTrue( data[0] == 0 ,"Byte0=" + data[0] );
 
     assertTrue( ByteUtil.retrieveBoolean( data, 0 ) == false );
   }
@@ -289,16 +248,16 @@ public class ByteUtilTest {
 
     long longval = ByteUtil.retrieveLong( data, 0 );
 
-    assertTrue( "Byte0=" + data[0], data[0] == 0 );
-    assertTrue( "Byte1=" + data[1], data[1] == 0 );
-    assertTrue( "Byte2=" + data[2], data[2] == 0 );
-    assertTrue( "Byte3=" + data[3], data[3] == -2 ); // signed value
-    assertTrue( "Byte4=" + data[4], data[4] == 78 );
+    assertTrue( data[0] == 0 ,"Byte0=" + data[0] );
+    assertTrue(  data[1] == 0 ,"Byte1=" + data[1]);
+    assertTrue(  data[2] == 0 ,"Byte2=" + data[2]);
+    assertTrue( data[3] == -2, "Byte3=" + data[3] ); // signed value
+    assertTrue( data[4] == 78,"Byte4=" + data[4]  );
 
     if ( longval - TESTMILLIS == 0 ) {
-      assertTrue( "Byte5=" + data[5], data[5] == 61 );
-      assertTrue( "Byte6=" + data[6], data[6] == -58 ); // signed value
-      assertTrue( "Byte7=" + data[7], data[7] == 49 );
+      assertTrue( data[5] == 61,"Byte5=" + data[5] );
+      assertTrue( data[6] == -58,"Byte6=" + data[6] ); // signed value
+      assertTrue( data[7] == 49,"Byte7=" + data[7]  );
     } else if ( longval - TESTMILLIS != 3600000 ) // Daylight saving time issue
     {
       fail( "Time discrepancy" );

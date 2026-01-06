@@ -10,16 +10,16 @@ import coyote.commons.network.http.nugget.UriResponder;
 
 
 /**
- * Show how to write an application server with nuggets.
+ * Show how to write an application server with responders.
  */
-public class NuggetApp extends HTTPDRouter {
+public class MiniApp extends HTTPDRouter {
 
   private static final int PORT = 9090;
 
   /**
    * Create the server instance
    */
-  public NuggetApp() throws IOException {
+  public MiniApp() throws IOException {
     super( PORT );
     addMappings();
     System.out.println( "\nRunning! Point your browers to http://localhost:" + PORT + "/ \n" );
@@ -59,6 +59,6 @@ public class NuggetApp extends HTTPDRouter {
    * @param args
    */
   public static void main( String[] args ) {
-    ServerRunner.run( NuggetApp.class );
+    ServerRunner.run( MiniApp.class );
   }
 }

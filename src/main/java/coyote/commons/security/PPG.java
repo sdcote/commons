@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.security;
 
@@ -27,14 +23,14 @@ import java.util.Random;
  * be too difficult to remember and the result is little more than groups of
  * randomized characters delimited with spaces.
  * 
- * One way to make these words easier to remember is to make your brain think
- * they are words by grouping characters into "pronounceable" tokens making 
- * them easier to remember.
+ * <p>One way to make these words easier to remember is to make your brain 
+ * think they are words by grouping characters into "pronounceable" tokens 
+ * making them easier to remember.
  * 
- * This program uses statistics on the frequency of three-letter sequences in 
- * English to generate passwords. 
+ * <p>This program uses statistics on the frequency of three-letter sequences 
+ * in English to generate passwords. 
  * 
- * This is based on the concept developed by Tom Van Vleck, based on work 
+ * <p>This is based on the concept developed by Tom Van Vleck, based on work 
  * by Morrie Gasser. 
  */
 public class PPG {

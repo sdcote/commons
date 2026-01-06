@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial API and implementation
  */
 package coyote.commons;
 
@@ -16,6 +12,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 
@@ -1792,4 +1797,115 @@ public class DateUtil {
     System.out.println( "Next Time '" + timeText + "' occurs = " + new Date( getNextTime( timeText ) ) );
     System.out.println( "Last Time '" + timeText + "' occured = " + new Date( getLastTime( timeText ) ) );
   }
+
+
+
+
+
+
+
+
+
+
+
+  private static final DateFormat _DATE_TIME_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+  private static final DateFormat _DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd" );
+  private static final DateFormat _TIME_FORMAT = new SimpleDateFormat( "HH:mm:ss" );
+
+
+  private static final List<String> formatStrings = Arrays.asList(
+          "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+          "yyyy-MM-dd'T'HH:mm:ss.SSS",
+          "yyyy-MM-dd'T'HH:mm:ss",
+          "yyyy-MM-dd HH:mm:ss.SSSX",
+          "yyyy-MM-dd HH:mm:ss.SSS",
+          "yyyy-MM-dd HH:mm:ss",
+          "yyyy-MM-dd",
+          "MM-dd-yyyy HH:mm:ss.SSSX",
+          "MM-dd-yyyy HH:mm:ss.SSS",
+          "MM-dd-yyyy HH:mm:ss",
+          "MM/dd/yyyy HH:mm:ss",
+          "EEE MMM dd HH:mm:ss zzz yyyy",
+          "HH:mm:ss.SSSX",
+          "HH:mm:ss.SSS",
+          "HH:mm:ss",
+          "HH:mm",
+          "d/MMM/y:H:m:s Z", // Apache log format
+          "M/y",
+          "M-y",
+          "M/d/y",
+          "M-d-y",
+          "y/M/d",
+          "y-M-d");
+
+
+
+
+  public static Date parseDateTime( String token ) {
+    Date retval = null;
+    try {
+      retval = _DATE_TIME_FORMAT.parse( token );
+    } catch ( final Exception e ) {
+      retval = null;
+    }
+    return retval;
+  }
+
+
+
+
+  public static Date parseDate( String token ) {
+    Date retval = null;
+    try {
+      retval = _DATE_FORMAT.parse( token );
+    } catch ( final Exception e ) {
+      retval = null;
+    }
+    return retval;
+  }
+
+
+
+
+  public static Date parseTime( String token ) {
+    Date retval = null;
+    try {
+      retval = _TIME_FORMAT.parse( token );
+    } catch ( final Exception e ) {
+      retval = null;
+    }
+    return retval;
+  }
+
+
+
+
+  /**
+   * This method tries several different formats to parsing a date.
+   *
+   * <p>This method is useful if the actual format of the date is not known.
+   *
+   * @param text the date time string to parse
+   *
+   * @return the Date reference if parsing was successful or null if the text
+   *         could not be parsed into a date.
+   */
+  public static Date parse( String text ) {
+    for ( String formatString : formatStrings ) {
+      try {
+        return new SimpleDateFormat( formatString ).parse( text );
+      } catch ( ParseException e ) {
+        // ignore failed attempt
+      }
+    }
+    return null;
+  }
+
+
+
+
+
+
+
+
 }

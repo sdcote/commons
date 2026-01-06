@@ -4,31 +4,22 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.network;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-import org.junit.AfterClass;
-import org.junit.Test;
+import java.net.InetAddress;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 
  */
 public class IpAclTest {
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
+
 
 
 
@@ -63,14 +54,14 @@ public class IpAclTest {
 
     // Local should pass
     String arg = "192.168.1.100";
-    assertTrue( "Should allow '" + arg + "'", acl.allows( arg ) );
+    assertTrue( acl.allows( arg ) ,"Should allow '" + arg + "'" );
 
     // Other local should not
     arg = "10.8.107.12";
-    assertFalse( "Should NOT allow '" + arg + "'", acl.allows( arg ) );
+    assertFalse(  acl.allows( arg ) ,"Should NOT allow '" + arg + "'");
 
     arg = "150.22.78.212";
-    assertFalse( "Should NOT allow '" + arg + "'", acl.allows( arg ) );
+    assertFalse(  acl.allows( arg ) ,"Should NOT allow '" + arg + "'");
 
     // Single Address - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -81,16 +72,16 @@ public class IpAclTest {
 
     // This should pass
     arg = "192.168.1.100";
-    assertTrue( "Should allow '" + arg + "'", acl.allows( arg ) );
+    assertTrue(  acl.allows( arg ) ,"Should allow '" + arg + "'");
 
     // These should not pass
     arg = "10.8.107.12";
 
-    assertTrue( "Should NOT allow '" + arg + "'", !acl.allows( arg ) );
+    assertTrue(  !acl.allows( arg ),"Should NOT allow '" + arg + "'" );
 
     arg = "192.168.1.101";
 
-    assertTrue( "Should NOT allow '" + arg + "'", !acl.allows( arg ) );
+    assertTrue(  !acl.allows( arg ),"Should NOT allow '" + arg + "'" );
   }
 
 
@@ -105,12 +96,182 @@ public class IpAclTest {
 
     // Local should pass
     String arg = "192.168.1.100";
-    assertTrue( "Should allow '" + arg + "'", acl.allows( arg ) );
+    assertTrue(  acl.allows( arg ) ,"Should allow '" + arg + "'");
 
     arg = "10.8.107.12";
-    assertTrue( "Should allow '" + arg + "'", acl.allows( arg ) );
+    assertTrue(acl.allows( arg ), "Should allow '" + arg + "'" );
 
     arg = "150.22.78.212";
-    assertFalse( "Should NOT allow '" + arg + "'", acl.allows( arg ) );
+    assertFalse(  acl.allows( arg ) ,"Should NOT allow '" + arg + "'");
+  }
+
+  @Test
+  public void testConstrucor() {
+    try {
+      IpAcl acl = new IpAcl();
+      acl.add("192.168/16", true);
+      acl.add("10/8", false);
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+  }
+
+
+
+
+  @Test
+  public void testBasic() {
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+      acl.add("172/8", true);
+      acl.add("10/8", true);
+      acl.add("192.168/16", true);
+
+      String arg = "172.17.0.1";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+
+      InetAddress address = InetAddress.getByName(arg);
+      System.out.println(address);
+      assertTrue(acl.allows(address),"Should allow '" + address + "'");
+
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+
+  }
+
+
+  @Test
+  public void testDenySpecific() {
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+
+      // Order is important! specific addresses should be specified first and broader scopes later since the first
+      // network rule matching the argument is returned. This is by design to keep the  matching logic fast.
+      acl.add("172.17.0.2/32", false); // deny this specific address in the allowed range
+      acl.add("172/8", true); // allow the rest of the network
+      System.out.println(acl);
+
+      String arg = "172.17.0.1";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+
+      InetAddress address = InetAddress.getByName(arg);
+      System.out.println(address);
+      assertTrue( acl.allows(address),"Should allow '" + address + "'");
+
+      arg = "172.17.0.2";
+      assertFalse(acl.allows(arg),"Should deny '" + arg + "'");
+
+      address = InetAddress.getByName(arg);
+      assertFalse( acl.allows(address),"Should deny '" + address + "'");
+
+      arg = "172.17.0.3";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+
+      address = InetAddress.getByName(arg);
+      System.out.println(address);
+      assertTrue( acl.allows(address),"Should allow '" + address + "'");
+
+
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+
+  }
+
+
+
+
+  @Test
+  public void testAllows() {
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+      acl.add("192.168/16", true);
+      acl.add("10/8", false);
+
+      String arg = "192.168.1.100";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+
+      arg = "10.8.107.12";
+
+      assertFalse( acl.allows(arg),"Should NOT allow '" + arg + "'");
+
+      // if( acl.allows( arg ) )
+      // {
+      // System.out.println( "Error: ACL allows '" + arg + "'" );
+      // }
+      // else
+      // {
+      // System.out.println( "ACL denies '" + arg + "'" );
+      // }
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+
+      // Only allow this one IP address
+      acl.add("192.168.1.100/32", IpAcl.ALLOW);
+
+      // This should pass
+      String arg = "192.168.1.100";
+      assertTrue(acl.allows(arg),"Should allow '" + arg + "'");
+
+      // These should not pass
+      arg = "10.8.107.12";
+
+      assertFalse(acl.allows(arg),"Should NOT allow '" + arg + "'");
+
+      arg = "192.168.1.101";
+
+      assertFalse( acl.allows(arg),"Should NOT allow '" + arg + "'");
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+
+    // Test the ordering, 192.168.100 subnet is denied, but the rest of 192.168
+    // is allowed
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+      acl.add("192.168.100/24", false);
+      acl.add("192.168/16", true);
+
+      String arg = "192.168.100.23";
+      assertFalse( acl.allows(arg),"Should NOT allow '" + arg + "'");
+
+      arg = "192.168.23.100";
+      assertTrue(acl.allows(arg),"Should allow '" + arg + "'");
+
+      arg = "10.8.107.12";
+      assertFalse(acl.allows(arg),"Should NOT allow '" + arg + "'");
+
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+
+  }
+
+
+
+
+  @Test
+  public void testAllowAll() {
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+      acl.add("255.255.255.255/0", true);
+      String arg = "192.168.1.100";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
+    try {
+      IpAcl acl = new IpAcl(IpAcl.DENY);
+      acl.add("0/0", true);
+      String arg = "192.168.1.100";
+      assertTrue( acl.allows(arg),"Should allow '" + arg + "'");
+    } catch (Exception ex) {
+      fail("Could not construct: " + ex.getMessage());
+    }
   }
 }

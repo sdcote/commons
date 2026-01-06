@@ -1,7 +1,9 @@
 package coyote.commons.csv;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -9,8 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.junit.Before;
-import org.junit.Test;
 
 
 public class CSVTest {
@@ -22,7 +22,7 @@ public class CSVTest {
 
 
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     tempFile = File.createTempFile( "csvWriterTest", ".csv" );
     tempFile.deleteOnExit();

@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial API and implementation
  */
 package coyote.commons.cfg;
 
@@ -73,10 +69,9 @@ public class ConfigUtil {
   /**
    * Method getString
    *
-   * @param key
-   * @param dflt
+   * @param key name of the value to return
+   * @param dflt the default value to return
    *
-   * @return TODO finish documentation.
    */
   public static String getString( String key, String dflt ) {
     Object obj = resources.get( key );
@@ -123,7 +118,6 @@ public class ConfigUtil {
    *
    * @param key
    * 
-   * @return TODO finish documentation.
    */
   public static char getChar( String key ) {
     String str = getString( key );

@@ -3,6 +3,13 @@
 build/
 bin/
 .gradle/
+target/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
 
 # Development Area #
 ####################

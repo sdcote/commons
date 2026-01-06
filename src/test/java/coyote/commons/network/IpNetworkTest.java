@@ -1,12 +1,11 @@
 package coyote.commons.network;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-import org.junit.Test;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 
@@ -72,6 +71,20 @@ public class IpNetworkTest {
 
 
   /**
+   * 
+   */
+  @Test
+  public void testHostOnlyNetwork() throws IpAddressException {
+    IpNetwork network = new IpNetwork( IpAddress.IPV4_LOOPBACK_ADDRESS, IpNetwork.HOSTMASK );
+    if ( !network.contains( IpAddress.IPV4_LOOPBACK_ADDRESS ) ) {
+      fail( "Address should be included in host-only network" );
+    }
+  }
+
+
+
+
+  /**
    * Test method for {@link coyote.commons.network.IpNetwork#iterator()}.
    */
   @Test
@@ -100,6 +113,18 @@ public class IpNetworkTest {
       ipaddresscount++;
     }
     assertTrue( ipaddresscount == 65534 );
+  }
+
+  @Test
+  public void cidrFormat() throws IpAddressException {
+    IpNetwork network = new IpNetwork("10.2/26");
+    assertEquals("10.2.0.0/26", network.toString());
+    network = new IpNetwork("10.2.0/24");
+    assertEquals("10.2.0/24", network.toString());
+    network = new IpNetwork("10.2/12");
+    assertEquals("10.2/12", network.toString());
+    network = new IpNetwork("10.2/8");
+    assertEquals("10/8", network.toString());
   }
 
 }

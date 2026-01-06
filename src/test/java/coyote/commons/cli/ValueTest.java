@@ -1,16 +1,14 @@
 package coyote.commons.cli;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 
 
 public class ValueTest {
@@ -20,7 +18,7 @@ public class ValueTest {
 
 
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws Exception {
     opts.addOption( "a", false, "toggle -a" );
     opts.addOption( "b", true, "set -b" );

@@ -4,19 +4,14 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,9 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -72,7 +65,7 @@ public class AntPathFilterTest {
 
 
 
-  @Before
+  @BeforeEach
   public void createMatcher() {
     filter = new AntPathFilter();
   }
@@ -163,7 +156,7 @@ public class AntPathFilterTest {
       filter.extractUriTemplateVariables( "/web/{id:foo(bar)?}", "/web/foobar" );
       fail( "Expected exception" );
     } catch ( final IllegalArgumentException ex ) {
-      assertTrue( "Expected helpful message on the use of capturing groups", ex.getMessage().contains( "The number of capturing groups in the pattern" ) );
+      assertTrue( ex.getMessage().contains( "The number of capturing groups in the pattern" ),"Expected helpful message on the use of capturing groups" );
     }
   }
 
@@ -467,7 +460,7 @@ public class AntPathFilterTest {
 
 
 
-  @Ignore
+
   public void testExtensionMappingWithDotPathSeparator() {
     filter.setPathSeparator( "." );
     assertEquals( "Extension mapping should be disabled with \".\" as path separator", "/*.html.order.*", filter.combine( "/*.html", "order.*" ) );

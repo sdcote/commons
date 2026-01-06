@@ -4,23 +4,13 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.codec;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class BaseNCodecTest {
@@ -30,7 +20,7 @@ public class BaseNCodecTest {
 
 
 
-  @Before
+  @BeforeEach
   public void setUp() {
     codec = new BaseNCodec( 0, 0, 0, 0 ) {
       @Override
@@ -76,7 +66,7 @@ public class BaseNCodecTest {
 
 
 
-  @Ignore
+
   public void testGetEncodedLength() {
     fail( "Not yet implemented" );
   }

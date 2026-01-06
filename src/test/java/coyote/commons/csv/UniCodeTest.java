@@ -1,10 +1,8 @@
 package coyote.commons.csv;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,7 +10,7 @@ import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.List;
 
-import org.junit.Test;
+
 
 
 public class UniCodeTest {

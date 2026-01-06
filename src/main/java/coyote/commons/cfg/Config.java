@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and implementation
  */
 package coyote.commons.cfg;
 
@@ -47,32 +43,10 @@ import org.w3c.dom.Node;
  * in this class.
  */
 public class Config implements Cloneable, Serializable {
-
-  /**
-   * 
-   */
-  private class ConfigField {
-    private String name = null;
-    private String value = null;
-
-
-
-
-    ConfigField( final String name, final String value ) {
-      this.name = name;
-      this.value = value;
-    }
-  }
-
-  /** Platform specific line separator (default = CRLF) */
   public static final String LINE_FEED = System.getProperty( "line.separator", "\r\n" );
-
   public static final String CLASS_TAG = "Class";
   static final String ID_ATTR = "id";
-
   static final String SEQ_ATTR = "seq";
-
-  /** Serialization identifier */
   private static final long serialVersionUID = -6020161245846637528L;
 
 
@@ -947,6 +921,31 @@ public class Config implements Cloneable, Serializable {
    */
   public String toXML() {
     return toIndentedXML( -1 );
+  }
+
+    public boolean getAsBoolean(String appendTag) {
+        return false;
+    }
+
+  public int getAsInt(String generationTag) {
+    return 0;
+  }
+
+
+  /**
+   * 
+   */
+  private class ConfigField {
+    private String name = null;
+    private String value = null;
+
+
+
+
+    ConfigField( final String name, final String value ) {
+      this.name = name;
+      this.value = value;
+    }
   }
 
 }

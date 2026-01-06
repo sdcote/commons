@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial API and implementation
  */
 package coyote.commons.network;
 
@@ -339,7 +335,7 @@ public class IpInterface {
         mask = null;
       }
 
-    } else if ( opsys.equals( "LINUX" ) ) {
+    } else if ( "LINUX".equals( opsys ) ) {
       // eth0 Link encap:Ethernet HWaddr 00:04:75:17:CC:D0
       // inet addr:192.168.2.56 Bcast:192.168.2.255 Mask:255.255.255.0
       // UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1

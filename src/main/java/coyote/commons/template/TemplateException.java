@@ -1,14 +1,11 @@
 /*
  * Copyright (c) 2004 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
- * available at http://creativecommons.org/licenses/MIT/
  *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and implementation
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
+ * available at http://creativecommons.org/licenses/MIT/
  */
+
 package coyote.commons.template;
 
 /**
@@ -37,8 +34,8 @@ public final class TemplateException extends Exception {
    *
    * @param message Error message
    */
-  public TemplateException( String message ) {
-    super( message );
+  public TemplateException(final String message) {
+    super(message);
   }
 
 
@@ -47,11 +44,11 @@ public final class TemplateException extends Exception {
   /**
    * Constructor TemplateException
    *
-   * @param message
-   * @param context
+   * @param message Error message
+   * @param context the data context where the error occurred.
    */
-  public TemplateException( String message, String context ) {
-    super( message );
+  public TemplateException(final String message, final String context) {
+    super(message);
 
     this.context = context;
   }
@@ -63,10 +60,10 @@ public final class TemplateException extends Exception {
    * Constructor
    *
    * @param message Error message
-   * @param excptn
+   * @param excptn root exception
    */
-  public TemplateException( String message, Throwable excptn ) {
-    super( message, excptn );
+  public TemplateException(final String message, final Throwable excptn) {
+    super(message, excptn);
   }
 
 
@@ -75,17 +72,17 @@ public final class TemplateException extends Exception {
   /**
    * Constructor
    *
-   * @param excptn
+   * @param excptn the underlying exception
    */
-  public TemplateException( Throwable excptn ) {
-    super( excptn );
+  public TemplateException(final Throwable excptn) {
+    super(excptn);
   }
 
 
 
 
   /**
-   * @return the context
+   * @return the data context
    */
   public String getContext() {
     return context;

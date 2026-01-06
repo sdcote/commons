@@ -1,46 +1,33 @@
 /*
  * Copyright (c) 2014 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
- * available at http://creativecommons.org/licenses/MIT/
  *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
+ * available at http://creativecommons.org/licenses/MIT/
  */
+
 package coyote.commons.security;
 
 /**
- * The Cipher class models the basic cipher algorithm for the platform when the 
+ * The Cipher class models the basic cipher algorithm for the platform when the
  * platform is distributed overseas and encryption technologies are not allowed
  * by the government.
  */
 public class NullCipher extends AbstractCipher implements Cipher {
-  private static final String CIPHER_NAME = "Null";
-
-
-
-
-  /**
-   * Standard no-arg constructor.
-   */
-  public NullCipher() {
-    super();
-  }
+  public static final String CIPHER_NAME = "Null";
 
 
 
 
   /**
    * Returns the data passed to this method.
-   * 
+   *
    * @param data The data to ignore.
-   * 
+   *
    * @return The data passed to this method.
    */
   @Override
-  public byte[] decrypt( final byte[] data ) {
+  public byte[] decrypt(final byte[] data) {
     return data;
   }
 
@@ -49,13 +36,13 @@ public class NullCipher extends AbstractCipher implements Cipher {
 
   /**
    * Returns the data passed to this method.
-   * 
+   *
    * @param bytes The data to ignore.
-   * 
+   *
    * @return The data passed to this method.
    */
   @Override
-  public byte[] encrypt( final byte[] bytes ) {
+  public byte[] encrypt(final byte[] bytes) {
     return bytes;
   }
 
@@ -74,6 +61,17 @@ public class NullCipher extends AbstractCipher implements Cipher {
 
 
   /**
+   * @see coyote.commons.security.Cipher#getInstance()
+   */
+  @Override
+  public Cipher getInstance() {
+    return new NullCipher();
+  }
+
+
+
+
+  /**
    * @see coyote.commons.security.Cipher#getName()
    */
   @Override
@@ -86,11 +84,11 @@ public class NullCipher extends AbstractCipher implements Cipher {
 
   /**
    * Initialize the algorithm with a key to be used for en/de-cryption.
-   * 
+   *
    * @param key The key to use for all operations.
    */
   @Override
-  public void init( final byte[] key ) {
+  public void init(final byte[] key) {
     // don't care
   }
 

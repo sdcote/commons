@@ -1,18 +1,13 @@
 package coyote.commons;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
  * Class URITest
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.5 $
  */
 public class BlockingQueueTest {
 
@@ -31,8 +26,8 @@ public class BlockingQueueTest {
         int size = i + 1;
         float load = (float)size / (float)capacity;
 
-        assertTrue( "Size should be " + size + " is " + queue.size(), queue.size() == size );
-        assertTrue( "Load should be " + load + " is " + queue.load(), queue.load() == load );
+        assertTrue( queue.size() == size, "Size should be " + size + " is " + queue.size() );
+        assertTrue( queue.load() == load ,"Load should be " + load + " is " + queue.load());
       }
     } catch ( Exception e ) {
       fail( "Exception" );
@@ -92,7 +87,7 @@ public class BlockingQueueTest {
       // here and when it times out, an null reference should be returned
       Object obj = queue.get( 20 );
 
-      assertNull( "GET should have timed out", obj );
+      assertNull(  obj,"GET should have timed out" );
     } catch ( Exception ignore ) {
       fail( "Should not have been interrupted" );
     }

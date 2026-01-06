@@ -1,20 +1,18 @@
 package coyote.commons;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
  * Class FileUtilTest
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.5 $
  */
 public class FileUtilTest {
   private static final String S = File.separator;
@@ -27,14 +25,14 @@ public class FileUtilTest {
    */
   @Test
   public void testFileToStringOne() {
-    assertTrue( "testFileToStringOne", FileUtil.stringToFile( "This is test named testFileToStringOne", "test.txt" ) );
+    assertTrue(  FileUtil.stringToFile( "This is test named testFileToStringOne", "test.txt" ),"testFileToStringOne" );
 
     if ( FileUtil.fileToString( "test.txt" ) == null ) {
       fail( "File not found" );
     }
 
     try {
-      FileUtil.delFile( "test.txt" );
+      FileUtil.deleteFile( "test.txt" );
     } catch ( Exception ex ) {}
   }
 
@@ -46,9 +44,7 @@ public class FileUtilTest {
    */
   @Test
   public void testFileToStringTwo() {
-    if ( FileUtil.fileToString( "Does-Not-Exist.txt" ) != null ) {
-      fail( "Something else found" );
-    }
+    assertEquals( "", FileUtil.fileToString( "Does-Not-Exist.txt" ), "Nothing should have been read." ) ;
   }
 
 
@@ -61,7 +57,7 @@ public class FileUtilTest {
   public void testStringToFileOne() {
     String filename = "StringToFile.txt";
     try {
-      assertTrue( "StringToFile", FileUtil.stringToFile( "This is a test", filename ) );
+      assertTrue(  FileUtil.stringToFile( "This is a test", filename ),"StringToFile" );
     }
     finally {
       new File( filename ).delete();
@@ -161,7 +157,7 @@ public class FileUtilTest {
   @Test
   public void testGetPath1() {
     String filename = FileUtil.CURRENT + FileUtil.FILE_SEPARATOR + "README.TXT";
-    assertTrue( "testGetPath2", FileUtil.getPath( filename ).equals( FileUtil.CURRENT + FileUtil.FILE_SEPARATOR ) );
+    assertTrue( FileUtil.getPath( filename ).equals( FileUtil.CURRENT + FileUtil.FILE_SEPARATOR ) );
   }
 
 
@@ -174,7 +170,7 @@ public class FileUtilTest {
   public void testGetPath2() {
     String filename = "/export/home/sdcote/find.txt";
     String path = FileUtil.FILE_SEPARATOR + "export" + FileUtil.FILE_SEPARATOR + "home" + FileUtil.FILE_SEPARATOR + "sdcote" + FileUtil.FILE_SEPARATOR;
-    assertTrue( "testGetPath2", FileUtil.getPath( filename ).equals( path ) );
+    assertTrue(  FileUtil.getPath( filename ).equals( path ) );
   }
 
 
@@ -232,28 +228,6 @@ public class FileUtilTest {
 
 
 
-  /**
-   * Method testGetJavaPath1
-   */
-  //@Test
-  public void testGetJavaPath1() {
-    String classname = "coyote.commons.util.FileUtil.class";
-    assertTrue( "testGetJavaPath1", FileUtil.getJavaPath( classname ).equals( "/net/bralyn/util" ) );
-  }
-
-
-
-
-  /**
-   * Method testGetJavaPath2
-   */
-  //@Test
-  public void testGetJavaPath2() {
-    String classname = "coyote.commons.util.FileUtil";
-    assertTrue( "testGetJavaPath2", FileUtil.getJavaPath( classname ).equals( "/net/bralyn/util" ) );
-  }
-
-
 
 
   /**
@@ -262,7 +236,7 @@ public class FileUtilTest {
   @Test
   public void testGetJavaFile1() {
     String classname = "coyote.commons.util.FileUtil.class";
-    assertTrue( "testGetJavaFile1", FileUtil.getJavaFile( classname ).equals( "FileUtil.class" ) );
+    assertTrue(  FileUtil.getJavaFile( classname ).equals( "FileUtil.class" ) );
   }
 
 
@@ -274,7 +248,7 @@ public class FileUtilTest {
   @Test
   public void testGetJavaFile2() {
     String classname = "coyote.commons.util.FileUtil";
-    assertTrue( "testGetJavaFile2", FileUtil.getJavaFile( classname ).equals( "FileUtil.class" ) );
+    assertTrue(  FileUtil.getJavaFile( classname ).equals( "FileUtil.class" ) );
   }
 
 

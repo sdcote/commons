@@ -2,7 +2,10 @@ package coyote.commons;
 
 public enum TemperatureScale {
 
-  CELSIUS( "Celsius", "°C", TemperatureConversion.ABSOLUTE_ZERO_CELSIUS), FAHRENHEIT( "Farenheit", "°F", TemperatureConversion.ABSOLUTE_ZERO_FARENHEIT), KELVIN( "Kelvin", "K", TemperatureConversion.ABSOLUTE_ZERO_KELVIN), RANKINE( "Rankine", "°R", TemperatureConversion.ABSOLUTE_ZERO_RANKINE);
+  CELSIUS( "Celsius", "°C", TemperatureConversion.ABSOLUTE_ZERO_CELSIUS),
+  FAHRENHEIT( "Farenheit", "°F", TemperatureConversion.ABSOLUTE_ZERO_FARENHEIT),
+  KELVIN( "Kelvin", "K", TemperatureConversion.ABSOLUTE_ZERO_KELVIN),
+  RANKINE( "Rankine", "°R", TemperatureConversion.ABSOLUTE_ZERO_RANKINE);
 
   private String name;
   private String units;

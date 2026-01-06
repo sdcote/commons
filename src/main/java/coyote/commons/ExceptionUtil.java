@@ -4,15 +4,13 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and implementation
  */
 package coyote.commons;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+
+import static coyote.commons.StringUtil.tail;
 
 
 /**
@@ -120,6 +118,45 @@ public class ExceptionUtil {
     buffer.append( ")" );
 
     return buffer.toString();
+  }
+
+
+  public static String getLocalJavaName( final String classname ) {
+    return tail( classname, '.' );
+  }
+
+
+
+
+
+
+
+  public static String getAbbreviatedClassname( final String classname ) {
+    if ( classname != null ) {
+      String[] tokens = classname.split( "\\." );
+
+      if ( tokens.length > 1 ) {
+        StringBuffer b = new StringBuffer();
+        for ( int x = 0; x < tokens.length; x++ ) {
+          if ( tokens[x].length() > 0 ) {
+            if ( x + 1 < tokens.length ) {
+              b.append( tokens[x].charAt( 0 ) );
+              b.append( '.' );
+            } else {
+              b.append( tail( classname, '.' ) );
+              break;
+            }
+          }
+        }
+        return b.toString();
+
+      } else {
+        return classname;
+      }
+    } else {
+      return "";
+    }
+
   }
 
 }

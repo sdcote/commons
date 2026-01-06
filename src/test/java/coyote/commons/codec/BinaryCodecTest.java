@@ -4,22 +4,17 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.codec;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.UnsupportedEncodingException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import coyote.commons.StringUtil;
 
@@ -90,7 +85,7 @@ public class BinaryCodecTest {
 
 
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     instance = new BinaryCodec();
   }
@@ -98,7 +93,7 @@ public class BinaryCodecTest {
 
 
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     instance = null;
   }

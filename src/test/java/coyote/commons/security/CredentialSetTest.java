@@ -4,21 +4,16 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.security;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import coyote.commons.StringUtil;
+import org.junit.jupiter.api.Test;
 
 import coyote.commons.ByteUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -134,5 +129,15 @@ public class CredentialSetTest {
     // convert the MD5 hash to a hex string, no delimiters between hex values
     String dbValue = ByteUtil.bytesToHex( value, null );
     assertTrue( EXPECTED_HASH.equals( dbValue ) );
+  }
+@Test
+  public void chaining() throws Exception {
+    String PRIVATEKEY = "4nxoiwamnrf95jnfks8wjd9rfk";
+    String PASSWORD = "123abc{$&";
+    CredentialSet creds = new CredentialSet() //
+        .add(CredentialSet.PRIVATEKEY, PRIVATEKEY.getBytes(StringUtil.UTF_8)) //
+        .add(CredentialSet.PASSWORD, PASSWORD.getBytes(StringUtil.UTF_8));
+
+    assertNotNull(creds);
   }
 }

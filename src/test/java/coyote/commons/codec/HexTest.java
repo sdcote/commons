@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
- *      - Initial concept and initial implementation
  */
 package coyote.commons.codec;
 
@@ -19,9 +15,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import coyote.commons.StringUtil;
 
@@ -29,18 +24,13 @@ import coyote.commons.StringUtil;
 /**
  * 
  */
-public class HexTest extends TestCase {
+public class HexTest  {
 
   private static final String BAD_ENCODING_NAME = "UNKNOWN";
 
   private final static boolean LOG = false;
 
 
-
-
-  public HexTest( final String name ) {
-    super( name );
-  }
 
 
 
@@ -166,7 +156,7 @@ public class HexTest extends TestCase {
     String expectedHexString = Hex.encodeHexString( sourceBytes );
     // ... and get the bytes in the expected charset
     final byte[] expectedHexStringBytes = expectedHexString.getBytes( name );
-    Assert.assertTrue( Arrays.equals( expectedHexStringBytes, actualEncodedBytes ) );
+    assertTrue( Arrays.equals( expectedHexStringBytes, actualEncodedBytes ) );
     // test 2
     String actualStringFromBytes = new String( actualEncodedBytes, name );
     assertEquals( name + ", expectedHexString=" + expectedHexString + ", actualStringFromBytes=" + actualStringFromBytes, expectedHexString, actualStringFromBytes );
