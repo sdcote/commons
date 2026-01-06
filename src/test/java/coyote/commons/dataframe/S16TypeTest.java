@@ -1,0 +1,169 @@
+package coyote.commons.dataframe;
+
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+/**
+ * -32,768 to 32,767
+ */
+public class S16TypeTest {
+
+    /**
+     * The data type under test.
+     */
+    static S16Type datatype = null;
+
+
+    /**
+     * @throws Exception
+     */
+    @BeforeAll
+    public static void setUpBeforeClass() throws Exception {
+        datatype = new S16Type();
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    @AfterAll
+    public static void tearDownAfterClass() throws Exception {
+        datatype = null;
+    }
+
+
+    /**
+     * These are really not necessary as Java handles all range checks
+     */
+    @Test
+    public void testCheckType() {
+        short value = (short) 32767;
+        assertTrue(datatype.checkType(value));
+        //0x7FFF = 01111111 11111111
+
+        // This overflows in Java to -32768
+        value++;
+        assertTrue(datatype.checkType(value));
+
+        value = 0;
+        assertTrue(datatype.checkType(value));
+
+        value--; // -1
+        assertTrue(datatype.checkType(value));
+
+        value = -32768;
+        assertTrue(datatype.checkType(value));
+        //0x8000 = 10000000 00000000
+
+        // This overflows in Java to 32767
+        value--;
+        assertTrue(datatype.checkType(value));
+
+    }
+
+
+    @Test
+    public void testDecode() {
+        byte[] data = new byte[2];
+        data[0] = (byte) 128;
+        data[1] = 0;
+
+        //-32768 = 0x8000 = 10000000 00000000
+        Object obj = datatype.decode(data);
+        assertInstanceOf(Short.class, obj);
+        assertEquals(-32768, ((Short) obj).shortValue());
+
+        //32767 = 0x7FFF = 01111111 11111111
+        data[0] = (byte) 127;
+        data[1] = -1;
+        obj = datatype.decode(data);
+        assertInstanceOf(Short.class, obj);
+        assertEquals(32767, ((Short) obj).shortValue());
+
+        //0 = 0x0000 = 00000000 00000000
+        data[0] = 0;
+        data[1] = 0;
+        obj = datatype.decode(data);
+        assertInstanceOf(Short.class, obj);
+        assertEquals(0, ((Short) obj).shortValue());
+
+        //-1 = 0xFFFF = 11111111 11111111
+        data[0] = -1;
+        data[1] = -1;
+        obj = datatype.decode(data);
+        assertInstanceOf(Short.class, obj);
+        assertEquals(-1, ((Short) obj).shortValue());
+
+    }
+
+
+    /**
+     * The test will look weird because Java only deals with signed numbers
+     */
+    @Test
+    public void testEncode() {
+        //32767 = 0x7FFF = 01111111 11111111
+        short value = (short) 32767;
+        byte[] data = datatype.encode(value);
+        assertEquals(2, data.length);
+        assertEquals(127, data[0]);
+        assertEquals(-1, data[1]);
+
+        // Overflow to -32768
+        value++;
+        data = datatype.encode(value);
+        assertEquals(2, data.length);
+        assertEquals(-128, data[0]);
+        assertEquals(0, data[1]);
+
+        //0 = 0x0000 = 00000000 00000000
+        value = 0;
+        data = datatype.encode(value);
+        assertEquals(2, data.length);
+        assertEquals(0, data[0]);
+        assertEquals(0, data[1]);
+
+        //-1 = 0xFFFF = 11111111 11111111
+        value--;
+        data = datatype.encode(value);
+        assertEquals(2, data.length);
+        assertEquals(-1, data[0]);
+        assertEquals(-1, data[1]);
+
+    }
+
+
+    @Test
+    public void testGetTypeName() {
+        assertEquals("S16", datatype.getTypeName());
+    }
+
+
+    @Test
+    public void testIsNumeric() {
+        assertTrue(datatype.isNumeric());
+    }
+
+
+    @Test
+    public void testGetSize() {
+        assertEquals(2, datatype.getSize());
+    }
+
+
+    @Test
+    public void testFormat() {
+        int value = new BigDecimal("2226").intValue();
+        DataField field = new DataField(value);
+        String test = field.getStringValue();
+        assertEquals("2226", test);
+    }
+
+}

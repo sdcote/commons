@@ -21,7 +21,7 @@ import coyote.commons.jdbc.datasource.CloseOnCompletionConnection;
  * <p>All the complexities of retrieving an available connection from a data 
  * source, preparing a statement with placeholders, filling in the arguments, 
  * executing a query or an update task, and finally transforming the result set 
- * returned from the execution into a entity object or a list of entity objects 
+ * returned from the execution into an entity object or a list of entity objects
  * can be condensed down into just one method call.
  */
 public class JdbcTemplate {
