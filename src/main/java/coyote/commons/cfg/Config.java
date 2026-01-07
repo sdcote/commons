@@ -1,951 +1,698 @@
 /*
- * Copyright (c) 2004 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
 package coyote.commons.cfg;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import coyote.commons.StringUtil;
+import coyote.commons.UriUtil;
+import coyote.commons.dataframe.DataField;
+import coyote.commons.dataframe.DataFrame;
+import coyote.commons.dataframe.DataFrameException;
+import coyote.commons.dataframe.marshal.JSONMarshaler;
+import coyote.commons.dataframe.marshal.MarshalException;
+
+import java.io.*;
+import java.math.BigInteger;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 
 /**
- * The Config class models a component that is used to make file-based 
+ * The Config class models a component that is used to make file-based
  * configuration of components easier than using property files.
- * 
+ *
  * <p>The primary goal of this class is to allow hierarchical configurations to
- * be specified using XML as a formatting strategy. Basic File and network
- * protocol I/O is supported in a simple interface.
- * 
- * <p>This is designed to be a simple class to perform a simple task. It is NOT 
- * designed to be all things to all people. There is no concept of data types,
- * inheritance, modification listeners, structure validation or data integrity
- * in this class.
+ * be specified using different notations (such as JSON) as a formatting
+ * strategy. Basic File and network protocol I/O is supported in a simple
+ * interface.</p>
  */
-public class Config implements Cloneable, Serializable {
-  public static final String LINE_FEED = System.getProperty( "line.separator", "\r\n" );
-  public static final String CLASS_TAG = "Class";
-  static final String ID_ATTR = "id";
-  static final String SEQ_ATTR = "seq";
-  private static final long serialVersionUID = -6020161245846637528L;
+public class Config extends DataFrame implements Cloneable, Serializable {
+
+    public static final String CLASS = "Config";
+
+    // Common configuration tags
+    public static final String CLASS_TAG = "Class";
+    public static final String NAME_TAG = "Name";
+    public static final String ID_TAG = "ID";
+
+    /**
+     * Serialization identifier
+     */
+    private static final long serialVersionUID = -6020161245846637528L;
+
+    /**
+     * A collection of ConfigSlots we use to optionally validate the completeness
+     * of the Config object or to provide default configurations.
+     */
+    private HashMap<String, ConfigSlot> slots = null;
 
 
-
-
-  /**
-   * Read a configuration XML file and return a Config reference.
-   * 
-   * @param file File reference from which to read.
-   * 
-   * @return A Config object populated with data from the given XML file/
-   * 
-   * @throws IOException in the file could not be read
-   * @throws ConfigException if the XML was malformed or otherwise invalid.
-   */
-  public static Config read( final File file ) throws IOException, ConfigException {
-    return Config.read( new FileInputStream( file ) );
-  }
-
-
-
-
-  /**
-   * Read configuration XML data from an InputStream and return a Config 
-   * reference.
-   * 
-   * @param configStream The input stream from ehich to read the XML data
-   * 
-   * @return A Config object populated with data from the given XML file/
-   * 
-   * @throws ConfigException if the XML was malformed or otherwise invalid.
-   */
-  public static Config read( final InputStream configStream ) throws ConfigException {
-    final Config retval = new Config();
-    Document document = null;
-
-    try {
-      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      final DocumentBuilder builder = factory.newDocumentBuilder();
-      document = builder.parse( configStream );
-    } catch ( final Throwable e ) {
-      throw new ConfigException( e );
+    /**
+     * Default constructor
+     */
+    public Config() {
     }
 
-    if ( document != null ) {
-      retval.parse( document );
+
+    /**
+     * Create a new Config from a DataFrame.
+     *
+     * <p>This essentially wraps a clone of the frame with the Config accessor
+     * methods.
+     *
+     * @param frame the frame to use as a source of data.
+     */
+    public Config(final DataFrame frame) {
+        populate(frame);
     }
 
-    return retval;
-  }
 
-
-
-
-  /**
-   * Read a configuration XML file using the given name and return a Config 
-   * reference.
-   * 
-   * @param filename name of the file to open read and parse
-   * 
-   * @return A Config object populated with data from the given XML file/
-   * 
-   * @throws IOException if the file could not be found or read
-   * @throws ConfigException if the XML was malformed or otherwise invalid.
-   */
-  public static Config read( final String filename ) throws IOException, ConfigException {
-    return Config.read( new FileInputStream( filename ) );
-  }
-
-
-
-
-  /**
-   * Read in XML configuration data using the file or network resource 
-   * specified in the given URI.
-   * 
-   * @param uri Identifier of the resource to load
-   * 
-   * @return A Config object populated with data from the given XML file/
-   * 
-   * @throws IOException if the resource specified by the URI could not be read
-   * @throws ConfigException if the XML was malformed or otherwise invalid.
-   */
-  public static Config read( final URI uri ) throws IOException, ConfigException {
-    if ( uri.getScheme().toLowerCase().startsWith( "file" ) ) {
-      return Config.read( new FileInputStream( uri.getAuthority() ) );
-    } else {
-      return Config.read( uri.toURL().openStream() );
-    }
-  }
-
-  /** Name of this configuration section */
-  private String name = null;
-
-  /** An identifier to be used with this configuration section */
-  private String id = null;
-
-  /** A sequence attribute */
-  private long seq = 0;
-
-  /** sections or child configurations nested in this config */
-  ArrayList<Config> sections = new ArrayList<Config>();
-
-  /**
-   * The array of elements this configuration holds
-   */
-  ArrayList<ConfigField> fields = new ArrayList<ConfigField>();
-
-  /**
-   * A collection of ConfigSlots we use to optionally validate the completeness 
-   * of the Config object or to provide default configurations.
-   */
-  private HashMap<String, ConfigSlot> slots = null;
-
-  private final StringBuffer comments = new StringBuffer();
-
-
-
-
-  public Config() {
-    name = "Config";
-  }
-
-
-
-
-  public Config( final String xml ) throws ConfigException {
-    Document document = null;
-
-    try {
-      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      final DocumentBuilder builder = factory.newDocumentBuilder();
-      document = builder.parse( new ByteArrayInputStream( xml.getBytes() ) );
-    } catch ( final Exception e ) {
-      throw new ConfigException( e );
-    }
-
-    if ( document != null ) {
-      this.parse( document );
-    }
-  }
-
-
-
-
-  /**
-   * Add a child configuration object to the list of children.
-   * 
-   * <p>Note: No check is made to see if the config has already been added. It
-   * is therefore possible to add the same configuration multiple times.
-   *
-   * @param config config to be added
-   *
-   * @throws IllegalArgumentException If the configuration cannot be added (see setParent)
-   */
-  public void add( final Config config ) throws IllegalArgumentException {
-    if ( config == null ) {
-      return;
-    }
-
-    if ( config == this ) {
-      throw new IllegalArgumentException( "Configuration can not be added to itself" );
-    }
-
-    sections.add( config );
-  }
-
-
-
-
-  public int add( final String name, final String value ) {
-    fields.add( new ConfigField( name, value ) );
-
-    return fields.size() - 1;
-  }
-
-
-
-
-  /**
-   * Add the referenced ConfigSlot.
-   *
-   * @param slot the reference to the ConfigSlot to add.
-   */
-  public void addConfigSlot( final ConfigSlot slot ) {
-    if ( slots == null ) {
-      slots = new HashMap<String, ConfigSlot>();
-    }
-
-    if ( slot != null ) {
-      slots.put( slot.getName(), slot );
-    }
-  }
-
-
-
-
-  /**
-   * @see java.lang.Object#clone()
-   */
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    final Config retval = new Config();
-    retval.setName( name );
-
-    final String[] anames = getElementNames();
-    if ( anames.length > 0 ) {
-      for ( final String aname : anames ) {
-        retval.set( aname, get( aname ) );
-      }
-    }
-
-    for ( final Iterator<Config> it = sections.iterator(); it.hasNext(); retval.add( (Config)( (Config)it.next() ).clone() ) ) {
-      ;
-    }
-
-    return retval;
-  }
-
-
-
-
-  /**
-   * Return an Iterator over all the ConfigSlots
-   *
-   * @return an Iterator over all the ConfigSlot, never returns null;
-   */
-  public Iterator<ConfigSlot> configSlotIterator() {
-    if ( slots != null ) {
-      return slots.values().iterator();
-    } else {
-      return new Vector<ConfigSlot>().iterator();
-    }
-  }
-
-
-
-
-  /**
-   * Checks to see if the configuration contains the named element
-   *
-   * @param name String which represents the name of the element to check
-   *
-   * @return boolean True if an Attribute with the given name is contained in
-   *         the configuration, False if otherwise.
-   */
-  public boolean contains( final String name ) {
-    ConfigField field;
-    for ( int i = 0; i < fields.size(); i++ ) {
-      field = (ConfigField)fields.get( i );
-      if ( ( field.name != null ) && field.name.equals( name ) ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-
-
-  /**
-   * Retrieve the first occurrence of a named element's data from the 
-   * configuration.
-   * 
-   * @param name The name of the element to retrieve.
-   * 
-   * @return The value of the named element or null if the element contained 
-   *         null or an element with the given name was not found.
-   */
-  public String get( final String name ) {
-    return get( name, null );
-  }
-
-
-
-
-  /**
-   * Retrieve the first occurrence of a named element's data from the 
-   * configuration or the passed default value if the named element is not 
-   * found.
-   * 
-   * <p>It is possible for this method to return null as an empty node may be 
-   * stored with the given name. In this case, the default value will NOT be 
-   * returned as that null value is the true value of the named node.
-   * 
-   * <p>The default argument will only be returned if the named element is not 
-   * found.
-   *
-   * @param name String which represents the name of the data to retrieve
-   * @param deflt default value to return if there is no element found with
-   *          that name
-   *
-   * @return value The data value with the given name, or the default argument 
-   *         passed if the element with the given name was not found.
-   */
-  public String get( final String name, final String deflt ) {
-    ConfigField field;
-    for ( int i = 0; i < fields.size(); i++ ) {
-      field = (ConfigField)fields.get( i );
-
-      if ( ( field.name != null ) && field.name.equals( name ) ) {
-        return field.value;
-      }
-    }
-
-    return deflt;
-  }
-
-
-
-
-  /**
-   * Retrieve all the element values with the given name.
-   * 
-   * @param name The name of the elements to retrieve.
-   * 
-   * @return The array of values with the given name. An empty array implies no
-   *         elements with the given name exists. Array elements with null 
-   *         values indicate named elements exist but no value was specified.
-   */
-  public String[] getArray( final String name ) {
-    final ArrayList<String> list = new ArrayList<String>();
-    ConfigField field;
-    for ( final Iterator<ConfigField> it = fields.iterator(); it.hasNext(); ) {
-      field = (ConfigField)it.next();
-      if ( field.name.equals( name ) ) {
-        list.add( field.value );
-      }
-    }
-
-    final String[] retval = new String[list.size()];
-    for ( int x = 0; x < retval.length; retval[x] = (String)list.get( x++ ) ) {
-      ;
-    }
-    return retval;
-
-  }
-
-
-
-
-  /**
-   * @return the className
-   */
-  public String getClassName() {
-    return get( Config.CLASS_TAG );
-  }
-
-
-
-
-  /**
-   * Returns the first occurrence of a named section.
-   *
-   * @param name The node name to match.
-   *
-   * @return Reference to the first child configuration (section) with the 
-   *         given node name.
-   */
-
-  public Config getConfig( final String name ) {
-    if ( ( name != null ) && ( name.length() > 0 ) ) {
-      for ( int x = 0; x < sections.size(); x++ ) {
-        final Config retval = (Config)sections.get( x );
-
-        if ( name.equals( retval.getName() ) ) {
-          return retval;
+    /**
+     * Read a configuration from the given string.
+     *
+     * <p>This assumes the string contains a valid UTF-8 JSON format.
+     *
+     * @param data the string to read
+     * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
+     */
+    public Config(final String data) throws ConfigurationException {
+        try {
+            if (data != null) {
+                final List<DataFrame> config = JSONMarshaler.marshal(data);
+                if ((config.size() > 0) && (config.get(0) != null)) {
+                    populate(config.get(0));
+                }
+            }
+        } catch (final MarshalException e) {
+            throw new ConfigurationException("Could not read UTF-8", e);
         }
-      }
     }
-    return null;
-  }
 
+    /**
+     * Read a configuration from the given file.
+     *
+     * <p>This assumes the file contains a valid UTF-8 JSON format.
+     *
+     * @param file the file to read
+     * @return A usable Config reference.
+     * @throws IOException            if there were problems reading the file
+     * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
+     */
+    public static Config read(final File file) throws IOException, ConfigurationException {
+        return Config.read(new FileInputStream(file));
+    }
 
+    /**
+     * Read the data from the given input stream and create an object from the
+     * data read.
+     *
+     * <p>This assumes a UTF-8 JSON formatted stream of bytes.</p>
+     *
+     * @param configStream the input stream from which to read
+     * @return a configuration filled with the
+     * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the stream.
+     */
+    public static Config read(final InputStream configStream) throws ConfigurationException {
+        final Config retval = new Config();
 
-
-  public int getConfigCount() {
-    return sections.size();
-  }
-
-
-
-
-  /**
-   * Returns an Iterator through the child configurations.
-   *
-   * <p>The Iterator will allow one to access each child configuration.
-   *
-   * @return Iterator through the child configurations.
-   */
-  public Iterator<Config> getConfigIterator() {
-    return sections.iterator();
-  }
-
-
-
-
-  /**
-   * Returns an Iterator through the child configuration sections that match 
-   * the given name.
-   *
-   * <p>The Iterator will allow one to access each child configuration whose node
-   * type (XML element name) matches the given type.
-   * 
-   * <p>If the argument of '*' is passed as the type argument, then all child 
-   * configurations will be returned.
-   *
-   * @param type The node name to match or '*" for all children.
-   *
-   * @return Iterator through the child configurations.
-   */
-  public Iterator<Config> getConfigIterator( final String type ) {
-    if ( "*".equals( type ) ) {
-      return getConfigIterator();
-    } else {
-      final Vector<Config> retval = new Vector<Config>();
-
-      for ( int x = 0; x < sections.size(); x++ ) {
-        if ( type.equals( sections.get( x ).getName() ) ) {
-          retval.add( sections.get( x ) );
+        final byte[] buffer = new byte[8192];
+        int bytesRead;
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            while ((bytesRead = configStream.read(buffer)) != -1) {
+                output.write(buffer, 0, bytesRead);
+            }
+        } catch (final IOException e) {
+            throw new ConfigurationException("Could not read configuration stream", e);
         }
-      }
 
-      return retval.iterator();
+        String data = null;
+        data = new String(output.toByteArray(), StandardCharsets.UTF_8);
+
+        if (data != null) {
+            final List<DataFrame> config = JSONMarshaler.marshal(data);
+            if ((config.size() > 0) && (config.get(0) != null)) {
+                retval.populate(config.get(0));
+            }
+        }
+
+        return retval;
     }
 
-  }
-
-
-
-
-  /**
-   * Retrieve a named ConfigSlot from the configuration
-   *
-   * @param name String which represents the name of the slot to retrieve
-   *
-   * @return value ConfigSlot object with the given name or null if it does
-   *         not exist
-   */
-  public ConfigSlot getConfigSlot( final String name ) {
-    if ( slots != null ) {
-      synchronized( slots ) {
-        return (ConfigSlot)slots.get( name );
-      }
-    } else {
-      return null;
-    }
-  }
-
-
-
-
-  /**
-   * Access the current number of elements set in this configuration.
-   * 
-   * @return number of named values in this configuration
-   */
-  public int getElementCount() {
-    return fields.size();
-  }
-
-
-
-
-  public Iterator<String> getElementNameIterator() {
-    final HashSet<String> retval = new HashSet<String>();
-    ConfigField field;
-    for ( final Iterator<ConfigField> it = fields.iterator(); it.hasNext(); ) {
-      field = it.next();
-
-      if ( field.name != null ) {
-        retval.add( field.name );
-      }
+    /**
+     * Read a configuration from the given named file.
+     *
+     * <p>This assumes the file contains a valid UTF-8 JSON format.
+     *
+     * @param filename the name of the file to read
+     * @return A usable Config reference.
+     * @throws IOException            if there were problems reading the file
+     * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
+     */
+    public static Config read(final String filename) throws IOException, ConfigurationException {
+        return Config.read(new FileInputStream(filename));
     }
 
-    return retval.iterator();
-  }
-
-
-
-
-  /**
-   * Get the names of all the elements in this configuration.
-   *
-   * @return the names used to access the element values
-   */
-  public String[] getElementNames() {
-    final ArrayList<String> list = new ArrayList<String>();
-    for ( final Iterator<String> it = getElementNameIterator(); it.hasNext(); list.add( it.next() ) ) {
-      ;
-    }
-    final String[] retval = new String[list.size()];
-    for ( int x = 0; x < retval.length; retval[x] = (String)list.get( x++ ) ) {
-      ;
-    }
-    return retval;
-  }
-
-
-
-
-  /**
-   * @return the id
-   */
-  public String getId() {
-    return id;
-  }
-
-
-
-
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
-
-
-
-
-  void parse( final Document dom ) throws ConfigException {
-    // this gives the class the ability to pull info and attributes off the 
-    // document level
-
-    // get
-    Node root = dom.getFirstChild();
-
-    while ( root != null ) {
-      if ( root.getNodeType() == Node.COMMENT_NODE ) {
-        // Java5 comments.append( root.getTextContent() );
-        comments.append( root.getNodeValue() );
-        // System.out.println("COMMENTS: "+comments);
-
-        root = root.getNextSibling();
-      }
-
-      // if the node is an element
-      if ( root.getNodeType() == Node.ELEMENT_NODE ) {
-        // System.out.println( "ROOT name:" + root.getNodeName() + "  type:" + root.getNodeType() + "  attr:" + root.getAttributes().getLength() );
-
-        // parse it for this config
-        parse( root, 0 );
-
-        // only parse the first node
-        break;
-      }
-    }
-
-    // System.out.println( "Completed parsing document " + comments.toString() );
-  }
-
-
-
-
-  /**
-   * Parse the XML into sub-configs and elements.
-   *
-   * <p>This method is NOT thread-safe. It is designed to be externally
-   * synchronized.
-   *
-   * @param node XML node to parse for data
-   * @param lvl the level this node is in the configuration
-   */
-  public void parse( Node node, final int lvl ) throws ConfigException {
-    if ( node == null ) {
-      throw new IllegalArgumentException( "Unable to parse a null XML document" );
-    }
-
-    // http://java.sun.com/j2se/1.5.0/docs/api/index.html?javax/xml/package-summary.html
-    // http://java.sun.com/j2se/1.4.2/docs/api/index.html?javax/xml/package-summary.html
-
-    // Skip past any non-elements
-    if ( node.getNodeType() != Node.ELEMENT_NODE ) {
-      node = node.getNextSibling();
-    }
-
-    // System.out.println( lvl + " SECTION name:" + node.getNodeName() + " type:" + node.getNodeType() + " attrs:" + node.getAttributes().getLength() );
-
-    name = node.getNodeName();
-    // Try to preserve the ID and SEQ attributes
-    if ( node.getAttributes().getLength() > 0 ) {
-      final NamedNodeMap map = node.getAttributes();
-      for ( int x = 0; x < map.getLength(); x++ ) {
-        final Node anode = map.item( x );
-        if ( ID_ATTR.equalsIgnoreCase( anode.getNodeName() ) ) {
-          id = anode.getNodeValue();
-        } else if ( SEQ_ATTR.equalsIgnoreCase( anode.getNodeName() ) ) {
-          try {
-            seq = Long.parseLong( anode.getNodeValue() );
-          } catch ( final NumberFormatException e ) {
-            // System.out.println( "NAN SEQ ATTR:" + anode.getNodeName() + " = " + anode.getNodeValue() );
-          } catch ( final DOMException e ) {
-            e.printStackTrace();
-          }
+    /**
+     * Read a configuration from the given URI.
+     *
+     * <p>This assumes the URI represents a stream of valid UTF-8 JSON formatted
+     * data.
+     *
+     * @param uri the URI of the stream to read
+     * @return A usable Config reference.
+     * @throws IOException            if there were problems reading the file
+     * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the URI.
+     */
+    public static Config read(final URI uri) throws IOException, ConfigurationException {
+        if (StringUtil.isNotBlank(uri.getScheme())) {
+            if (uri.getScheme().toLowerCase().startsWith("file")) {
+                return Config.read(new FileInputStream(UriUtil.getFile(uri)));
+            } else {
+                return Config.read(uri.toURL().openStream());
+            }
         } else {
-          // System.out.println( "ATTR:" + anode.getNodeName() + " = " + anode.getNodeValue() );
+            // Assume this is a file path
+            return Config.read(new FileInputStream(uri.toString()));
         }
-      }
-
     }
 
-    // Process all the children for this node
-    Node child = node.getFirstChild();
-
-    // while there are sections
-    while ( child != null ) {
-      // System.out.println( lvl + " CHILD name:" + child.getNodeName() + " type:" + child.getNodeType() + " attrs:" + child.getAttributes() );
-
-      // only process XML element types
-      if ( child.getNodeType() == Node.ELEMENT_NODE ) {
-        // System.out.println( lvl + " CHILD ELEMENT name:" + child.getNodeName() + " children:" + child.getChildNodes().getLength() );
-        // Empty nodes have no children
-        if ( child.getChildNodes().getLength() == 0 ) {
-          // System.out.println( level + " EMPTY CHILD ELEMENT:" + child.getNodeName() );
-          fields.add( new ConfigField( child.getNodeName(), null ) );
+    /**
+     * Add the referenced ConfigSlot.
+     *
+     * @param slot the reference to the ConfigSlot to add.
+     */
+    public void addConfigSlot(final ConfigSlot slot) {
+        if (slots == null) {
+            slots = new HashMap();
         }
-        // scalar node have only one child
-        else if ( child.getChildNodes().getLength() == 1 ) {
 
-          // System.out.println( level + " SCALAR CHILD ELEMENT:" + child.getNodeName() + " VALUE:" + child.getFirstChild().getNodeValue() );
-          fields.add( new ConfigField( child.getNodeName(), child.getFirstChild().getNodeValue() ) );
+        if (slot != null) {
+            slots.put(slot.getName(), slot);
+        }
+    }
+
+
+    /**
+     * Return an Iterator over all the ConfigSlots
+     *
+     * @return an Iterator over all the ConfigSlot, never returns null;
+     */
+    public Iterator<ConfigSlot> configSlotIterator() {
+        if (slots != null) {
+            return slots.values().iterator();
         } else {
-          // System.out.println( level + " MULTI ("+child.getChildNodes().getLength()+") CHILD ELEMENT:" + child.getNodeName() + " VALUE:" + child.getNodeValue() );
-          // Assume a section is being specified
-          try {
-            final Config section = new Config();
-            section.parse( child, lvl + 1 );
-            sections.add( section );
-          } catch ( final ConfigException e ) {
-            throw new ConfigException( "Problems at " + node.getNodeName(), e );
-          }
+            return Collections.emptyIterator();
         }
-      }
-
-      child = child.getNextSibling();
-
-    }
-  }
-
-
-
-
-  /**
-   * Remove the referenced ConfigSlot
-   *
-   * @param slot The reference to the ConfigSlot to remove.
-   */
-  public void removeConfigSlot( final ConfigSlot slot ) {
-    if ( slots == null ) {
-      return;
-    } else {
-      synchronized( slots ) {
-        slots.remove( slot );
-      }
-    }
-  }
-
-
-
-
-  /**
-   * Set and possibly over write an existing element with the given name with 
-   * the given value.
-   * 
-   * <p>Used to avoid duplicate elements.
-   * 
-   * @param name Name of the value to set.
-   * @param value The value to set
-   * 
-   * @see #add(String, String)
-   */
-  public void set( final String name, final String value ) {
-    ConfigField field;
-    for ( int i = 0; i < fields.size(); i++ ) {
-      field = (ConfigField)fields.get( i );
-
-      if ( ( field.name != null ) && field.name.equals( name ) ) {
-        field.value = value;
-        return;
-      }
     }
 
-    // Not found, so add a value with this name
-    add( name, value );
-  }
 
-
-
-
-  /**
-   * @param name the class name to set
-   */
-  public void setClassName( final String name ) {
-    set( Config.CLASS_TAG, name );
-  }
-
-
-
-
-  /**
-   * Use the set configuration slots and prime the configuration with those defaults.
-   */
-  public void setDefaults() {
-    final Iterator<ConfigSlot> it = configSlotIterator();
-
-    while ( it.hasNext() ) {
-      final ConfigSlot slot = it.next();
-
-      if ( slot != null ) {
-        final String defaultValue = slot.getDefaultValue();
-
-        if ( defaultValue != null ) {
-          set( slot.getName(), defaultValue );
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a boolean.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a boolean
+     * @throws NumberFormatException    if the field could not be found or if the value
+     *                                  could not be parsed into a boolean.
+     * @throws IllegalArgumentException if tag is null or empty.
+     */
+    public boolean getBoolean(final String tag) throws NumberFormatException {
+        if (StringUtil.isNotEmpty(tag)) {
+            for (final DataField field : getFields()) {
+                if (tag.equalsIgnoreCase(field.getName())) {
+                    try {
+                        return asBoolean(field.getObjectValue());
+                    } catch (final DataFrameException e) {
+                        throw new NumberFormatException(e.getMessage());
+                    }
+                }
+            }
+            throw new NumberFormatException("Tag not found, cannot convert null to boolean");
         }
-      }
+        throw new IllegalArgumentException("Tag argument is null or empty");
     }
 
-  }
 
-
-
-
-  /**
-   * @param id the id to set
-   */
-  public void setId( final String id ) {
-    this.id = id;
-  }
-
-
-
-
-  /**
-   * @param name the name to set
-   */
-  public void setName( final String name ) {
-    this.name = name;
-  }
-
-
-
-
-  /**
-   * Convert this configuration into an indented XML string.
-   *
-   * <p>This will start the XML at position 0 and indent all child nodes two
-   * spaces. This is the same as calling <code>toIndentedXML( 0 )</code>
-   *
-   * @return String XML which represents this configuration
-   */
-  public String toIndentedXML() {
-    return toIndentedXML( 0 );
-  }
-
-
-
-
-  /**
-   * Convert this configuration into an indented XML string.
-   *
-   * <p>If the indent argument is negative, then no indenting will occur and
-   * all the XML will be placed in a single line. If the indent argument is
-   * zero or greater, then the resultant XML will be indented the given number
-   * of spaces with its children being indented incrementally by 2 spaces.
-   *
-   * @param indent The number of spaces to indent this configuration
-   *
-   * @return String XML which represents this configuration
-   */
-  public String toIndentedXML( final int indent ) {
-    String padding = null;
-    int nextindent = -1;
-
-    if ( indent > -1 ) {
-      final char[] pad = new char[indent];
-      for ( int i = 0; i < indent; pad[i++] = ' ' ) {
-        ;
-      }
-
-      padding = new String( pad );
-      nextindent = indent + 2;
-    } else {
-      padding = new String( "" );
+    /**
+     * @return the value of the class tag, if present
+     */
+    public String getClassName() {
+        return getString(CLASS_TAG);
     }
 
-    final StringBuffer xml = new StringBuffer( padding + "<" );
-
-    xml.append( name );
-
-    if ( ( id != null ) && ( id.length() > 0 ) ) {
-      xml.append( " id=\"" + id + "\"" );
-    }
-    if ( seq != 0 ) {
-      xml.append( " seq=\"" + seq + "\"" );
+    /**
+     * @param name the class name to set in this config
+     */
+    public void setClassName(final String name) {
+        put(Config.CLASS_TAG, name);
     }
 
-    if ( ( fields.size() > 0 ) || ( sections.size() > 0 ) ) {
-      xml.append( ">" );
-
-      if ( indent >= 0 ) {
-        xml.append( LINE_FEED );
-      }
-
-      // Output any child configurations first
-      Config section = null;
-
-      for ( final Iterator<Config> it = sections.iterator(); it.hasNext(); ) {
-        section = (Config)it.next();
-
-        xml.append( section.toIndentedXML( nextindent ) );
-
-        if ( indent >= 0 ) {
-          xml.append( LINE_FEED );
-        }
-      }
-
-      // Elements are last
-
-      if ( fields.size() > 0 ) {
-        char[] apad = null;
-        if ( nextindent >= 0 ) {
-          apad = new char[nextindent];
-          for ( int i = 0; i < nextindent; apad[i++] = ' ' ) {
-            ;
-          }
+    /**
+     * Retrieve a named ConfigSlot from the configuration
+     *
+     * @param name String which represents the name of the slot to retrieve
+     * @return value ConfigSlot object with the given name or null if it does
+     * not exist
+     */
+    public ConfigSlot getConfigSlot(final String name) {
+        if (slots != null) {
+            synchronized (slots) {
+                return slots.get(name);
+            }
         } else {
-          apad = new char[0];
+            return null;
+        }
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a double.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a double
+     * @throws NumberFormatException if the field could not be found or if the value
+     *                               could not be parsed into a double.
+     */
+    public double getDouble(final String tag) throws NumberFormatException {
+        return Double.parseDouble(getString(tag));
+    }
+
+    /**
+     * Access the current number of elements set in this configuration.
+     *
+     * @return number of named values in this configuration
+     */
+    public int getElementCount() {
+        return fields.size();
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a float.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a float
+     * @throws NumberFormatException if the field could not be found or if the value
+     *                               could not be parsed into a float.
+     */
+    public float getFloat(final String tag) throws NumberFormatException {
+        return Float.parseFloat(getString(tag));
+    }
+
+    /**
+     * @return the id of this config
+     */
+    public String getId() {
+        return getString(ID_TAG);
+    }
+
+    /**
+     * @param id the id of the config to set
+     */
+    public void setId(final String id) {
+        this.put(ID_TAG, id);
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as an integer.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as an integer
+     * @throws NumberFormatException if the field could not be found or if the value
+     *                               could not be parsed into an integer.
+     */
+    public int getInt(final String tag) throws NumberFormatException {
+        return Integer.parseInt(getString(tag));
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a long.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a long
+     * @throws NumberFormatException if the field could not be found or if the value
+     *                               could not be parsed into a long.
+     */
+    public long getLong(final String tag) throws NumberFormatException {
+        return Long.parseLong(getString(tag));
+    }
+
+    /**
+     * @return the name of this config
+     */
+    public String getName() {
+        return getString(NAME_TAG);
+    }
+
+    /**
+     * @param name the name of the config to set
+     */
+    public void setName(final String name) {
+        this.put(NAME_TAG, name);
+    }
+
+    /**
+     * Return the first section with the given name.
+     *
+     * <p>This performs a case-insensitive search for the section.
+     *
+     * @param tag The name of the section for which to search
+     * @return The first section with a matching name or null if no section with that name exists
+     */
+    public Config getSection(final String tag) {
+        if (StringUtil.isNotBlank(tag)) {
+            for (final DataField field : getFields()) {
+                if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
+                    final Config cfg = new Config();
+                    if (field.isNotNull() & field.isFrame()) {
+                        cfg.populate((DataFrame) field.getObjectValue());
+                    }
+                    return cfg;
+                } // name match && a frame
+            } // for
+        } // tag != null
+        return null;
+    }
+
+    /**
+     * Return all the configuration sections within this section
+     *
+     * <p>This will not return scalar attributes, just the embedded sections.
+     *
+     * @return The list of sections. May be empty, but never null;
+     */
+    public List<Config> getSections() {
+        final List<Config> retval = new ArrayList<Config>();
+
+        // Look for the class to load
+        for (final DataField field : getFields()) {
+            if (field.isFrame()) {
+                final Config cfg = new Config();
+                if (field.isNotNull()) {
+                    cfg.populate((DataFrame) field.getObjectValue());
+                }
+                retval.add(cfg);
+            } // name match && a frame
+        } // for
+
+        // return what we have found
+        return retval;
+    }
+
+    /**
+     * Return all the configuration sections with the given name.
+     *
+     * <p>This performs a case-insensitive search for the sections.
+     *
+     * @param tag The name of the section for which to search
+     * @return The list of sections with a matching name. May be empty, but never null;
+     */
+    public List<Config> getSections(final String tag) {
+        final List<Config> retval = new ArrayList<Config>();
+
+        // If we have a tag for which to search...
+        if (StringUtil.isNotBlank(tag)) {
+            // Look for the class to load
+            for (final DataField field : getFields()) {
+                if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
+                    final Config cfg = new Config();
+                    cfg.populate((DataFrame) field.getObjectValue());
+                    retval.add(cfg);
+                } // name match && a frame
+            } // for
+        } // tag != null
+
+        // return what we have found
+        return retval;
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a short.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a short
+     * @throws NumberFormatException if the field could not be found or if the value
+     *                               could not be parsed into a short.
+     */
+    public short getShort(final String tag) throws NumberFormatException {
+        return Short.parseShort(getString(tag));
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name.
+     *
+     * @param tag the name of the configuration attribute for which to search
+     * @return the first value with the given name as a string or null if not
+     * configuration field with that name was found, or if the found
+     * field contained a null value.
+     */
+    public String getString(final String tag) {
+        return getString(tag, true);
+    }
+
+    /**
+     * Perform a search for the first value with the given name.
+     *
+     * @param tag        the name of the configuration attribute for which to search
+     * @param ignoreCase true to ignore the case of the tag, false for a strict, case sensitive match
+     * @return the first value with the given name as a string or null if not
+     * configuration field with that name was found, or if the found
+     * field contained a null value.
+     */
+    public String getString(final String tag, final boolean ignoreCase) {
+        if (StringUtil.isNotBlank(tag)) {
+            for (final DataField field : getFields()) {
+                if (tag.equals(field.getName()) || (ignoreCase && tag.equalsIgnoreCase(field.getName()))) {
+                    return field.getStringValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove the referenced ConfigSlot
+     *
+     * @param slot The reference to the ConfigSlot to remove.
+     */
+    public void removeConfigSlot(final ConfigSlot slot) {
+        if (slots != null) {
+            synchronized (slots) {
+                slots.remove(slot);
+            }
+        }
+    }
+
+    /**
+     * Use the set configuration slots and prime the configuration with those
+     * defaults.
+     *
+     * <p>This allows the caller to set a configuration object to the defaults.
+     * This is useful a a starting point for configurable components when a
+     * configuration has not been provided.</p>
+     */
+    public void setDefaults() {
+        final Iterator<ConfigSlot> it = configSlotIterator();
+
+        while (it.hasNext()) {
+            final ConfigSlot slot = it.next();
+
+            if (slot != null) {
+                final Object defaultValue = slot.getDefaultValue();
+
+                if (defaultValue != null) {
+                    put(slot.getName(), defaultValue);
+                }
+            }
         }
 
-        for ( final Iterator<ConfigField> it = fields.iterator(); it.hasNext(); ) {
-          final ConfigField field = it.next();
+    }
 
-          xml.append( apad );
-          xml.append( "<" );
-          xml.append( field.name );
+    /**
+     * @return Formatted, multi-line JSON string representing the record.
+     */
+    public String toFormattedString() {
+        return JSONMarshaler.toFormattedString(this);
+    }
 
-          if ( field.value != null ) {
-            xml.append( ">" );
-            xml.append( field.value );
-            xml.append( "</" );
-            xml.append( field.name );
-            xml.append( ">" );
-          } else {
-            xml.append( "/>" );
-          }
 
-          if ( indent >= 0 ) {
-            xml.append( LINE_FEED );
-          }
+    /**
+     * @return a deep copy of this configuration object
+     */
+    public Config copy() {
+        return new Config((DataFrame) super.clone());
+    }
+
+
+    /**
+     * Return the object value of the named field.
+     *
+     * @param name The name of the field containing the object to retrieve.
+     * @return The object value of the first occurrence of the named field or null
+     * if the field with the given name was not found.
+     */
+    @Override
+    public Object getObject(final String name) {
+        for (int i = 0; i < fields.size(); i++) {
+            final DataField field = fields.get(i);
+            if ((field.getName() != null) && field.getName().equals(name)) {
+                if (DataField.ARRAY == field.getType()) {
+                    return getArrayFromFrame((DataFrame) field.getObjectValue());
+                } else if (DataField.FRAMETYPE == field.getType()) {
+                    DataFrame frame = (DataFrame) field.getObjectValue();
+                    if (frame.isArray()) {
+                        return getArrayFromFrame(frame);
+                    } else {
+                        return frame;
+                    }
+                } else {
+                    return field.getObjectValue();
+                }
+            }
         }
-      }
-
-      xml.append( padding );
-      xml.append( "</" );
-      xml.append( name );
-      xml.append( ">" );
-    } else {
-      xml.append( "/>" );
+        return null;
     }
 
-    return xml.toString();
-  }
 
+    /**
+     * Return an array of the values from the given frame.
+     *
+     * <p><strong>NOTE:</strong> The frame should either be an array {@code
+     * DataFrame.isArray()} of be a frame of all the same type. The first field
+     * is checked for the type of an array to create an return. If any of the
+     * remaining fields differ in type, a ClassCastException will be thrown and
+     * the data will be incomplete.</p>
+     *
+     * @param frm the frame to convert into an array
+     * @return an array of
+     */
+    private Object getArrayFromFrame(DataFrame frm) {
+        Object retval = new Object[0];
 
-
-
-  /**
-   * Returns the XML representation of the entire configuration in a single line.
-   *
-   * @return a single-line String representing the configuration.
-   */
-  public String toXML() {
-    return toIndentedXML( -1 );
-  }
-
-    public boolean getAsBoolean(String appendTag) {
-        return false;
+        if (frm.getFieldCount() > 0) {
+            DataField fld = frm.getField(0);
+            switch (fld.getType()) {
+                case DataField.STRING:
+                    String[] sarray = new String[frm.getFieldCount()];
+                    for (int x = 0; x < sarray.length; x++) {
+                        sarray[x] = (String) frm.getObject(x);
+                    }
+                    retval = sarray;
+                    break;
+                case DataField.UDEF:
+                    Object[] narray = new Object[frm.getFieldCount()];
+                    for (int x = 0; x < narray.length; x++) {
+                        narray[x] = null;
+                    }
+                    retval = narray;
+                    break;
+                case DataField.S8:
+                case DataField.BYTEARRAY:
+                    byte[] barray = new byte[frm.getFieldCount()];
+                    for (int x = 0; x < barray.length; x++) {
+                        barray[x] = (byte) frm.getObject(x);
+                    }
+                    retval = barray;
+                    break;
+                case DataField.U8:
+                case DataField.S16:
+                    short[] sharray = new short[frm.getFieldCount()];
+                    for (int x = 0; x < sharray.length; x++) {
+                        sharray[x] = (short) frm.getObject(x);
+                    }
+                    retval = sharray;
+                    break;
+                case DataField.U16:
+                case DataField.S32:
+                    int[] iarray = new int[frm.getFieldCount()];
+                    for (int x = 0; x < iarray.length; x++) {
+                        iarray[x] = (int) frm.getObject(x);
+                    }
+                    retval = iarray;
+                    break;
+                case DataField.U32:
+                case DataField.S64:
+                    long[] larray = new long[frm.getFieldCount()];
+                    for (int x = 0; x < larray.length; x++) {
+                        larray[x] = (long) frm.getObject(x);
+                    }
+                    retval = larray;
+                    break;
+                case DataField.U64:
+                    BigInteger[] biarray = new BigInteger[frm.getFieldCount()];
+                    for (int x = 0; x < biarray.length; x++) {
+                        try {
+                            biarray[x] = new BigInteger(frm.getAsString(x));
+                        } catch (DataFrameException ignore) {
+                            ignore.printStackTrace(); // should not happen
+                        }
+                    }
+                    retval = biarray;
+                    break;
+                case DataField.FLOAT:
+                    float[] farray = new float[frm.getFieldCount()];
+                    for (int x = 0; x < farray.length; x++) {
+                        farray[x] = (float) frm.getObject(x);
+                    }
+                    retval = farray;
+                    break;
+                case DataField.DOUBLE:
+                    double[] darray = new double[frm.getFieldCount()];
+                    for (int x = 0; x < darray.length; x++) {
+                        darray[x] = (double) frm.getObject(x);
+                    }
+                    retval = darray;
+                    break;
+                case DataField.BOOLEANTYPE:
+                    boolean[] blarray = new boolean[frm.getFieldCount()];
+                    for (int x = 0; x < blarray.length; x++) {
+                        blarray[x] = (boolean) frm.getObject(x);
+                    }
+                    retval = blarray;
+                    break;
+                case DataField.DATE:
+                    Date[] dtarray = new Date[frm.getFieldCount()];
+                    for (int x = 0; x < dtarray.length; x++) {
+                        dtarray[x] = (Date) frm.getObject(x);
+                    }
+                    retval = dtarray;
+                    break;
+                case DataField.URI:
+                    URI[] uarray = new URI[frm.getFieldCount()];
+                    for (int x = 0; x < uarray.length; x++) {
+                        uarray[x] = (URI) frm.getObject(x);
+                    }
+                    retval = uarray;
+                    break;
+                default:
+                    Object[] oarray = new Object[frm.getFieldCount()];
+                    for (int x = 0; x < oarray.length; x++) {
+                        oarray[x] = frm.getObject(x);
+                    }
+                    retval = oarray;
+                    break;
+            }
+        }
+        return retval;
     }
 
-  public int getAsInt(String generationTag) {
-    return 0;
-  }
 
-
-  /**
-   * 
-   */
-  private class ConfigField {
-    private String name = null;
-    private String value = null;
-
-
-
-
-    ConfigField( final String name, final String value ) {
-      this.name = name;
-      this.value = value;
+    /**
+     * Access the map of configuration slots.
+     *
+     * @return the currently set configuration slots, or null if no slots have been set.
+     */
+    public HashMap<String, ConfigSlot> getSlots() {
+        return slots;
     }
-  }
 
 }

@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2003 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ */
+
 package coyote.commons.network.http;
 
 import java.io.IOException;
@@ -23,7 +31,7 @@ public class ServerRunner {
       System.exit( -1 );
     }
 
-    System.out.println( "Server started, Hit Enter to stop.\n" );
+    System.out.println( "Server running, Hit Enter to stop.\n" );
 
     try {
       System.in.read();
@@ -40,7 +48,7 @@ public class ServerRunner {
     try {
       executeInstance( serverClass.newInstance() );
     } catch ( Exception e ) {
-      ServerRunner.LOG.log( Level.SEVERE, "Cound nor create server", e );
+      ServerRunner.LOG.log( Level.SEVERE, "Could not create server", e );
     }
   }
 }

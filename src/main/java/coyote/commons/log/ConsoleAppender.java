@@ -125,17 +125,17 @@ public class ConsoleAppender extends AbstractLogger {
     // we don't call super.initialize() because we don't need the file based initialization
 
     // Switch to STDERR depending on configuration!
-    if ( config != null && config.get( TARGET_TAG ) != null && STDERR.equalsIgnoreCase( config.get( TARGET_TAG ) ) ) {
+    if ( config != null && config.get( TARGET_TAG ) != null && STDERR.equalsIgnoreCase( config.getAsString( TARGET_TAG ) ) ) {
       log_writer = new OutputStreamWriter( System.err );
     }
 
     if ( config != null && config.get( Logger.CATEGORY_TAG ) != null ) {
-      for ( final StringTokenizer st = new StringTokenizer( config.get( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+      for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
     }
 
     // determine if this logger is disabled, if so set mask to 0
     if ( config != null && config.get( Logger.ENABLED_TAG ) != null ) {
-      String str = config.get( Logger.ENABLED_TAG ).toLowerCase();
+      String str = config.getAsString( Logger.ENABLED_TAG ).toLowerCase();
       if ( "false".equals( str ) || "0".equals( str ) || "no".equals( str ) ) {
         disable(); // set the mask to 0
       }

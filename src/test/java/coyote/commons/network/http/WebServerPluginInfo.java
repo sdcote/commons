@@ -1,8 +1,5 @@
 package coyote.commons.network.http;
 
-/**
- * 
- */
 public interface WebServerPluginInfo {
 
   String[] getIndexFilesForMimeType( String mime );

@@ -16,6 +16,7 @@ import java.io.Writer;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
+import coyote.commons.dataframe.DataFrameException;
 
 
 /**
@@ -197,7 +198,11 @@ public class FileAppender extends AbstractLogger {
 
       // see if the configuration contains the append flag
       if (config.contains(FileAppender.APPEND_TAG)) {
-          append = config.getAsBoolean(FileAppender.APPEND_TAG);
+          try {
+              append = config.getAsBoolean(FileAppender.APPEND_TAG);
+          } catch (DataFrameException e) {
+            append = false;
+          }
       }
 
       // check to see if we are enabled, if so, then prepare the log writer

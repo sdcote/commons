@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2016 Stephan D. Cote' - All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
+ * available at http://creativecommons.org/licenses/MIT/
+ */
+
+package coyote.commons.network.http.responder;
+
+import coyote.commons.network.http.Status;
+import coyote.commons.network.http.Status;
+
+
+/**
+ * This responds with a blank page.
+ *
+ * <p>Useful to handle URLs which should respond, but not return any data.
+ */
+public class BlankPageResponder extends DefaultResponder {
+
+  /**
+   * @see DefaultStreamResponder#getMimeType()
+   */
+  @Override
+  public String getMimeType() {
+    return "text/html";
+  }
+
+
+
+
+  /**
+   * @see DefaultResponder#getStatus()
+   */
+  @Override
+  public Status getStatus() {
+    return Status.OK;
+  }
+
+
+
+
+  /**
+   * @see DefaultResponder#getText()
+   */
+  @Override
+  public String getText() {
+    return "<html><body></body></html>";
+  }
+
+}

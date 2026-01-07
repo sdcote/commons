@@ -162,9 +162,9 @@ public class ConfigUtil {
    * 
    * @return A reference to a file allowing access to the working directory
    * 
-   * @throws ConfigException If the working directory could not be created
+   * @throws ConfigurationException If the working directory could not be created
    */
-  public static File initHomeWorkDirectory( String dirname ) throws ConfigException {
+  public static File initHomeWorkDirectory( String dirname ) throws ConfigurationException {
     // if the name was null, create a directory named "work"
     if ( dirname == null ) {
       dirname = "wrk";
@@ -185,9 +185,9 @@ public class ConfigUtil {
    * 
    * @return A reference to a file representing the directory.
    * 
-   * @throws ConfigException if the directory could not be made.
+   * @throws ConfigurationException if the directory could not be made.
    */
-  public static File validateWorkDirectory( String dirname ) throws ConfigException {
+  public static File validateWorkDirectory( String dirname ) throws ConfigurationException {
     // if the name was null, create a directory named "work"
     if ( dirname == null ) {
       return null;
@@ -207,7 +207,7 @@ public class ConfigUtil {
       if ( !retval.mkdirs() ) {
         retval = null;
 
-        throw new ConfigException( "Could not create\"" + retval + "\" as our working directory" );
+        throw new ConfigurationException( "Could not create\"" + retval + "\" as our working directory" );
       }
     }
 

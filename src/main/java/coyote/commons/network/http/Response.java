@@ -5,6 +5,7 @@
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
  */
+
 package coyote.commons.network.http;
 
 import java.io.BufferedWriter;
@@ -15,6 +16,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,8 +26,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
+
+import coyote.commons.network.MimeType;
+import coyote.commons.log.Log;
+
 
 /**
  * HTTP response. Return one of these from serve().
@@ -33,7 +40,7 @@ public class Response implements Closeable {
   /**
    * HTTP status code after processing, e.g. "200 OK", Status.OK
    */
-  private IStatus status;
+  private Status status;
 
   /**
    * MIME type of content, e.g. "text/html"
@@ -86,8 +93,13 @@ public class Response implements Closeable {
 
   /**
    * Creates a fixed length response if totalBytes&gt;=0, otherwise chunked.
+   *
+   * @param data data stream
+   * @param mimeType type of data being sent
+   * @param status The status to send
+   * @param totalBytes total length to be sent
    */
-  public Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  public Response( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
     this.status = status;
     this.mimeType = mimeType;
     if ( data == null ) {
@@ -106,6 +118,9 @@ public class Response implements Closeable {
 
   /**
    * Adds given line to the header.
+   *
+   * @param name the name of the header
+   * @param value the value of the header
    */
   public void addHeader( final String name, final String value ) {
     header.put( name, value );
@@ -127,15 +142,14 @@ public class Response implements Closeable {
   /**
    * Indicate to close the connection after the Response has been sent.
    * 
-   * @param close
-   *            {@code true} to hint connection closing, {@code false} to
-   *            let connection be closed by client.
+   * @param close {@code true} to hint connection closing, {@code false} to let
+   *         connection be closed by client.
    */
   public void closeConnection( final boolean close ) {
     if ( close ) {
-      header.put( "connection", "close" );
+      header.put( HTTP.HDR_CONNECTION.toLowerCase(), HTTP.CLOSE );
     } else {
-      header.remove( "connection" );
+      header.remove( HTTP.HDR_CONNECTION.toLowerCase() );
     }
   }
 
@@ -170,7 +184,7 @@ public class Response implements Closeable {
 
 
 
-  public IStatus getStatus() {
+  public Status getStatus() {
     return status;
   }
 
@@ -182,7 +196,7 @@ public class Response implements Closeable {
    *         Response has been sent.
    */
   public boolean isCloseConnection() {
-    return "close".equals( getHeader( "connection" ) );
+    return HTTP.CLOSE.equals( getHeader( HTTP.HDR_CONNECTION.toLowerCase() ) );
   }
 
 
@@ -198,6 +212,8 @@ public class Response implements Closeable {
 
   /**
    * Sends given response to the socket.
+   *
+   * @param outputStream  the stream to which we write
    */
   protected void send( final OutputStream outputStream ) {
     final SimpleDateFormat gmtFrmt = new SimpleDateFormat( "E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US );
@@ -205,32 +221,32 @@ public class Response implements Closeable {
 
     try {
       if ( status == null ) {
-        throw new Error( "sendResponse(): Status can't be null." );
+        throw new Error( "send(): Status can't be null." );
       }
       final PrintWriter pw = new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputStream, new ContentType( mimeType ).getEncoding() ) ), false );
-      pw.append( "HTTP/1.1 " ).append( status.getDescription() ).append( " \r\n" );
+      pw.append( "HTTP/1.1 " ).append( status.toString() ).append( " \r\n" );
       if ( mimeType != null ) {
-        printHeader( pw, "Content-Type", mimeType );
+        printHeader( pw, HTTP.HDR_CONTENT_TYPE, mimeType );
       }
-      if ( getHeader( "date" ) == null ) {
-        printHeader( pw, "Date", gmtFrmt.format( new Date() ) );
+      if ( getHeader( HTTP.HDR_DATE.toLowerCase() ) == null ) {
+        printHeader( pw, HTTP.HDR_DATE, gmtFrmt.format( new Date() ) );
       }
       for ( final Entry<String, String> entry : header.entrySet() ) {
         printHeader( pw, entry.getKey(), entry.getValue() );
       }
-      if ( getHeader( "connection" ) == null ) {
-        printHeader( pw, "Connection", ( keepAlive ? "keep-alive" : "close" ) );
+      if ( getHeader( HTTP.HDR_CONNECTION.toLowerCase() ) == null ) {
+        printHeader( pw, HTTP.HDR_CONNECTION, ( keepAlive ? HTTP.KEEP_ALIVE : HTTP.CLOSE ) );
       }
-      if ( getHeader( "content-length" ) != null ) {
+      if ( getHeader( HTTP.HDR_CONTENT_LENGTH.toLowerCase() ) != null ) {
         encodeAsGzip = false;
       }
       if ( encodeAsGzip ) {
-        printHeader( pw, "Content-Encoding", "gzip" );
+        printHeader( pw, HTTP.HDR_CONTENT_ENCODING, HTTP.GZIP );
         setChunkedTransfer( true );
       }
       long pending = data != null ? contentLength : 0;
       if ( ( requestMethod != Method.HEAD ) && chunkedTransfer ) {
-        printHeader( pw, "Transfer-Encoding", "chunked" );
+        printHeader( pw, HTTP.HDR_TRANSFER_ENCODING, HTTP.CHUNKED );
       } else if ( !encodeAsGzip ) {
         pending = sendContentLengthHeaderIfNotAlreadyPresent( pw, pending );
       }
@@ -240,7 +256,7 @@ public class Response implements Closeable {
       outputStream.flush();
       HTTPD.safeClose( data );
     } catch ( final IOException ioe ) {
-      HTTPD.LOG.log( Level.SEVERE, "Could not send response to the client", ioe );
+      Log.append( HTTPD.EVENT, "ERROR: Could not send response to the client", ioe );
     }
   }
 
@@ -252,13 +268,11 @@ public class Response implements Closeable {
    * limits the maximum amounts of bytes sent unless it is -1, in which
    * case everything is sent.
    * 
-   * @param outputStream
-   *            the OutputStream to send data to
-   * @param pending
-   *            -1 to send everything, otherwise sets a max limit to the
-   *            number of bytes sent
-   * @throws IOException
-   *             if something goes wrong while sending the data.
+   * @param outputStream the OutputStream to send data to
+   * @param pending -1 to send everything, otherwise sets a max limit to the 
+   *        number of bytes sent
+   *
+   * @throws IOException if something goes wrong while sending the data.
    */
   private void sendBody( final OutputStream outputStream, long pending ) throws IOException {
     final long BUFFER_SIZE = 16 * 1024;
@@ -307,16 +321,16 @@ public class Response implements Closeable {
 
 
   protected long sendContentLengthHeaderIfNotAlreadyPresent( final PrintWriter pw, final long defaultSize ) {
-    final String contentLengthString = getHeader( "content-length" );
+    final String contentLengthString = getHeader( HTTP.HDR_CONTENT_LENGTH.toLowerCase() );
     long size = defaultSize;
     if ( contentLengthString != null ) {
       try {
         size = Long.parseLong( contentLengthString );
       } catch ( final NumberFormatException ex ) {
-        HTTPD.LOG.severe( "content-length was no number " + contentLengthString );
+        Log.append( HTTPD.EVENT, "ERROR: content-length was not a number " + contentLengthString );
       }
     }
-    pw.print( "Content-Length: " + size + "\r\n" );
+    pw.print( HTTP.HDR_CONTENT_LENGTH + ": " + size + "\r\n" );
     return size;
   }
 
@@ -365,7 +379,104 @@ public class Response implements Closeable {
 
 
 
-  public void setStatus( final IStatus status ) {
+  public void setStatus( final Status status ) {
     this.status = status;
   }
+
+
+
+
+  /**
+   * Create a response with unknown length (using HTTP 1.1 chunking).
+   *
+   * @param data the input stream with the data to send
+   * @param status the status code to send
+   * @param mimeType the type of data being sent
+   *
+   * @return the response
+   */
+  public static Response createChunkedResponse( final Status status, final String mimeType, final InputStream data ) {
+    return new Response( status, mimeType, data, -1 );
+  }
+
+
+
+
+  /**
+   * Create a response with known length.
+   *
+   * @param mimeType the type of data being send
+   * @param status the status code to send
+   * @param totalBytes the total number of bytes being sent
+   * @param data the input stream containing the data
+   *
+   * @return the response
+   */
+  public static Response createFixedLengthResponse( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
+    return new Response( status, mimeType, data, totalBytes );
+  }
+
+
+
+
+  /**
+   * Create a text response with known length.
+   *
+   * @param status The status to send
+   * @param mimeType The type of data being sent
+   * @param txt the data to send
+   *
+   * @return the response
+   */
+  public static Response createFixedLengthResponse( final Status status, final String mimeType, final String txt ) {
+    ContentType contentType = new ContentType( mimeType );
+    if ( txt == null ) {
+      return createFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );
+    } else {
+      byte[] bytes;
+      try {
+        final CharsetEncoder newEncoder = Charset.forName( contentType.getEncoding() ).newEncoder();
+        if ( !newEncoder.canEncode( txt ) ) {
+          contentType = contentType.tryUTF8();
+        }
+        bytes = txt.getBytes( contentType.getEncoding() );
+      } catch ( final UnsupportedEncodingException e ) {
+        Log.append( HTTPD.EVENT, "encoding problem", e );
+        bytes = new byte[0];
+      }
+      return createFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
+    }
+  }
+
+
+
+
+  /**
+   * Create a text response with known length.
+   *
+   * @param msg the text to send
+   *
+   * @return the response
+   */
+  public static Response createFixedLengthResponse( final String msg ) {
+    return createFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
+  }
+
+
+
+
+  /**
+   * Add and possibly overwrite all the headers of the given map to the 
+   * response headers map.
+   * 
+   * @param responseHeaders the map of headers to place in the output 
+   */
+  public void addHeaders( Map<String, String> responseHeaders ) {
+    if ( responseHeaders != null ) {
+      for ( Entry<String, String> entry : responseHeaders.entrySet() ) {
+        addHeader( entry.getKey(), entry.getValue() );
+      }
+    }
+  }
+
 }

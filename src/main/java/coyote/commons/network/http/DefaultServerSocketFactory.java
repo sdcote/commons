@@ -5,6 +5,7 @@
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
  */
+
 package coyote.commons.network.http;
 
 import java.io.IOException;

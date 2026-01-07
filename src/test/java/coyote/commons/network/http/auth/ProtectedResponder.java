@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2017 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and implementation
+ */
+package coyote.commons.network.http.auth;
+
+import java.util.Map;
+
+import coyote.commons.network.MimeType;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Status;
+import coyote.commons.network.http.Response;
+import coyote.commons.network.http.Status;
+import coyote.commons.network.http.responder.DefaultResponder;
+import coyote.commons.network.http.responder.Resource;
+
+
+/**
+ * 
+ */
+public class ProtectedResponder extends DefaultResponder {
+
+  /**
+   * @see coyote.commons.network.http.responder.DefaultStreamResponder#post(Resource, Map, HTTPSession)
+   */
+  @Override
+  @Auth(groups = "sysop", requireSSL = true)
+  public Response post( Resource resource, Map<String, String> urlParams, HTTPSession session ) {
+    return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
+  }
+
+
+
+
+  /**
+   * @see DefaultResponder#get(Resource, Map, HTTPSession)
+   */
+  @Override
+  @Auth(groups = "devop", requireSSL = false)
+  public Response get( Resource resource, Map<String, String> urlParams, HTTPSession session ) {
+    return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
+  }
+
+
+
+
+  /**
+   * @see DefaultResponder#getStatus()
+   */
+  @Override
+  public Status getStatus() {
+    return Status.OK;
+  }
+
+
+
+
+  /**
+   * @see DefaultResponder#getText()
+   */
+  @Override
+  public String getText() {
+    return "";
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.responder.DefaultStreamResponder#getMimeType()
+   */
+  @Override
+  public String getMimeType() {
+    return MimeType.JSON.getType();
+  }
+
+}

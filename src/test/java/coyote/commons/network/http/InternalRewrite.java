@@ -3,10 +3,9 @@ package coyote.commons.network.http;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 
+import coyote.commons.network.MimeType;
 
-/**
- * 
- */
+
 public class InternalRewrite extends Response {
 
   private final String uri;
@@ -17,7 +16,7 @@ public class InternalRewrite extends Response {
 
 
   public InternalRewrite( final Map<String, String> headers, final String uri ) {
-    super( Status.OK, HTTPD.MIME_HTML, new ByteArrayInputStream( new byte[0] ), 0 );
+    super( Status.OK, MimeType.HTML.toString(), new ByteArrayInputStream( new byte[0] ), 0 );
     this.headers = headers;
     this.uri = uri;
   }

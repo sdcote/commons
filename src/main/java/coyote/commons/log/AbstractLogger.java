@@ -20,6 +20,8 @@ import java.util.StringTokenizer;
  * except for a concrete implementation of append().
  */
 public abstract class AbstractLogger implements Logger {
+  public static final String TARGET_TAG = "target";
+
   protected boolean initialized = false;
 
   private volatile long mask;
@@ -199,7 +201,7 @@ public abstract class AbstractLogger implements Logger {
   public URI getTarget() {
     if (target == null) {
       try {
-        target = new URI(config.get(AbstractLogger.TARGET_TAG));
+        target = new URI(config.getAsString(TARGET_TAG));
       } catch (final URISyntaxException e) {}
     }
     return target;
@@ -287,7 +289,7 @@ public abstract class AbstractLogger implements Logger {
       if (target == null) {
         // target = UriUtil.parse( properties.getProperty( TARGET_TAG ) );
         try {
-          target = new URI(config.get(Logger.TARGET_TAG));
+          target = new URI(config.getAsString(Logger.TARGET_TAG));
         } catch (final Exception e) {
           System.err.println("Invalid logger target URI (" + e.getMessage() + ") - '" + config.get(Logger.TARGET_TAG) + "'");
         }
@@ -295,13 +297,13 @@ public abstract class AbstractLogger implements Logger {
 
       // Case insensitive search for categories to log
       if (config.get(Logger.CATEGORY_TAG) != null) {
-        for (final StringTokenizer st = new StringTokenizer(config.get(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
+        for (final StringTokenizer st = new StringTokenizer(config.getAsString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
       }
     }
 
     // determine if this logger is disabled, if so set mask to 0
     if (config != null && config.get(Logger.ENABLED_TAG) != null) {
-      String str = config.get(Logger.ENABLED_TAG).toLowerCase();
+      String str = config.getAsString(Logger.ENABLED_TAG).toLowerCase();
       if ("false".equals(str) || "0".equals(str) || "no".equals(str)) {
         disable(); // set the mask to 0
       }

@@ -197,7 +197,7 @@ public class CyclingFileAppender extends FileAppender {
 
       // What is the maximum size of the log file?
       if (config.contains(CyclingFileAppender.MAX_SIZE_TAG)) {
-        String sizeTag = config.get(CyclingFileAppender.MAX_SIZE_TAG);
+        String sizeTag = config.getAsString(CyclingFileAppender.MAX_SIZE_TAG);
 
         if ((sizeTag != null) && (sizeTag.trim().length() > 0)) {
           sizeTag = sizeTag.trim().toUpperCase();
@@ -233,7 +233,7 @@ public class CyclingFileAppender extends FileAppender {
 
       // See if we are to cycle at regular intervals
       if (config.contains(CyclingFileAppender.INTERVAL_TAG)) {
-        String intervalTag = config.get(CyclingFileAppender.INTERVAL_TAG);
+        String intervalTag = config.getAsString(CyclingFileAppender.INTERVAL_TAG);
 
         if ((intervalTag != null) && (intervalTag.trim().length() > 0)) {
           intervalTag = intervalTag.trim().toUpperCase();
@@ -273,7 +273,7 @@ public class CyclingFileAppender extends FileAppender {
 
       // See if we have a reference time from which intervals are to be based
       if (config.contains(CyclingFileAppender.CYCLE_TIME_TAG)) {
-        final String time = config.get(CyclingFileAppender.CYCLE_TIME_TAG);
+        final String time = config.getAsString(CyclingFileAppender.CYCLE_TIME_TAG);
 
         if ((time != null) && (time.trim().length() > 0)) {
           final String text = time.trim();

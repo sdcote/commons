@@ -5,11 +5,12 @@
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
  */
+
 package coyote.commons.network.http;
 
 public final class ResponseException extends Exception {
 
-  private static final long serialVersionUID = 6569838532917408380L;
+  private static final long serialVersionUID = 3423102004759131858L;
 
   private final Status status;
 

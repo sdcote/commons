@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.Map;
 
 
-/**
- * 
- */
 public interface WebServerPlugin {
 
   boolean canServeUri( String uri, File rootDir );
@@ -19,5 +16,5 @@ public interface WebServerPlugin {
 
 
 
-  Response serveFile( String uri, Map<String, String> headers, IHTTPSession session, File file, String mimeType );
+  Response serveFile( String uri, Map<String, String> headers, HTTPSession session, File file, String mimeType );
 }

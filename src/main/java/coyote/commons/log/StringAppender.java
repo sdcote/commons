@@ -75,12 +75,12 @@ public class StringAppender extends AbstractLogger {
 
     // determine the categories to log
     if (config != null && config.get(Logger.CATEGORY_TAG) != null) {
-      for (final StringTokenizer st = new StringTokenizer(config.get(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken()));
+      for (final StringTokenizer st = new StringTokenizer(config.getAsString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken()));
     }
 
     // determine if this logger is disabled, if so set mask to 0
     if (config != null && config.get(Logger.ENABLED_TAG) != null) {
-      String str = config.get(Logger.ENABLED_TAG).toLowerCase();
+      String str = config.getAsString(Logger.ENABLED_TAG).toLowerCase();
       if ("false".equals(str) || "0".equals(str) || "no".equals(str)) {
         disable(); // set the mask to 0
       }

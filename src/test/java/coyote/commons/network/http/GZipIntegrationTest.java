@@ -1,0 +1,150 @@
+package coyote.commons.network.http;
+
+
+import coyote.commons.NetUtil;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DecompressingHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+public class GZipIntegrationTest extends IntegrationTestBase<GZipIntegrationTest.TestServer> {
+
+    public static final int PORT = NetUtil.getNextAvailablePort(7428);
+
+    @Test
+    public void chunkedContentIsEncodedProperly() throws IOException {
+        final InputStream data = new ByteArrayInputStream("This is a test".getBytes(StandardCharsets.UTF_8));
+        testServer.response = Response.createChunkedResponse(Status.OK, "text/plain", data);
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = new DecompressingHttpClient(httpclient).execute(request);
+        assertEquals("This is a test", EntityUtils.toString(response.getEntity()));
+    }
+
+    //@Ignore
+    public void contentEncodingShouldBeAddedToChunkedResponses() throws IOException {
+        final InputStream data = new ByteArrayInputStream("This is a test".getBytes(StandardCharsets.UTF_8));
+        testServer.response = Response.createChunkedResponse(Status.OK, "text/plain", data);
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = httpclient.execute(request);
+
+        Header[] headers = response.getAllHeaders();
+        for (int x = 0; x < headers.length; x++) {
+            Header hdr = headers[x];
+            System.out.println(hdr.getName() + " -- " + hdr.getValue());
+        }
+        /*
+         * Content-Type -- text/plain
+         * Date -- Sun, 19 Mar 2017 23:08:39 GMT
+         * Connection -- keep-alive
+         * Transfer-Encoding -- chunked
+         */
+
+        final Header contentEncoding = response.getFirstHeader(HTTP.HDR_CONTENT_ENCODING);
+        assertNotNull(contentEncoding, "Content-Encoding should be set");
+        assertEquals("gzip", contentEncoding.getValue());
+    }
+
+    //@Ignore
+    public void contentEncodingShouldBeAddedToFixedLengthResponses() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = httpclient.execute(request);
+        final Header contentEncoding = response.getFirstHeader(HTTP.HDR_CONTENT_ENCODING);
+        assertNotNull(contentEncoding, "Content-Encoding should be set");
+        assertEquals("gzip", contentEncoding.getValue());
+    }
+
+    @Test
+    public void contentLengthShouldBeRemovedFromZippedResponses() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = httpclient.execute(request);
+        final Header contentLength = response.getFirstHeader(HTTP.HDR_CONTENT_LENGTH);
+        assertNull(contentLength, "Content-Length should not be set when gzipping response");
+    }
+
+    @Test
+    public void contentShouldNotBeGzippedIfContentLengthIsAddedManually() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        testServer.response.addHeader("Content-Length", "" + ("This is a test".getBytes(StandardCharsets.UTF_8).length));
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = httpclient.execute(request);
+        final Header contentEncoding = response.getFirstHeader(HTTP.HDR_CONTENT_ENCODING);
+        assertNull(contentEncoding, "Content-Encoding should not be set when manually setting content-length");
+        assertEquals("This is a test", EntityUtils.toString(response.getEntity()));
+
+    }
+
+    @Override
+    public TestServer createTestServer() {
+        return new TestServer();
+    }
+
+    @Test
+    public void fixedLengthContentIsEncodedProperly() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "gzip");
+        final HttpResponse response = new DecompressingHttpClient(httpclient).execute(request);
+        assertEquals("This is a test", EntityUtils.toString(response.getEntity()));
+    }
+
+    @Test
+    public void noGzipWithoutAcceptEncoding() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        final HttpResponse response = httpclient.execute(request);
+        final Header contentEncoding = response.getFirstHeader(HTTP.HDR_CONTENT_ENCODING);
+        assertNull(contentEncoding);
+        assertEquals("This is a test", EntityUtils.toString(response.getEntity()));
+    }
+
+    //@Ignore
+    public void shouldFindCorrectAcceptEncodingAmongMany() throws IOException {
+        testServer.response = Response.createFixedLengthResponse("This is a test");
+        final HttpGet request = new HttpGet("http://localhost:" + PORT + "/");
+        request.addHeader(HTTP.HDR_ACCEPT_ENCODING, "deflate,gzip");
+        final HttpResponse response = httpclient.execute(request);
+        final Header contentEncoding = response.getFirstHeader(HTTP.HDR_CONTENT_ENCODING);
+        assertNotNull(contentEncoding, "Content-Encoding should be set");
+        assertEquals("gzip", contentEncoding.getValue());
+    }
+
+    public static class TestServer extends HTTPD {
+
+        public Response response;
+
+
+        public TestServer() {
+            super(PORT);
+        }
+
+
+        @Override
+        public Response serve(final HTTPSession session) {
+            return response;
+        }
+
+
+        @Override
+        protected boolean useGzipWhenAccepted(final Response r) {
+            return true;
+        }
+    }
+
+}
