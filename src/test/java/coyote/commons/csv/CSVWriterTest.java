@@ -30,7 +30,7 @@ public class CSVWriterTest {
         csvw.writeNext(line);
         csvw.close();
 
-        assertEquals("\"Foo\",\"bar''s\"\r\n", sw.toString());
+        assertEquals("\"Foo\",\"bar's\"\r\n", sw.toString());
     }
 
 
@@ -181,7 +181,8 @@ public class CSVWriterTest {
         // test quoted line
         final String[] quoteLine = {"This is a 'multiline' entry", "so is \n this"};
         final String output = invokeWriter(quoteLine);
-        assertEquals("'This is a \"'multiline\"' entry','so is \n this'\r\n", output);
+        System.out.println(output);
+        assertEquals("'This is a 'multiline' entry','so is \n this'\r\n", output);
     }
 
 

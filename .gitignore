@@ -49,5 +49,6 @@ csharp/
 *.jar
 *.war
 *.ear
+*.zip
 !gradle/wrapper/gradle-wrapper.jar
 /.nb-gradle/profiles/private/
