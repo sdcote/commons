@@ -17,6 +17,9 @@ public class ZipArchiveTest {
 
     @AfterAll
     public static void tearDownAfterClass() {
+        if( !FileUtil.deleteFile("test.zip")){
+            System.err.println("Could not delete test.zip file");
+        }
     }
 
 

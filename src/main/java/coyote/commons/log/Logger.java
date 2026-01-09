@@ -32,8 +32,6 @@ public interface Logger {
 
   /**
    * Return the mask that defines which events the logger should log.
-   * 
-   * @return TODO Complete Documentation
    */
   public abstract long getMask();
 

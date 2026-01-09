@@ -86,11 +86,8 @@ public class SystemPropertyUtil {
 
 
   /**
-   * Load the Java proxy authenticator if the are system properties specifying
-   * a proxy host and user name.
-   * 
-   * @param secure if true, the password will be treated as an encrypted 
-   *        string, if false the string will be read in as plain text;
+   * Load the Java proxy authenticator if they are system properties specifying
+   * a proxy host and username.
    */
   private static void installProxyAuthenticatorIfNeeded() {
     final String user = System.getProperty( PROXY_USER );
