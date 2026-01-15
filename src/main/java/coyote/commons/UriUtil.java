@@ -611,7 +611,6 @@ public class UriUtil {
      * Method getPort
      *
      * @param scheme
-     * @return TODO Complete Documentation
      */
     public static int getPort(final String scheme) {
         if (UriUtil.portMap.containsKey(scheme.toLowerCase())) {

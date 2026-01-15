@@ -19,80 +19,9 @@ public class UriUtilTest {
     String fs = System.getProperty("file.separator");
 
 
-    /**
-     * Test method for {@link coyote.commons.UriUtil#parse(java.lang.String)}.
-     */
-    // @Test
-    public void testParse() {
-        fail("Not yet implemented");
-    }
-
 
     /**
-     * Test method for {@link coyote.commons.UriUtil#isFile(java.net.URI)}.
-     */
-    //  @Test
-    public void testIsFile() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#isJar(java.net.URI)}.
-     */
-    // @Test
-    public void testIsJar() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#getFilePath(java.net.URI)}.
-     */
-    // @Test
-    public void testGetFilePath() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#normalizePath(java.lang.String)}.
-     */
-    // @Test
-    public void testNormalizePath() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#normalizeSlashes(java.lang.String)}.
-     */
-    // @Test
-    public void testNormalizeSlashes() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#removeRelations(java.lang.String)}.
-     */
-    // @Test
-    public void testRemoveRelations() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Test method for {@link coyote.commons.UriUtil#getFile(java.net.URI)}.
-     */
-    // @Test
-    public void testGetFile() {
-        fail("Not yet implemented");
-    }
-
-
-    /**
-     * Method testGetFilePath1
+     *
      */
     @Test
     public void testGetFilePath1() {
@@ -107,7 +36,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetFilePath2
+     *
      */
     @Test
     public void testGetFilePath2() {
@@ -122,7 +51,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetFilePath3
+     *
      */
     @Test
     public void testGetFilePath3() {
@@ -137,7 +66,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetFilePath4
+     *
      */
     @Test
     public void testGetFilePath4() {
@@ -152,7 +81,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testFileURIFour
+     *
      */
     @Test
     public void testFileURIFour() {
@@ -167,7 +96,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testFileURIFive
+     *
      */
     @Test
     public void testFileURIFive() {
@@ -181,7 +110,7 @@ public class UriUtilTest {
     }
 
 
-    // TODO: Need to add tests for URI without schemes  =>  filename.txt == file://filename.txt
+    // Need to add tests for URI without schemes  =>  filename.txt == file://filename.txt
     @Test
     public void testFileURISix() {
         try {
@@ -195,7 +124,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetScheme
+     *
      */
     @Test
     public void testGetScheme() {
@@ -208,7 +137,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetHost
+     *
      */
     @Test
     public void testGetHost() {
@@ -222,7 +151,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetPort
+     *
      */
     @Test
     public void testGetPort() {
@@ -250,7 +179,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetPath
+     *
      */
     @Test
     public void testGetPath() {
@@ -264,7 +193,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetQuery
+     *
      */
     //@Test
     public void testGetQuery() {
@@ -278,7 +207,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetQueryParamenter
+     *
      */
     //@Test
     public void testGetQueryParamenter() {
@@ -296,7 +225,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testEncodeString
+     *
      */
     @Test
     public void testEncodeString1() {
@@ -310,7 +239,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testDecodeString
+     *
      */
     @Test
     public void testDecodeString() {
@@ -340,7 +269,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testFileToURI
+     *
      */
     @Test
     public void testFileToURI() {
@@ -359,7 +288,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testURIToFile1
+     *
      */
     @Test
     public void testURIToFile1() {
@@ -376,7 +305,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testURIToFile2
+     *
      */
     @Test
     public void testURIToFile2() {
@@ -398,7 +327,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testURIToFile3
+     *
      */
     @Test
     public void testURIToFile3() {
@@ -420,7 +349,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetUser1
+     *
      */
     @Test
     public void testGetUser1() {
@@ -437,7 +366,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetUser2
+     *
      */
     @Test
     public void testGetUser2() {
@@ -454,7 +383,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetUser3
+     *
      */
     @Test
     public void testGetUser3() {
@@ -471,7 +400,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetPassword1
+     *
      */
     @Test
     public void testGetPassword1() {
@@ -488,7 +417,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetPassword2
+     *
      */
     @Test
     public void testGetPassword2() {
@@ -504,7 +433,7 @@ public class UriUtilTest {
 
 
     /**
-     * Method testGetHostAddress1
+     *
      */
     @Test
     public void testGetHostAddress1() {
