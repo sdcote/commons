@@ -19,7 +19,6 @@ public class UriUtilTest {
     String fs = System.getProperty("file.separator");
 
 
-
     /**
      *
      */
@@ -451,5 +450,32 @@ public class UriUtilTest {
         }
     }
 
+
+    @Test
+    public void testGetBase() throws URISyntaxException {
+        URI uri = new URI("http://server.com/cfg/bob.json");
+        String name = UriUtil.getBase(uri);
+        assertEquals("bob", name);
+
+        uri = new URI("http://server.com/alice.xml");
+        name = UriUtil.getBase(uri);
+        assertEquals("alice", name);
+
+        uri = new URI("http://server.com/trudy");
+        name = UriUtil.getBase(uri);
+        assertEquals("trudy", name);
+
+        uri = new URI("http://tom");
+        name = UriUtil.getBase(uri);
+        assertEquals("tom", name);
+
+        uri = new URI("file:///dick");
+        name = UriUtil.getBase(uri);
+        assertEquals("dick", name);
+
+        uri = new URI("harry");
+        name = UriUtil.getBase(uri);
+        assertEquals("harry", name);
+    }
 
 }

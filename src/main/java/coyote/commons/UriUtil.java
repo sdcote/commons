@@ -1288,4 +1288,31 @@ public class UriUtil {
         while (true);
     }
 
+
+    /**
+     * Get the base name of a URI (e.g. no path or extension)
+     *
+     * <p>Returns "index" from "http:\\projects\src\index.html".</p>
+     *
+     * @param uri The URI from which to get the base.
+     *
+     * @return The base file name
+     */
+    public static String getBase( final URI uri ) {
+        if ( uri != null ) {
+            String tempName = "";
+            final StringTokenizer stk1 = new StringTokenizer( uri.toString(), "/\\" );
+
+            // Cruise through the string and eat up all the tokens before the last
+            // directory delimiter
+            while ( stk1.hasMoreTokens() ) {
+                tempName = stk1.nextToken();
+            }
+
+            final StringTokenizer stk = new StringTokenizer( tempName, "." );
+            return stk.nextToken();
+        }
+        return null;
+    }
+
 }

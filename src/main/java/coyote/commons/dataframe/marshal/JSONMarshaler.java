@@ -107,8 +107,7 @@ public class JSONMarshaler {
   /**
    * 
    * @param frame
-   * @param config
-   * 
+   *
    * @throws IOException 
    */
   private static void writeFrame(final DataFrame frame, final JsonWriter writer) throws IOException {
