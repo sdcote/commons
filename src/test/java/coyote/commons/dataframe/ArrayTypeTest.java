@@ -208,4 +208,17 @@ public class ArrayTypeTest {
     assertEquals(expected,root.toString());
   }
 
+
+  /**
+   * In order to maintain type safety, arrays are returned as unnamed fields in a dataframe.
+   */
+  @Test
+  public void arrayOfStrings() {
+    String[] array =  new String[] { "alpha", "bravo", "charlie", "delta" };
+    DataFrame frame1 = new DataFrame().set( "myarray", array );
+
+    DataField field1 = frame1.getField( "myarray" );
+    assertEquals(DataField.ARRAY, field1.getType());
+  }
+
 }

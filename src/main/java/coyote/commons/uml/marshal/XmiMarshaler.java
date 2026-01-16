@@ -23,7 +23,7 @@ public abstract class XmiMarshaler {
 
 
   /**
-   * The the padding for the given level.
+   * The padding for the given level.
    * 
    * <p>There are two spaces per level of padding. Zero or less levels result 
    * in an empty string being returned. This will never return null.</p>

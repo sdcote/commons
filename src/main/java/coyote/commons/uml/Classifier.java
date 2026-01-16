@@ -60,7 +60,11 @@ public enum Classifier {
   /** */
   DIAGRAM_FRAME("DiagramFrame"),
   /** */
-  DIAGRAM("Diagram");
+  DIAGRAM("Diagram"),
+  /** */
+  NODE("Node"),
+  /** */
+  PORT("Port");
 
   private String name;
 

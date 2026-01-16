@@ -1679,7 +1679,7 @@ public class DataFrame implements Cloneable {
    * @param name The name of the field to populate.
    * @param value The value to place in the named field
    *
-   * @return the the data frame (this) to which the data was added.
+   * @return the data frame (this) to which the data was added.
    * 
    * @throws IllegalArgumentException If the name is longer than 255 characters 
    *         or the value is an unsupported type.
@@ -1709,7 +1709,7 @@ public class DataFrame implements Cloneable {
    *
    * @param value The value to place in the un-named field
    *
-   * @return the the data frame (this) to which the data was added.
+   * @return the data frame (this) to which the data was added.
    */
 
   public DataFrame set(final Object value) {
