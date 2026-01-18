@@ -14,20 +14,16 @@ import java.util.Date;
 
 
 /**
- * This marshals models into a Sparx Enterprise Architect supported XMI file.
+ * This marshals models into a generally-supported XMI file.
  * 
  * <p>The processing instruction is not included as it is not known at the time 
  * of XML generation what encoding will be used.
  * <pre>&lt;?xml version = '1.0' encoding = 'UTF-8' ?&gt;</pre> might not be 
  * correct if the file is written using {@code windows-1252} encoding.
  */
-public class Xmi11Marshaler extends XmiMarshaler {
+public class Xmi11Marshaler extends AbstractMarshaler {
 
-  private static String name = "Coyote UML";
-  private static String version = "1.0.2";
-
-
-
+  
 
   /**
    * Marshal the given model to an XMI string.
@@ -37,16 +33,15 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * 
    * @return the XML string representing the model.
    */
-  public static String marshal(UmlModel model, boolean indent) {
+  public  String marshal(UmlModel model, boolean indent) {
     StringBuilder b = new StringBuilder();
     genXmi(b, model, indent ? 0 : -1);
     return b.toString();
   }
 
 
-
-
-  protected static void genXmi(StringBuilder b, UmlModel model, int level) {
+  /** Top level of the document */
+  protected  void genXmi(StringBuilder b, UmlModel model, int level) {
     int lvl = (level > -1) ? level + 1 : level;
 
     b.append("<XMI xmi.version=\"1.1\" xmlns:UML=\"omg.org/UML1.3\" timestamp=\"");
@@ -64,9 +59,8 @@ public class Xmi11Marshaler extends XmiMarshaler {
   }
 
 
-
-
-  static void genHeader(StringBuilder b, UmlModel model, int level) {
+  /** Contains documentation details */
+   void genHeader(StringBuilder b, UmlModel model, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<XMI.header>");
@@ -80,9 +74,8 @@ public class Xmi11Marshaler extends XmiMarshaler {
   }
 
 
-
-
-  private static void genDocumentation(StringBuilder b, UmlModel model, int level) {
+  /** The documentation section, usually just contain info about the exporter/generator */
+  private  void genDocumentation(StringBuilder b, UmlModel model, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<XMI.documentation>");
@@ -96,25 +89,26 @@ public class Xmi11Marshaler extends XmiMarshaler {
   }
 
 
-
-
-  private static void genExporterDetails(StringBuilder b, UmlModel model, int level) {
+  /** Usually part of the <XMI.documentation> in the <XMI.header> */
+  private  void genExporterDetails(StringBuilder b, UmlModel model, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<XMI.exporter>");
-    b.append(Xmi11Marshaler.getName());
+    b.append(getName());
     b.append("</XMI.exporter>");
     b.append(lineEnd(level));
     b.append(pad);
     b.append("<XMI.exporterVersion>");
-    b.append(Xmi11Marshaler.getVersion());
+    b.append(getVersion());
     b.append("</XMI.exporterVersion>");
+    b.append("<XMI.exporterID>");
+    b.append(getId());
+    b.append("</XMI.exporterID>");
   }
 
 
-
-
-  static void genContent(StringBuilder b, UmlModel model, int level) {
+  /** This is main content of the model; usually right after the <XMI.header> */
+   void genContent(StringBuilder b, UmlModel model, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<XMI.content>");
@@ -122,13 +116,9 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
     generateElementXML(b, model, (level > -1) ? level + 1 : level);
     b.append(lineEnd(level));
-    // global tagged values with modelElement="_someUUID_" to link them
-    //b.append( lineEnd(level) );
 
-    // 
-    if (model.getDiagrams().size() > 0) {
+    if (!model.getDiagrams().isEmpty()) {
       generateDiagramXML(b, model, (level > -1) ? level + 1 : level);
-      //b.append( lineEnd( level ) );
     }
 
     b.append(pad);
@@ -140,12 +130,13 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
   /**
+   * Diagrams are at the same level as the model.
    * 
    * @param b
    * @param model
    * @param level
    */
-  private static void generateDiagramXML(StringBuilder b, UmlModel model, int level) {
+  private  void generateDiagramXML(StringBuilder b, UmlModel model, int level) {
     String pad = getPadding(level);
 
     // <UML:Diagram name="Tables" xmi.id="EAID_D4C11700_1BFD_4b1f_A251_30159621BC34" diagramType="ClassDiagram" owner="EAPK_CCBFBC1C_BA54_49f8_927C_0D5329041989" toolName="Enterprise Architect 2.5">
@@ -186,13 +177,13 @@ public class Xmi11Marshaler extends XmiMarshaler {
       b.append(lineEnd(level));
 
       // get tagged values
-      if (diagram.getTaggedValues().size() > 0) {
+      if (!diagram.getTaggedValues().isEmpty()) {
         genTaggedValues(b, diagram, (level > -1) ? level + 1 : level);
         b.append(lineEnd(level));
       }
 
       // Get diagram elements
-      if (diagram.getDiagramElements().size() > 0) {
+      if (!diagram.getDiagramElements().isEmpty()) {
         genDiagramElements(b, diagram, (level > -1) ? level + 1 : level);
         b.append(lineEnd(level));
       }
@@ -202,13 +193,13 @@ public class Xmi11Marshaler extends XmiMarshaler {
       b.append(diagram.getClassifier().getName());
       b.append(">");
       b.append(lineEnd(level));
-    } // for each diagram todo
+    } // for each diagram 
   }
 
 
 
 
-  private static void genDiagramElements(StringBuilder b, UmlDiagram diagram, int level) {
+  private  void genDiagramElements(StringBuilder b, UmlDiagram diagram, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:Diagram.element>");
@@ -224,7 +215,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genDiagramElement(StringBuilder b, UmlDiagramElement element, int level) {
+  private  void genDiagramElement(StringBuilder b, UmlDiagramElement element, int level) {
     b.append(getPadding(level));
 
     //<UML:DiagramElement geometry="Left=1111;Top=420;Right=1311;Bottom=563;" subject="EAID_DF1EA826_7FDA_426b_B896_E7C0A28CD862" seqno="1" style="DUID=58CA8375;HideIcon=0;"/>
@@ -261,7 +252,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void generateElementXML(StringBuilder b, UmlNamedElement element, int level) {
+  private  void generateElementXML(StringBuilder b, UmlNamedElement element, int level) {
     if (element != null) {
       // handle different types differently
 
@@ -302,26 +293,26 @@ public class Xmi11Marshaler extends XmiMarshaler {
         b.append("\">");
         b.append(lineEnd(level));
 
-        if (element.getStereotypes().size() > 0) {
+        if (!element.getStereotypes().isEmpty()) {
           genStereotypes(b, element, (level > -1) ? level + 1 : level);
           b.append(lineEnd(level));
         }
-        if (element.getTaggedValues().size() > 0) {
+        if (!element.getTaggedValues().isEmpty()) {
           genTaggedValues(b, element, (level > -1) ? level + 1 : level);
           b.append(lineEnd(level));
         }
-        if (element.getOwnedElements().size() > 0) {
+        if (!element.getOwnedElements().isEmpty()) {
           genOwnedElements(b, element, (level > -1) ? level + 1 : level);
           b.append(lineEnd(level));
         }
         if (element instanceof UmlClassifier) {
           UmlClassifier classifier = (UmlClassifier)element;
-          if (classifier.getFeatures().size() > 0) {
+          if (!classifier.getFeatures().isEmpty()) {
             genFeatures(b, classifier, (level > -1) ? level + 1 : level);
             b.append(lineEnd(level));
           }
 
-          if (classifier.getDataTypes().size() > 0) {
+          if (!classifier.getDataTypes().isEmpty()) {
             genDataTypes(b, classifier, (level > -1) ? level + 1 : level);
           }
 
@@ -344,7 +335,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genGeneralization(StringBuilder b, UmlGeneralization element, int level) {
+  private  void genGeneralization(StringBuilder b, UmlGeneralization element, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:");
@@ -364,7 +355,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
     b.append(element.getSuperType());
     b.append("\"");
 
-    if (element.getTaggedValues().size() > 0) {
+    if (!element.getTaggedValues().isEmpty()) {
       b.append(">");
       b.append(lineEnd(level));
       genTaggedValues(b, element, (level > -1) ? level + 1 : level);
@@ -383,7 +374,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genAssociationEnds(StringBuilder b, UmlAssociation association, int level) {
+  private  void genAssociationEnds(StringBuilder b, UmlAssociation association, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:Association.connection>");
@@ -399,7 +390,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genAssociationEnd(StringBuilder b, UmlAssociationEnd end, int level) {
+  private  void genAssociationEnd(StringBuilder b, UmlAssociationEnd end, int level) {
     b.append(getPadding(level));
 
     b.append("<UML:AssociationEnd");
@@ -450,7 +441,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
     b.append(end.getType());
     b.append("\"");
 
-    if (end.getTaggedValues().size() > 0) {
+    if (!end.getTaggedValues().isEmpty()) {
       b.append(">");
       b.append(lineEnd(level));
       genTaggedValues(b, end, (level > -1) ? level + 1 : level);
@@ -471,7 +462,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param classifier
    * @param level
    */
-  private static void genDataTypes(StringBuilder b, UmlClassifier classifier, int level) {
+  private  void genDataTypes(StringBuilder b, UmlClassifier classifier, int level) {
     String pad = getPadding(level);
     for (UmlDataType type : classifier.getDataTypes()) {
       b.append(pad);
@@ -512,7 +503,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genOwnedElements(StringBuilder b, UmlElement element, int level) {
+  private  void genOwnedElements(StringBuilder b, UmlElement element, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:Namespace.ownedElement>");
@@ -528,7 +519,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genTaggedValues(StringBuilder b, UmlElement element, int level) {
+  private  void genTaggedValues(StringBuilder b, UmlElement element, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:ModelElement.taggedValue>");
@@ -549,7 +540,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param tv
    * @param level
    */
-  private static void genTaggedValue(StringBuilder b, TaggedValue tv, int level) {
+  private  void genTaggedValue(StringBuilder b, TaggedValue tv, int level) {
     b.append(getPadding(level));
     b.append("<UML:TaggedValue tag=\"");
     b.append(tv.getName());
@@ -561,7 +552,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genStereotypes(StringBuilder b, UmlElement element, int level) {
+  private  void genStereotypes(StringBuilder b, UmlElement element, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:ModelElement.stereotype>");
@@ -582,7 +573,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param stype
    * @param i
    */
-  private static void genStereotype(StringBuilder b, UmlStereotype stype, int level) {
+  private  void genStereotype(StringBuilder b, UmlStereotype stype, int level) {
     b.append(getPadding(level));
     b.append("<UML:Stereotype name=\"");
     b.append(stype.getName());
@@ -592,7 +583,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
 
 
 
-  private static void genFeatures(StringBuilder b, UmlClassifier element, int level) {
+  private  void genFeatures(StringBuilder b, UmlClassifier element, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:Classifier.feature>");
@@ -627,7 +618,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param feature
    * @param level
    */
-  private static void genProperty(StringBuilder b, UmlStructuralFeature feature, int level) {
+  private  void genProperty(StringBuilder b, UmlStructuralFeature feature, int level) {
 
     String pad = getPadding(level);
     b.append(pad);
@@ -645,18 +636,18 @@ public class Xmi11Marshaler extends XmiMarshaler {
     // TODO <UML:Attribute.initialValue/>
 
     // <UML:StructuralFeature.type/>
-    if (feature.getTypes().size() > 0) {
+    if (!feature.getTypes().isEmpty()) {
       genTypes(b, feature, (level > -1) ? level + 1 : level);
       b.append(lineEnd(level));
     }
 
     // <UML:ModelElement.stereotype/>
-    if (feature.getStereotypes().size() > 0) {
+    if (!feature.getStereotypes().isEmpty()) {
       genStereotypes(b, feature, (level > -1) ? level + 1 : level);
       b.append(lineEnd(level));
     }
     // <UML:ModelElement.taggedValue/>
-    if (feature.getTaggedValues().size() > 0) {
+    if (!feature.getTaggedValues().isEmpty()) {
       genTaggedValues(b, feature, (level > -1) ? level + 1 : level);
       b.append(lineEnd(level));
     }
@@ -675,7 +666,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param feature
    * @param level
    */
-  private static void genTypes(StringBuilder b, UmlStructuralFeature feature, int level) {
+  private  void genTypes(StringBuilder b, UmlStructuralFeature feature, int level) {
     String pad = getPadding(level);
     b.append(pad);
     b.append("<UML:StructuralFeature.type>");
@@ -697,7 +688,7 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param type
    * @param level
    */
-  private static void genType(StringBuilder b, UmlType type, int level) {
+  private  void genType(StringBuilder b, UmlType type, int level) {
     b.append(getPadding(level));
     b.append("<UML:Classifier");
 
@@ -722,49 +713,47 @@ public class Xmi11Marshaler extends XmiMarshaler {
    * @param feature
    * @param level
    */
-  private static void genOperation(StringBuilder b, UmlBehavioralFeature feature, int level) {
-    // TODO Auto-generated method stub
+  private  void genOperation(StringBuilder b, UmlBehavioralFeature feature, int level) {
+    String pad = getPadding(level);
+    b.append(pad);
+    b.append("<UML:");
+    b.append(feature.getClassifier().getName());
+    if (StringUtil.isNotBlank(feature.getName())) {
+        b.append(" name=\"");
+        b.append(feature.getName());
+        b.append("\"");
+    }
+    b.append(" xmi.id=\"");
+    b.append(feature.getId());
+    b.append("\"");
 
+    b.append(" visibility=\"");
+    b.append(feature.getVisibility().getName());
+    b.append("\"");
+
+    b.append(" isRoot=\"");
+    b.append(feature.isRoot());
+    b.append("\"");
+
+    b.append(" isLeaf=\"");
+    b.append(feature.isLeaf());
+    b.append("\"");
+
+    b.append(" isAbstract=\"");
+    b.append(feature.isAbstract());
+    b.append("\"");
+    b.append(">");
+    b.append(lineEnd(level));  
+
+    // maybe add other stuff?
+    
+    b.append(getPadding(level));
+    b.append("</UML:");
+    b.append(feature.getClassifier().getName());
+    b.append(">");
+    b.append(pad);
   }
 
 
-
-
-  /**
-   * @return the name
-   */
-  public static String getName() {
-    return name;
-  }
-
-
-
-
-  /**
-   * @param name the name to set
-   */
-  public static void setName(String name) {
-    Xmi11Marshaler.name = name;
-  }
-
-
-
-
-  /**
-   * @return the version
-   */
-  public static String getVersion() {
-    return version;
-  }
-
-
-
-
-  /**
-   * @param version the version to set
-   */
-  public static void setVersion(String version) {
-    Xmi11Marshaler.version = version;
-  }
 
 }

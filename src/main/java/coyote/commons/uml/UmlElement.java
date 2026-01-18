@@ -44,6 +44,7 @@ public abstract class UmlElement {
 
 
   public void addElement(final UmlNamedElement child) {
+    if(this.equals(child)) throw new IllegalArgumentException("Cannot add self as a child element.");
     child.setParent(this);
     ownedElements.add(child);
   }

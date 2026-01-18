@@ -96,6 +96,7 @@ public class UmlClassifier extends UmlNamespace {
   public void addFeature(UmlFeature feature) {
     if (feature != null) {
       features.add(feature);
+      feature.setParent(this);
     }
   }
 

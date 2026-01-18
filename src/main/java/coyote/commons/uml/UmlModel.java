@@ -54,19 +54,6 @@ public class UmlModel extends UmlClassifier {
 
 
 
-  /**
-   * Models always contain root elements so don't set a parent.
-   * 
-   * @see UmlNamespace#addElement(UmlNamedElement)
-   */
-  @Override
-  public void addElement(UmlNamedElement child) {
-    ownedElements.add(child);
-  }
-
-
-
-
   public void addDiagram(UmlDiagram diagram) {
     diagrams.add(diagram);
   }
