@@ -89,4 +89,25 @@ public abstract class UmlNamedElement extends UmlElement {
     this.name = name;
   }
 
+
+  /**
+   * Perform a recursive search for an element with the given name.
+   * 
+   * @param name the name to match
+   * @return the matching UmlElement or null if it was not found.
+   */
+  public UmlNamedElement getElementByName(String name) {
+    UmlNamedElement retval = null;
+      if(getName()!= null && getName().equals(name)){
+        retval = this;
+      } else {
+      for(UmlNamedElement child: getOwnedElements()){
+        retval = child.getElementByName(name);
+        if( retval != null) break;
+      }
+    }
+    return retval;
+  }
+
+
 }

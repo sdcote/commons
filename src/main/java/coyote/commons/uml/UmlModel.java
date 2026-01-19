@@ -10,8 +10,6 @@ package coyote.commons.uml;
 import java.util.ArrayList;
 import java.util.List;
 
-import coyote.commons.uml.marshal.UmlElement;
-
 
 /**
  * This represent a UML model.

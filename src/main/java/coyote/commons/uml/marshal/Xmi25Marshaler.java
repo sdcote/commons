@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import coyote.commons.StringUtil;
+import coyote.commons.log.Log;
 import coyote.commons.uml.TaggedValue;
+import coyote.commons.uml.UmlDependency;
 import coyote.commons.uml.UmlElement;
 import coyote.commons.uml.UmlFeature;
 import coyote.commons.uml.UmlModel;
@@ -89,8 +91,8 @@ public class Xmi25Marshaler extends AbstractMarshaler {
             b.append("\"");
 
             UmlElement element = model.getElementById(binding.getBaseNode());
-            if(element != null){
-                for (TaggedValue tvalue: element.getTaggedValues()){
+            if (element != null) {
+                for (TaggedValue tvalue : element.getTaggedValues()) {
                     b.append(" ");
                     b.append(tvalue.getName());
                     b.append("=\"");
@@ -137,9 +139,10 @@ public class Xmi25Marshaler extends AbstractMarshaler {
 
         if (element instanceof UmlPort) {
             b.append("<ownedAttribute");
+        } else if (element instanceof UmlDependency) {
+            b.append("<packagedElement");
         } else {
-            b.append("<owned");
-            b.append(classifier);
+            Log.error("Unsupported element encountered - " + element.getClass().getName());
         }
 
         b.append(" xmi:type=\"uml:");
@@ -149,37 +152,53 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         if (StringUtil.isNotEmpty(element.getName())) {
             b.append("\" name=\"");
             b.append(element.getName());
-        }
-        b.append("\" visibility=\"");
-        b.append(element.getVisibility().toString());
-        b.append("\"");
-
-        // Different elements may have different attributes
-        if (element instanceof UmlPort) {
-            UmlPort port = (UmlPort) element;
-            b.append(" isService=\"");
-            b.append((port.isService()) ? "true" : "false");
-            b.append("\"");
+                            b.append("\"");
         }
 
-        if (element instanceof UmlFeature) {
-            b.append(" isStatic=\"");
-            b.append(((UmlFeature) element).isStatic() ? "true" : "false");
-            b.append("\"");
-        }
+        // Different elements have different attributes
+        if (element instanceof UmlDependency) {
+            UmlDependency dependency = (UmlDependency) element;
+            if (StringUtil.isNotEmpty(dependency.getClientId())) {
+                b.append(" client=\"");
+                b.append(dependency.getClientId());
+                b.append("\"");
+            }
+            if (StringUtil.isNotEmpty(dependency.getSupplierId())) {
+                b.append(" supplier=\"");
+                b.append(dependency.getSupplierId());
+                b.append("\"");
+            }
+        } else {
+            if (element instanceof UmlPort) {
+                UmlPort port = (UmlPort) element;
+                b.append(" isService=\"");
+                b.append((port.isService()) ? "true" : "false");
+                b.append("\"");
+            }
 
-        if (element instanceof UmlStructuralFeature) {
-            b.append(" isReadOnly=\"");
-            b.append(((UmlStructuralFeature) element).isReadOnly() ? "true" : "false");
-            b.append("\"");
-        }
+            if (element instanceof UmlFeature) {
+                b.append(" isStatic=\"");
+                b.append(((UmlFeature) element).isStatic() ? "true" : "false");
+                b.append("\"");
+            }
 
-        if (element instanceof UmlProperty) {
-            // type
-            // lowerValue
-            // upperValue
-            b.append(" aggregation=\"");
-            b.append(((UmlProperty) element).getAggregation().toString());
+            if (element instanceof UmlStructuralFeature) {
+                b.append(" isReadOnly=\"");
+                b.append(((UmlStructuralFeature) element).isReadOnly() ? "true" : "false");
+                b.append("\"");
+            }
+
+            if (element instanceof UmlProperty) {
+                // type
+                // lowerValue
+                // upperValue
+                b.append(" aggregation=\"");
+                b.append(((UmlProperty) element).getAggregation().toString());
+                b.append("\"");
+            }
+
+            b.append(" visibility=\"");
+            b.append(element.getVisibility().toString());
             b.append("\"");
         }
 
@@ -208,6 +227,7 @@ public class Xmi25Marshaler extends AbstractMarshaler {
             b.append("\" name=\"");
             b.append(element.getName());
         }
+
         b.append("\" visibility=\"");
         b.append(element.getVisibility().toString());
         b.append("\"");

@@ -3,7 +3,10 @@ package cookbook.uml;
 import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.uml.UmlClass;
+import coyote.commons.uml.UmlDependency;
+import coyote.commons.uml.UmlElement;
 import coyote.commons.uml.UmlModel;
+import coyote.commons.uml.UmlNamedElement;
 import coyote.commons.uml.UmlNode;
 import coyote.commons.uml.UmlPackage;
 import coyote.commons.uml.UmlPort;
@@ -99,6 +102,13 @@ public class UmlModeler {
         node4.addElement(new UmlPort("5432"));
         node4.addElement(new UmlPort("55290"));
         node4.setTaggedValue("IP", "10.20.250.106");
+
+        // Create a dependency between Node1 and Node4's Port 5432
+        UmlNamedElement nodeOne = model.getElementByName("Node1"); // find the element by its name - starting at the top of the model
+        UmlNamedElement nodeFour = hostPkg.getElementByName("Node4"); // we can limit the search by chosing the closest element
+        UmlNamedElement port5432 = nodeFour.getElementByName("80"); // find the port in that node
+        UmlDependency dependency = new UmlDependency("DB Connection",nodeOne.getId(),port5432.getId());
+        hostPkg.addElement(dependency); // add the dependency to the package common to the elements connected.
 
         return model;
     }

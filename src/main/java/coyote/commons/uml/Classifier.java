@@ -14,6 +14,8 @@ public enum Classifier {
   /**  */
   CLASS("Class"),
   /**  */
+  DEPENDENCY("Dependency"),
+  /**  */
   ASSOCIATION("Association"),
   /** */
   ASSOCIATION_END("AssociationEnd"),
