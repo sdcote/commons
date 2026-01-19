@@ -55,6 +55,7 @@ public abstract class UmlFeature extends UmlNamedElement {
   private static final Changeability DEFAULT_CHANGEABILITY = Changeability.CHANGABLE;
   private Changeability changeable = DEFAULT_CHANGEABILITY;
 
+  private boolean readOnlyFlag = false;
 
 
 
@@ -75,9 +76,23 @@ public abstract class UmlFeature extends UmlNamedElement {
     this.staticFlag = flag;
   }
 
+  
+  /**
+   * @return the readOnlyFlag
+   */
+  public boolean isReadOnly() {
+    return readOnlyFlag;
+  }
 
 
+  /**
+   * @param flag the readOnlyFlag to set
+   */
+  public void setReadOnly(boolean flag) {
+    this.readOnlyFlag = flag;
+  }
 
+  
   /**
    * @return the ownerScope
    */

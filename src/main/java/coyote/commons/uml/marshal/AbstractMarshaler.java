@@ -9,7 +9,7 @@ public abstract class AbstractMarshaler {
 
     private String name = "Coyote UML";
     private String version = "1.0.2";
-    private String identifier = "5529";
+    private String identifier = "DOC_5529";
 
     /**
      * The padding for the given level.

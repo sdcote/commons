@@ -11,6 +11,8 @@ import coyote.commons.uml.UmlStereotype;
 import coyote.commons.uml.marshal.Xmi11Marshaler;
 import coyote.commons.uml.marshal.Xmi25Marshaler;
 import coyote.commons.uml.marshal.XmiMarshaler;
+import coyote.commons.log.ConsoleAppender;
+import coyote.commons.log.Log;
 
 /**
  * The goal of this class is to demonstrate how to create a UmlModel
@@ -26,6 +28,8 @@ public class UmlModeler {
      * @param args command line arguments - ignored in this example.
      */
     public static void main(String[] args) {
+        Log.addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
+
         UmlModeler modeler = new UmlModeler();
         UmlModel model = modeler.buildUmlModel();
 
@@ -34,8 +38,6 @@ public class UmlModeler {
         // First we marshal it into an XMI format (XML). We have a generic XMI
         // marshaler that will generate XML from a UML Model
         Xmi25Marshaler marshaler = new Xmi25Marshaler();
-        marshaler.setName("MyMarshaler");
-        marshaler.setVersion("1.0.42");
         String xml = marshaler.marshal(model, true);
         // There can be subtle differences in XMI compatibility so you might
         // want to create a tool-specific modeler to get all the features of
@@ -44,7 +46,6 @@ public class UmlModeler {
 
         // Save the file to disk
         save(xml, "UmlModelXmi.xml", "UTF-8");
-
     }
 
     /**
@@ -54,15 +55,16 @@ public class UmlModeler {
      */
     private UmlModel buildUmlModel() {
 
-        // This is the root of the model. The name is not critical.
+        // This is the root of the model.
         UmlModel model = new UmlModel("MyModel");
 
-        UmlPackage rootPackage = new UmlPackage("DeployDemo");
-        model.addElement(rootPackage);
+        // The package containing the deployment view
+        UmlPackage cmpntViewPkg = new UmlPackage("Component View");
+        model.addElement(cmpntViewPkg);
 
         // The package containing the deployment view
         UmlPackage deployViewPkg = new UmlPackage("Deployment View");
-        rootPackage.addElement(deployViewPkg);
+        model.addElement(deployViewPkg);
 
         // The package containing the Host Nodes
         UmlPackage hostPkg = new UmlPackage("Hosts");
@@ -70,27 +72,33 @@ public class UmlModeler {
 
         UmlNode node1 = new UmlNode("Node1");
         hostPkg.addElement(node1);
-        node1.addFeature(new UmlPort("80")); // Ports are features not elements
+        node1.addElement(new UmlPort("80"));
+        node1.setTaggedValue("RAM", "8GB");
+        node1.addStereotype(HOST_STEREOTYPE); // as of XMI 2.5.1 tagged values require a stereotype
 
         UmlNode node2 = new UmlNode("Node2");
         hostPkg.addElement(node2);
-        node2.addFeature(new UmlPort("80"));
-        node2.addFeature(new UmlPort("443"));
+        node2.addElement(new UmlPort("80"));
+        node2.addElement(new UmlPort("443"));
+        node2.setTaggedValue("RAM", "32GB"); 
+        node2.addStereotype(HOST_STEREOTYPE); // as of XMI 2.5.1 tagged values require a stereotype
 
         UmlNode node3 = new UmlNode("Node3");
         hostPkg.addElement(node3);
-        node3.addFeature(new UmlPort("80"));
-        node3.addFeature(new UmlPort("443"));
-        node3.addFeature(new UmlPort("5432"));
+        node3.addStereotype(HOST_STEREOTYPE);
+        node3.addElement(new UmlPort("80"));
+        node3.addElement(new UmlPort("443"));
+        node3.addElement(new UmlPort("5432"));
+        node3.setTaggedValue("IP", "10.20.250.105");
 
         UmlNode node4 = new UmlNode("Node4");
         hostPkg.addElement(node4);
         node4.addStereotype(HOST_STEREOTYPE);
-        node4.addFeature(new UmlPort("80"));
-        node4.addFeature(new UmlPort("443"));
-        node4.addFeature(new UmlPort("5432"));
-        node4.addFeature(new UmlPort("55290"));
-
+        node4.addElement(new UmlPort("80"));
+        node4.addElement(new UmlPort("443"));
+        node4.addElement(new UmlPort("5432"));
+        node4.addElement(new UmlPort("55290"));
+        node4.setTaggedValue("IP", "10.20.250.106");
 
         return model;
     }

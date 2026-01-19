@@ -62,7 +62,7 @@ public abstract class UmlNamedElement extends UmlElement {
    * <p>An named element is a base class for nearly all the other classes in 
    * this API and when dealing with an object at the Named Element level it is 
    * useful to query the type of Named Element this is. This allows a more 
-   * programmatic method of determining the tyep of object it is without using 
+   * programmatic method of determining the type of object it is without using 
    * reflection.</p>
    *  
    * @return the Classifier (the type of UML object) for this object.

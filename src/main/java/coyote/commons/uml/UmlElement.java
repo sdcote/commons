@@ -11,17 +11,18 @@ import coyote.commons.StringUtil;
 
 import java.util.*;
 
-
 /**
- * Element is the abstract root UML metaclass, it has no superclass in the 
- * hierarchy of UML elements. 
+ * Element is the abstract root UML metaclass, it has no superclass in the
+ * hierarchy of UML elements.
  * 
- * <p>It is the superclass for all metaclasses in the UML infrastructure 
- * library.</p>
- *  
+ * <p>
+ * It is the superclass for all metaclasses in the UML infrastructure
+ * library.
+ * </p>
+ * 
  * http://www.uml-diagrams.org/uml-core.html#element
  * 
- * Although not part of the latest specification, any element in the model can 
+ * Although not part of the latest specification, any element in the model can
  * contain tagged values as a convenience - it can be used in a variety of ways
  * including the specification of properties.
  */
@@ -29,9 +30,9 @@ public abstract class UmlElement {
 
   private UmlElement parent = null;
 
-  protected final List<UmlNamedElement> ownedElements = new ArrayList<UmlNamedElement>();
-  protected final Set<UmlStereotype> stereotypes = new HashSet<UmlStereotype>();
-  protected final List<TaggedValue> taggedValues = new ArrayList<TaggedValue>();
+  protected final List<UmlNamedElement> ownedElements = new ArrayList<>();
+  protected final Set<UmlStereotype> stereotypes = new HashSet<>();
+  protected final List<TaggedValue> taggedValues = new ArrayList<>();
 
   private boolean active = false;
   private static final Visibility DEFAULT_VISIBILITY = Visibility.PUBLIC;
@@ -40,26 +41,18 @@ public abstract class UmlElement {
   private String id = UUID.randomUUID().toString();
   private String reference = null;
 
-
-
-
   public void addElement(final UmlNamedElement child) {
-    if(this.equals(child)) throw new IllegalArgumentException("Cannot add self as a child element.");
+    if (this.equals(child))
+      throw new IllegalArgumentException("Cannot add self as a child element.");
     child.setParent(this);
     ownedElements.add(child);
   }
-
-
-
 
   public void addStereotype(final UmlStereotype type) {
     if (type != null) {
       stereotypes.add(type);
     }
   }
-
-
-
 
   public UmlNamedElement findElement(final String name) {
     if (StringUtil.isNotBlank(name)) {
@@ -72,9 +65,6 @@ public abstract class UmlElement {
     return null;
   }
 
-
-
-
   public TaggedValue findTaggedValue(final String name) {
     if (StringUtil.isNotBlank(name)) {
       for (final TaggedValue tv : taggedValues) {
@@ -85,9 +75,6 @@ public abstract class UmlElement {
     }
     return null;
   }
-
-
-
 
   public String findValue(final String name) {
     if (StringUtil.isNotBlank(name)) {
@@ -100,9 +87,6 @@ public abstract class UmlElement {
     return null;
   }
 
-
-
-
   public UmlNamedElement getElement(final String name) {
     if (StringUtil.isNotBlank(name)) {
       for (final UmlNamedElement element : ownedElements) {
@@ -114,18 +98,12 @@ public abstract class UmlElement {
     return null;
   }
 
-
-
-
   /**
    * @return the id
    */
   public String getId() {
     return id;
   }
-
-
-
 
   /**
    * @return the list of owned model elements
@@ -134,18 +112,12 @@ public abstract class UmlElement {
     return ownedElements;
   }
 
-
-
-
   /**
    * @return the parent
    */
   public UmlElement getParent() {
     return parent;
   }
-
-
-
 
   /**
    * @return the reference
@@ -154,9 +126,6 @@ public abstract class UmlElement {
     return reference;
   }
 
-
-
-
   public List<String> getStereotypeNames() {
     final List<String> retval = new ArrayList<String>();
     for (final UmlStereotype type : stereotypes) {
@@ -164,20 +133,6 @@ public abstract class UmlElement {
     }
     return retval;
   }
-
-
-
-
-  public List<UmlStereotype> getStereotypes() {
-    final List<UmlStereotype> retval = new ArrayList<UmlStereotype>();
-    for (final UmlStereotype type : stereotypes) {
-      retval.add(type);
-    }
-    return retval;
-  }
-
-
-
 
   public TaggedValue getTaggedValue(final String name) {
     if (StringUtil.isNotBlank(name)) {
@@ -190,18 +145,12 @@ public abstract class UmlElement {
     return null;
   }
 
-
-
-
   /**
    * @return the taggedValues
    */
   public List<TaggedValue> getTaggedValues() {
     return taggedValues;
   }
-
-
-
 
   public String getValue(final String name) {
     if (StringUtil.isNotBlank(name)) {
@@ -214,18 +163,12 @@ public abstract class UmlElement {
     return null;
   }
 
-
-
-
   /**
    * @return the active
    */
   public boolean isActive() {
     return active;
   }
-
-
-
 
   /**
    * @return true of this element does not contain any other elements
@@ -234,18 +177,12 @@ public abstract class UmlElement {
     return ownedElements.size() == 0;
   }
 
-
-
-
   /**
    * @return the root
    */
   public boolean isRoot() {
     return parent == null;
   }
-
-
-
 
   /**
    * @param active the active to set
@@ -254,18 +191,12 @@ public abstract class UmlElement {
     this.active = active;
   }
 
-
-
-
   /**
    * @param id the id to set
    */
   public void setId(final String id) {
     this.id = id;
   }
-
-
-
 
   /**
    * @param parent the parent to set
@@ -274,9 +205,6 @@ public abstract class UmlElement {
     this.parent = parent;
   }
 
-
-
-
   /**
    * @param reference the reference to set
    */
@@ -284,8 +212,9 @@ public abstract class UmlElement {
     this.reference = reference;
   }
 
-
-
+  public boolean hasTaggedValues() {
+    return !taggedValues.isEmpty();
+  }
 
   public void setTaggedValue(final String name, final String value) {
     if (StringUtil.isNotBlank(name)) {
@@ -308,9 +237,6 @@ public abstract class UmlElement {
     }
   }
 
-
-
-
   /**
    * @return the visibility
    */
@@ -318,14 +244,51 @@ public abstract class UmlElement {
     return visibility;
   }
 
-
-
-
   /**
    * @param visibility the visibility to set
    */
   public void setVisibility(Visibility visibility) {
     this.visibility = visibility;
+  }
+
+  /**
+   * Check to see if the element has any childern.
+   */
+  public boolean hasOwnedElements() {
+    return !ownedElements.isEmpty();
+  }
+
+  /**
+   * @return true if there is a stereotype applied to this element
+   */
+  public boolean hasStereotypes() {
+    return !stereotypes.isEmpty();
+  }
+
+  /**
+   * @return the list of stereotypes applied to this element.
+   */
+  public Set<UmlStereotype> getStereotypes() {
+    return Collections.unmodifiableSet(stereotypes);
+  }
+
+  /**
+   * Perform a recursive search for an element with the given identifier.
+   * 
+   * @param id the identifier to match
+   * @return the matching UmlElement or null if it was not found.
+   */
+  public UmlElement getElementById(String id) {
+    UmlElement retval = null;
+      if(getId().equals(id)){
+        retval = this;
+      } else {
+      for(UmlElement child: getOwnedElements()){
+        retval = child.getElementById(id);
+        if( retval != null) break;
+      }
+    }
+    return retval;
   }
 
 }

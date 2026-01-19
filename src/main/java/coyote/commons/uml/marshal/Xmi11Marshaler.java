@@ -739,9 +739,6 @@ public class Xmi11Marshaler extends AbstractMarshaler {
     b.append(feature.isLeaf());
     b.append("\"");
 
-    b.append(" isAbstract=\"");
-    b.append(feature.isAbstract());
-    b.append("\"");
     b.append(">");
     b.append(lineEnd(level));  
 

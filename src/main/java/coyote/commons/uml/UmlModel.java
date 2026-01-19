@@ -10,14 +10,16 @@ package coyote.commons.uml;
 import java.util.ArrayList;
 import java.util.List;
 
+import coyote.commons.uml.marshal.UmlElement;
+
 
 /**
  * This represent a UML model.
  */
-public class UmlModel extends UmlClassifier {
+public class UmlModel extends UmlPackage {
   private static final Classifier CLASSIFIER = Classifier.MODEL;
 
-  private final List<UmlDiagram> diagrams = new ArrayList<UmlDiagram>();
+  private final List<UmlDiagram> diagrams = new ArrayList<>();
 
 
 

@@ -22,7 +22,6 @@ public class UmlPackage extends UmlClassifier {
    */
   public UmlPackage(String name, String id) {
     super(name, id);
-    // TODO Auto-generated constructor stub
   }
 
 
@@ -33,7 +32,6 @@ public class UmlPackage extends UmlClassifier {
    */
   public UmlPackage(String name) {
     super(name);
-    // TODO Auto-generated constructor stub
   }
 
 

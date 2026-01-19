@@ -14,6 +14,11 @@ package coyote.commons.uml;
 public class UmlProperty extends UmlStructuralFeature {
   private static final Classifier CLASSIFIER = Classifier.PROPERTY;
 
+  /** The ID of the type of data this property holds. */
+  private String typeId = null;
+
+  private AggregationKind aggregation = AggregationKind.NONE;
+
 
 
 
@@ -44,6 +49,38 @@ public class UmlProperty extends UmlStructuralFeature {
   @Override
   public Classifier getClassifier() {
     return CLASSIFIER;
+  }
+
+
+  
+  /**
+   * @return the identifier of the type this property is
+   */
+  public String getTypeId() {
+    return typeId;
+  }
+
+
+
+
+  /**
+   * @param typeId the flag to set
+   */
+  public void setTypeId(String typeId) {
+    this.typeId = typeId;
+  }
+
+
+    
+  public AggregationKind getAggregation() {
+    return aggregation;
+  }
+
+
+
+
+  public void setAggregation(AggregationKind kind) {
+    this.aggregation = kind;
   }
 
 }
