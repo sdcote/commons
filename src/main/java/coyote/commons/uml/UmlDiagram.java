@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  *  
- * &lt;UML:Diagram name="Tables" xmi.id="EAID_D4C11700_1BFD_4b1f_A251_30159621BC34" diagramType="ClassDiagram" owner="EAPK_CCBFBC1C_BA54_49f8_927C_0D5329041989" toolName="Enterprise Architect 2.5"&gt;
  */
 public class UmlDiagram extends UmlNamedElement {
   private static final Classifier CLASSIFIER = Classifier.DIAGRAM;

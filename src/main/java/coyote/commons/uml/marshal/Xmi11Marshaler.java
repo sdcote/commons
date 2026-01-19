@@ -14,13 +14,16 @@ import java.util.Date;
 
 
 /**
- * This marshals models into a generally-supported XMI file.
+ * This marshals models into a generally-supported XMI 1.1 file.
  * 
  * <p>The processing instruction is not included as it is not known at the time 
  * of XML generation what encoding will be used.
  * <pre>&lt;?xml version = '1.0' encoding = 'UTF-8' ?&gt;</pre> might not be 
  * correct if the file is written using {@code windows-1252} encoding.
+ *
+ * @deprecated Use the Xmi25Marshaler instead for greater support
  */
+@Deprecated
 public class Xmi11Marshaler extends AbstractMarshaler {
 
   

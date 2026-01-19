@@ -1,33 +1,25 @@
 package coyote.commons.uml.marshal;
 
+import coyote.commons.StringUtil;
+import coyote.commons.log.Log;
+import coyote.commons.uml.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import coyote.commons.StringUtil;
-import coyote.commons.log.Log;
-import coyote.commons.uml.TaggedValue;
-import coyote.commons.uml.UmlDependency;
-import coyote.commons.uml.UmlElement;
-import coyote.commons.uml.UmlFeature;
-import coyote.commons.uml.UmlModel;
-import coyote.commons.uml.UmlNamedElement;
-import coyote.commons.uml.UmlPort;
-import coyote.commons.uml.UmlProperty;
-import coyote.commons.uml.UmlStructuralFeature;
 
 public class Xmi25Marshaler extends AbstractMarshaler {
     private static final String NAMESPACE = "CoyoteUML";
     private static final String METADATA_STEREOTYPE = "ElementMetadata";
 
-    private List<UmlStereotypeApplication> stereotypeToApply = new ArrayList<>();
+    private final List<UmlStereotypeApplication> stereotypeToApply = new ArrayList<>();
+
 
     /**
      * Marshal the given model to an XMI string.
-     * 
+     *
      * @param model  The UML model to marshal
      * @param indent true to generate an indented XML string, false for compact
-     * 
      * @return the XML string representing the model.
      */
     public String marshal(UmlModel model, boolean indent) {
@@ -36,19 +28,41 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         return b.toString();
     }
 
-    /** Top level of the document */
+    /**
+     * Top level of the document
+     */
     protected void genXmi(StringBuilder b, UmlModel model, int level) {
-        b.append(
-                "<xmi:XMI xmlns:xmi=\"http://www.omg.org/spec/XMI/20131001\" xmlns:uml=\"http://www.omg.org/spec/UML/20161101\" xmlns:");
+        b.append("<xmi:XMI xmlns:xmi=\"http://www.omg.org/spec/XMI/20131001\"");
+        b.append(" xmlns:uml=\"http://www.omg.org/spec/UML/20161101\"");
+        b.append(" xmlns:umldi=\"http://www.omg.org/spec/UML/20161101/UMLDI\"");
+        b.append(" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"");
+        b.append(" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"");
+        b.append(" xmlns:");
         b.append(NAMESPACE);
         b.append("=\"urn:coyote-uml:profile:host:1.0\" xmi:version=\"2.5.1\">");
         b.append(lineEnd(level));
         genDocumentation(b, (level > -1) ? level + 1 : level);
         genModel(b, model, (level > -1) ? level + 1 : level);
+        genExtension(b, model, (level > -1) ? level + 1 : level);
         b.append("</xmi:XMI>");
     }
 
-    /** create the model XML */
+    /**
+     * Allow any attached MarshalerExtension to add a {@code xmi:Extension}
+     * block to the end of the standard XMI {@code uml:Model} block.
+     *
+     * @param b     the string builder to which all text should be appended.
+     * @param model the UML model
+     * @param level the current level of indentation. A value of -1 indicate no
+     *              indentation or line feeds are to be used.
+     */
+    private void genExtension(StringBuilder b, UmlModel model, int level) {
+        getExtension().generateExtensionBlock(b,model,level);
+    }
+
+    /**
+     * create the model XML
+     */
     private void genModel(StringBuilder b, UmlModel model, int level) {
         String pad = getPadding(level);
         b.append(pad);
@@ -108,9 +122,12 @@ public class Xmi25Marshaler extends AbstractMarshaler {
     }
 
     /**
-     * If the given element has stereotypes, add it to the list of stereotypes to
-     * apply later.
-     * 
+     * If the given element has stereotypes, add it to the list of stereotypes
+     * to apply later.
+     *
+     * <p>This also checks for tagged values and generates a stereotype for the
+     * tagged values if necessary.</p>
+     *
      * @param element the element to check
      */
     private void checkForStereotype(UmlNamedElement element) {
@@ -132,86 +149,173 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         }
     }
 
-    /** */
+    /**
+     *
+     */
     private void genElement(StringBuilder b, UmlNamedElement element, int level) {
-        b.append(getPadding(level));
-        String classifier = element.getClassifier().toString();
 
         if (element instanceof UmlPort) {
-            b.append("<ownedAttribute");
+            genPort(b, (UmlPort) element, level);
         } else if (element instanceof UmlDependency) {
-            b.append("<packagedElement");
+            genDependency(b, (UmlDependency) element, level);
+        } else if (element instanceof UmlDiagram) {
+            genDiagram(b, (UmlDiagram) element, level);
         } else {
             Log.error("Unsupported element encountered - " + element.getClass().getName());
         }
 
+        checkForStereotype(element);
+    }
+
+    private void genDependency(StringBuilder b, UmlDependency element, int level) {
+        b.append(getPadding(level));
+        b.append("<packagedElement");
         b.append(" xmi:type=\"uml:");
-        b.append(classifier);
+        b.append(element.getClassifier().toString());
         b.append("\" xmi:id=\"");
         b.append(element.getId());
+        b.append("\"");
+
         if (StringUtil.isNotEmpty(element.getName())) {
-            b.append("\" name=\"");
+            b.append(" name=\"");
             b.append(element.getName());
-                            b.append("\"");
+            b.append("\"");
         }
 
-        // Different elements have different attributes
-        if (element instanceof UmlDependency) {
-            UmlDependency dependency = (UmlDependency) element;
-            if (StringUtil.isNotEmpty(dependency.getClientId())) {
-                b.append(" client=\"");
-                b.append(dependency.getClientId());
-                b.append("\"");
-            }
-            if (StringUtil.isNotEmpty(dependency.getSupplierId())) {
-                b.append(" supplier=\"");
-                b.append(dependency.getSupplierId());
-                b.append("\"");
-            }
-        } else {
-            if (element instanceof UmlPort) {
-                UmlPort port = (UmlPort) element;
-                b.append(" isService=\"");
-                b.append((port.isService()) ? "true" : "false");
-                b.append("\"");
-            }
-
-            if (element instanceof UmlFeature) {
-                b.append(" isStatic=\"");
-                b.append(((UmlFeature) element).isStatic() ? "true" : "false");
-                b.append("\"");
-            }
-
-            if (element instanceof UmlStructuralFeature) {
-                b.append(" isReadOnly=\"");
-                b.append(((UmlStructuralFeature) element).isReadOnly() ? "true" : "false");
-                b.append("\"");
-            }
-
-            if (element instanceof UmlProperty) {
-                // type
-                // lowerValue
-                // upperValue
-                b.append(" aggregation=\"");
-                b.append(((UmlProperty) element).getAggregation().toString());
-                b.append("\"");
-            }
-
-            b.append(" visibility=\"");
-            b.append(element.getVisibility().toString());
+        if (StringUtil.isNotEmpty(element.getClientId())) {
+            b.append(" client=\"");
+            b.append(element.getClientId());
+            b.append("\"");
+        }
+        if (StringUtil.isNotEmpty(element.getSupplierId())) {
+            b.append(" supplier=\"");
+            b.append(element.getSupplierId());
             b.append("\"");
         }
 
         b.append("/>");
         b.append(lineEnd(level));
 
-        // Check to see if we need to register a stereotype
-        checkForStereotype(element);
+    }
+
+    private void genPort(StringBuilder b, UmlPort element, int level) {
+        b.append(getPadding(level));
+        b.append("<ownedAttribute");
+        b.append(" xmi:type=\"uml:");
+        b.append(element.getClassifier().toString());
+        b.append("\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\"");
+        if (StringUtil.isNotEmpty(element.getName())) {
+            b.append(" name=\"");
+            b.append(element.getName());
+            b.append("\"");
+        }
+
+        b.append(" isService=\"");
+        b.append((element.isService()) ? "true" : "false");
+        b.append("\"");
+
+        b.append(" isStatic=\"");
+        b.append(element.isStatic() ? "true" : "false");
+        b.append("\"");
+
+        b.append(" isReadOnly=\"");
+        b.append(element.isReadOnly() ? "true" : "false");
+        b.append("\"");
+
+        b.append(" aggregation=\"");
+        b.append(element.getAggregation().toString());
+        b.append("\"");
+
+        b.append(" visibility=\"");
+        b.append(element.getVisibility().toString());
+        b.append("\"");
+
+        b.append("/>");
+        b.append(lineEnd(level));
 
     }
 
     /**
-     * 
+     * Generate diagram specification
+     *
+     * @param b
+     * @param diagram
+     * @param level
+     */
+    private void genDiagram(StringBuilder b, UmlDiagram diagram, int level) {
+        b.append(getPadding(level));
+        b.append("<umldi:UMLDiagram xmi:id=\"");
+        b.append(diagram.getId());
+        if (StringUtil.isNotEmpty(diagram.getName())) {
+            b.append("\" name=\"");
+            b.append(diagram.getName());
+            b.append("\"");
+        }
+        b.append(" modelElement=\"");
+        b.append(diagram.getParent().getId());
+        b.append("\">");
+        b.append(lineEnd(level));
+
+        for (UmlDiagramElement element : diagram.getDiagramElements()) {
+            if (element instanceof UmlShape)
+                genUmlShape(b, (UmlShape) element, (level > -1) ? level + 1 : level);
+            else if (element instanceof UmlEdge)
+                genUmlLine(b, (UmlEdge) element, (level > -1) ? level + 1 : level);
+        }
+
+        b.append(getPadding(level));
+        b.append("</umldi:UMLDiagram>");
+        b.append(lineEnd(level));
+
+
+    }
+
+    private void genUmlLine(StringBuilder b, UmlEdge element, int i) {
+        Log.error("UmlLine is not supported yet.");
+    }
+
+    private void genUmlShape(StringBuilder b, UmlShape element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<umldi:ownedUmlDiagramElement xmi:type=\"umldi:UMLShape\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\"");
+
+        b.append(" modelElement=\"");
+        b.append(element.getSubject().getId());
+        b.append("\"");
+
+        if (element.getBounds() != null) {
+            b.append(">");
+            b.append(lineEnd(level));
+            genBounds(b, element.getBounds(), (level > -1) ? level + 1 : level);
+            b.append(pad);
+            b.append("</umldi:ownedUmlDiagramElement>");
+        } else {
+            b.append("/>");
+        }
+
+        b.append(lineEnd(level));
+    }
+
+    private void genBounds(StringBuilder b, DiagramBounds bounds, int level) {
+        b.append(getPadding(level));
+        b.append("<dc:Bounds x=\"");
+        b.append(bounds.getXPosition());
+        b.append("\" y=\"");
+        b.append(bounds.getYPosition());
+        b.append("\" width=\"");
+        b.append(bounds.getWidth());
+        b.append("\" height=\"");
+        b.append(bounds.getHeight());
+        b.append("\"/>");
+        b.append(lineEnd(level));
+    }
+
+    /**
+     *
      * @param b
      * @param element
      * @param level
@@ -290,9 +394,9 @@ public class Xmi25Marshaler extends AbstractMarshaler {
      * an application of a stereotype to a node in the model.
      */
     class UmlStereotypeApplication {
+        private final String id = UUID.randomUUID().toString();
         String name;
         String baseNode;
-        private String id = UUID.randomUUID().toString();
 
         UmlStereotypeApplication(String name, String elementId) {
             this.name = name;
@@ -310,6 +414,6 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         String getId() {
             return id;
         }
-
     }
+
 }

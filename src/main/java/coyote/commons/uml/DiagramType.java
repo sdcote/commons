@@ -12,31 +12,31 @@ package coyote.commons.uml;
  */
 public enum DiagramType {
   /** UseCase diagram - UML Use Case Diagrams capture the behavioral requirements of a system using use case elements, and their interaction with participant actors. */
-  USECASECLASS("UseCaseDiagram"),
+  USECASECLASS("UseCase"),
   /** Activity diagram - UML Activity Diagrams describe low-level system behavior as a sequence of control and object flow paths. */
-  ACTIVITY("ActivityDiagram"),
+  ACTIVITY("Activity"),
   /** State diagram - UML State Machine Diagrams model the internal behavior of an element as a graph of states and transitions. */
-  STATE("StateDiagram"),
+  STATE("State"),
   /** Communication diagram - UML Communication Diagrams describe collaborations between elements as a holistic collection of messages passing between them. */
-  COMMUNICATION("CollaborationDiagram"),
+  COMMUNICATION("Collaboration"),
   /** Sequence diagram - UML Sequence Diagrams specify element behavior as a sequential series of messages passing back and forth, against a vertical time scale. */
-  SEQUENCE("SequenceDiagram"),
+  SEQUENCE("Sequence"),
   /** Timing diagram - UML Timing Diagrams describe the states of an element, and can also specify the messages passed between elements against a horizontal time scale. */
-  TIMING("TimingDiagram"),
+  TIMING("Timing"),
   /** Interaction diagram - UML Interaction Overview diagrams describe high-level behavior of a system as a sequence of control flows between interactions (or sequences).  */
-  INTERACTION("InteractionOverviewDiagram"),
+  INTERACTION("InteractionOverview"),
   /** Class diagram - UML Class Diagrams capture the logical structure of a system as a series of classes, their features and the relationships between them. */
-  CLASS("ClassDiagram"),
+  CLASS("Class"),
   /** Component diagram - UML Component Diagrams define how a system is structured, describing the component 'blocks' and their connectivity with other components in a system. */
-  COMPONENT("ComponentDiagram"),
+  COMPONENT("Component"),
   /** Package diagram - UML Package Diagrams describe the organization of packages, their elements and their corresponding relationships. */
-  PACKAGE("PackageDiagram"),
+  PACKAGE("Package"),
   /** Object diagram - UML Object Diagrams describe the interaction between class instances, and also specify instance values of features. */
-  OBJECT("ObjectDiagram"),
+  OBJECT("Object"),
   /** Composite diagram - UML Composite Structure Diagrams describe the internal structure of a structural element as an entity in a system. It can also describe the collaboration between elements to describe their function. */
-  COMPOSITE("CompositeStructureDiagram"),
+  COMPOSITE("CompositeStructure"),
   /** Deployment diagram - UML Deployment Diagrams describe how and where system components are deployed onto physical nodes and other artifacts. */
-  DEPLOYMENT("DeploymentDiagram");
+  DEPLOYMENT("Deployment");
 
   private String name;
 

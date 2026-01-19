@@ -2,20 +2,12 @@ package cookbook.uml;
 
 import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
-import coyote.commons.uml.UmlClass;
-import coyote.commons.uml.UmlDependency;
-import coyote.commons.uml.UmlElement;
-import coyote.commons.uml.UmlModel;
-import coyote.commons.uml.UmlNamedElement;
-import coyote.commons.uml.UmlNode;
-import coyote.commons.uml.UmlPackage;
-import coyote.commons.uml.UmlPort;
-import coyote.commons.uml.UmlStereotype;
-import coyote.commons.uml.marshal.Xmi11Marshaler;
-import coyote.commons.uml.marshal.Xmi25Marshaler;
-import coyote.commons.uml.marshal.XmiMarshaler;
 import coyote.commons.log.ConsoleAppender;
 import coyote.commons.log.Log;
+import coyote.commons.uml.*;
+import coyote.commons.uml.marshal.MarshalerExtension;
+import coyote.commons.uml.marshal.SparxExtension;
+import coyote.commons.uml.marshal.Xmi25Marshaler;
 
 /**
  * The goal of this class is to demonstrate how to create a UmlModel
@@ -27,7 +19,7 @@ public class UmlModeler {
 
     /**
      * Main entry into the code.
-     * 
+     *
      * @param args command line arguments - ignored in this example.
      */
     public static void main(String[] args) {
@@ -41,6 +33,8 @@ public class UmlModeler {
         // First we marshal it into an XMI format (XML). We have a generic XMI
         // marshaler that will generate XML from a UML Model
         Xmi25Marshaler marshaler = new Xmi25Marshaler();
+        MarshalerExtension sparx = new SparxExtension(); // add Sparx EA extensions
+        marshaler.setExtension(sparx);
         String xml = marshaler.marshal(model, true);
         // There can be subtle differences in XMI compatibility so you might
         // want to create a tool-specific modeler to get all the features of
@@ -52,8 +46,32 @@ public class UmlModeler {
     }
 
     /**
+     * This adds a preamble to the XML and saves it to disk.
+     *
+     * <p>
+     * This uses the FileUtil class to do the heavy lifting for us.
+     * </p>
+     *
+     * @param xml     The XML generated from a marshaller.
+     * @param fname   The name of the file to write.
+     * @param charset The characterset to use.
+     * @return true if the file was saved, false if an error occurred.
+     */
+    public static boolean save(String xml, String fname, String charset) {
+        if (StringUtil.checkCharacterSetName(charset)) {
+            String b = "<?xml version=\"1.0\" encoding=\"" + charset +
+                    "\"?>\r\n" +
+                    xml;
+            return FileUtil.stringToFile(b, fname, charset);
+        } else {
+            System.err.println("The character set of '" + charset + "' is not supported in this runtime");
+            return false;
+        }
+    }
+
+    /**
      * This is where you create the UML Model.
-     * 
+     *
      * @return
      */
     private UmlModel buildUmlModel() {
@@ -83,7 +101,7 @@ public class UmlModeler {
         hostPkg.addElement(node2);
         node2.addElement(new UmlPort("80"));
         node2.addElement(new UmlPort("443"));
-        node2.setTaggedValue("RAM", "32GB"); 
+        node2.setTaggedValue("RAM", "32GB");
         node2.addStereotype(HOST_STEREOTYPE); // as of XMI 2.5.1 tagged values require a stereotype
 
         UmlNode node3 = new UmlNode("Node3");
@@ -107,33 +125,37 @@ public class UmlModeler {
         UmlNamedElement nodeOne = model.getElementByName("Node1"); // find the element by its name - starting at the top of the model
         UmlNamedElement nodeFour = hostPkg.getElementByName("Node4"); // we can limit the search by chosing the closest element
         UmlNamedElement port5432 = nodeFour.getElementByName("80"); // find the port in that node
-        UmlDependency dependency = new UmlDependency("DB Connection",nodeOne.getId(),port5432.getId());
+        UmlDependency dependency = new UmlDependency("DB Connection", nodeOne.getId(), port5432.getId());
         hostPkg.addElement(dependency); // add the dependency to the package common to the elements connected.
 
-        return model;
-    }
 
-    /**
-     * This adds a preamble to the XML and saves it to disk.
-     * 
-     * <p>
-     * This uses the FileUtil class to do the heavy lifting for us.
-     * </p>
-     *
-     * @param xml     The XML generated from a marshaller.
-     * @param fname   The name of the file to write.
-     * @param charset The characterset to use.
-     * @return true if the file was saved, false if an error occurred.
-     */
-    public static boolean save(String xml, String fname, String charset) {
-        if (StringUtil.checkCharacterSetName(charset)) {
-            String b = "<?xml version=\"1.0\" encoding=\"" + charset +
-                    "\"?>\r\n" +
-                    xml;
-            return FileUtil.stringToFile(b, fname, charset);
-        } else {
-            System.err.println("The character set of '" + charset + "' is not supported in this runtime");
-            return false;
-        }
+        // diagram example
+        UmlDiagram diagram = new UmlDiagram("Simple Diagram");
+        deployViewPkg.addElement(diagram);
+        diagram.setDiagramType(DiagramType.DEPLOYMENT);
+
+        // Add node1 to the diagram
+        UmlShape element = new UmlShape(node1);
+        element.setBounds(new DiagramBounds(100, 100, 120, 80));
+        diagram.add(element);
+
+        // Add node 4 to the diagram
+        element = new UmlShape(node4);
+        element.setBounds(new DiagramBounds(300, 100, 120, 80));
+        diagram.add(element);
+
+        // Place the port on the edge of Node4
+        UmlNamedElement modelElement = node4.getElementByName("5432");
+        element = new UmlShape(modelElement);
+        element.setBounds(new DiagramBounds(420, 110, 10, 10));
+        diagram.add(element);
+
+        // ToDo: We don't represent lines yet
+//        UmlEdge line = new UmlEdge(dependency);
+//        line.addWayPoint(220,140);
+//        line.addWayPoint(300,140);
+//        diagram.add(line);
+
+        return model;
     }
 }

@@ -60,6 +60,10 @@ public enum Classifier {
   /** */
   DIAGRAM_ELEMENT("DiagramElement"),
   /** */
+  UML_SHAPE("UMLShape"),
+  /** */
+  UML_EDGE("UMLEdge"),
+  /** */
   DIAGRAM_FRAME("DiagramFrame"),
   /** */
   DIAGRAM("Diagram"),

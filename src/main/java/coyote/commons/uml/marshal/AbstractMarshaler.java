@@ -3,9 +3,10 @@ package coyote.commons.uml.marshal;
 import java.text.SimpleDateFormat;
 
 public abstract class AbstractMarshaler {
-    protected static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     protected static final String CRLF = "\r\n";
     protected static final String EMPTY_STRING = "";
+    protected static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private MarshalerExtension extension = new NullExtension();
 
     private String name = "Coyote UML";
     private String version = "1.0.2";
@@ -13,14 +14,13 @@ public abstract class AbstractMarshaler {
 
     /**
      * The padding for the given level.
-     * 
+     *
      * <p>
      * There are two spaces per level of padding. Zero or less levels result
      * in an empty string being returned. This will never return null.
      * </p>
-     * 
+     *
      * @param level the level of padding required
-     * 
      * @return a string to indent to the given level
      */
     protected static String getPadding(int level) {
@@ -38,7 +38,7 @@ public abstract class AbstractMarshaler {
 
     /**
      * Returns either CRFL or EMPTY_STRING depending on the level
-     * 
+     *
      * @param level the level of indenting
      * @return CRFL if level is zero or grater, an empty string "" otherwise.
      */
@@ -74,7 +74,7 @@ public abstract class AbstractMarshaler {
         return this.version;
     }
 
-    
+
     /**
      * @param version the version to set
      */
@@ -90,11 +90,17 @@ public abstract class AbstractMarshaler {
     }
 
     /**
-     * @param version the identifier to set
+     * @param id the identifier to set
      */
     public void setId(String id) {
         this.identifier = id;
     }
 
-    
+    public MarshalerExtension getExtension() {
+        return this.extension;
+    }
+
+    public void setExtension(MarshalerExtension extn) {
+        this.extension = extn;
+    }
 }
