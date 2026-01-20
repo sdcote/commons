@@ -14,6 +14,7 @@ public class Xmi25Marshaler extends AbstractMarshaler {
 
     private final List<UmlStereotypeApplication> stereotypeToApply = new ArrayList<>();
 
+    private final List<UmlDiagram> diagramsToApply = new ArrayList<>();
 
     /**
      * Marshal the given model to an XMI string.
@@ -57,7 +58,7 @@ public class Xmi25Marshaler extends AbstractMarshaler {
      *              indentation or line feeds are to be used.
      */
     private void genExtension(StringBuilder b, UmlModel model, int level) {
-        getExtension().generateExtensionBlock(b,model,level);
+        getExtension().generateExtensionBlock(b, model, level);
     }
 
     /**
@@ -81,6 +82,8 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         b.append("\">");
         b.append(lineEnd(level));
 
+        getExtension().generateModelMetaData(b, model, (level > -1) ? level + 1 : level);
+
         // Only package elements at the model level
         for (UmlNamedElement element : model.getOwnedElements()) {
             genPackagedElements(b, element, (level > -1) ? level + 1 : level);
@@ -90,6 +93,13 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         b.append(pad);
         b.append("</uml:Model>");
         b.append(lineEnd(level));
+
+
+        // All diagrams outside of the model
+        for (UmlDiagram diagram : diagramsToApply) {
+            genDiagram(b, diagram, level);
+        }
+
 
         // This is applying stereotypes and as of UML 2.5.1, applying tagged values.
         for (UmlStereotypeApplication binding : stereotypeToApply) {
@@ -159,7 +169,7 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         } else if (element instanceof UmlDependency) {
             genDependency(b, (UmlDependency) element, level);
         } else if (element instanceof UmlDiagram) {
-            genDiagram(b, (UmlDiagram) element, level);
+            diagramsToApply.add((UmlDiagram) element);
         } else {
             Log.error("Unsupported element encountered - " + element.getClass().getName());
         }
@@ -246,16 +256,18 @@ public class Xmi25Marshaler extends AbstractMarshaler {
      */
     private void genDiagram(StringBuilder b, UmlDiagram diagram, int level) {
         b.append(getPadding(level));
-        b.append("<umldi:UMLDiagram xmi:id=\"");
+        b.append("<umldi:UMLDiagram xmi:type=\"umldi:UMLDiagram\" xmi:id=\"");
         b.append(diagram.getId());
+        b.append("\"");
+
         if (StringUtil.isNotEmpty(diagram.getName())) {
-            b.append("\" name=\"");
+            b.append(" name=\"");
             b.append(diagram.getName());
             b.append("\"");
         }
         b.append(" modelElement=\"");
         b.append(diagram.getParent().getId());
-        b.append("\">");
+        b.append("\" visibility=\"public\">");
         b.append(lineEnd(level));
 
         for (UmlDiagramElement element : diagram.getDiagramElements()) {
@@ -302,15 +314,15 @@ public class Xmi25Marshaler extends AbstractMarshaler {
 
     private void genBounds(StringBuilder b, DiagramBounds bounds, int level) {
         b.append(getPadding(level));
-        b.append("<dc:Bounds x=\"");
+        b.append("<dc:Bounds xmi:type=\"dc:Bounds\" x=\"");
         b.append(bounds.getXPosition());
-        b.append("\" y=\"");
+        b.append(".0\" y=\"");
         b.append(bounds.getYPosition());
-        b.append("\" width=\"");
+        b.append(".0\" width=\"");
         b.append(bounds.getWidth());
-        b.append("\" height=\"");
+        b.append(".0\" height=\"");
         b.append(bounds.getHeight());
-        b.append("\"/>");
+        b.append(".0\"/>");
         b.append(lineEnd(level));
     }
 
@@ -345,7 +357,6 @@ public class Xmi25Marshaler extends AbstractMarshaler {
                     genPackagedElements(b, child, (level > -1) ? level + 1 : level);
                 else
                     genElement(b, child, (level > -1) ? level + 1 : level);
-
             }
 
             // close up the packaged element section

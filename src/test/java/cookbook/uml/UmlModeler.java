@@ -123,15 +123,19 @@ public class UmlModeler {
 
         // Create a dependency between Node1 and Node4's Port 5432
         UmlNamedElement nodeOne = model.getElementByName("Node1"); // find the element by its name - starting at the top of the model
-        UmlNamedElement nodeFour = hostPkg.getElementByName("Node4"); // we can limit the search by chosing the closest element
+        UmlNamedElement nodeFour = hostPkg.getElementByName("Node4"); // we can limit the search by choosing the closest element
         UmlNamedElement port5432 = nodeFour.getElementByName("80"); // find the port in that node
         UmlDependency dependency = new UmlDependency("DB Connection", nodeOne.getId(), port5432.getId());
         hostPkg.addElement(dependency); // add the dependency to the package common to the elements connected.
 
 
+        // Diagram export wot Sparx EA is VERY finicky - It appears you have to
+        // completely duplicate the Model in the XMI Extension section.
+        // Diagram export is still under development
+
         // diagram example
         UmlDiagram diagram = new UmlDiagram("Simple Diagram");
-        deployViewPkg.addElement(diagram);
+        hostPkg.addElement(diagram);
         diagram.setDiagramType(DiagramType.DEPLOYMENT);
 
         // Add node1 to the diagram
@@ -140,15 +144,15 @@ public class UmlModeler {
         diagram.add(element);
 
         // Add node 4 to the diagram
-        element = new UmlShape(node4);
-        element.setBounds(new DiagramBounds(300, 100, 120, 80));
-        diagram.add(element);
+//        element = new UmlShape(node4);
+//        element.setBounds(new DiagramBounds(300, 100, 120, 80));
+//        diagram.add(element);
 
         // Place the port on the edge of Node4
-        UmlNamedElement modelElement = node4.getElementByName("5432");
-        element = new UmlShape(modelElement);
-        element.setBounds(new DiagramBounds(420, 110, 10, 10));
-        diagram.add(element);
+//        UmlNamedElement modelElement = node4.getElementByName("5432");
+//        element = new UmlShape(modelElement);
+//        element.setBounds(new DiagramBounds(420, 110, 10, 10));
+//        diagram.add(element);
 
         // ToDo: We don't represent lines yet
 //        UmlEdge line = new UmlEdge(dependency);

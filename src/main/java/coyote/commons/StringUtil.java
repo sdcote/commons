@@ -10,11 +10,14 @@ package coyote.commons;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -107,13 +110,6 @@ public final class StringUtil {
      */
     public static final String UTF_8 = "UTF-8";
     /**
-     * Soundex Character Mapping
-     */
-    private static final char[] soundex_map = "01230120032455012623010202".toCharArray();
-    private static final char[] LOWERCASES = {'\000', '\001', '\002', '\003', '\004', '\005', '\006', '\007', '\010', '\011', '\012', '\013', '\014', '\015', '\016', '\017', '\020', '\021', '\022', '\023', '\024', '\025', '\026', '\027', '\030', '\031', '\032', '\033', '\034', '\035', '\036', '\037', '\040', '\041', '\042', '\043', '\044', '\045', '\046', '\047', '\050', '\051', '\052', '\053', '\054', '\055', '\056', '\057', '\060', '\061', '\062', '\063', '\064', '\065', '\066', '\067', '\070', '\071', '\072', '\073', '\074', '\075', '\076', '\077', '\100', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171', '\172', '\133', '\134', '\135', '\136', '\137', '\140', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171',
-            '\172', '\173', '\174', '\175', '\176', '\177'};
-
-    /**
      * Left Alignment value ({@value}) for {@code fixedLength} method
      */
     public static final int LEFT_ALIGNMENT = 0;
@@ -125,16 +121,22 @@ public final class StringUtil {
      * Right Alignment value ({@value}) for {@code fixedLength} method
      */
     public static final int RIGHT_ALIGNMENT = 2;
-
     /**
      * Double Quote character
      */
     public static final char DOUBLE_QUOTE = '"';
-
+    /**
+     * Soundex Character Mapping
+     */
+    private static final char[] soundex_map = "01230120032455012623010202".toCharArray();
+    private static final char[] LOWERCASES = {'\000', '\001', '\002', '\003', '\004', '\005', '\006', '\007', '\010', '\011', '\012', '\013', '\014', '\015', '\016', '\017', '\020', '\021', '\022', '\023', '\024', '\025', '\026', '\027', '\030', '\031', '\032', '\033', '\034', '\035', '\036', '\037', '\040', '\041', '\042', '\043', '\044', '\045', '\046', '\047', '\050', '\051', '\052', '\053', '\054', '\055', '\056', '\057', '\060', '\061', '\062', '\063', '\064', '\065', '\066', '\067', '\070', '\071', '\072', '\073', '\074', '\075', '\076', '\077', '\100', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171', '\172', '\133', '\134', '\135', '\136', '\137', '\140', '\141', '\142', '\143', '\144', '\145', '\146', '\147', '\150', '\151', '\152', '\153', '\154', '\155', '\156', '\157', '\160', '\161', '\162', '\163', '\164', '\165', '\166', '\167', '\170', '\171',
+            '\172', '\173', '\174', '\175', '\176', '\177'};
     /**
      * Field ISO8859_1
      */
     public static String ISO8859_1;
+
+    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     static {
         final String iso = System.getProperty("ISO_8859_1");
@@ -2511,11 +2513,7 @@ public final class StringUtil {
     public static boolean equalsIgnoreCase(String source, String target) {
         boolean retval;
         if (source == null) {
-            if (target == null) {
-                retval = true;
-            } else {
-                retval = false;
-            }
+            retval = target == null;
         } else {
             if (target == null) {
                 retval = false;
@@ -2540,11 +2538,7 @@ public final class StringUtil {
     public static boolean equals(CharSequence source, CharSequence target) {
         boolean retval;
         if (source == null) {
-            if (target == null) {
-                retval = true;
-            } else {
-                retval = false;
-            }
+            retval = target == null;
         } else {
             if (target == null) {
                 retval = false;
@@ -2554,7 +2548,6 @@ public final class StringUtil {
         }
         return retval;
     }
-
 
 
     /**
@@ -2572,11 +2565,6 @@ public final class StringUtil {
         }
 
     }
-
-
-
-
-
 
 
     /**
@@ -2604,13 +2592,6 @@ public final class StringUtil {
 
         return retval;
     }
-
-
-
-
-
-
-
 
 
     /**
@@ -2762,7 +2743,6 @@ public final class StringUtil {
     }
 
 
-
     /**
      * Empty strings are converted to null
      *
@@ -2773,8 +2753,97 @@ public final class StringUtil {
         return StringUtil.isBlank(text) ? null : text.trim();
     }
 
+    public static String digestString(String input) {
+        String retval = "";
+        try {
+            return digestString(input,8);
+        } catch (Exception e) {
+            // ignore
+        }
+        return retval;
+    }
 
+    /**
+     * Converts a string into a stable 8-character alphanumeric identifier.
+     * @param input The string to digest (e.g., UUID.toString()).
+     * @param length the length of the digest to return.
+     * @return A deterministic 8-character URL-safe string.
+     * @throws IllegalStateException If the hashing algorithm is unavailable.
+     */
+    public static String digestString(String input,int length) {
+        if (input == null) {
+            throw new IllegalArgumentException("Input string cannot be null");
+        }
 
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
+            // Convert string to bytes using UTF-8 to ensure cross-platform consistency
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // URL-safe encoding prevents characters like '/' or '+' from appearing
+            return Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(hash)
+                    .substring(0, length);
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Required hashing algorithm SHA-256 is not available", e);
+        }
+    }
+
+    /**
+     * Converts a UUID into a stable alphanumeric string.
+     *
+     * @param uuid   The source UUID to digest.
+     * @param length The required length of the digest.
+     * @return A deterministic 8-character string.
+     * @throws RuntimeException If the hashing algorithm is unavailable.
+     */
+    public static String digestUuid(UUID uuid, int length) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Convert UUID to a byte array for the digest
+            byte[] uuidBytes = convertUuidToBytes(uuid);
+            byte[] hash = digest.digest(uuidBytes);
+
+            // Use URL-safe Base64 encoding to ensure only alphanumeric/safe characters
+            // withoutPadding() removes the '=' characters often found at the end
+            String encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+
+            // Return the first 8 characters
+            return encoded.substring(0, length);
+
+        } catch (NoSuchAlgorithmException e) {
+            // SHA-256 is a standard part of the JDK, but we handle the checked exception
+            throw new IllegalStateException("Required hashing algorithm not found", e);
+        }
+    }
+
+    /**
+     * Helper to extract the 16 bytes from a UUID.
+     *
+     * @param uuid The source UUID.
+     * @return A byte array of length 16.
+     */
+    private static byte[] convertUuidToBytes(UUID uuid) {
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        return bb.array();
+    }
+
+    /**
+     * Generates a random 8-character string consisting only of letters and numbers.
+     * @return A random alphanumeric string.
+     */
+    public static String generateRandomId(int length) {
+        return IntStream.range(0, length)
+                .map(i -> new SecureRandom().nextInt(ALPHABET.length()))
+                .mapToObj(ALPHABET::charAt)
+                .map(Object::toString)
+                .collect(Collectors.joining());
+    }
 
 }

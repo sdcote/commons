@@ -1,5 +1,6 @@
 package coyote.commons.uml.marshal;
 
+import coyote.commons.StringUtil;
 import coyote.commons.uml.DiagramBounds;
 import coyote.commons.uml.UmlDiagram;
 import coyote.commons.uml.UmlDiagramElement;
@@ -63,6 +64,33 @@ public class SparxExtension implements MarshalerExtension {
     }
 
     /**
+     * Translates standard XMI bounds into the Sparx EA geometry string format.
+     *
+     * @param bounds the DiagramBounds of a DiagramElement
+     * @return A formatted string: Left=x;Top=y;Right=r;Bottom=b;
+     */
+    public static String translateToGeometry(DiagramBounds bounds) {
+        return translateToGeometry(bounds.getXPosition(), bounds.getYPosition(), bounds.getWidth(), bounds.getHeight());
+    }
+
+    /**
+     * Translates standard XMI bounds into the Sparx EA geometry string format.
+     *
+     * @param x      The horizontal starting position
+     * @param y      The vertical starting position
+     * @param width  The width of the element
+     * @param height The height of the element
+     * @return A formatted string: Left=x;Top=y;Right=r;Bottom=b;
+     */
+    public static String translateToGeometry(int x, int y, int width, int height) {
+        int left = x;
+        int top = y;
+        int right = x + width;
+        int bottom = y + height;
+        return String.format("Left=%d;Top=%d;Right=%d;Bottom=%d;", left, top, right, bottom);
+    }
+
+    /**
      * This generates and extension block immediately following the
      * {@code uml:Model} block.
      *
@@ -77,6 +105,40 @@ public class SparxExtension implements MarshalerExtension {
      */
     @Override
     public void generateExtensionBlock(StringBuilder b, UmlModel model, int level) {
+        extensionBlockStart(b, level);
+        extendDiagrams(b, model, (level > -1) ? level + 1 : level);
+        extensionBlockEnd(b, level);
+    }
+
+    /**
+     * Called just after the {@code uml:model} opening block to give some tools
+     * a hint that certain extensions are to follow the model.
+     *
+     * @param b     the string builder to which all text should be appended.
+     * @param model the UML model
+     * @param level the current level of indentation. A value of -1 indicate no
+     *              indentation or line feeds are to be used.
+     */
+    @Override
+    public void generateModelMetaData(StringBuilder b, UmlModel model, int level) {
+//        extensionBlockStart(b, level);
+//        extendProperties(b, (level > -1) ? level + 1 : level);
+//        extensionBlockEnd(b, level);
+    }
+
+    private void extendProperties(StringBuilder b, int level) {
+        b.append(getPadding(level));
+        b.append("<properties sType=\"Model\" nType=\"0\" scope=\"public\"/>");
+        b.append(lineEnd(level));
+    }
+
+    private void extensionBlockEnd(StringBuilder b, int level) {
+        b.append(getPadding(level));
+        b.append("</xmi:Extension>");
+        b.append(lineEnd(level));
+    }
+
+    private void extensionBlockStart(StringBuilder b, int level) {
         b.append(getPadding(level));
         b.append("<xmi:Extension extender=\"");
         b.append(name);
@@ -84,14 +146,6 @@ public class SparxExtension implements MarshalerExtension {
         b.append(identifier);
         b.append("\">");
         b.append(lineEnd(level));
-
-        extendDiagrams(b, model, (level > -1) ? level + 1 : level);
-
-        b.append(getPadding(level));
-        b.append("</xmi:Extension>");
-        b.append(lineEnd(level));
-
-
     }
 
     private void extendDiagrams(StringBuilder b, UmlModel model, int level) {
@@ -179,10 +233,9 @@ public class SparxExtension implements MarshalerExtension {
         b.append(element.getSubject().getId());
         b.append("\" seqno=\"");
         b.append(seqNumber);
-        b.append("\"/>");
+        b.append("\" styleex=\"VDI=1;\"/>");
         b.append(lineEnd(level));
     }
-
 
     public String getName() {
         return name;
@@ -202,32 +255,4 @@ public class SparxExtension implements MarshalerExtension {
         return this;
     }
 
-
-    /**
-     * Translates standard XMI bounds into the Sparx EA geometry string format.
-     *
-     * @param bounds the DiagramBounds of a DiagramElement
-     * @return A formatted string: Left=x;Top=y;Right=r;Bottom=b;
-     */
-    public static String translateToGeometry(DiagramBounds bounds){
-       return translateToGeometry(bounds.getXPosition(), bounds.getYPosition(), bounds.getWidth(), bounds.getHeight());
-    }
-
-
-    /**
-     * Translates standard XMI bounds into the Sparx EA geometry string format.
-     *
-     * @param x The horizontal starting position
-     * @param y The vertical starting position
-     * @param width The width of the element
-     * @param height The height of the element
-     * @return A formatted string: Left=x;Top=y;Right=r;Bottom=b;
-     */
-    public static String translateToGeometry(int x, int y, int width, int height) {
-        int left = x;
-        int top = y;
-        int right = x + width;
-        int bottom = y + height;
-        return String.format("Left=%d;Top=%d;Right=%d;Bottom=%d;", left, top, right, bottom);
-    }
 }

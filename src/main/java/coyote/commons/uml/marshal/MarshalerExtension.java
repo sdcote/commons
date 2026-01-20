@@ -21,4 +21,15 @@ public interface MarshalerExtension {
      *              indentation or line feeds are to be used.
      */
     void generateExtensionBlock(StringBuilder b, UmlModel model, int level);
+
+    /**
+     * Called just after the {@code uml:model} opening block to give some tools
+     * a hint that certain extensions are to follow the model.
+     *
+     * @param b the string builder to which all text should be appended.
+     * @param model the UML model
+     * @param level the current level of indentation. A value of -1 indicate no
+     *              indentation or line feeds are to be used.
+     */
+    void generateModelMetaData(StringBuilder b, UmlModel model, int level);
 }
