@@ -283,6 +283,17 @@ public class Xmi11Marshaler extends AbstractMarshaler {
         b.append(element.getVisibility().getName());
         b.append("\"");
 
+
+        if (element instanceof UmlDependency) {
+          b.append(" client=\"");
+          b.append( ((UmlDependency)element).getClientId() );
+          b.append("\"");
+
+          b.append(" supplier=\"");
+          b.append( ((UmlDependency)element).getSupplierId() );
+          b.append("\"");
+        }
+
         b.append(" isRoot=\"");
         b.append(element.isRoot());
         b.append("\"");
