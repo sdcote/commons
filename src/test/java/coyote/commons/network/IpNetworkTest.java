@@ -127,4 +127,12 @@ public class IpNetworkTest {
     assertEquals("10/8", network.toString());
   }
 
+
+  @Test
+  public void singleAddressNetwork() throws IpAddressException {
+    IpNetwork network = new IpNetwork("10.2.3.4");
+    assertTrue(network.contains("10.2.3.4"));
+    assertFalse(network.contains("10.2.3.5"));
+  }
+
 }

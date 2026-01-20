@@ -4,7 +4,7 @@
 
     <groupId>coyote</groupId>
     <artifactId>commons</artifactId>
-    <version>1.18.0</version>
+    <version>1.18.3</version>
     <packaging>jar</packaging>
 
     <name>Commons</name>

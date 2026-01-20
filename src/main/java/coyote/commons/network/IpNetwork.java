@@ -52,6 +52,10 @@ public class IpNetwork extends IpAddress {
      * are used to identify the unique network leaving the remaining bits to
      * identify the specific host.</p>
      *
+     * <p>If there is no slash delimiting the address from the mask, the prefix
+     * is assumed to be a host-only network with 32 bits of masking
+     * (255.255.255.255)</p>
+     *
      * @param prefix CIDR notation of the network block
      * @throws IpAddressException if the prefix contains invalid numbers for an address
      */
@@ -69,7 +73,10 @@ public class IpNetwork extends IpAddress {
                 throw new IpAddressException("Invalid network block");
             }
         } else {
-            throw new IpAddressException("Could not find bitmask count");
+            netmask = HOSTMASK;
+            final IpAddress ipAddress  = new IpAddress(prefix);
+            octets = ipAddress.getOctets();
+            ipAddressIterator = new IpNetworkElementIterator(ipAddress, netmask, this);
         }
     }
 
