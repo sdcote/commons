@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2016 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
 package coyote.commons.uml;
@@ -14,14 +14,14 @@ import java.util.*;
 /**
  * Element is the abstract root UML metaclass, it has no superclass in the
  * hierarchy of UML elements.
- * 
+ *
  * <p>
  * It is the superclass for all metaclasses in the UML infrastructure
  * library.
  * </p>
- * 
+ *
  * http://www.uml-diagrams.org/uml-core.html#element
- * 
+ *
  * Although not part of the latest specification, any element in the model can
  * contain tagged values as a convenience - it can be used in a variety of ways
  * including the specification of properties.
@@ -31,6 +31,7 @@ public abstract class UmlElement {
   private UmlElement parent = null;
 
   protected final List<UmlNamedElement> ownedElements = new ArrayList<>();
+  protected final List<UmlComment> ownedComments = new ArrayList<>();
   protected final Set<UmlStereotype> stereotypes = new HashSet<>();
   protected final List<TaggedValue> taggedValues = new ArrayList<>();
 
@@ -274,7 +275,7 @@ public abstract class UmlElement {
 
   /**
    * Perform a recursive search for an element with the given identifier.
-   * 
+   *
    * @param id the identifier to match
    * @return the matching UmlElement or null if it was not found.
    */
@@ -290,5 +291,24 @@ public abstract class UmlElement {
     }
     return retval;
   }
+
+    /**
+     * Add a comment to this element.
+     *
+     * @param child
+     */
+    public void addComment(final UmlComment child) {
+        if (this.equals(child))
+            throw new IllegalArgumentException("Cannot add self as a child comment.");
+        child.setParent(this);
+        ownedComments.add(child);
+    }
+
+    /**
+     * @return the list of owned comments for this elements
+     */
+    public List<UmlComment> getOwnedComments() {
+        return ownedComments;
+    }
 
 }

@@ -88,6 +88,9 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         for (UmlNamedElement element : model.getOwnedElements()) {
             genPackagedElements(b, element, (level > -1) ? level + 1 : level);
         }
+        for (UmlComment comment : model.getOwnedComments()) {
+            genComment(b, comment, (level > -1) ? level + 1 : level);
+        }
 
         // close up the model section
         b.append(pad);
@@ -359,6 +362,10 @@ public class Xmi25Marshaler extends AbstractMarshaler {
                     genElement(b, child, (level > -1) ? level + 1 : level);
             }
 
+            for (UmlComment comment : element.getOwnedComments()) {
+                genComment(b, comment, (level > -1) ? level + 1 : level);
+            }
+            
             // close up the packaged element section
             b.append(pad);
             b.append("</packagedElement>");
@@ -371,6 +378,31 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         // Check to see if we need to register a stereotype
         checkForStereotype(element);
 
+    }
+
+    private void genComment(StringBuilder b, UmlComment comment, int level) {
+        // <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_01">
+        //    <body>Primary application server for the production environment.</body>
+        //  </ownedComment>
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<ownedComment xmi:type=\"uml:Comment\" xmi:id=\"");
+        b.append(comment.getId());
+        b.append("\">");
+        b.append(lineEnd(level));
+        genCommentBody(b, comment, (level > -1) ? level + 1 : level);
+        b.append(pad);
+        b.append("</ownedComment>");
+        b.append(lineEnd(level));
+    }
+
+    private void genCommentBody(StringBuilder b, UmlComment comment, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<body>");
+        b.append(StringUtil.StringToXML(comment.getBody()));
+        b.append("</body>");
+        b.append(lineEnd(level));
     }
 
     /**

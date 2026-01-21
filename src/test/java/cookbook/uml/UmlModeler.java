@@ -96,6 +96,8 @@ public class UmlModeler {
         node1.addElement(new UmlPort("80"));
         node1.setTaggedValue("RAM", "8GB");
         node1.addStereotype(HOST_STEREOTYPE); // as of XMI 2.5.1 tagged values require a stereotype
+        node1.addComment(new UmlComment("This is a comment for Node1"));
+
 
         UmlNode node2 = new UmlNode("Node2");
         hostPkg.addElement(node2);
