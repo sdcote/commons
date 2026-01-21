@@ -683,7 +683,28 @@ public class Config extends DataFrame implements Cloneable, Serializable {
             }
         }
         return retval;
-
     }
+
+    /**
+     * Convenience method to return the value of the named field as a boolean
+     * value.
+     *
+     * @param name name of the field value to return.
+     * @param dft  the default value to use if the field is not found
+     *
+     * @return the value of the field or the default value
+     */
+    public boolean getAsBoolean(String name, boolean dft) {
+        boolean retval = dft;
+        if (contains(name)) {
+            try {
+                retval = getAsBoolean(name);
+            } catch (Exception e) {
+                // ignore, just use the default
+            }
+        }
+        return retval;
+    }
+
 
 }
