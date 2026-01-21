@@ -174,7 +174,8 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         } else if (element instanceof UmlDiagram) {
             diagramsToApply.add((UmlDiagram) element);
         } else {
-            Log.error("Unsupported element encountered - " + element.getClass().getName());
+            genPackagedElements(b, element, level);
+// "Unsupported element encountered - " + element.getClass().getName() + " level: " + level + " parent: " + ((element.getParent() == null) ? "no parent" : element.getParent().getDisplayString()));
         }
 
         checkForStereotype(element);
@@ -365,7 +366,7 @@ public class Xmi25Marshaler extends AbstractMarshaler {
             for (UmlComment comment : element.getOwnedComments()) {
                 genComment(b, comment, (level > -1) ? level + 1 : level);
             }
-            
+
             // close up the packaged element section
             b.append(pad);
             b.append("</packagedElement>");
