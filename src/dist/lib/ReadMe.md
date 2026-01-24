@@ -1,0 +1,1 @@
+Place all your JAR files in this directory and they will be added to the classpath.
