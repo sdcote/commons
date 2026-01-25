@@ -117,8 +117,6 @@ public class Options implements Serializable {
   public Options addOptionGroup( final OptionGroup group ) {
     final Iterator<Option> options = group.getOptions().iterator();
 
-    // TODO: if ( group.isRequired() ) { requiredOpts.add( group );  }
-
     while ( options.hasNext() ) {
       final Option option = options.next();
 

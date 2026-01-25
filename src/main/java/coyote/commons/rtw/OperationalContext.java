@@ -31,7 +31,7 @@ import java.util.Map;
  * context for the shared references they need. This is not required but simply
  * common practice which can be considered in your designs.</p>
  */
-public abstract class OperationalContext {
+public class OperationalContext {
     private static final String RESULT_KEY = "RTW.RESULT";
     protected final Map<String, Object> properties = new HashMap<>();
     protected String state = null;

@@ -97,6 +97,10 @@ public final class Log {
      * The category mask for all the events.
      */
     public static final long ALL_EVENTS = -1L;
+    /**
+     * The category mask for no categories (no logging).
+     */
+    public static final long NO_EVENTS = 0L;
 
     /**
      * The name of the default logger, or the name of the logger created and
