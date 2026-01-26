@@ -10,6 +10,11 @@ import coyote.commons.rtw.OperationalContext;
 import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
 
+/**
+ * APP_HOME - specific directory specified as a system property or environment variable
+ * WRK_HOME - usually a subsirectory named "wrk" under the APP_HOME directory or current directory.
+ * LOG_HOME - usually a subsirectory named "log" under the APP_HOME directory or current directory.
+ */
 public abstract class AbstractSnapJob implements SnapJob {
 
     /**
@@ -47,11 +52,11 @@ public abstract class AbstractSnapJob implements SnapJob {
     /**
      * Add a shutdown hook into the JVM to help us shut everything down nicely.
      *
-     * @param loader The loader to terminate
+     * @param loader The job to terminate
      */
     protected static void registerShutdownHook(final SnapJob job) {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread("LoaderHook") {
+            Runtime.getRuntime().addShutdownHook(new Thread("JobHook") {
                 public void run() {
                     Log.debug("Runtime_terminating");
                     if (job != null) {

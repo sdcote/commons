@@ -45,6 +45,9 @@ import coyote.commons.snap.SnapJob;
  * <p>The bulk of the responsibilities of this class is in the area of configuration. It tries to determine a configuration file 
  * based on the first argument on the command line. It is assumed to be a file name or a URI indicating a resource to be read. Once 
  * a file or resource has been received, it is parsed and used to dynamically load the class specified.</p>
+ * 
+  * APP_HOME - specific directory specified as a system property or environment variable
+ *  CFG_HOME - usually a subsirectory named "cfg" under the APP_HOME directory.
  */
 public class BootStrap {
     private static Config configuration = null;
