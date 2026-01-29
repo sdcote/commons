@@ -92,9 +92,6 @@ public class BootStrap {
     public static void main(String[] args) throws ArgumentException {
         confirmAppHome();
 
-        // set the default logger
-        Log.addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
-
         // Parse the command line arguments
         parseArgs(args);
 

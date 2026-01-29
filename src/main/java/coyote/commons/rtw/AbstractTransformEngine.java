@@ -18,10 +18,10 @@ import coyote.commons.rtw.context.TransactionContext;
 import coyote.commons.rtw.context.TransformContext;
 import coyote.commons.rtw.mapper.DefaultFrameMapper;
 import coyote.commons.rtw.mapper.MappingException;
+import coyote.commons.rtw.validate.ValidationException;
 import coyote.commons.snap.SnapJob;
 import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
-import coyote.commons.rtw.validate.ValidationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,11 +92,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
      * The current frame number
      */
     protected volatile long currentFrameNumber = 0;
-
-    /**
-     * The facade to log management functions
-     */
-    protected LogManager logManager = null;
     /**
      * The directory this engine uses for file operations
      */
@@ -203,11 +198,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
     public void run() {
         // Initialize the context
         contextInit();
-
-        // Open the log manager with the current transform context
-        if (logManager != null) {
-            logManager.open(getContext());
-        }
 
         Log.info("Engine '" + getName() + "' (" + getInstanceId() + ") running...");
         int transactionErrors = 0;
@@ -343,7 +333,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                             task.close();
                         }
                     } catch (IOException e) {
-                        Log.warn(String.format( "Engine.problems_closing_postprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                        Log.warn(String.format("Engine.problems_closing_postprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                     }
                 }
                 getContext().setState("Complete");
@@ -369,14 +359,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             Log.info("Engine '" + getName() + "' (" + getInstanceId() + ") completed successfully");
         }
 
-        // Close the loggers associated with this job
-        if (logManager != null) {
-            try {
-                logManager.close();
-            } catch (Throwable t) {
-                System.err.println("Problems closing job logger(s): " + t.getMessage());
-            }
-        }
     }
 
     /**
@@ -567,7 +549,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                     task.close();
                 }
             } catch (IOException e) {
-                Log.warn(String.format( "Engine.problems_closing_preprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_preprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -580,7 +562,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
         reader.open(getContext());
         if (getContext().isInError()) {
             reportTransformContextError(getContext());
-            return;
         }
     }
 
@@ -666,7 +647,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
         mapper.open(getContext());
         if (getContext().isInError()) {
             reportTransformContextError(getContext());
-            return;
         }
     }
 
@@ -805,7 +785,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                         // process the frames emitted from the previous aggregators
                         frames = aggregator.process(frames, txnContext);
                     } catch (Exception e) {
-                        Log.error(String.format( "Engine.aggregation_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
+                        Log.error(String.format("Engine.aggregation_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
                         e.printStackTrace();
                         txnContext.setError(e.getMessage());
                         frames = null;
@@ -838,13 +818,13 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                         writer.write(txnContext.getTargetFrame());
                         txnContext.fireWrite(txnContext, writer);
                     } catch (Exception e) {
-                        Log.error(String.format( "Engine.write_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
+                        Log.error(String.format("Engine.write_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
                         e.printStackTrace();
                         txnContext.setError(e.getMessage());
                     }
                 } else {
                     if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                        Log.notice(String.format( "Engine.writer_skipped_disabled", writer.getClass().getSimpleName()));
+                        Log.notice(String.format("Engine.writer_skipped_disabled", writer.getClass().getSimpleName()));
                     }
                 }
             }
@@ -905,7 +885,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                     jobDir.mkdirs();
                     setJobDirectory(jobDir);
                     setWorkDirectory(jobDir.getParentFile());
-                    Log.debug(String.format( "Engine.calculated_job_directory", jobDir.getAbsolutePath(), getName()));
+                    Log.debug(String.format("Engine.calculated_job_directory", jobDir.getAbsolutePath(), getName()));
                 } catch (final Exception e) {
                     Log.error(e.getMessage());
                 }
@@ -945,7 +925,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
         try {
             workDir.mkdirs();
             setWorkDirectory(workDir);
-            Log.debug(String.format( "Engine.calculated_work_directory", workDir.getAbsolutePath(), getName()));
+            Log.debug(String.format("Engine.calculated_work_directory", workDir.getAbsolutePath(), getName()));
         } catch (final Exception e) {
             Log.error(e.getMessage());
         }
@@ -1067,7 +1047,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 reader.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_reader", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_reader", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1080,7 +1060,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 writer.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1093,7 +1073,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 mapper.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_mapper", mapper.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_mapper", mapper.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1106,7 +1086,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 filter.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_filter", filter.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_filter", filter.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1119,7 +1099,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 validator.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_validator", validator.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_validator", validator.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1132,7 +1112,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 transformer.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_transformer", transformer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_transformer", transformer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1145,7 +1125,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 listener.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_listener", listener.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_listener", listener.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1161,9 +1141,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             getContext().close();
         }
 
-        if (logManager != null)
-            logManager.close();
-
     }
 
     /**
@@ -1176,7 +1153,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 reader.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_reader", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_reader %s : %s - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
 
@@ -1184,7 +1161,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 writer.close();
             } catch (Exception e) {
-                Log.warn(String.format( "Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1356,21 +1333,6 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
         // not called
     }
 
-    /**
-     *
-     */
-    @Override
-    public LogManager getLogManager() {
-        return logManager;
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void setLogManager(LogManager logmgr) {
-        logManager = logmgr;
-    }
 
     /**
      *

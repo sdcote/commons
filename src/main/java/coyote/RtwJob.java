@@ -42,9 +42,6 @@ public class RtwJob extends AbstractSnapJob {
     TransformEngine engine = null;
     boolean repeat = false;
 
-    public RtwJob() {
-        Log.setMask(Log.ALL_EVENTS);
-    }
 
     /**
      *
@@ -148,6 +145,7 @@ public class RtwJob extends AbstractSnapJob {
 
     }
 
+
     /**
      * Shut everything down when the JRE terminates.
      *
@@ -158,7 +156,6 @@ public class RtwJob extends AbstractSnapJob {
      * <p>Note: this is different from {@code close()} but {@code shutdown()}
      * will normally result in {@code close()} being invoked at some point.</p>
      */
-
     public void stop() {
         engine.shutdown();
     }
@@ -331,5 +328,6 @@ public class RtwJob extends AbstractSnapJob {
         }
         return retval;
     }
+
 
 }

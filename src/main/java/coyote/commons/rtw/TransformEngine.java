@@ -182,21 +182,6 @@ public interface TransformEngine extends RunnableComponent {
      */
     void setWorkDirectory(File dir);
 
-    /**
-     * Access the LogManager for this engine.
-     *
-     * @return The log manager for this engine or null if no manager exists.
-     */
-    LogManager getLogManager();
-
-    /**
-     * This allows a component to be set which will initialize logging in the
-     * engine in coordination with its life cycle and for loggers to use value in
-     * the engines transform context.
-     *
-     * @param logmgr The logging manager to use for this engine.
-     */
-    void setLogManager(LogManager logmgr);
 
     /**
      * Adds a frame filter to the engine.

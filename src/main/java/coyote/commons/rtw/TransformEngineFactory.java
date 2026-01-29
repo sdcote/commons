@@ -211,12 +211,6 @@ public class TransformEngineFactory {
           } else {
             Log.error("Invalid context configuration section");
           }
-        } else if (StringUtil.equalsIgnoreCase(ConfigTag.LOGGING, field.getName())) {
-          if (field.isFrame()) {
-            configJobLogging(new Config((DataFrame) field.getObjectValue()), retval);
-          } else {
-            Log.error("Invalid logging configuration section");
-          }
         } else if (StringUtil.equalsIgnoreCase(ConfigTag.CLASS, field.getName())) {
           // ignore the CLASS field...it is used by the Loader, but not by us.
         } else if (StringUtil.equalsIgnoreCase(ConfigTag.LISTENER, field.getName())) {
@@ -574,27 +568,6 @@ public class TransformEngineFactory {
       } else {
         Log.warn(String.format( "EngineFactory.could_not_replace_existing_context"));
       }
-    } // cfg !null
-  }
-
-
-  /**
-   * This allows a Job to have a set of loggers active while its engine runs.
-   *
-   * <p>These loggers are different from those in the Loader as they are active only when the engine is active. They
-   * are created and deleted at the beginning and end of every Job run and have access to the job instance symbols.</p>
-   * @param cfg    the configuration frame
-   * @param engine the transform engine
-   */
-  private static void configJobLogging(DataFrame cfg, TransformEngine engine) {
-    if (cfg != null) {
-      LogManager logManager = new LogManager();
-      try {
-        logManager.setConfiguration(new Config(cfg));
-      } catch (Throwable t) {
-        Log.error("Could not configure job logger - " + t.getMessage());
-      }
-      engine.setLogManager(logManager);
     } // cfg !null
   }
 
