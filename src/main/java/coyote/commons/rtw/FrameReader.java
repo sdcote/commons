@@ -8,11 +8,12 @@
 package coyote.commons.rtw;
 
 import coyote.commons.dataframe.DataFrame;
+import coyote.commons.rtw.context.TransactionContext;
 
 /**
  * All readers must implement this interface to be used in the transform engine.
  */
-public interface FrameReader  {
+public interface FrameReader extends ConfigurableComponent {
 
     /**
      * Read and return a frame.

@@ -5,31 +5,26 @@
  * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
-package coyote.commons.rtw;
+package coyote.commons.rtw.context;
 
 import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
-import coyote.commons.template.SymbolTable;
+import coyote.commons.rtw.Symbols;
+import coyote.commons.rtw.TransformEngine;
 import coyote.commons.template.Template;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * This is an operational context for the transformation component as a whole.
- *
- * <p>This allows all components of the solution to share data and state. Instances of this class are the systems of
- * record for their respective runtimes. Configuration, state, and anything that the components need to share are
- * placed in this shared operational context.</p>
+ * This is an operational context for the transformation job as a whole.
  */
 public class TransformContext extends OperationalContext {
 
     public static final String DISPOSITION = "TransformDisposition";
-    public static final String RUN_COUNT = "RunCount";
     public static final String ENDTIME = "EndTime";
     public static final String ERROR_MSG = "ErrorMessage";
     public static final String ERROR_STATE = "ErrorState";
@@ -40,19 +35,26 @@ public class TransformContext extends OperationalContext {
     private static final String CONTEXT = "Context.";
     private static final String TRANSFORM = "Transform.";
     private static final String WORKING = "Working.";
-    protected Config configuration = new Config();
-    protected volatile long openCount = 0;
     private volatile TransactionContext transactionContext = null;
-    protected final SymbolTable symbols = new SymbolTable();
+    protected Config configuration = new Config();
+    protected TransformEngine engine = null;
+    protected volatile long openCount = 0;
+
+
+
 
     public TransformContext() {
         super();
     }
 
 
+
+
     public TransformContext(final List<ContextListener> listeners) {
         super(listeners);
     }
+
+
 
 
     /**
@@ -62,7 +64,7 @@ public class TransformContext extends OperationalContext {
 
         // Set the closing disposition of the job
         final Map<String, Object> disposition = new HashMap<String, Object>();
-        disposition.put(RUN_COUNT, openCount);
+        disposition.put(Symbols.RUN_COUNT, openCount);
         disposition.put(STARTTIME, startTime);
         disposition.put(ENDTIME, endTime);
         disposition.put(ERROR_STATE, errorFlag);
@@ -70,6 +72,8 @@ public class TransformContext extends OperationalContext {
         disposition.put(FRAME_COUNT, currentFrame);
         properties.put(DISPOSITION, disposition);
     }
+
+
 
 
     public boolean containsField(final String token) {
@@ -99,13 +103,14 @@ public class TransformContext extends OperationalContext {
     }
 
 
+
+
     public Config getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(final Config config) {
-        configuration = config;
-    }
+
+
 
     /**
      * @return the current transaction context
@@ -114,17 +119,8 @@ public class TransformContext extends OperationalContext {
         return transactionContext;
     }
 
-    /**
-     * Sets the current transaction in the transformation context.
-     *
-     * <p>This allows all components in the transformation engine to access the
-     * current transaction frames.</p>
-     *
-     * @param context the current transaction context being processed
-     */
-    public void setTransaction(final TransactionContext context) {
-        transactionContext = context;
-    }
+
+
 
     /**
      * Open (initialize) the context.
@@ -135,8 +131,10 @@ public class TransformContext extends OperationalContext {
      */
     @SuppressWarnings("unchecked")
     public void open() {
+
+        // Increment the run count
         openCount++;
-        getSymbolTable().put(RUN_COUNT, openCount);
+        engine.getSymbolTable().put(Symbols.RUN_COUNT, openCount);
 
         // If we have a configuration...
         if (configuration != null) {
@@ -144,8 +142,8 @@ public class TransformContext extends OperationalContext {
             for (final DataField field : configuration.getFields()) {
                 if (!field.isFrame() && StringUtil.isNotBlank(field.getName()) && !field.isNull()) {
                     final String token = field.getStringValue();
-                    final String value = Template.resolve(token, getSymbolTable());
-                    getSymbolTable().put(field.getName(), value);
+                    final String value = Template.resolve(token, engine.getSymbolTable());
+                    engine.getSymbolTable().put(field.getName(), value);
                     set(field.getName(), value);
                 } //name-value check
             } // for
@@ -153,12 +151,8 @@ public class TransformContext extends OperationalContext {
 
     }
 
-    /**
-     * @return the symbol table in this context to support basic template functions
-     */
-    private SymbolTable getSymbolTable() {
-        return symbols;
-    }
+
+
 
     /**
      * reset the context so it can be used again in subsequent (scheduled) runs
@@ -171,6 +165,9 @@ public class TransformContext extends OperationalContext {
         super.errorMessage = null;
     }
 
+
+
+
     /**
      * Resolve the argument.
      *
@@ -180,12 +177,14 @@ public class TransformContext extends OperationalContext {
      * <p>If no value was found in the look-up, then the value is treated as a
      * literal and will be returned as the argument.</p>
      *
-     * <p>Regardless of whether the value was retrieved from the transform
-     * context as a reference value, the value is resolved as a template using
-     * the symbol table in the transform context. This allows for more dynamic
-     * values during the operation of the entire transformation process.</p>
+     * <p>Regardless of whether or not the value was retrieved from the
+     * transform context as a reference value, the value is resolved as a
+     * template using the symbol table in the transform context. This allows for
+     * more dynamic values during the operation of the entire transformation
+     * process.</p>
      *
      * @param value the value to resolve (or use as a literal)
+     *
      * @return the resolved value of the argument.
      */
     public String resolveArgument(final String value) {
@@ -206,11 +205,14 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
      * Return the value of a data frame field currently set in the transaction
      * context of this context.
      *
-     * <p>Matching is case-sensitive.
+     * <p>Matching is case sensitive.
      *
      * <p>Naming Conventions:<ul>
      * <li>Working.[field name] field in the working frame of the transaction
@@ -224,6 +226,7 @@ public class TransformContext extends OperationalContext {
      * <li>Transform.[field name] value in the transform context.</ul>
      *
      * @param token the name of the field, context or symbol value
+     *
      * @return the string value of the named value in this context or null if not found.
      */
     public String resolveField(final String token) {
@@ -255,11 +258,14 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
      * Return the value of a data frame field currently set in the transaction
      * context of this context.
      *
-     * <p>Matching is case-sensitive.
+     * <p>Matching is case sensitive.
      *
      * <p>Naming Conventions:<ul>
      * <li>Working.[field name] field in the working frame of the transaction
@@ -272,6 +278,7 @@ public class TransformContext extends OperationalContext {
      * <li>Transform.[field name] value in the transform context.</ul>
      *
      * @param token the name of the field, context or symbol value
+     *
      * @return the object value of the named value in this context or null if not found.
      */
     public Object resolveFieldValue(final String token) {
@@ -303,6 +310,9 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
      * Return the value of something in this transform context to a string value.
      *
@@ -313,7 +323,7 @@ public class TransformContext extends OperationalContext {
      * if the context did not contain an object with a name matching the token,
      * the symbol table is checked and any matching symbol is returned.
      *
-     * <p>Matching is case-sensitive.
+     * <p>Matching is case sensitive.
      *
      * <p>Naming Conventions:<ul>
      * <li>Working.[field name] field in the working frame of the transaction
@@ -327,6 +337,7 @@ public class TransformContext extends OperationalContext {
      * <li>[field name] symbol value</ul>
      *
      * @param token the name of the field, context or symbol value
+     *
      * @return the string value of the named value in this context or null if not found.
      */
     public String resolveToString(final String token) {
@@ -339,6 +350,9 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
      * Return the value of something in this transform context.
      *
@@ -349,7 +363,7 @@ public class TransformContext extends OperationalContext {
      * if the context did not contain an object with a name matching the token,
      * the symbol table is checked and any matching symbol is returned.
      *
-     * <p>Matching is case-sensitive.
+     * <p>Matching is case sensitive.
      *
      * <p>Naming Conventions:<ul>
      * <li>Working.[field name] field in the working frame of the transaction
@@ -363,6 +377,7 @@ public class TransformContext extends OperationalContext {
      * <li>[field name] symbol value</ul>
      *
      * @param token the name of the field, context or symbol value
+     *
      * @return the object value of the named value in this context or null if not found.
      */
     public Object resolveToValue(final String token) {
@@ -384,6 +399,9 @@ public class TransformContext extends OperationalContext {
         }
         return retval;
     }
+
+
+
 
     /**
      * Performs a search of this context.
@@ -412,9 +430,9 @@ public class TransformContext extends OperationalContext {
                 if (ancestor != null) {
                     if (generation + 1 < tokens.length) {
                         if (ancestor instanceof DataFrame) {
-                            return checkFrame((DataFrame) ancestor, tokens, generation);
+                            return checkFrame((DataFrame)ancestor, tokens, generation);
                         } else if (ancestor instanceof Map) {
-                            return checkMap((Map) ancestor, tokens, generation);
+                            return checkMap((Map)ancestor, tokens, generation);
                         }
                     } else {
                         retval = ancestor;
@@ -430,10 +448,14 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
-     * @param map    the map to check
+     * @param map the map to check
      * @param tokens the list of tokens from the request
-     * @param level  the pointer to how far into the token list we are
+     * @param level the pointer to how far into the token list we are
+     *
      * @return the value found or null if there is no matching value with that name.
      */
     private Object checkMap(Map map, String[] tokens, int level) {
@@ -445,9 +467,9 @@ public class TransformContext extends OperationalContext {
             if (value != null) {
                 if (generation + 1 < tokens.length) {
                     if (value instanceof DataFrame) {
-                        return checkFrame((DataFrame) value, tokens, generation);
+                        return checkFrame((DataFrame)value, tokens, generation);
                     } else if (value instanceof Map) {
-                        return checkMap((Map) value, tokens, generation);
+                        return checkMap((Map)value, tokens, generation);
                     }
                 } else {
                     retval = value;
@@ -462,10 +484,14 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
     /**
-     * @param frame  the dataframe to check
+     * @param frame the dataframe to check
      * @param tokens the list of tokens from the request
-     * @param level  the pointer to how far into the token list we are
+     * @param level the pointer to how far into the token list we are
+     *
      * @return the value found or null if there is no matching value with that name.
      */
     private Object checkFrame(DataFrame frame, String[] tokens, int level) {
@@ -477,9 +503,9 @@ public class TransformContext extends OperationalContext {
             if (value != null) {
                 if (generation + 1 < tokens.length) {
                     if (value instanceof DataFrame) {
-                        return checkFrame((DataFrame) value, tokens, generation);
+                        return checkFrame((DataFrame)value, tokens, generation);
                     } else if (value instanceof Map) {
-                        return checkMap((Map) value, tokens, generation);
+                        return checkMap((Map)value, tokens, generation);
                     }
                 } else {
                     retval = value;
@@ -494,5 +520,46 @@ public class TransformContext extends OperationalContext {
         return retval;
     }
 
+
+
+
+    public void setConfiguration(final Config config) {
+        configuration = config;
+    }
+
+
+
+
+    /**
+     * @param engine the engine to which this context is associated.
+     */
+    public void setEngine(final TransformEngine engine) {
+        this.engine = engine;
+    }
+
+
+
+
+    /**
+     * Sets the current transaction in the transformation context.
+     *
+     * <p>This allows all components in the transformation engine to access the
+     * current transaction frames.</p>
+     *
+     * @param context the current transaction context being processed
+     */
+    public void setTransaction(final TransactionContext context) {
+        transactionContext = context;
+    }
+
+
+
+
+    /**
+     * @return the engine to which this context is associated.
+     */
+    public TransformEngine getEngine() {
+        return engine;
+    }
 
 }

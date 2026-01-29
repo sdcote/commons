@@ -12,7 +12,7 @@ import coyote.commons.dataframe.DataFrame;
 /**
  *
  */
-public interface FrameWriter {
+public interface FrameWriter extends ConfigurableComponent {
 
     void write(DataFrame frame);
 

@@ -1,12 +1,13 @@
 package coyote.commons.snap;
 
+import coyote.BootStrap;
 import coyote.commons.Log;
 import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.i13n.StatBoard;
 import coyote.commons.i13n.StatBoardImpl;
-import coyote.commons.rtw.OperationalContext;
+import coyote.commons.rtw.context.OperationalContext;
 import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
 
@@ -47,7 +48,7 @@ public abstract class AbstractSnapJob implements SnapJob {
     /**
      * Add a shutdown hook into the JVM to help us shut everything down nicely.
      *
-     * @param loader The loader to terminate
+     * @param job The job to terminate
      */
     protected static void registerShutdownHook(final SnapJob job) {
         try {
@@ -95,7 +96,7 @@ public abstract class AbstractSnapJob implements SnapJob {
      *         system properties or null if neither are defined.
      */
     protected static String getAppHome() {
-        return getVariable(APP_HOME);
+        return getVariable(BootStrap.APP_HOME);
     }
 
 

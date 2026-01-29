@@ -5,10 +5,14 @@
  * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
-package coyote.commons.rtw;
+package coyote.commons.rtw.context;
 
 import coyote.commons.StringUtil;
 import coyote.commons.dataframe.DataFrame;
+import coyote.commons.rtw.FrameReader;
+import coyote.commons.rtw.FrameValidator;
+import coyote.commons.rtw.FrameWriter;
+import coyote.commons.rtw.Symbols;
 import coyote.commons.template.SymbolTable;
 
 import java.util.ArrayList;

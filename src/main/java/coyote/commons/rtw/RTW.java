@@ -16,6 +16,7 @@ import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
 import coyote.commons.log.LogMsg;
+import coyote.commons.rtw.context.TransformContext;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -38,7 +39,7 @@ public class RTW {
 
     public static final LogMsg.BundleBaseName MSG;
     static {
-        MSG = new LogMsg.BundleBaseName("CdxMsg");
+        MSG = new LogMsg.BundleBaseName("RtwMsg");
     }
 
 

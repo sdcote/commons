@@ -13,6 +13,10 @@ package coyote.commons.rtw;
 
 import coyote.commons.cfg.Config;
 import coyote.commons.dataframe.DataFrame;
+import coyote.commons.rtw.context.OperationalContext;
+import coyote.commons.rtw.context.TransformContext;
+
+import java.io.Closeable;
 
 /**
  * The Component class models a type which can be queried for a variety of
@@ -21,12 +25,12 @@ import coyote.commons.dataframe.DataFrame;
  * <p>Components provide data to the environment in which they run, but do not
  * expose any methods which allow them to be managed.</p>
  */
-public interface Component {
+public interface Component extends Closeable {
 
     /**
      * @return the identifier of the application to which this component belongs.
      */
-    public String getApplicationId();
+    String getApplicationId();
 
 
 
@@ -44,7 +48,7 @@ public interface Component {
      *
      * @return The category of this component.
      */
-    public String getCategory();
+    String getCategory();
 
 
 
@@ -59,7 +63,7 @@ public interface Component {
      *
      * @return The configuration object currently set in the component.
      */
-    public Config getConfiguration();
+    Config getConfiguration();
 
 
 
@@ -68,7 +72,7 @@ public interface Component {
      *
      * @return a description of this component
      */
-    public String getDescription();
+    String getDescription();
 
 
 
@@ -76,7 +80,7 @@ public interface Component {
     /**
      * @return the unique identifier of this component
      */
-    public String getId();
+    String getId();
 
 
 
@@ -84,7 +88,7 @@ public interface Component {
     /**
      * @return the name of this component within this loader.
      */
-    public String getName();
+    String getName();
 
 
 
@@ -97,7 +101,7 @@ public interface Component {
      *
      * @return Small set of attributes describing this component.
      */
-    public DataFrame getProfile();
+    DataFrame getProfile();
 
 
 
@@ -108,7 +112,7 @@ public interface Component {
      * @return The time when the component was started, 0 if the component is not
      *         yet started.
      */
-    public long getStartTime();
+    long getStartTime();
 
 
 
@@ -126,7 +130,7 @@ public interface Component {
      * @return Detailed set of attributes describing the operational state of
      *         this component.
      */
-    public DataFrame getStatus();
+     DataFrame getStatus();
 
 
 
@@ -135,7 +139,7 @@ public interface Component {
      *
      * @return The identifier of the system to which this component belongs.
      */
-    public String getSystemId();
+     String getSystemId();
 
 
 
@@ -151,7 +155,7 @@ public interface Component {
      *
      * @return a object that can be used as a configuration template.
      */
-    public Config getTemplate();
+     Config getTemplate();
 
 
 
@@ -168,7 +172,7 @@ public interface Component {
      * @return True if the component is active and ready for processing, False if
      *         it has failed or is otherwise inoperable.
      */
-    public boolean isActive();
+     boolean isActive();
 
 
 
@@ -179,7 +183,7 @@ public interface Component {
      * @return True if the component is eligible for processing, False if
      *         disabled.
      */
-    public boolean isEnabled();
+     boolean isEnabled();
 
 
 
@@ -190,17 +194,29 @@ public interface Component {
      * @return True if the component requires a license to operate, false if the
      *         component is unrestricted.
      */
-    public boolean isLicensed();
+     boolean isLicensed();
 
 
 
 
     /**
-     * Access this components shared operational context.
+     * Access this component's shared operational context.
      *
      * @return the shared operational context this component uses to share data,
      *         may be null.
      */
-    public OperationalContext getContext();
+    OperationalContext getContext();
+
+
+    /**
+     * Open the component using the given transformation context.
+     *
+     * <p>Components can use the data in the context to alter their operation at the last moment and initialize
+     * themselves using data from previous operations.</p>
+     *
+     * @param context The transformation context in which this component should be opened.
+     */
+     void open(TransformContext context);
+
 
 }

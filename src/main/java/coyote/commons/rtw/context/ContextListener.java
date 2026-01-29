@@ -1,12 +1,13 @@
-package coyote.commons.rtw;
+package coyote.commons.rtw.context;
 
 
 import coyote.commons.dataframe.DataFrame;
+import coyote.commons.rtw.*;
 
 /**
  * Listens to the operational context and performs actions on different events.
  */
-public interface ContextListener  {
+public interface ContextListener extends ConfigurableComponent {
 
     /**
      * Called when either the Transaction or the Transform Context ends.

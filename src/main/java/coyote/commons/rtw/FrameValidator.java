@@ -7,13 +7,14 @@
  */
 package coyote.commons.rtw;
 
+import coyote.commons.rtw.context.TransactionContext;
 import coyote.commons.rtw.validate.ValidationException;
 
 /**
  * Place the transaction context in error if the contained working frame is
  * invalid.
  */
-public interface FrameValidator {
+public interface FrameValidator extends ConfigurableComponent {
 
     /**
      * Process the given transaction context
