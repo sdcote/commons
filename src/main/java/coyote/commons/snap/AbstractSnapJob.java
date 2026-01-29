@@ -14,37 +14,32 @@ import coyote.commons.template.Template;
 public abstract class AbstractSnapJob implements SnapJob {
 
     /**
-     * Our configuration
-     */
-    protected Config configuration = new Config();
-
-    /**
-     * The command line arguments used to invoke the loader
-     */
-    protected String[] commandLineArguments = null;
-
-    /**
      * The component responsible for tracking operational statistics for all the
      * components in this runtime
      */
     protected final StatBoard stats = new StatBoardImpl();
-
-    /**
-     * Logical identifier for this instance. May not be unique across the system.
-     */
-    protected String instanceName = null;
-
     /**
      * A symbol table to support basic template functions
      */
     protected final SymbolTable symbols = new SymbolTable();
-
     /**
-     * 
+     * Our configuration
      */
-    private OperationalContext context = new OperationalContext();
+    protected Config configuration = new Config();
+    /**
+     * The command line arguments used to invoke the loader
+     */
+    protected String[] commandLineArguments = null;
+    /**
+     * Logical identifier for this instance. May not be unique across the system.
+     */
+    protected String instanceName = null;
+    /**
+     *
+     */
+    private final OperationalContext context = new OperationalContext();
 
-    
+
     /**
      * Add a shutdown hook into the JVM to help us shut everything down nicely.
      *
@@ -66,14 +61,68 @@ public abstract class AbstractSnapJob implements SnapJob {
         }
     }
 
+    /**
+     * This returns the value of app.home from either the environment variables
+     * or the system properties, with the system properties overriding the
+     * environment variables.
+     *
+     * @return The value of app.home from either the environment variables or
+     * system properties or null if neither are defined.
+     */
+    protected static String getAppHome() {
+        return getVariable(BootStrap.APP_HOME);
+    }
 
     /**
-     * 
+     * Returns the value from either the environment variables or the system
+     * properties with the system properties taking precedence over environment
+     * variables.
+     *
+     * @param variable the name of the variable to lookup
+     * @return The value from either the environment variables or system
+     * properties or null if neither are defined.
+     */
+    private static String getVariable(String variable) {
+        String retval = System.getenv().get(variable);
+        if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
+            retval = System.getProperties().getProperty(variable);
+        }
+        return retval;
+    }
+
+    /**
+     * Return the value in either the named environment variable or system
+     * property, returning the given default value if neither are found.
+     *
+     * <p>
+     * The system property takes precedence over the environment variable.
+     * </p>
+     *
+     * @param tag          the name of the environment variable or system property
+     *                     to locate.
+     * @param defaultValue The default value to return if neither ar found.
+     * @return The value found, or the default value.
+     */
+    public static String getEnvironmentOrProperty(String tag, String defaultValue) {
+        String retval = defaultValue;
+        String envVar = System.getenv(tag);
+        String sysProp = System.getProperty(tag);
+        if (StringUtil.isNotBlank(sysProp)) {
+            retval = sysProp;
+        } else if (StringUtil.isNotBlank(envVar)) {
+            retval = envVar;
+        }
+        return retval;
+    }
+
+    /**
+     *
      * @param cfg
      * @throws ConfigurationException
      */
     public void configure(Config cfg) throws ConfigurationException {
-        configuration = cfg;
+        if (cfg != null) configuration = cfg;
+        else configuration = new Config(); // prevent null configurations
 
         // Fill the symbol table with runtime values
         symbols.readEnvironmentVariables();
@@ -86,20 +135,6 @@ public abstract class AbstractSnapJob implements SnapJob {
 
     }
 
-
-    /**
-     * This returns the value of app.home from either the environment variables
-     * or the system properties, with the system properties overriding the
-     * environment variables.
-     *
-     * @return The value of app.home from either the environment variables or
-     *         system properties or null if neither are defined.
-     */
-    protected static String getAppHome() {
-        return getVariable(BootStrap.APP_HOME);
-    }
-
-
     /**
      * @return the command line arguments used to invoke this loader
      */
@@ -107,6 +142,12 @@ public abstract class AbstractSnapJob implements SnapJob {
         return commandLineArguments;
     }
 
+    /**
+     * @param args the command line arguments to set
+     */
+    public void setCommandLineArguments(String[] args) {
+        commandLineArguments = args;
+    }
 
     /**
      * Initialize the symbol table in the context with system properties and
@@ -125,17 +166,8 @@ public abstract class AbstractSnapJob implements SnapJob {
         }
     }
 
-
     /**
-     * @param args the command line arguments to set
-     */
-    public void setCommandLineArguments(String[] args) {
-        commandLineArguments = args;
-    }
-
-
-    /**
-     * 
+     *
      */
     public Config getConfig() {
         if (configuration == null) {
@@ -144,14 +176,12 @@ public abstract class AbstractSnapJob implements SnapJob {
         return configuration;
     }
 
-
     /**
-     * 
+     *
      */
     public OperationalContext getContext() {
         return context;
     }
-
 
     /**
      * Access instrumentation services for this loader.
@@ -169,50 +199,5 @@ public abstract class AbstractSnapJob implements SnapJob {
         return stats;
     }
 
-
-
-    /**
-     * Returns the value from either the environment variables or the system
-     * properties with the system properties taking precedence over environment
-     * variables.
-     *
-     * @param variable the name of the variable to lookup
-     * @return The value from either the environment variables or system
-     *         properties or null if neither are defined.
-     */
-    private static String getVariable(String variable) {
-        String retval = System.getenv().get(variable);
-        if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
-            retval = System.getProperties().getProperty(variable);
-        }
-        return retval;
-    }
-
-
-    /**
-     * Return the value in either the named environment variable or system
-     * property, returning the given default value if neither are found.
-     *
-     * <p>
-     * The system property takes precedence over the environment variable.
-     * </p>
-     *
-     * @param tag          the name of the environment variable or system property
-     *                     to locate.
-     * @param defaultValue The default value to return if neither ar found.
-     *
-     * @return The value found, or the default value.
-     */
-    public static String getEnvironmentOrProperty(String tag, String defaultValue) {
-        String retval = defaultValue;
-        String envVar = System.getenv(tag);
-        String sysProp = System.getProperty(tag);
-        if (StringUtil.isNotBlank(sysProp)) {
-            retval = sysProp;
-        } else if (StringUtil.isNotBlank(envVar)) {
-            retval = envVar;
-        }
-        return retval;
-    }
 
 }

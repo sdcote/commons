@@ -666,12 +666,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameReader) {
           engine.setReader((FrameReader) object);
-          Log.debug(String.format( "EngineFactory.created_reader", object.getClass().getName()));
+          Log.debug(String.format( "EngineFactory.created_reader %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_is_not_a_reader", object.getClass().getName()));
+          Log.error(String.format( "EngineFactory.specified_class_is_not_a_reader %s", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_reader", className));
+        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_reader: %s", className));
       }
     } // cfg !null
   }

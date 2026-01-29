@@ -38,7 +38,7 @@ public abstract class AbstractFrameMapper extends AbstractConfigurableComponent 
      */
     @Override
     public void setConfiguration(Config cfg) throws ConfigurationException {
-        setConfiguration(cfg);
+        super.setConfiguration(cfg);
 
         // Retrieve the "fields" section from the configuration frame
         DataFrame mapFrame = null;

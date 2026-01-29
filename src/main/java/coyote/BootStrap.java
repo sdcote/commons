@@ -25,6 +25,8 @@ import coyote.commons.cli.ArgumentList;
 import coyote.commons.cli.ArgumentParser;
 import coyote.commons.cli.Options;
 import coyote.commons.cli.PosixParser;
+import coyote.commons.dataframe.DataField;
+import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.ConsoleAppender;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
@@ -146,39 +148,47 @@ public class BootStrap {
         SnapJob retval = null;
 
         // use the first attribute of the configuration as the classname.
-        String className = configuration.getField(0).getName();
+        DataField configField = configuration.getField(0);
 
-        // if the class is not fully qualified, assume the same namespace as the bootstrap loader.
-        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-            className = BootStrap.class.getPackage().getName() + "." + className;
-        }
-
-        try {
-            Class<?> clazz = Class.forName(className);
-            Constructor<?> ctor = clazz.getConstructor();
-            Object object = ctor.newInstance();
-
-            if (object instanceof SnapJob) {
-                retval = (SnapJob) object;
-                try {
-                    retval.setCommandLineArguments(args);
-                    retval.configure(configuration);
-                } catch (ConfigurationException e) {
-                    System.err.println("could_not_config_job" + object.getClass().getName() + " " + e.getClass().getSimpleName() + " " + e.getMessage());
-                    System.exit(6);
-                }
-            } else {
-                System.err.println("class_is_not_job" + className);
-                System.exit(5);
+        if( configField!= null && StringUtil.isNotEmpty(configField.getName())) {
+            String className = configField.getName();
+            Config cfgFrame = new Config();
+            if (configField.isFrame()) {
+                cfgFrame = new Config((DataFrame) configField.getObjectValue());
             }
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
-            System.exit(4);
-        }
 
+            // if the class is not fully qualified, assume the same namespace as the bootstrap loader.
+            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+                className = BootStrap.class.getPackage().getName() + "." + className;
+            }
+
+            try {
+                Class<?> clazz = Class.forName(className);
+                Constructor<?> ctor = clazz.getConstructor();
+                Object object = ctor.newInstance();
+
+                if (object instanceof SnapJob) {
+                    retval = (SnapJob) object;
+                    try {
+                        retval.setCommandLineArguments(args);
+                        retval.configure(cfgFrame);
+                    } catch (ConfigurationException e) {
+                        System.err.println("could_not_config_job" + object.getClass().getName() + " " + e.getClass().getSimpleName() + " " + e.getMessage());
+                        System.exit(6);
+                    }
+                } else {
+                    System.err.println("class_is_not_job" + className);
+                    System.exit(5);
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+                     | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
+                System.exit(4);
+            }
+        }
         return retval;
     }
+
 
     /**
      * 
