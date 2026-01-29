@@ -68,7 +68,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      * @param frame the frame to use as a source of data.
      */
     public Config(final DataFrame frame) {
-        populate(frame);
+        if (frame != null) populate(frame);
     }
 
 
@@ -691,7 +691,6 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      *
      * @param name name of the field value to return.
      * @param dft  the default value to use if the field is not found
-     *
      * @return the value of the field or the default value
      */
     public boolean getAsBoolean(String name, boolean dft) {
