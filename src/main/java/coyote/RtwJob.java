@@ -39,10 +39,12 @@ public class RtwJob extends AbstractSnapJob {
     private static final String OVERRIDE_WORK_DIR_ARG = "-owd";
     private static final String WORK_DIR_NAME = "wrk";
     private static final String LOG_DIR_NAME = "log";
-
-
     TransformEngine engine = null;
     boolean repeat = false;
+
+    public RtwJob() {
+        Log.setMask(Log.ALL_EVENTS);
+    }
 
     /**
      *

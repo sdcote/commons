@@ -45,30 +45,27 @@ public class Unzip extends AbstractFileTask {
             Log.warn(String.format( "%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
           }
         } else {
-          final String msg = String.format( "Task.failed_file_cannot_be_read", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();
+          final String msg = String.format( "Task.failed_file_cannot_be_read %s - %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
             Log.error(msg);
-            return;
           }
         }
       } else {
-        final String msg = String.format( "Task.failed_file_does_not_exist", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();
+        final String msg = String.format( "Task.failed_file_does_not_exist %s %s %s", getClass().getSimpleName(), source, file.getAbsolutePath());
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
           Log.error(msg);
-          return;
         }
       }
     } else {
-      final String msg = String.format( "%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE).toString();
+      final String msg = String.format( "%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE);
       if (haltOnError) {
         throw new TaskException(msg);
       } else {
         Log.error(msg);
-        return;
       }
     }
   }

@@ -59,7 +59,7 @@ public class WebGet extends AbstractFileTask {
         try {
             url = new URL(source);
         } catch (MalformedURLException e) {
-            final String msg = String.format( "Task.webget.could_not_parse_url", source).toString();
+            final String msg = String.format( "Task.webget.could_not_parse_url: %s", source);
             Log.error(msg);
             if (haltOnError) {
                 getContext().setError(msg);
@@ -73,7 +73,7 @@ public class WebGet extends AbstractFileTask {
             httpConn = (HttpURLConnection) url.openConnection();
             responseCode = httpConn.getResponseCode();
         } catch (IOException e) {
-            final String msg = String.format( "Task.webget.could_not_connect", source, e.getMessage()).toString();
+            final String msg = String.format( "Task.webget.could_not_connect %s %s", source, e.getMessage());
             if (haltOnError) {
                 throw new TaskException(msg);
             } else {
@@ -125,21 +125,19 @@ public class WebGet extends AbstractFileTask {
                 }
                 Log.debug("Downloaded " + FileUtil.formatSizeBytes(bytesTotal) + " from " + source + " to " + targetFile.getAbsolutePath());
             } catch (IOException e) {
-                final String msg = String.format( "Task.webget.could_not_retrieve_file", e.getClass().getSimpleName(), e.getMessage()).toString();
+                final String msg = String.format( "Task.webget.could_not_retrieve_file %s - %s", e.getClass().getSimpleName(), e.getMessage());
                 if (haltOnError) {
                     throw new TaskException(msg);
                 } else {
                     Log.error(msg);
-                    return;
                 }
             }
         } else {
-            final String msg = String.format( "Task.webget.could_not_retrieve_resource", responseCode, source).toString();
+            final String msg = String.format( "Task.webget.could_not_retrieve_resource %s - %s", responseCode, source);
             if (haltOnError) {
                 throw new TaskException(msg);
             } else {
                 Log.error(msg);
-                return;
             }
         }
     }
