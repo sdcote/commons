@@ -44,7 +44,7 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     *
+     * Configure the job and run any initialization prior to being started.
      */
     @Override
     public void configure(Config cfg) throws ConfigurationException {
@@ -94,26 +94,9 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * Ensure we have a name either inn the configuration or the name of the configuration file from the command line.
+     * Start the engine running in the foreground.
      */
-    private void determineName() {
-        if (StringUtil.isBlank(configuration.getName())) {
-            String cfgName = null;
-            // use the first non-delimited argument as the config location, others are considered arguments to the BootStrap loader
-            for (int x = 0; x < commandLineArguments.length; x++) {
-                if (!commandLineArguments[x].startsWith("-") && cfgName == null) {
-                    cfgName = commandLineArguments[x];
-                    break;
-                }
-            }
-            configuration.setName(cfgName);
-        }
-    }
-
-
-    /**
-     *
-     */
+    @Override
     public void start() {
         Log.info("Starting");
 
@@ -156,6 +139,7 @@ public class RtwJob extends AbstractSnapJob {
      * <p>Note: this is different from {@code close()} but {@code shutdown()}
      * will normally result in {@code close()} being invoked at some point.</p>
      */
+    @Override
     public void stop() {
         engine.shutdown();
     }
@@ -308,6 +292,24 @@ public class RtwJob extends AbstractSnapJob {
         // Remove all the relations and extra slashes from the home path
         System.setProperty(APP_WORK, FileUtil.normalizePath(System.getProperty(APP_WORK)));
         Log.debug(String.format("Job.work_dir_set", System.getProperty(APP_WORK)));
+    }
+
+
+    /**
+     * Ensure we have a name either in the configuration or the name of the configuration file from the command line.
+     */
+    private void determineName() {
+        if (StringUtil.isBlank(configuration.getName())) {
+            String cfgName = null;
+            // use the first non-delimited argument as the config location, others are considered arguments to the BootStrap loader
+            for (int x = 0; x < commandLineArguments.length; x++) {
+                if (!commandLineArguments[x].startsWith("-") && cfgName == null) {
+                    cfgName = commandLineArguments[x];
+                    break;
+                }
+            }
+            configuration.setName(cfgName);
+        }
     }
 
 

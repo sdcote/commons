@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Helper class for reading and writing (encrypted) XML documents.
+ * Helper class for reading and writing (encrypted) JSON documents.
  */
 public final class DocumentHelper {
 
@@ -95,7 +95,7 @@ public final class DocumentHelper {
    * Reads a JSON file into an {@link Entries} object.
    *
    * @return Entries read in from the file.
-   * @throws IOException
+   * @throws IOException when problems writing the file are experienced
    * @throws DocumentProcessException when the document format is incorrect
    */
   public Entries readJsonDocument() throws IOException, DocumentProcessException {

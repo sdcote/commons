@@ -17,7 +17,9 @@ import java.awt.event.WindowEvent;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * This is a Snap job that launches the MiniVault from the Snap Job scripts
+ * This is a Snap job that launches the MiniVault from the Snap Job scripts.
+ *
+ * <p>The `main` thread blocks until the GUI is finished.</p>
  */
 public class Vault extends AbstractSnapJob {
     @Override
@@ -42,6 +44,7 @@ public class Vault extends AbstractSnapJob {
 
     /**
      * Finds the active MiniVault window and attaches a closure listener.
+     *
      * @param latch The synchronization barrier to release upon closure.
      */
     private void attachCloseListener(CountDownLatch latch) {
