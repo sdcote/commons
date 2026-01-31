@@ -71,6 +71,7 @@ public class ConfigTag {
     public static final String READ = "read";
     public static final String RECURSE = "recurse";
     public static final String RENAME = "rename";
+    public static final String REPEAT = "repeat";
     public static final String REPLACE = "replace";
     public static final String SCHEMA = "schema";
     public static final String SECRET = "secret";

@@ -16,16 +16,16 @@ import coyote.commons.cfg.Config;
  */
 public interface Logger {
   /** The name of the configuration attribute containing the URI to the target location of the log. */
-  public static final String TARGET_TAG = "Target";
+  public static final String TARGET_TAG = "target";
 
   /** The name of the configuration attribute containing the categories this logger should log. */
-  public static final String CATEGORY_TAG = "Categories";
+  public static final String CATEGORY_TAG = "categories";
 
   /** The category delimiters used in properties. */
   public static final String CATEGORY_DELIMS = ",:;| ";
 
   /** the name of the configuration property indicating if this logger is enabled. (default=true) */
-  public static final String ENABLED_TAG = "Enabled";
+  public static final String ENABLED_TAG = "enabled";
 
 
 

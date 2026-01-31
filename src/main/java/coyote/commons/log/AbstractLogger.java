@@ -7,7 +7,9 @@
  */
 package coyote.commons.log;
 
+import coyote.commons.UriUtil;
 import coyote.commons.cfg.Config;
+import coyote.commons.dataframe.DataField;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -208,16 +210,12 @@ public abstract class AbstractLogger implements Logger {
   }
 
 
-
-
   /**
    * @return  The currently set configuration.
    */
   public Config getConfig() {
     return config;
   }
-
-
 
 
   /**
@@ -230,8 +228,6 @@ public abstract class AbstractLogger implements Logger {
   }
 
 
-
-
   /**
    * Start logging all categories
    */
@@ -242,18 +238,13 @@ public abstract class AbstractLogger implements Logger {
   }
 
 
-
-
   /**
    * Stop logging all categories
    */
   public void logNone() {
     mask = 0;
-
     LogKernel.recalcMasks();
   }
-
-
 
 
   /**
@@ -263,8 +254,6 @@ public abstract class AbstractLogger implements Logger {
   public Formatter getFormatter() {
     return formatter;
   }
-
-
 
 
   /**
@@ -278,8 +267,6 @@ public abstract class AbstractLogger implements Logger {
   }
 
 
-
-
   /**
    * Initialize the logger
    */
@@ -287,31 +274,32 @@ public abstract class AbstractLogger implements Logger {
     if (config != null) {
       // if the target is null, then check the properties object for the URI
       if (target == null) {
-        // target = UriUtil.parse( properties.getProperty( TARGET_TAG ) );
-        try {
-          target = new URI(config.getAsString(Logger.TARGET_TAG));
-        } catch (final Exception e) {
-          System.err.println("Invalid logger target URI (" + e.getMessage() + ") - '" + config.get(Logger.TARGET_TAG) + "'");
+        DataField targetField = config.getFieldIgnoreCase(TARGET_TAG);
+        if(targetField != null) {
+          try {
+            target = new URI(config.getAsString(Logger.TARGET_TAG));
+          } catch (final Exception e) {
+            System.err.println("Invalid logger target URI (" + e.getMessage() + ") - '" + config.get(Logger.TARGET_TAG) + "'");
+          }
+        } else {
+          System.err.println("No target specified\r\n" + config.toFormattedString());
         }
       }
 
-      // Case insensitive search for categories to log
-      if (config.get(Logger.CATEGORY_TAG) != null) {
-        for (final StringTokenizer st = new StringTokenizer(config.getAsString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
+      if (config.getString(Logger.CATEGORY_TAG) != null) {
+        for (final StringTokenizer st = new StringTokenizer(config.getString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
       }
     }
 
     // determine if this logger is disabled, if so set mask to 0
     if (config != null && config.get(Logger.ENABLED_TAG) != null) {
-      String str = config.getAsString(Logger.ENABLED_TAG).toLowerCase();
+      String str = config.getString(Logger.ENABLED_TAG).toLowerCase();
       if ("false".equals(str) || "0".equals(str) || "no".equals(str)) {
         disable(); // set the mask to 0
       }
     }
 
   }
-
-
 
 
   /**
@@ -322,16 +310,12 @@ public abstract class AbstractLogger implements Logger {
   }
 
 
-
-
   /**
    *
    */
   public void setLocked(final boolean flag) {
     locked = flag;
   }
-
-
 
 
   /**

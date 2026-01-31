@@ -17,6 +17,8 @@ import coyote.commons.dataframe.DataFrame;
 import coyote.commons.dataframe.DataFrameException;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.*;
+import coyote.commons.rtw.context.TransactionContext;
+import coyote.commons.rtw.context.TransformContext;
 
 import java.io.File;
 import java.io.FileReader;

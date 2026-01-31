@@ -17,7 +17,7 @@ import coyote.commons.dataframe.DataFrameException;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.FrameMapper;
-import coyote.commons.rtw.TransactionContext;
+import coyote.commons.rtw.context.TransactionContext;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -68,7 +68,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      * @param frame the frame to use as a source of data.
      */
     public Config(final DataFrame frame) {
-        populate(frame);
+        if (frame != null) populate(frame);
     }
 
 
@@ -448,7 +448,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     }
 
     /**
-     * Perform a case insensitive search for the first value with the given name.
+     * Perform a case-insensitive search for the first value with the given name.
      *
      * @param tag the name of the configuration attribute for which to search
      * @return the first value with the given name as a string or null if not
@@ -463,7 +463,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      * Perform a search for the first value with the given name.
      *
      * @param tag        the name of the configuration attribute for which to search
-     * @param ignoreCase true to ignore the case of the tag, false for a strict, case sensitive match
+     * @param ignoreCase true to ignore the case of the tag, false for a strict, case-sensitive match
      * @return the first value with the given name as a string or null if not
      * configuration field with that name was found, or if the found
      * field contained a null value.
@@ -691,7 +691,6 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      *
      * @param name name of the field value to return.
      * @param dft  the default value to use if the field is not found
-     *
      * @return the value of the field or the default value
      */
     public boolean getAsBoolean(String name, boolean dft) {

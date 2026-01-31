@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2026 Stephan D. Cote' - All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
+ * available at http://creativecommons.org/licenses/MIT/
+ */
 package coyote;
 
 import java.io.File;
@@ -18,6 +25,8 @@ import coyote.commons.cli.ArgumentList;
 import coyote.commons.cli.ArgumentParser;
 import coyote.commons.cli.Options;
 import coyote.commons.cli.PosixParser;
+import coyote.commons.dataframe.DataField;
+import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.ConsoleAppender;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
@@ -27,9 +36,9 @@ import coyote.commons.snap.SnapJob;
  * This acts as a very generic loader of classes based on configuration files.
  * 
  * <p>The bootStrap loader takes an opinionated approach to running generic jobs allowing the developer to focus on business logic 
- * insted of everything involved with creating CLI tools.</p>
+ * instead of everything involved with creating CLI tools.</p>
  * 
- * <p>Snap Jobs are single-threaded components that perform some task, then exits. While the Job may be multi-threaded, the 
+ * <p>Snap Jobs are single-threaded components that perform some task, then exits. While the Job may be multithreaded, the
  * BootStrap loader simply runs the job in the main thread.</p>
  * 
  * <p>The lifecycle is simple:<ol>
@@ -53,7 +62,7 @@ public class BootStrap {
     private static Config configuration = null;
     private static String cfgLoc = null;
     private static URI cfgUri = null;
-    static String APP_HOME = "app.home";
+    public static String APP_HOME = "app.home";
 
     private static final String JSON_EXT = ".json";
 
@@ -86,10 +95,6 @@ public class BootStrap {
     public static void main(String[] args) throws ArgumentException {
         confirmAppHome();
 
-        // set the default logger
-        Log.addLogger(Log.DEFAULT_LOGGER_NAME,
-                new ConsoleAppender(Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
-
         // Parse the command line arguments
         parseArgs(args);
 
@@ -115,13 +120,15 @@ public class BootStrap {
             try {
                 job.start();
             } catch (Exception e) {
-                System.err.println("logic_error_from_loader: " + e.getLocalizedMessage() + " -" + ExceptionUtil.stackTrace(e));
+                System.err.println("The job threw an exception and terminated: " + e.getLocalizedMessage() + " - " + ExceptionUtil.stackTrace(e));
                 System.exit(3);
             }
         } else {
-            System.err.println("no_job_configured");
+            System.err.println("No job was created.");
             System.exit(2);
         }
+
+        // We don't have to stop the job because the shutdown hook will do it for us when the runtime terminates.
 
         // Normal termination
         System.exit(0);
@@ -131,52 +138,57 @@ public class BootStrap {
     /**
      * Determine the job class to use from the given configuration and create an instance of it.
      * 
-     * <p>
-     * Once created, the job will be passed the configuration resulting in a configured job
-     * </p>
+     * <p>Once created, the job will be passed the configuration resulting in a configured job.</p>
      * 
      * @param args the command line arguments passed to this bootstrap loader
      * 
-     * @return a configured jobor null if there was no "CLASS" attribute in the root of the configuration indicating was not found.
+     * @return a configured job or null if there was no "CLASS" attribute in the root of the configuration indicating was not found.
      */
     private static SnapJob loadJob(String[] args) {
         SnapJob retval = null;
 
         // use the first attribute of the configuration as the classname.
-        String className = configuration.getField(0).getName();
+        DataField configField = configuration.getField(0);
 
-        // if the class is not fully qualified, assument the same namespace as the bootstrap loader.
-        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-            className = BootStrap.class.getPackage().getName() + "." + className;
-        }
-
-        try {
-            Class<?> clazz = Class.forName(className);
-            Constructor<?> ctor = clazz.getConstructor();
-            Object object = ctor.newInstance();
-
-            if (object instanceof SnapJob) {
-                retval = (SnapJob) object;
-                try {
-                    retval.setCommandLineArguments(args);
-                    retval.configure(configuration);
-                } catch (ConfigurationException e) {
-                    System.err.println("could_not_config_job" + object.getClass().getName() + " " + e.getClass().getSimpleName()
-                            + "" + e.getMessage());
-                    System.exit(6);
-                }
-            } else {
-                System.err.println("class_is_not_job" + className);
-                System.exit(5);
+        if( configField!= null && StringUtil.isNotEmpty(configField.getName())) {
+            String className = configField.getName();
+            Config cfgFrame = new Config();
+            if (configField.isFrame()) {
+                cfgFrame = new Config((DataFrame) configField.getObjectValue());
             }
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            System.err.println("instantiation_error" + " " + className + " " + e.getClass().getName() + " " + e.getMessage());
-            System.exit(4);
-        }
 
+            // if the class is not fully qualified, assume the same namespace as the bootstrap loader.
+            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+                className = BootStrap.class.getPackage().getName() + "." + className;
+            }
+
+            try {
+                Class<?> clazz = Class.forName(className);
+                Constructor<?> ctor = clazz.getConstructor();
+                Object object = ctor.newInstance();
+
+                if (object instanceof SnapJob) {
+                    retval = (SnapJob) object;
+                    try {
+                        retval.setCommandLineArguments(args);
+                        retval.configure(cfgFrame);
+                    } catch (ConfigurationException e) {
+                        System.err.println("could_not_config_job" + object.getClass().getName() + " " + e.getClass().getSimpleName() + " " + e.getMessage());
+                        System.exit(6);
+                    }
+                } else {
+                    System.err.println("class_is_not_job" + className);
+                    System.exit(5);
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+                     | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
+                System.exit(4);
+            }
+        }
         return retval;
     }
+
 
     /**
      * 
@@ -234,11 +246,7 @@ public class BootStrap {
             Runtime.getRuntime().addShutdownHook(new Thread("LoaderHook") {
                 public void run() {
                     Log.debug("runtime_terminating");
-
-                    if (job != null) {
-                        job.stop();
-                    }
-
+                    if (job != null) { job.stop(); }
                     Log.debug("runtime_terminated");
                 }
             });
@@ -251,10 +259,6 @@ public class BootStrap {
         // see if there is an environment variable or a system property with a shared
         // configuration directory
         String path = getAppHome();
-
-        // ?
-        // Assume the current directory ?
-        // ?
 
         // if there is a application home directory specified
         if (StringUtil.isNotBlank(path)) {
@@ -282,6 +286,7 @@ public class BootStrap {
 
     }
 
+
     /**
      * Generate a configuration from the file URI specified on the command line or the {@code cfg.uri} system property.
      * 
@@ -289,7 +294,7 @@ public class BootStrap {
      * If the URI has no scheme, then it is assumed to be a file name. If the file name is relative, the current directory will be
      * checked for its existence. if it does not exist there, the {@code cfg.dir} system property is used to determine a common
      * configuration directory and the existence of the file will be checked in that location. If the file does not exist there, a
-     * simple error message is displayed and the boot strap loader terminates.
+     * simple error message is displayed and the bootstrap loader terminates.
      * </p>
      */
     private static void readConfig() {
@@ -307,7 +312,7 @@ public class BootStrap {
                 }
             }
         } catch (IOException | ConfigurationException e) {
-            System.err.println("Loader.error_reading_configuration "+ cfgUri+ " - " + e.getLocalizedMessage()+""+ ExceptionUtil.stackTrace(e));
+            System.err.println("error_reading_configuration "+ cfgUri+ " - " + e.getLocalizedMessage()+""+ ExceptionUtil.stackTrace(e));
             System.exit(7);
         }
 

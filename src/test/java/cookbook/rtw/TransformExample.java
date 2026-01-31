@@ -1,8 +1,6 @@
 package cookbook.rtw;
 
-import coyote.commons.StringUtil;
-import coyote.commons.rtw.OperationalContext;
-import coyote.commons.rtw.TransformContext;
+import coyote.commons.rtw.context.TransformContext;
 
 /**
  * This is a rather complex, if not complete, example how to write a transform engine using the RTW classes.

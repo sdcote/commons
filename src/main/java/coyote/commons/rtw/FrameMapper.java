@@ -7,6 +7,7 @@
  */
 package coyote.commons.rtw;
 
+import coyote.commons.rtw.context.TransactionContext;
 import coyote.commons.rtw.mapper.MappingException;
 
 /**

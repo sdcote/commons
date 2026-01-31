@@ -10,7 +10,7 @@ package coyote.commons.rtw.mapper;
 import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.rtw.FrameMapper;
-import coyote.commons.rtw.TransactionContext;
+import coyote.commons.rtw.context.TransactionContext;
 
 /**
  * This is the default mapper which simply copies fields from the source frame

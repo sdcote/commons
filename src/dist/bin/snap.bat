@@ -105,13 +105,10 @@ set CMD_LINE_ARGS=%$
 set JARS=
 set CLASSPATH=
 for %%i in (%APP_HOME%\lib\*.jar) do call cpb.bat %%i
-set CLASSPATH=%APP_HOME%\fix;%APP_HOME%\cfg;%JARS%
-
-@rem Make sure app.work property is set
-if "%APP_WORK%"=="" set APP_WORK=%APP_HOME%\wrk
+set CLASSPATH=%APP_HOME%\fix;%JARS%
 
 @rem Execute Snap
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %SNAP_OPTS% -Dapp.home="%APP_HOME%" -Dapp.work="%APP_WORK%" -classpath "%CLASSPATH%" coyote.BootStrap %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %SNAP_OPTS% -Dapp.home="%APP_HOME%" -classpath "%CLASSPATH%" coyote.BootStrap %CMD_LINE_ARGS%
 
 @rem - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 :end

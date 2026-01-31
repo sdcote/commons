@@ -14,6 +14,7 @@ import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.dataframe.DataFrameException;
 import coyote.commons.log.Log;
+import coyote.commons.rtw.context.TransformContext;
 import coyote.commons.template.Template;
 
 import java.io.File;

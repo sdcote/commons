@@ -17,7 +17,7 @@ import coyote.commons.log.Log;
 import coyote.commons.log.LogMsg;
 import coyote.commons.rtw.AbstractConfigurableComponent;
 import coyote.commons.rtw.ConfigTag;
-import coyote.commons.rtw.TransformContext;
+import coyote.commons.rtw.context.TransformContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public abstract class AbstractFrameMapper extends AbstractConfigurableComponent 
      */
     @Override
     public void setConfiguration(Config cfg) throws ConfigurationException {
-        setConfiguration(cfg);
+        super.setConfiguration(cfg);
 
         // Retrieve the "fields" section from the configuration frame
         DataFrame mapFrame = null;
