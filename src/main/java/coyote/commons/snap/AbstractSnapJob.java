@@ -308,15 +308,15 @@ public abstract class AbstractSnapJob implements SnapJob {
                                                                 path = cfgFile.getParent();
                                                             } else {
                                                                 // should not happen
-                                                                path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                                                                path = System.getProperties().getProperty("user.dir").concat("/snap/log");
                                                             }
                                                         } catch (URISyntaxException e) {
                                                             // should not happen
-                                                            path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                                                            path = System.getProperties().getProperty("user.dir").concat("/snap/log");
                                                         }
                                                     } else {
                                                         // probably a configuration file read across the network
-                                                        path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                                                        path = System.getProperties().getProperty("user.dir").concat("/snap/log");
                                                     }
                                                 } else {
                                                     path = path.concat("/log");
@@ -370,20 +370,20 @@ public abstract class AbstractSnapJob implements SnapJob {
                             try {
                                 coyote.commons.log.Log.addLogger(name, logger);
                             } catch (Exception e) {
-                                System.out.println(String.format( "Loader.Could not add configured logger", name, logger.getClass(), e.getMessage()));
+                                System.out.println(String.format( "Could not add configured logger", name, logger.getClass(), e.getMessage()));
                                 System.exit(11);
                             }
                         } else {
-                            System.err.println(String.format( "Loader.could_not_create_an_instance_of_the_specified_logger",name));
+                            System.err.println(String.format( "could_not_create_an_instance_of_the_specified_logger",name));
                             System.exit(11);
                         }
 
                     } else {
-                        System.err.println(String.format( "Loader.no_logger_classname", cfgFrame.toString()));
+                        System.err.println(String.format( "no_logger_classname", cfgFrame.toString()));
                         System.exit(11);
                     }
                 } else {
-                    System.err.println(String.format( "Loader.invalid_logger_configuration_section"));
+                    System.err.println(String.format( "invalid_logger_configuration_section"));
                     System.exit(11);
                 } // must be a frame/section
 
@@ -391,8 +391,7 @@ public abstract class AbstractSnapJob implements SnapJob {
 
         } // for each logger section
 
-        coyote.commons.log.Log.debug(String.format( "Loader.logging_initiated", new Date()));
-
+        coyote.commons.log.Log.debug(String.format( "Logging initiated %tF %<tT.%<tL", new Date()));
     }
 
 
@@ -413,17 +412,17 @@ public abstract class AbstractSnapJob implements SnapJob {
                         try {
                             retval.setConfig(cfg);
                         } catch (Exception e) {
-                            coyote.commons.log.Log.error(String.format( "Loader.could_not_configure_logger", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            coyote.commons.log.Log.error(String.format( "could_not_configure_logger", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        coyote.commons.log.Log.warn(String.format( "Loader.instance_is_not_a_logger", className));
+                        coyote.commons.log.Log.warn(String.format( "instance_is_not_a_logger", className));
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                          InvocationTargetException e) {
-                    coyote.commons.log.Log.error(String.format( "Loader.logger_instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                    coyote.commons.log.Log.error(String.format( "logger_instantiation_error", className, e.getClass().getName(), e.getMessage()));
                 }
             } else {
-                coyote.commons.log.Log.error(String.format( "Loader.logger_configuration_did_not_contain_a_classname"));
+                coyote.commons.log.Log.error(String.format( "logger_configuration_did_not_contain_a_classname"));
             }
         }
 

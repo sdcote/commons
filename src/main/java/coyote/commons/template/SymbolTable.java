@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import coyote.commons.*;
+import coyote.commons.rtw.Symbols;
 
 
 /**
@@ -241,11 +242,11 @@ public class SymbolTable extends HashMap {
    *
    * @param props the properties to add/replace in this symbol table
    */
-  public synchronized void readProperties(final Properties props) {
+  public synchronized void readProperties(final Properties props,final String prefix) {
     if (props != null) {
       for (final Enumeration en = props.propertyNames(); en.hasMoreElements();) {
         final String name = (String)en.nextElement();
-        put(name, System.getProperty(name));
+        put(prefix+name, System.getProperty(name));
       }
     }
   }
@@ -257,8 +258,7 @@ public class SymbolTable extends HashMap {
    * Read all the System properties into the SymbolTable.
    */
   public synchronized void readSystemProperties() {
-    readProperties(System.getProperties());
-    cleanse();
+    readProperties(System.getProperties(),Symbols.SYSTEM_PROPERTY_PREFIX);
   }
 
 
@@ -270,7 +270,7 @@ public class SymbolTable extends HashMap {
   public synchronized void readEnvironmentVariables() {
     Map<String, String> env = System.getenv();
     for (String envName : env.keySet()) {
-      put(envName, env.get(envName));
+      put(Symbols.ENVIRONMENT_VAR_PREFIX+envName, env.get(envName));
     }
   }
 

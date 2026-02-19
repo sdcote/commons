@@ -114,15 +114,25 @@ public final class Log {
     private static volatile int stackDepth = 5;
 
     static {
-        // are the only logging framework
         LogKernel.addLogger(LogKernel.DEFAULT_LOGGER_NAME, new NullAppender(Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
-    } // static initializer
+    }
 
 
     /**
      * Private constructor to keep instances of this class from being created.
      */
     private Log() {
+    }
+
+    /**
+     * Common settings for development activities.
+     *
+     * <p>Creates a console appender as the default appender using the default
+     * formatter and logging all categories.</p>
+     */
+    public static void initDevelopmentLogging(){
+        addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.ALL_EVENTS));
+        getDefaultLogger().setFormatter(new DefaultFormatter());
     }
 
     /**

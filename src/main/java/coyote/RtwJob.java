@@ -76,9 +76,12 @@ public class RtwJob extends AbstractSnapJob {
             }
 
             // store environment variables in the symbol table
-            Map<String, String> env = System.getenv();
-            for (String envName : env.keySet()) {
-                engine.getSymbolTable().put(Symbols.ENVIRONMENT_VAR_PREFIX + envName, env.get(envName));
+            for (String envName : System.getenv().keySet()) {
+                engine.getSymbolTable().put(Symbols.ENVIRONMENT_VAR_PREFIX + envName, System.getenv().get(envName));
+            }
+
+            for (String propName : System.getProperties().stringPropertyNames()) {
+                engine.getSymbolTable().put(Symbols.SYSTEM_PROPERTY_PREFIX + propName, System.getProperty(propName));
             }
 
             if (StringUtil.isBlank(engine.getName())) {
@@ -204,7 +207,7 @@ public class RtwJob extends AbstractSnapJob {
 
         // Remove all the relations and extra slashes from the home path
         System.setProperty(BootStrap.APP_HOME, FileUtil.normalizePath(System.getProperty(BootStrap.APP_HOME)));
-        Log.debug(String.format("Job.home_dir_set %s", System.getProperty(BootStrap.APP_HOME)));
+        Log.debug(String.format("Job home directory set to %s", System.getProperty(BootStrap.APP_HOME)));
     }
 
 
@@ -291,7 +294,7 @@ public class RtwJob extends AbstractSnapJob {
 
         // Remove all the relations and extra slashes from the home path
         System.setProperty(APP_WORK, FileUtil.normalizePath(System.getProperty(APP_WORK)));
-        Log.debug(String.format("Job.work_dir_set", System.getProperty(APP_WORK)));
+        Log.debug(String.format("Job work directory set to %s", System.getProperty(APP_WORK)));
     }
 
 

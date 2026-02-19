@@ -185,6 +185,8 @@ public class BootStrap {
                 System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
                 System.exit(4);
             }
+        } else {
+            System.err.println("Empty configuration.");
         }
         return retval;
     }
@@ -243,11 +245,11 @@ public class BootStrap {
      */
     protected static void registerShutdownHook(final SnapJob job) {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread("LoaderHook") {
+            Runtime.getRuntime().addShutdownHook(new Thread("BootstrapHook") {
                 public void run() {
-                    Log.debug("runtime_terminating");
+                    Log.debug("Runtime terminating, stopping job.");
                     if (job != null) { job.stop(); }
-                    Log.debug("runtime_terminated");
+                    Log.debug("Job stop completed.");
                 }
             });
         } catch (Exception e) {
@@ -300,9 +302,6 @@ public class BootStrap {
     private static void readConfig() {
         try {
             configuration = Config.read(cfgUri);
-            if (StringUtil.isBlank(configuration.getName())) {
-                configuration.setName(UriUtil.getBase(cfgUri));
-            }
             String configUri = cfgUri.toString();
             System.setProperty(ConfigTag.CONFIG_URI, configUri);
             if (StringUtil.isNotBlank(configUri) && configUri.startsWith("file:")) {
@@ -357,7 +356,7 @@ public class BootStrap {
                         }
 
                         // add the filename we checked unsuccessfully to the error message
-                        errMsg.append("Loader.no_local_cfg_file" +""+ localfile.getAbsolutePath() + StringUtil.CRLF);
+                        errMsg.append("no_local_cfg_file" +" "+ localfile.getAbsolutePath() + StringUtil.CRLF);
 
                         // the file does not exist, so if it is a relative filename...
                         if (!localfile.isAbsolute()) {
@@ -388,7 +387,7 @@ public class BootStrap {
                                             // Success - cfg was found in the shared config directory
                                             cfgUri = FileUtil.getFileURI(cfgFile);
                                         } else {
-                                            // if an laternat was found in the local directory, use it
+                                            // if an alternate was found in the local directory, use it
                                             if (alternativeFile != null) {
                                                 cfgUri = FileUtil.getFileURI(alternativeFile);
 
@@ -401,8 +400,8 @@ public class BootStrap {
                                                     cfgUri = FileUtil.getFileURI(alternativeFile);
                                                 } else {
                                                     // we tried the local and shared locations, report error
-                                                    errMsg.append( "Loader.no_common_cfg_file"+ cfgFile.getAbsolutePath() + StringUtil.CRLF);
-                                                    errMsg.append("Loader.cfg_file_not_found"+ cfgLoc  + StringUtil.CRLF);
+                                                    errMsg.append( "no_common_cfg_file "+ cfgFile.getAbsolutePath() + StringUtil.CRLF);
+                                                    errMsg.append("cfg_file_not_found "+ cfgLoc  + StringUtil.CRLF);
                                                     System.out.println(errMsg.toString());
                                                     System.exit(9);
                                                 }
@@ -410,13 +409,13 @@ public class BootStrap {
                                         }
                                     } else {
                                         // the specified config directory was not a directory
-                                        errMsg.append("Loader.cfg_dir_is_not_directory"+ appDir + StringUtil.CRLF);
+                                        errMsg.append("cfg_dir_is_not_directory "+ appDir + StringUtil.CRLF);
                                         System.out.println(errMsg.toString());
                                         System.exit(10);
                                     }
                                 } else {
                                     // the specified config directory does not exist
-                                    errMsg.append("Loader.cfg_dir_does_not_exist"+ appDir + StringUtil.CRLF);
+                                    errMsg.append("cfg_dir_does_not_exist "+ appDir + StringUtil.CRLF);
                                     System.out.println(errMsg.toString());
                                     System.exit(11);
                                 }
@@ -425,7 +424,7 @@ public class BootStrap {
                                     cfgUri = FileUtil.getFileURI(alternativeFile);
                                 } else {
                                     // no shared config directory provided in system properties
-                                    errMsg.append( "Loader.cfg_dir_not_provided"+ APP_HOME + StringUtil.CRLF);
+                                    errMsg.append( "cfg_dir_not_provided "+ APP_HOME + StringUtil.CRLF);
                                     System.out.println(errMsg.toString());
                                     System.exit(12);
                                 }
@@ -444,23 +443,23 @@ public class BootStrap {
                 if (UriUtil.isFile(cfgUri)) {
                     File test = UriUtil.getFile(cfgUri);
                     if (!test.exists() || !test.canRead()) {
-                        errMsg.append("Loader.cfg_file_not_readable"+ test.getAbsolutePath() + StringUtil.CRLF);
+                        errMsg.append("cfg_file_not_readable "+ test.getAbsolutePath() + StringUtil.CRLF);
                         System.out.println(errMsg.toString());
                         System.exit(13);
                     }
-                    Log.info( "Loader.cfg_reading_from_file"+ test.getAbsolutePath());
+                    Log.info( "cfg_reading_from_file "+ test.getAbsolutePath());
                 } else {
-                    Log.info("Loader.cfg_reading_from_network");
+                    Log.info("cfg_reading_from_network");
                 }
             } else {
-                errMsg.append( "Loader.cfg_file_not_found"+ cfgLoc + StringUtil.CRLF);
+                errMsg.append( "cfg_file_not_found"+ cfgLoc + StringUtil.CRLF);
                 System.out.println(errMsg.toString());
                 System.exit(9);
 
             }
 
         } else {
-            System.err.println("Loader.no_config_uri_defined");
+            System.err.println("no_config_uri_defined");
             System.exit(1);
         }
 

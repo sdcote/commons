@@ -66,7 +66,7 @@ public abstract class AbstractFrameReader extends AbstractConfigurableComponent 
         if (getConfiguration().containsIgnoreCase(ConfigTag.LIMIT)) {
             readLimit = getLong(ConfigTag.LIMIT);
         }
-        Log.debug( "Reader.limit_is"+ readLimit);
+        Log.debug( "Reader limit is "+ readLimit);
     }
 
 

@@ -9,6 +9,7 @@ package coyote.commons.rtw;
 
 import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
+import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
 import coyote.commons.cfg.Config;
 import coyote.commons.dataframe.DataField;
@@ -84,7 +85,6 @@ public class TransformEngineFactory {
 
   private static final String LOCAL = "Local";
   private static final String FILE = "File";
-
 
   /**
    * Read a JSON string in from a file and create a transformation engine to the specifications in the file.
@@ -185,13 +185,13 @@ public class TransformEngineFactory {
           if (field.isFrame()) {
             configValidation((DataFrame) field.getObjectValue(), retval);
           } else {
-            Log.error("Invalid pre-process configuration section");
+            Log.error("Invalid validate configuration section");
           }
         } else if (StringUtil.equalsIgnoreCase(ConfigTag.TRANSFORM, field.getName())) {
           if (field.isFrame()) {
             configTransformer((DataFrame) field.getObjectValue(), retval);
           } else {
-            Log.error("Invalid pre-process configuration section");
+            Log.error("Invalid transform configuration section");
           }
         } else if (StringUtil.equalsIgnoreCase(ConfigTag.PREPROCESS, field.getName()) || StringUtil.equalsIgnoreCase(ConfigTag.TASK, field.getName())) {
           if (field.isFrame()) {
@@ -244,7 +244,7 @@ public class TransformEngineFactory {
             Log.error("Invalid Schedule section - expecting complex type");
           }
         } else {
-          Log.debug(String.format( "EngineFactory.unrecognized_configuration_section", field.getName()));
+          Log.debug(String.format( "Unrecognized configuration section '%s'", field.getName()));
         }
       }
     }
@@ -258,33 +258,38 @@ public class TransformEngineFactory {
    * @param cfg the configuration for the vault
    */
   private static void configVault(DataFrame cfg) {
-    VaultBuilder builder = new VaultBuilder();
-    for (DataField field : cfg.getFields()) {
-      if (ConfigTag.PROVIDER.equalsIgnoreCase(field.getName())) {
-        builder.setProvider(field.getStringValue());
-      } else if (ConfigTag.METHOD.equalsIgnoreCase(field.getName())) {
-        builder.setMethod(field.getStringValue());
-      } else if (ConfigTag.SOURCE.equalsIgnoreCase(field.getName())) {
-        builder.setSource(field.getStringValue());
-      } else {
-        builder.setProperty(field.getName(), field.getStringValue());
+    if (cfg != null) {
+      VaultBuilder builder = new VaultBuilder();
+      for (DataField field : cfg.getFields()) {
+        if (ConfigTag.PROVIDER.equalsIgnoreCase(field.getName())) {
+          builder.setProvider(field.getStringValue());
+        } else if (ConfigTag.METHOD.equalsIgnoreCase(field.getName())) {
+          builder.setMethod(field.getStringValue());
+        } else if (ConfigTag.SOURCE.equalsIgnoreCase(field.getName())) {
+          builder.setSource(field.getStringValue());
+        } else {
+          builder.setProperty(field.getName(), field.getStringValue());
+        }
       }
-    }
 
-    // if no provider, assume local
-    if (StringUtil.isBlank(builder.getProvider())) builder.setProvider(LOCAL);
 
-    // if no method && local provider, assume file
-    if (StringUtil.isBlank(builder.getMethod()) && LOCAL.equalsIgnoreCase(builder.getProvider()))
-      builder.setMethod(FILE);
+      // if no provider, assume local
+      if (StringUtil.isBlank(builder.getProvider())) builder.setProvider(LOCAL);
 
-    try {
-      Vault vault = builder.build();
-      Template.putStatic(VaultProxy.LOOKUP_TAG, new VaultProxy(vault));
-    } catch (ConfigurationException e) {
-      e.printStackTrace();
-    } catch (VaultException e) {
-      e.printStackTrace();
+      // if no method && local provider, assume file
+      if (StringUtil.isBlank(builder.getMethod()) && LOCAL.equalsIgnoreCase(builder.getProvider()))
+        builder.setMethod(FILE);
+
+      try {
+        Vault vault = builder.build();
+        Template.putStatic(VaultProxy.LOOKUP_TAG, new VaultProxy(vault));
+      } catch (ConfigurationException e) {
+        Log.error("Vault configuration exception",e);
+      } catch (VaultException e) {
+        Log.error(String.format("Could not open vault %s",e.getMessage()),e);
+      }
+    } else {
+      Log.error("Missing vault configuration. No vault created.");
     }
   }
 
@@ -309,12 +314,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameReader) {
           engine.setPreloader((FrameReader) object);
-          Log.debug(String.format( "EngineFactory.created_preloader", object.getClass().getName()));
+          Log.debug(String.format( "EngineFactory created preloader %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_is_not_a_preloader", object.getClass().getName()));
+          Log.error(String.format( "Specified class (%s) is not a preloader", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_preloader", className));
+        Log.error(String.format( "Could not create an instance of specified preloader %s", className));
       }
     } // cfg !null    
   }
@@ -338,12 +343,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameAggregator) {
           engine.addAggregator((FrameAggregator) object);
-          Log.debug(String.format( "EngineFactory.created_aggregator", object.getClass().getName()));
+          Log.debug(String.format( "EngineFactory created aggregator %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_is_not_an_aggregatorr", object.getClass().getName()));
+          Log.error(String.format( "Specified class (%s) is not an aggregator", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_aggregator", className));
+        Log.error(String.format( "Could not create an instance of specified aggregator %s", className));
       }
     } // cfg !null    
   }
@@ -639,12 +644,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameReader) {
           engine.setReader((FrameReader) object);
-          Log.debug(String.format( "EngineFactory.created_reader %s", object.getClass().getName()));
+          Log.debug(String.format( "EngineFactory created reader %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_is_not_a_reader %s", object.getClass().getName()));
+          Log.error(String.format( "EngineFactory specified class (%s) is not a reader", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_reader: %s", className));
+        Log.error(String.format( "EngineFactory could not create instance of specified reader: %s", className));
       }
     } // cfg !null
   }

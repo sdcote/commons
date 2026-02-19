@@ -287,7 +287,11 @@ public abstract class AbstractLogger implements Logger {
       }
 
       if (config.getString(Logger.CATEGORY_TAG) != null) {
-        for (final StringTokenizer st = new StringTokenizer(config.getString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
+        if("ALL".equalsIgnoreCase(config.getString(Logger.CATEGORY_TAG))) {
+          setMask(Long.MIN_VALUE);
+        } else {
+          for (final StringTokenizer st = new StringTokenizer(config.getString(Logger.CATEGORY_TAG), Logger.CATEGORY_DELIMS); st.hasMoreTokens(); startLogging(st.nextToken().toUpperCase()));
+        }
       }
     }
 

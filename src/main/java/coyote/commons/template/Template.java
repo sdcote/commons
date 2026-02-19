@@ -350,7 +350,6 @@ public class Template extends StringParser {
                     }
                   } catch (final Exception e) {
                     System.out.println("Template Class Error:" + e.getClass().getSimpleName() + ":" + e.getMessage());
-                    //e.printStackTrace();
                   }
 
                 } // if we found a method with the signature
@@ -374,6 +373,12 @@ public class Template extends StringParser {
             // If we have an object with that name call its toString method
             if (obj != null) {
               retval.append(obj.toString());
+            } else{
+              if (preprocess) {
+                retval.append(OPEN);
+                retval.append(token);
+                retval.append(CLOSE);
+              }
             }
 
           } // object key
@@ -382,7 +387,7 @@ public class Template extends StringParser {
 
       } // while parser not EOF
     } catch (final Exception ex) {
-
+      System.out.println("Template Processing Error:" + ex.getClass().getSimpleName() + ":" + ex.getMessage());
     }
 
     return retval.toString();

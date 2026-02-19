@@ -885,7 +885,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                     jobDir.mkdirs();
                     setJobDirectory(jobDir);
                     setWorkDirectory(jobDir.getParentFile());
-                    Log.debug(String.format("Engine.calculated_job_directory", jobDir.getAbsolutePath(), getName()));
+                    Log.debug(String.format("Engine calculated job directory as %s - %s", jobDir.getAbsolutePath(), getName()));
                 } catch (final Exception e) {
                     Log.error(e.getMessage());
                 }
@@ -925,7 +925,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
         try {
             workDir.mkdirs();
             setWorkDirectory(workDir);
-            Log.debug(String.format("Engine.calculated_work_directory", workDir.getAbsolutePath(), getName()));
+            Log.debug(String.format("Engine calculated work directory %s - %s", workDir.getAbsolutePath(), getName()));
         } catch (final Exception e) {
             Log.error(e.getMessage());
         }

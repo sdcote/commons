@@ -130,7 +130,11 @@ public class ConsoleAppender extends AbstractLogger {
     }
 
     if ( config != null && config.get( Logger.CATEGORY_TAG ) != null ) {
-      for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+      if("ALL".equalsIgnoreCase( config.getAsString( Logger.CATEGORY_TAG ) ) ) {
+        setMask(-1L);
+      } else{
+        for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+      }
     }
 
     // determine if this logger is disabled, if so set mask to 0

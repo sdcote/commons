@@ -98,7 +98,7 @@ public class TemplateTest {
 
   @Test
   public void testUriFormat() {
-    String text = "[#$user.dir|toURI#]";
+    String text = "[#$sys.user.dir|toURI#]";
     String formattedText = Template.resolve(text, symbols);
     System.out.println(formattedText);
     URI uri = URI.create(formattedText);
