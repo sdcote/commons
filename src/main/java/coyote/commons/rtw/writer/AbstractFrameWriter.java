@@ -29,7 +29,19 @@ public abstract class AbstractFrameWriter extends AbstractConfigurableComponent 
 
 
     /**
+     * All components are initialized through the {@code open(TransformContext)} method.
      *
+     * <p>A last chack of the configuration parameters should be performed here
+     * to make sure there are no issues or conflicts with other settings. For
+     * example, setting that were present during configuration may have changed
+     * at the time of initialization. If there are any issues during
+     * initialization, simply place an error in the Transform context:
+     * {@code context.setError("Initialization error");}</p>
+     *
+     * <p>Once all components have been initialized, the engine will start
+     * running, unless there is an error in the Transform context.</p>
+     *
+     * @param context The transform context all components share.
      */
     public void open(TransformContext context) {
         super.context = context;

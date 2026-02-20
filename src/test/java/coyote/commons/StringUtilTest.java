@@ -317,6 +317,16 @@ public class StringUtilTest {
     assertEquals( field, "yote" );
   }
 
+  @Test
+  public void fixedLengthSpaceTest() {
+    String text = "Coyote";
+    String field = null;
+
+    field = StringUtil.fixedLength(text, 20, StringUtil.LEFT_ALIGNMENT, ' ');
+    assertEquals(20, field.length());
+    assertEquals(field, "Coyote              ");
+  }
+
 
 
 

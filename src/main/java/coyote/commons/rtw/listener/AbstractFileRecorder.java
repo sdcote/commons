@@ -69,7 +69,7 @@ public abstract class AbstractFileRecorder extends AbstractContextRecorder {
 
     String target = getString(ConfigTag.TARGET);
     setTarget(target);
-    Log.debug(String.format( "DX.listener_validating_target", getTarget()));
+    Log.debug(String.format( "Listener validating target %s", getTarget()));
 
     if (StringUtil.isNotBlank(getTarget())) {
 
@@ -107,7 +107,7 @@ public abstract class AbstractFileRecorder extends AbstractContextRecorder {
 
           // 
           targetFile = dest;
-          Log.debug(String.format( "DX.listener_using_target", targetFile.toString()));
+          Log.debug(String.format( "Listener using target %s", targetFile.toString()));
 
           // Create the writer
           log_writer = new OutputStreamWriter(new FileOutputStream(targetFile.toString(), false));

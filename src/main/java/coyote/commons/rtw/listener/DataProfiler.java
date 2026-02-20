@@ -62,7 +62,6 @@ public class DataProfiler extends AbstractFileRecorder implements ContextListene
   @Override
   public void open(TransformContext context) {
     super.open(context); // initialize FileRecorder
-
   }
 
 
@@ -226,70 +225,70 @@ public class DataProfiler extends AbstractFileRecorder implements ContextListene
       }
 
       b.delete(0, b.length());
-      b.append(StringUtil.fixedLength("Field", nameSize + 1, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Type", typeSize + 1, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Nulls", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Empty", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Blank", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Unique", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Coincidence", 12, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Chars", 13, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Sdev", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Bytes", 13, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("SDev", 9, StringUtil.LEFT_ALIGNMENT));
+      b.append(StringUtil.fixedLength("Field", nameSize + 1, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Type", typeSize + 1, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Nulls", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Empty", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Blank", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Unique", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Coincidence", 12, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Chars", 13, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Sdev", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Bytes", 13, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("SDev", 9, StringUtil.LEFT_ALIGNMENT, ' '));
       b.append(StringUtil.LINE_FEED);
       write(b.toString());
 
       for (FieldMetrics metric : inputSchema.getMetrics()) {
         b.delete(0, b.length());
-        b.append(StringUtil.fixedLength(metric.getName(), nameSize, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(metric.getName(), nameSize, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(metric.getType(), typeSize, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(metric.getType(), typeSize, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getNullCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getNullCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getEmptyCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getEmptyCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getBlankCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getBlankCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getUniqueValues()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getUniqueValues()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(P_FORMAT.format(metric.getCoincidence() * 100), 5, StringUtil.RIGHT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(P_FORMAT.format(metric.getCoincidence() * 100), 5, StringUtil.RIGHT_ALIGNMENT, ' '));
         b.append("       ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalStringLength()), 12, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalStringLength()), 12, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalByteLength()), 12, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalByteLength()), 12, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
 
         b.append(StringUtil.LINE_FEED);
         write(b.toString());
       }
 
       b.delete(0, b.length());
-      b.append(StringUtil.fixedLength("Totals", nameSize + typeSize + 50, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength(Long.toString(totalChars), 12, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("", 37, StringUtil.LEFT_ALIGNMENT));
+      b.append(StringUtil.fixedLength("Totals", nameSize + typeSize + 50, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength(Long.toString(totalChars), 12, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("", 37, StringUtil.LEFT_ALIGNMENT, ' '));
       b.append(totalBytes);
       b.append("  ");
       b.append(formatSizeBytes(totalBytes));
@@ -341,70 +340,70 @@ public class DataProfiler extends AbstractFileRecorder implements ContextListene
       }
 
       b.delete(0, b.length());
-      b.append(StringUtil.fixedLength("Field", nameSize + 1, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Type", typeSize + 1, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Nulls", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Empty", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Blank", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Unique", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Coincidence", 12, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Chars", 13, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Sdev", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Bytes", 13, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("SDev", 9, StringUtil.LEFT_ALIGNMENT));
+      b.append(StringUtil.fixedLength("Field", nameSize + 1, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Type", typeSize + 1, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Nulls", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Empty", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Blank", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Unique", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Coincidence", 12, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Chars", 13, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Sdev", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Bytes", 13, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Avg", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Minimum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("Maximum", 9, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("SDev", 9, StringUtil.LEFT_ALIGNMENT, ' '));
       b.append(StringUtil.LINE_FEED);
       write(b.toString());
 
       for (FieldMetrics metric : outputSchema.getMetrics()) {
         b.delete(0, b.length());
-        b.append(StringUtil.fixedLength(metric.getName(), nameSize, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(metric.getName(), nameSize, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(metric.getType(), typeSize, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(metric.getType(), typeSize, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getNullCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getNullCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getEmptyCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getEmptyCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getBlankCount()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getBlankCount()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getUniqueValues()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getUniqueValues()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(P_FORMAT.format(metric.getCoincidence() * 100), 5, StringUtil.RIGHT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(P_FORMAT.format(metric.getCoincidence() * 100), 5, StringUtil.RIGHT_ALIGNMENT, ' '));
         b.append("       ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalStringLength()), 12, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalStringLength()), 12, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevStringLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevStringLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalByteLength()), 12, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getTotalByteLength()), 12, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getAverageByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMinimumByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getMaximumByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
         b.append(" ");
-        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevByteLength()), 8, StringUtil.LEFT_ALIGNMENT));
+        b.append(StringUtil.fixedLength(Long.toString(metric.getStdDevByteLength()), 8, StringUtil.LEFT_ALIGNMENT, ' '));
 
         b.append(StringUtil.LINE_FEED);
         write(b.toString());
       }
 
       b.delete(0, b.length());
-      b.append(StringUtil.fixedLength("Totals", nameSize + typeSize + 50, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength(Long.toString(totalChars), 12, StringUtil.LEFT_ALIGNMENT));
-      b.append(StringUtil.fixedLength("", 37, StringUtil.LEFT_ALIGNMENT));
+      b.append(StringUtil.fixedLength("Totals", nameSize + typeSize + 50, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength(Long.toString(totalChars), 12, StringUtil.LEFT_ALIGNMENT, ' '));
+      b.append(StringUtil.fixedLength("", 37, StringUtil.LEFT_ALIGNMENT, ' '));
       b.append(totalBytes);
       b.append("  ");
       b.append(formatSizeBytes(totalBytes));

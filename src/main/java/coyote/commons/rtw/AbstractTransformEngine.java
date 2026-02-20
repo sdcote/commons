@@ -304,13 +304,13 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
 
             Log.trace("Engine '" + getName() + "' reads completed - Error=" + getContext().isInError() + " Reads=" + getContext().getRow() + " TxnErrors=" + transactionErrors);
 
+            // close any internal components like readers and writers which may
+            // interfere with post-processing tasks from completing properly
+            closeInternalComponents();
+
             if (getContext().isInError()) {
                 reportTransformContextError(getContext());
             } else {
-
-                // close any internal components like readers and writers which may
-                // interfere with post-processing tasks from completing properly
-                closeInternalComponents();
 
                 getContext().setState("Post-Process");
 
@@ -988,7 +988,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             symbols.put(Symbols.PREV_DAY_PD, StringUtil.zeropad(cal.get(Calendar.DAY_OF_MONTH), 2));
             symbols.put(Symbols.PREV_YEAR_PYYY, StringUtil.zeropad(cal.get(Calendar.YEAR), 4));
 
-            // reset to todays date/time
+            // reset to today's date/time
             cal.setTime(rundate);
 
             // go back a month
@@ -1027,11 +1027,12 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
     }
 
     /**
-     * Close all the components.
+     * Close all the remaining components.
+     *
+     * <p>The reader and writers are normally closed immediately before post-
+     * processing so they do not need to be closed again here.</p>
      */
     private void closeTooling() {
-        closeReader();
-        closeWriters();
         closeMapper();
         closeFilters();
         closeValidators();
@@ -1047,9 +1048,10 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 reader.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_reader", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing reader %s (%s) - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
+
     }
 
     /**
@@ -1060,7 +1062,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 writer.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing writer %s (%s) - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1149,21 +1151,8 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
      * deleting files.
      */
     private void closeInternalComponents() {
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_reader %s : %s - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
-            }
-        }
-
-        for (FrameWriter writer : writers) {
-            try {
-                writer.close();
-            } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_writer", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
-            }
-        }
+        closeReader();
+        closeWriters();
     }
 
     /**

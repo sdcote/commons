@@ -136,8 +136,19 @@ public abstract class AbstractSnapJob implements SnapJob {
         // System properties override environment variables
         symbols.readSystemProperties();
 
+        String preprocessedConfiguration = Template.preProcess(configuration.toString(), symbols);
+
+        if(System.getProperty("os.name").toLowerCase().contains("win")){
+            // (?<!\\) -> Negative lookbehind: not preceded by a backslash
+            // \\      -> The literal backslash to find
+            // (?!\\)  -> Negative lookahead: not followed by a backslash
+            String regex = "(?<!\\\\)\\\\(?!\\\\)";
+            preprocessedConfiguration = preprocessedConfiguration.replaceAll(regex, "\\\\\\\\");
+        }
+
+
         // Replace all values in the configuration with symbols - runtime variables
-        configuration = new Config(Template.preProcess(configuration.toString(), symbols));
+        configuration = new Config(preprocessedConfiguration);
 
         // setup logging as soon as we can
         initLogging();
