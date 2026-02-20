@@ -8,6 +8,8 @@
 package coyote.commons.security;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -43,14 +45,14 @@ public class PPGTest {
    */
   @Test
   public void testGenerateToken() {
-    String token = PPG.generateToken( 3 );
-    assertTrue( token.length() == 3 );
-    token = PPG.generateToken( 4 );
-    assertTrue( token.length() == 4 );
-    token = PPG.generateToken( 5 );
-    assertTrue( token.length() == 5 );
-    token = PPG.generateToken( 6 );
-    assertTrue( token.length() == 6 );
+    String token = PPG.generateToken(3);
+    assertEquals(3, token.length());
+    token = PPG.generateToken(4);
+    assertEquals(4, token.length());
+    token = PPG.generateToken(5);
+    assertEquals(5, token.length());
+    token = PPG.generateToken(6);
+    assertEquals(6, token.length());
   }
 
 }
