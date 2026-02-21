@@ -219,6 +219,9 @@ public class ArrayTypeTest {
 
     DataField field1 = frame1.getField( "myarray" );
     assertEquals(DataField.ARRAY, field1.getType());
+
+    Object value = frame1.get( "myarray" );
+    System.out.println( value.getClass() );
   }
 
 }
