@@ -102,7 +102,7 @@ public class Combine extends AbstractFileTask implements TransformTask {
     if (printwriter == null) {
       // check for a target in our configuration
       String target = getString(ConfigTag.TARGET);
-      Log.debug(String.format( "Writer.using_target", this.getClass().getSimpleName(), target));
+      Log.debug(String.format( "%s using target '%s'", this.getClass().getSimpleName(), target));
 
       // Make sure we have a target
       if (StringUtil.isNotBlank(target)) {

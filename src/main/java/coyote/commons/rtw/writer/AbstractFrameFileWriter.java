@@ -99,7 +99,7 @@ public abstract class AbstractFrameFileWriter extends AbstractFrameWriter implem
         if (printwriter == null) {
             // check for a target in our configuration
             String target = getString(ConfigTag.TARGET);
-            Log.debug("using_target" + getClass().getSimpleName() + target);
+            Log.debug(String.format("%s using target '%s'", getClass().getSimpleName() , target));
 
             // Make sure we have a target
             if (StringUtil.isBlank(target)) {

@@ -140,7 +140,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
           errMsg.append(String.format( "Task.runjob.cfg_dir_is_not_directory", appDir) + StringUtil.CRLF);
         }
       } else {
-        errMsg.append(String.format( "Task.runjob.cfg_dir_does_not_exist", appDir) + StringUtil.CRLF);
+        errMsg.append(String.format( "Cfg dir '%s' does not exist%n", appDir));
       }
     }
     return retval;
@@ -199,7 +199,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
       if (alternativeFile.exists()) {
         retval = FileUtil.getFileURI(alternativeFile);
       } else {
-        errMsg.append(String.format( "Task.runjob.no_local_cfg_file", localfile.getAbsolutePath()) + StringUtil.CRLF);
+        errMsg.append(String.format( "No local cfg file %s%n", localfile.getAbsolutePath()));
       }
     }
     return retval;

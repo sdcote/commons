@@ -277,7 +277,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                             if (txnContext.isNotInError()) {
                                 transform(txnContext);
                                 map(txnContext);
-                                if (aggregators.size() > 0) {
+                                if (!aggregators.isEmpty()) {
                                     aggregateAndwrite(txnContext);
                                 } else {
                                     write(txnContext);
@@ -292,6 +292,12 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                             transactionErrors++;
                         }
 
+                    } else {
+                        // If nothing was read in, maybe there was an error?
+                        if (txnContext.isInError()) {
+                            Log.error("Transaction error: "+txnContext.getErrorMessage());
+                            transactionErrors++;
+                        }
                     } // if something was read in
 
                 } // Reader !eof and context is without error

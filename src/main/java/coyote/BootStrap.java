@@ -322,7 +322,7 @@ public class BootStrap {
      */
     private static void confirmConfigurationLocation() {
         // start building error messages for user feedback
-        StringBuffer errMsg = new StringBuffer("confirming_cfg_location " + cfgLoc + StringUtil.CRLF);
+        StringBuffer errMsg = new StringBuffer("Confirming cfg location " + cfgLoc + StringUtil.CRLF);
 
         // process the configuration location if it exists
         if (StringUtil.isNotBlank(cfgLoc)) {
@@ -356,7 +356,7 @@ public class BootStrap {
                         }
 
                         // add the filename we checked unsuccessfully to the error message
-                        errMsg.append("no_local_cfg_file" +" "+ localfile.getAbsolutePath() + StringUtil.CRLF);
+                        errMsg.append(String.format("No local cfg file %s%n", localfile.getAbsolutePath()));
 
                         // the file does not exist, so if it is a relative filename...
                         if (!localfile.isAbsolute()) {
@@ -415,7 +415,7 @@ public class BootStrap {
                                     }
                                 } else {
                                     // the specified config directory does not exist
-                                    errMsg.append("cfg_dir_does_not_exist "+ appDir + StringUtil.CRLF);
+                                    errMsg.append(String.format("Cfg dir '%s' does not exist %n", appDir));
                                     System.out.println(errMsg.toString());
                                     System.exit(11);
                                 }

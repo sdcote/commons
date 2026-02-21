@@ -188,7 +188,7 @@ public class RunJob extends AbstractListener implements ContextListener {
                     errMsg.append(String.format( "Listener.runjob.cfg_dir_is_not_directory", appDir) + StringUtil.CRLF);
                 }
             } else {
-                errMsg.append(String.format( "Listener.runjob.cfg_dir_does_not_exist", appDir) + StringUtil.CRLF);
+                errMsg.append(String.format( "Runjob cfg dir '%s' does not exist.%n", appDir));
             }
         }
         return retval;
@@ -243,7 +243,7 @@ public class RunJob extends AbstractListener implements ContextListener {
             if (alternativeFile.exists()) {
                 retval = FileUtil.getFileURI(alternativeFile);
             } else {
-                errMsg.append(String.format( "Listener.runjob.no_local_cfg_file", localfile.getAbsolutePath()) + StringUtil.CRLF);
+                errMsg.append(String.format( "Runjob no local cfg file %s", localfile.getAbsolutePath()) + StringUtil.CRLF);
             }
         }
         return retval;
