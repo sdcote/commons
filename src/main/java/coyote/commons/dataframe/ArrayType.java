@@ -175,7 +175,7 @@ public class ArrayType implements FieldType {
 
 
   /**
-   * @see coyote.dataframe.FieldType#stringValue(byte[])
+   *
    */
   @Override
   public String stringValue(byte[] val) {
@@ -214,11 +214,10 @@ public class ArrayType implements FieldType {
 
 
   /**
-   * @see coyote.dataframe.FieldType#parse(String)
+   *
    */
   @Override
   public Object parse(String text) {
-    // TODO: ArrayType.parse not implememted
     return null;
   }
 
