@@ -1,0 +1,34 @@
+{
+  "RtwJob":{
+
+    "Vault": {
+      "filename": "demo.vault",
+      "password": "[#$sys.vault.password#]"
+    },
+
+    "Preprocess": {
+    },
+
+    "Reader": {
+    },
+
+    "Filter": {
+    },
+
+    "Mapper" : {
+    },
+
+    "Writer": {
+    },
+
+    "Listener": {"DataProfiler": { "target": "[#$sys.user.dir#][#$sys.file.separator#]dataprofile.txt"}},
+
+
+    "Logging": {
+      "ConsoleAppender": { "target": "STDERR", "categories": "error, fatal" },
+      "ConsoleAppender": { "target": "STDOUT", "categories": "info, notice, warn" }
+    }
+
+  }
+
+}

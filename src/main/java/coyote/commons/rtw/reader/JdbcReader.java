@@ -55,7 +55,7 @@ public class JdbcReader extends AbstractFrameReader {
 
         if (getConfiguration().containsIgnoreCase(ConfigTag.SOURCE)) {
             String source = getString(ConfigTag.SOURCE);
-            Log.debug(String.format("Component.configured_source_is", this.getClass().getSimpleName(), source));
+            Log.debug(String.format("%s configured source is %s", this.getClass().getSimpleName(), source));
 
             // If we don't have a connection, prepare to create one
             if (connection == null) {
@@ -65,7 +65,7 @@ public class JdbcReader extends AbstractFrameReader {
                 Object obj = getContext().get(target);
                 if (obj != null && obj instanceof DatabaseConnector) {
                     setConnector((DatabaseConnector) obj);
-                    Log.debug(String.format("Component.found_connector_in_context", this.getClass().getSimpleName(), target));
+                    Log.debug(String.format("%s found connector in context %s", this.getClass().getSimpleName(), target));
                 }
 
                 if (getConnector() == null) {
@@ -93,14 +93,14 @@ public class JdbcReader extends AbstractFrameReader {
                     try {
                         database.setConfiguration(cfg);
                         if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                            Log.debug(String.format("Component.using_target", getClass().getSimpleName(), database.getTarget()));
-                            Log.debug(String.format("Component.using_driver", getClass().getSimpleName(), database.getDriver()));
-                            Log.debug(String.format("Component.using_library", getClass().getSimpleName(), database.getLibrary()));
-                            Log.debug(String.format("Component.using_user", getClass().getSimpleName(), database.getUserName()));
-                            Log.debug(String.format("Component.using_password", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
+                            Log.debug(String.format("%s using target %s", getClass().getSimpleName(), database.getTarget()));
+                            Log.debug(String.format("%s using driver %s", getClass().getSimpleName(), database.getDriver()));
+                            Log.debug(String.format("%s using library %s", getClass().getSimpleName(), database.getLibrary()));
+                            Log.debug(String.format("%s using user %s", getClass().getSimpleName(), database.getUserName()));
+                            Log.debug(String.format("%s using password %s", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
                         }
                     } catch (ConfigurationException e) {
-                        String msg = String.format("Component.could_not_configure_database", getClass().getSimpleName(), e.getMessage()).toString();
+                        String msg = String.format("%s could not configure database - %s", getClass().getSimpleName(), e.getMessage()).toString();
                         Log.error(msg, e);
                         context.setError(msg);
                     }
@@ -111,7 +111,7 @@ public class JdbcReader extends AbstractFrameReader {
                     }
                 }
             } else {
-                Log.debug(String.format("Component.using_existing_connection", getClass().getSimpleName()));
+                Log.debug(String.format("%s using existing connection", getClass().getSimpleName()));
                 // What if that connection is closed or otherwise broken?
                 // Disconnect and allow getConnection to reconnect.
                 try {
@@ -128,7 +128,7 @@ public class JdbcReader extends AbstractFrameReader {
 
             if (connection != null) {
                 String query = getString(ConfigTag.QUERY);
-                Log.debug(String.format("Component.using_query", this.getClass().getSimpleName(), query));
+                Log.debug(String.format("%s using query %s", this.getClass().getSimpleName(), query));
 
                 try {
                     statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -140,16 +140,16 @@ public class JdbcReader extends AbstractFrameReader {
                         EOF = false;
                     }
                 } catch (SQLException e) {
-                    String msg = String.format("Component.error_quering_database", getClass().getSimpleName(), e.getMessage().trim(), query).toString();
+                    String msg = String.format("%s error quering database: %s%n%s", getClass().getSimpleName(), e.getMessage().trim(), query);
                     context.setError(msg);
                 }
             } else {
-                String msg = String.format("Component.could_not_connect_to_source", getClass().getSimpleName(), getSource()).toString();
+                String msg = String.format("%s could not connect to source %s", getClass().getSimpleName(), getSource());
                 Log.error(msg);
                 context.setError(msg);
             }
         } else {
-            String msg = String.format("Component.no_source_specified", getClass().getSimpleName()).toString();
+            String msg = String.format("%s no source specified", getClass().getSimpleName());
             Log.error(msg);
             context.setError(msg);
         }
@@ -236,11 +236,11 @@ public class JdbcReader extends AbstractFrameReader {
     private void getConnection() {
         if (connection == null) {
             if (getConnector() == null) {
-                Log.fatal(String.format("Component.no_connector", getClass().getSimpleName()));
+                Log.fatal(String.format("%s No connector", getClass().getSimpleName()));
             }
             connection = getConnector().getConnection();
             if (Log.isLogging(Log.DEBUG_EVENTS) && connection != null) {
-                Log.debug(String.format("Database.connected_to", getClass().getSimpleName(), getSource()));
+                Log.debug(String.format("%s connected to %s", getClass().getSimpleName(), getSource()));
             }
         }
     }

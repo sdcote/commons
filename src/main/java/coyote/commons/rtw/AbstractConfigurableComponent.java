@@ -194,13 +194,13 @@ public abstract class AbstractConfigurableComponent implements ConfigurableCompo
      * look for a configuration value of "port" which is configured with a value
      * of "SmtpPort". This method will then look in the context for a value with
      * the key of "SmtpPort" and if a value is found in the context, that value
-     * will be used. Note: this context lookup is case sensitive.
+     * will be used. Note: this context lookup is case-sensitive.
      *
      * <p>If there is no value with that key defined in the configuration, then
      * this method will search the context with that key. In this case, the
      * context serves as an extension of the configuration. For example, a
      * component may look for a value of "port" which does not exist in its
-     * configuration. This methed will then search the context for a value
+     * configuration. This method will then search the context for a value
      * mapped to the "port" key and return it if it exists. As an extension of
      * the configuration look-up, this search is case in-sensitive.
      *
@@ -243,7 +243,7 @@ public abstract class AbstractConfigurableComponent implements ConfigurableCompo
 
             // Only log if the value changed
             if (Log.isLogging(Log.DEBUG_EVENTS) && retval != null && !retval.equals(value)) {
-                Log.debug("Component.resolved_value");
+                Log.debug("Resolved value");
             }
         } else {
             // no context, return the configuration value as it is probably a literal

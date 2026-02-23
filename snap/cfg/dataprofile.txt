@@ -1,0 +1,17 @@
+Transform Performance:
+Job Start: Fri Feb 20 09:40:09 EST 2026
+Job End: Fri Feb 20 09:40:09 EST 2026
+Elapsed: 0ms  -  0 sec
+Records Read: 0
+Records Written: 0
+
+Input Data Profile:
+Read Count: 0
+Byte Count: 0
+Field Count: 0
+
+Output Data Profile:
+Write Count: 0
+Byte Count: 0
+Field Count: 0
+

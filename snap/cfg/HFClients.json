@@ -1,0 +1,24 @@
+{
+  "RtwJob":{
+
+    "Vault": { "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault", "password": "[#$env.vault.password#]" },
+
+    "Reader" : {
+      "class" : "JdbcReader",
+      "source" : "jdbc:h2:tcp://localhost:9092/~/Tools/Snap/wrk/Navista",
+      "driver" : "org.h2.Driver",
+      "username": "[#Vault.get(HostFlow,Username)#]",
+      "password" : "[#Vault.get(HostFlow,Password)#]",
+      "query" : "SELECT DISTINCT source_name, source_ip FROM flow WHERE destination_ip = '[#$cmd.arg.1#]' AND port_start = [#$cmd.arg.2#] AND source_name IS NOT NULL ORDER BY source_name;"
+    },
+
+    "Writer": { "class": "ConsoleWriter", "format": "json" },
+
+    "NOLogging": {
+      "ConsoleAppender": { "target": "STDERR", "categories": "error, fatal" },
+      "ConsoleAppender": { "target": "STDOUT", "categories": "trace, debug, info, notice, warn" }
+    }
+
+  }
+
+}
