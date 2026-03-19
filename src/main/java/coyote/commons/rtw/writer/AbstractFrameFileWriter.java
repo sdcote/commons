@@ -30,8 +30,9 @@ public abstract class AbstractFrameFileWriter extends AbstractFrameWriter implem
     protected static final String STDERR = "STDERR";
     protected int rowNumber = 0;
     protected PrintWriter printwriter = null;
+    protected File targetFile = null;
 
-    //size of the target file when this componet was opened
+    //size of the target file when this component was opened
     private long targetSize = -1;
 
 
@@ -114,20 +115,20 @@ public abstract class AbstractFrameFileWriter extends AbstractFrameWriter implem
             } else if (StringUtil.equalsIgnoreCase(STDERR, target)) {
                 printwriter = new PrintWriter(System.err);
             } else {
-                File targetFile = null;
-
                 // Try to parse the target as a URI, failures result in a null
                 final URI uri = UriUtil.parse(target);
+
                 if (uri != null) {
-                    if (UriUtil.isFile(uri)) targetFile = UriUtil.getFile(uri);
-                    if (targetFile == null) {
-                        Log.warn(String.format("The target '%s' does not represent a file URI", target));
-                    } else {
+                    if( UriUtil.isFile(uri)){
+                        targetFile = UriUtil.getFile(uri);
+                    } else{
+                        Log.notice(String.format("The target '%s' does not represent a file URI", target));
                         targetFile = new File(target);
                     }
                 } else {
                     targetFile = new File(target);
                 }
+
                 if (targetFile != null) {
                     // if not absolute, use the current job directory
                     if (!targetFile.isAbsolute()) {
