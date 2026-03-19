@@ -70,7 +70,7 @@ public class StaticReader extends AbstractFrameReader {
    * static reader is very often used to retrieve data from the command line 
    * and uses validators to check to see if fields are empty. If preprocessing 
    * the template, there will always be a value (e.g. [#$cmd.arg.1#]) in the 
-   * field and the validation will alwasy pass.
+   * field and the validation will always pass.
    * 
    * @param frame the frame to resolve.
    * 

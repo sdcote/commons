@@ -28,9 +28,9 @@ import coyote.commons.rtw.context.TransformContext;
  * engines TransformContext with a key (field name) of "ContextInput". This 
  * can be overridden in the reader's configuration by specifying the name of 
  * the field in the "source" configuration parameter. Note that the name of 
- * the field is context sensitive while the "source" attribute is not. A List 
- * of DataFrames is supported, but that will cause som inefficiencies as each 
- * DataFrame will be copied to a private array resulting in an extral copy 
+ * the field is context-sensitive while the "source" attribute is not. A List
+ * of DataFrames is supported, but that will cause some inefficiencies as each
+ * DataFrame will be copied to a private array resulting in an extra copy
  * operation and a duplication of DataFrames in memory. 
  */
 public class ContextReader extends AbstractFrameReader {

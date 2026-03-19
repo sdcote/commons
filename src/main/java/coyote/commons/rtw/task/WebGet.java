@@ -29,7 +29,7 @@ import java.net.URL;
  * directory unless a file or directory is specified.
  *
  * <p>The standard use case is a simple HTTP Get from some site. The filename
- * will be that of the file and it will be placed in the Job Directory.
+ * will be that of the file, and it will be placed in the Job Directory.
  *
  * <p>If a target file is specified, the file will be named matching that
  * filename argument. Otherwise, it will have the same name as it is

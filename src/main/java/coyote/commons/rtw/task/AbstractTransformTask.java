@@ -106,9 +106,9 @@ public abstract class AbstractTransformTask extends AbstractConfigurableComponen
   /**
    * All components are initialized through the {@code open(TransformContext)} method.
    *
-   * <p>A last chack of the configuration parameters should be performed here
+   * <p>A last check of the configuration parameters should be performed here
    * to make sure there are no issues or conflicts with other settings. For
-   * example, setting that were present during configuration may have changed
+   * example, settings that were present during configuration may have changed
    * at the time of initialization. If there are any issues during
    * initialization, simply place an error in the Transform context:
    * {@code context.setError("Initialization error");}</p>

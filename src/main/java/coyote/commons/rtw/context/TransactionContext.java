@@ -14,7 +14,7 @@ import coyote.commons.dataframe.DataFrame;
  * changed. This provides a backup and current state reference for
  * transformation operations.</p>
  *
- * <p>The working frame in the record all the components work on. When the
+ * <p>The working frame is the record all the components work on. When the
  * process first starts out, the source and working frames are identical. Then
  * mappers, and transformers begin to modify the working frame into its final
  * state.</p>

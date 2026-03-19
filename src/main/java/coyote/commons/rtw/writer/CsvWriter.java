@@ -47,7 +47,7 @@ import java.util.List;
  *   "separator" : "\t",
  *   "dateformat" : "yyyy/MM/dd",</pre>
  * 
- * <p>The separator can be a numeric representing the unicode character to use. 
+ * <p>The separator can be a numeric representing the Unicode character to use.
  * For example 9 can be used for the tab character as the tab character is 
  * ASCII character 9. If more than one character is specified, then only the 
  * first character is used.

@@ -58,7 +58,7 @@ import java.util.Properties;
  *     },
  * </pre>
  *
- * <p>The source attribute is the name[and port] of the LDAP service to connect. THis string will ultimately be
+ * <p>The source attribute is the name[and port] of the LDAP service to connect. This string will ultimately be
  * prepended with "ldap://" and used as the connection URL.</p>
  *
  * <p>The optional username and attributes are the credentials to authenticate once the connection is made.</p>
@@ -72,7 +72,7 @@ import java.util.Properties;
  * the data frame that is passed through the transformation engine.</p>
  *
  * <p>Every entry (data frame) will have at least a Name and FullName field regardless of the attribute names in the
- * field section. This aides in development and debugging.</p>
+ * field section. This aids in development and debugging.</p>
  */
 public class LdapReader extends AbstractFrameReader {
 

@@ -90,7 +90,10 @@ public abstract class AbstractConfigurableComponent implements ConfigurableCompo
     }
 
     /**
+     * Set the configuration for this component
      *
+     * @param cfg the configuration to set
+     * @throws ConfigurationException if the configuration is not valid for this component in any way.
      */
     @Override
     public void setConfiguration(Config cfg) throws ConfigurationException {
