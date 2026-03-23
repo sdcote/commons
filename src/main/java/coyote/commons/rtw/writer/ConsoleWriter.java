@@ -111,6 +111,8 @@ public class ConsoleWriter extends AbstractFrameWriter {
           System.out.println("Don't know how to format data into '" + getFormat() + "'");
         }
       }
+    } else {
+      System.out.println(frame.toString());
     }
 
     if (StringUtil.isNotEmpty(getMessage())) {

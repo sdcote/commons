@@ -1,5 +1,6 @@
 package coyote.commons.rtw.writer;
 
+import coyote.commons.FileUtil;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.context.TransformContext;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,8 @@ class FrameFileWriterTest {
             assertNotNull(targetFile);
         } catch (Exception e) {
             fail(e);
+        } finally{
+            FileUtil.deleteFile("testfile.txt");
         }
 
     }

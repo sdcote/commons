@@ -122,7 +122,6 @@ public abstract class AbstractFrameFileWriter extends AbstractFrameWriter implem
                     if( UriUtil.isFile(uri)){
                         targetFile = UriUtil.getFile(uri);
                     } else{
-                        Log.notice(String.format("The target '%s' does not represent a file URI", target));
                         targetFile = new File(target);
                     }
                 } else {
