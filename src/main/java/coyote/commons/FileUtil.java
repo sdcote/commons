@@ -1228,14 +1228,13 @@ public final class FileUtil {
      */
     public static String getExtension(final String fileName) throws IOException {
         final String tempName = new File(fileName).getName();
-        final StringTokenizer stk = new StringTokenizer(tempName, ".");
-        stk.nextToken();
+        final int lastDot = tempName.lastIndexOf('.');
 
-        if (stk.hasMoreTokens()) {
-            return stk.nextToken();
-        } else {
+        if ((lastDot <= 0) || (lastDot == tempName.length() - 1)) {
             return "";
         }
+
+        return tempName.substring(lastDot + 1);
     }
 
 

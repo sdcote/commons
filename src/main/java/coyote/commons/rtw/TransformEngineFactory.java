@@ -390,6 +390,15 @@ public class TransformEngineFactory {
   }
 
 
+  /**
+   * The Transform section is a little bit different from the rest. The section
+   * is a group of named frames.
+   *
+   * <p>This structure is because there are many different transforms applied,
+   * unlike there being just one reader, or mapper, etc.</p>
+   * @param cfg
+   * @param engine
+   */
   private static void configTransformer(DataFrame cfg, TransformEngine engine) {
     if (cfg != null) {
       for (DataField field : cfg.getFields()) {
