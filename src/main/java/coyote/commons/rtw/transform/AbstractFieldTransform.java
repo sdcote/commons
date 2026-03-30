@@ -89,7 +89,7 @@ public abstract class AbstractFieldTransform extends AbstractFrameTransform impl
 
   /**
    * Subclasses should probably override {@link #performTransform(DataFrame)} instead of 
-   * this method so as to enable this class to handle conditional checks.
+   * this method to enable this class to handle conditional checks.
    */
   @Override
   public DataFrame process(DataFrame frame) throws TransformException {
@@ -124,8 +124,7 @@ public abstract class AbstractFieldTransform extends AbstractFrameTransform impl
    * conditional expression.
    * 
    * <p>Overriding this transform instead of {@link #process(DataFrame)} allows the 
-   * AbstractFieldTransform to handle all checks in a uniform manner for all 
-   * subclasses.
+   * AbstractFieldTransform to handle all checks uniformly for all subclasses.
    * 
    * @throws TransformException
    */

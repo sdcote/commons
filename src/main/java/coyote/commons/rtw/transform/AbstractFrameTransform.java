@@ -26,11 +26,11 @@ import java.io.IOException;
  * value is passed to the transform action for processing.</p>
  * 
  * <p>A common use case for frame transformation is encryption of data. Fields 
- * are stored and transferred in an encrypted format, but need to be decrypted 
+ * are stored and transferred in an encrypted format but need to be decrypted
  * before use.</p>
  * 
  * <p>Another use case for the transform is collecting metrics on the frames 
- * observed and aggregating values for post processing and context listeners to 
+ * observed and aggregating values for post-processing and context listeners to
  * report.</p>
  */
 public abstract class AbstractFrameTransform extends AbstractConfigurableComponent implements FrameTransform, ConfigurableComponent {
@@ -50,7 +50,7 @@ public abstract class AbstractFrameTransform extends AbstractConfigurableCompone
    * to make sure there are no issues or conflicts with other settings. For
    * example, settings that were present during configuration may have changed
    * at the time of initialization. If there are any issues during
-   * initialization, simply place an error in the Transform context:
+   * initialization, place an error in the Transform context:
    * {@code context.setError("Initialization error");}</p>
    *
    * <p>Once all components have been initialized, the engine will start

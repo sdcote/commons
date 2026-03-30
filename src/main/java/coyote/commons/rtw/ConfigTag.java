@@ -125,6 +125,7 @@ public class ConfigTag {
     public static final String LISTENER = "listener";
     public static final String DATABASE = "database";
     public static final String WRITER = "writer";
+    public static final String MAP = "map";
     public static final String MAPPER = "mapper";
     public static final String FILTER = "filter";
     public static final String READER = "reader";
