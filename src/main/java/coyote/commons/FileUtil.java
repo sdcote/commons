@@ -672,22 +672,21 @@ public final class FileUtil {
             throw new IOException("Source file " + sourceFile + " (" + sourceFile.getAbsolutePath() + ") does not exist. Cannot copy. Logged in as " + System.getProperty("user.name"));
         }
 
-        final FileOutputStream fout = new FileOutputStream(destFile);
-        final BufferedOutputStream bout = new BufferedOutputStream(fout);
-        final FileInputStream fin = new FileInputStream(sourceFile);
-        final BufferedInputStream bin = new BufferedInputStream(fin);
-        int onechar = 0;
-        onechar = bin.read();
-
-        while (onechar != -1) {
-            bout.write(onechar);
-
+        try (final FileInputStream fin = new FileInputStream(sourceFile);
+             final BufferedInputStream bin = new BufferedInputStream(fin);
+             final FileOutputStream fout = new FileOutputStream(destFile);
+             final BufferedOutputStream bout = new BufferedOutputStream(fout)) {
+            int onechar = 0;
             onechar = bin.read();
-        }
 
-        bout.flush();
-        bin.close();
-        fin.close();
+            while (onechar != -1) {
+                bout.write(onechar);
+
+                onechar = bin.read();
+            }
+
+            bout.flush();
+        }
 
         if (!destFile.exists()) {
             throw new IOException("File copy failed: destination file '" + destFile + "' does not exist after copy.");
