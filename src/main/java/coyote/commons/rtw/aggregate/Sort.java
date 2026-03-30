@@ -24,14 +24,14 @@ import coyote.commons.rtw.context.TransformContext;
 /**
  * Simple aggregator to emit frames in a sorted order.
  * 
- * <p>This is a naive approach and results in consuming twice the about of 
- * memory it should. The original list of frames are buffered and upon 
+ * <p>This is a naive approach and results in consuming twice the amount of
+ * memory it should. The original list of frames is buffered and upon
  * completion, will create a duplicate list in sorted order. This is not 
- * optimal and a more memory efficient approach should be developed. 
+ * optimal and a more memory-efficient approach should be developed.
  * 
  * <p>A sample configuration is as follows:<pre>
  * "Aggregator": { "class": "Sort", "field":"Price", "sort":"decend" }</pre>
- * The above configuration sort all the frames in descending order by price.
+ * The above configuration sorts all the frames in descending order by price.
  */
 public class Sort extends AbstractFrameAggregator implements FrameAggregator {
 
@@ -61,7 +61,7 @@ public class Sort extends AbstractFrameAggregator implements FrameAggregator {
       } else if (ConfigTag.NONE.equalsIgnoreCase(sortMode)) {
         sort = RTW.Sort.NONE;
       } else {
-        Log.warn("Unrecognized sourt parameter '" + sortMode + "' - no sorting will occur");
+        Log.warn("Unrecognized sort parameter '" + sortMode + "' - no sorting will occur");
         sort = RTW.Sort.NONE;
       }
     } else {

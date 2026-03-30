@@ -54,7 +54,7 @@ public abstract class AbstractFrameAggregator extends AbstractConfigurableCompon
   /**
    * Return the conditional expression from the configuration.
    * 
-   * @return the condition which must evaluate to true before the aggregator 
+   * @return the condition that must evaluate to true before the aggregator
    *         is to execute.
    */
   public String getCondition() {

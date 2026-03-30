@@ -1,6 +1,5 @@
 {
-  "Class": "coyote.dx.Job",
-  "Job": {
+  "RtwJob": {
     "Name": "Simple",
     "Reader": {
       "class": "StaticReader",

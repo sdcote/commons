@@ -1,9 +1,14 @@
 {
   "RtwJob":{
 
+    "Description": [
+      "This is considered good practice for multi-line documentation in JSON.",
+      "The description is not used by the framework."
+    ],
+
     "Vault": {
       "filename": "demo.vault",
-      "password": "[#$sys.vault.password#]"
+      "password": "[#$env.vault.password#]"
     },
 
     "Preprocess": {
@@ -23,10 +28,12 @@
 
     "Listener": {"DataProfiler": { "target": "[#$sys.user.dir#][#$sys.file.separator#]dataprofile.txt"}},
 
+    "Postprocess": {
+    },
 
     "Logging": {
-      "ConsoleAppender": { "target": "STDERR", "categories": "error, fatal" },
-      "ConsoleAppender": { "target": "STDOUT", "categories": "info, notice, warn" }
+      "StandardError": { "categories": "warn, error, fatal" },
+      "StandardOutput": { "categories": "debug, trace, info, notice" }
     }
 
   }

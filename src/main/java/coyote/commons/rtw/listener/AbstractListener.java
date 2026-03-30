@@ -32,7 +32,7 @@ public abstract class AbstractListener extends AbstractConfigurableComponent imp
   /**
    * Return the conditional expression from the configuration.
    * 
-   * @return the condition which must evaluate to true before the task is to 
+   * @return the condition that must evaluate to true before the task is to
    *         execute.
    */
   public String getCondition() {
