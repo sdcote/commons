@@ -398,6 +398,53 @@ public final class FileUtil {
 
 
     /**
+     * Merge the contents of one directory into another.
+     *
+     * <p>This method will recursively copy all files and directories from the
+     * source directory to the destination directory. If the overwrite flag is
+     * set to true, existing files in the destination directory will be
+     * overwritten with files of the same name from the source directory.</p>
+     *
+     * @param src       the source directory to merge from
+     * @param dest      the destination directory to merge into
+     * @param overwrite true to overwrite existing files, false to skip them
+     * @throws IOException if there are problems with any of the file operations
+     */
+    public static void mergeDirectory(final File src, final File dest, final boolean overwrite) throws IOException {
+        if (src == null || !src.exists() || !src.isDirectory()) {
+            throw new IOException("Source directory is invalid");
+        }
+        if (dest == null) {
+            throw new IOException("Destination directory is null");
+        }
+
+        if (dest.exists()) {
+            if (!dest.isDirectory()) {
+                throw new IOException("Destination exists but is not a directory: " + dest.getAbsolutePath());
+            }
+        } else {
+            if (!dest.mkdirs()) {
+                throw new IOException("Could not create destination directory: " + dest.getAbsolutePath());
+            }
+        }
+
+        final File[] files = src.listFiles();
+        if (files != null) {
+            for (final File file : files) {
+                final File targetFile = new File(dest, file.getName());
+                if (file.isDirectory()) {
+                    mergeDirectory(file, targetFile, overwrite);
+                } else {
+                    if (overwrite || !targetFile.exists()) {
+                        copyFile(file, targetFile, true);
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
      * Copy one directory to another.
      *
      * @param srcDir  the directory to copy from
