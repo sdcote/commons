@@ -4,12 +4,18 @@ import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
+import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.TransformException;
+import coyote.commons.rtw.context.TransformContext;
+import coyote.commons.dataframe.DataField;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The FileDateClassifier transform reads a filename from the data frame and,
@@ -21,6 +27,39 @@ public class FileDateClassifier extends AbstractFrameTransform {
 
   private static final String FILENAME = "filename";
   private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+  private List<Pattern> patterns = new ArrayList<>();
+
+  @Override
+  public void open(final TransformContext context) {
+    super.open(context);
+
+    DataField field = configuration.getFieldIgnoreCase(ConfigTag.PATTERN);
+    if (field != null) {
+      if (field.isFrame()) {
+        DataFrame patternFrame = (DataFrame) field.getObjectValue();
+        for (DataField pField : patternFrame.getFields()) {
+          String pattern = pField.getStringValue();
+          if (StringUtil.isNotBlank(pattern)) {
+            try {
+              patterns.add(Pattern.compile(pattern));
+            } catch (Exception e) {
+              Log.error("Invalid filename regex pattern: " + pattern + " - " + e.getMessage());
+            }
+          }
+        }
+      } else {
+        String pattern = field.getStringValue();
+        if (StringUtil.isNotBlank(pattern)) {
+          try {
+            patterns.add(Pattern.compile(pattern));
+          } catch (Exception e) {
+            Log.error("Invalid filename regex pattern: " + pattern + " - " + e.getMessage());
+          }
+        }
+      }
+    }
+  }
 
   /**
    * @see coyote.commons.rtw.FrameTransform#process(coyote.commons.dataframe.DataFrame)
@@ -51,6 +90,20 @@ public class FileDateClassifier extends AbstractFrameTransform {
     }
 
     File file = new File(filename);
+
+    if (patterns.size() > 0) {
+      boolean match = false;
+      for (Pattern p : patterns) {
+        if (p.matcher(file.getName()).matches()) {
+          match = true;
+          break;
+        }
+      }
+      if (!match) {
+        return retval;
+      }
+    }
+
     if (!file.exists()) {
       if (Log.isLogging(Log.DEBUG_EVENTS)) {
         Log.debug("FileDateClassifier: File not found: " + filename);
