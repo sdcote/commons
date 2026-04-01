@@ -111,7 +111,7 @@ public class FileDateClassifier extends AbstractFrameTransform {
       return retval;
     }
 
-    long lastModified = file.lastModified();
+    long lastModified = getDate(file);
     if (lastModified == 0L) {
       if (Log.isLogging(Log.DEBUG_EVENTS)) {
         Log.debug("FileDateClassifier: Could not determine last modified date for: " + filename);
@@ -175,5 +175,15 @@ public class FileDateClassifier extends AbstractFrameTransform {
     }
 
     return retval;
+  }
+
+  /**
+   * Determine the date of the file.
+   *
+   * @param file the file to check
+   * @return the last modified date of the file or 0 if it cannot be determined
+   */
+  protected long getDate(File file) {
+    return file.lastModified();
   }
 }
