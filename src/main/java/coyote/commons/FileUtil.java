@@ -137,26 +137,12 @@ public final class FileUtil {
                 FileUtil.createBackup(file);
             }
 
-            RandomAccessFile seeker = null;
-
-            try {
-                seeker = new RandomAccessFile(file, "rw");
-
+            try (RandomAccessFile seeker = new RandomAccessFile(file, "rw")) {
                 seeker.seek(seeker.length());
                 seeker.write(data);
                 file.setLastModified(System.currentTimeMillis());
             } catch (final IOException ioe) {
                 throw ioe;
-            } finally {
-                // Attempt to close the data input stream
-                try {
-                    // If it is open, close it
-                    if (seeker != null) {
-                        seeker.close();
-                    }
-                } catch (final Exception e) {
-                    // Nevermind
-                }
             }
         }
 
@@ -2285,28 +2271,13 @@ public final class FileUtil {
      * @return DataInpuStream - stream to use for file data
      */
     public static DataInputStream openInputFile(final String fn) {
-        FileInputStream fis = null;
-        DataInputStream dis = null;
-
         try {
-            fis = new FileInputStream(fn);
+            FileInputStream fis = new FileInputStream(fn);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            return new DataInputStream(bis);
         } catch (final IOException e) {
-            return dis;
-        }
-
-        BufferedInputStream bis = null;
-        try {
-            bis = new BufferedInputStream(fis);
-            dis = new DataInputStream(bis);
-        } catch (final Exception e) {
-            try {
-                fis.close();
-            } catch (final IOException e1) {
-            }
             return null;
         }
-
-        return dis;
     }
 
 
@@ -2394,24 +2365,12 @@ public final class FileUtil {
         }
 
         if (file.exists() && file.canRead()) {
-            DataInputStream dis = null;
             final byte[] bytes = new byte[Long.valueOf(file.length()).intValue()];
 
-            try {
-                dis = new DataInputStream(new FileInputStream(file));
-
+            try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
                 dis.readFully(bytes);
-
                 return bytes;
             } catch (final Exception ignore) {
-            } finally {
-                // Attempt to close the data input stream
-                try {
-                    if (dis != null) {
-                        dis.close();
-                    }
-                } catch (final Exception ignore) {
-                }
             }
         }
 
@@ -2589,30 +2548,13 @@ public final class FileUtil {
      * @throws IOException if there were problems
      */
     public static void saveStreamToFile(final InputStream in, final File outFile) throws IOException {
-        FileOutputStream out = null;
-
-        try {
-            out = new FileOutputStream(outFile);
-
+        try (InputStream input = in;
+             FileOutputStream out = new FileOutputStream(outFile)) {
             final byte[] buf = new byte[4096];
             int bytesRead;
 
-            while ((bytesRead = in.read(buf)) != -1) {
+            while ((bytesRead = input.read(buf)) != -1) {
                 out.write(buf, 0, bytesRead);
-            }
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException e) {
-                }
-            }
-
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (final IOException e) {
-                }
             }
         }
     }
@@ -2815,42 +2757,25 @@ public final class FileUtil {
         }
 
         if (!file.exists() || (file.exists() && file.canWrite())) {
-            DataOutputStream dos = null;
+            if (file.exists() && backup) {
+                FileUtil.createBackup(file);
+            }
 
-            try {
-                if (file.exists() && backup) {
-                    FileUtil.createBackup(file);
-                }
+            // Make sure the parent directories are present
+            if (file.getParent() != null) {
+                file.getParentFile().mkdirs();
+            }
 
-                // Make sure the parent directories are present
-                if (file.getParent() != null) {
-                    file.getParentFile().mkdirs();
-                }
-
-                if (data.length > 0) {
-                    // Create an output stream
-                    dos = new DataOutputStream(new FileOutputStream(file));
-
+            if (data.length > 0) {
+                // Create an output stream
+                try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(file))) {
                     // Write the data to it
                     dos.write(data);
-
                     // Flush the buffers
                     dos.flush();
-                } else {
-                    FileUtil.touch(file);
                 }
-
-            } catch (final EOFException eof) {
-            } finally {
-                // Attempt to close the data input stream
-                try {
-                    // If it is open, close it
-                    if (dos != null) {
-                        dos.close();
-                    }
-                } catch (final Exception e) {
-                    // Nevermind
-                }
+            } else {
+                FileUtil.touch(file);
             }
         }
     }
@@ -2923,15 +2848,10 @@ public final class FileUtil {
             throw new IOException("Destination '" + destFile + "' exists but is a directory");
         }
 
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-        FileChannel input = null;
-        FileChannel output = null;
-        try {
-            fis = new FileInputStream(srcFile);
-            fos = new FileOutputStream(destFile);
-            input = fis.getChannel();
-            output = fos.getChannel();
+        try (FileInputStream fis = new FileInputStream(srcFile);
+             FileOutputStream fos = new FileOutputStream(destFile);
+             FileChannel input = fis.getChannel();
+             FileChannel output = fos.getChannel()) {
             final long size = input.size();
             long pos = 0;
             long count = 0;
@@ -2944,8 +2864,6 @@ public final class FileUtil {
                 }
                 pos += bytesCopied;
             }
-        } finally {
-            close(output, fos, input, fis);
         }
 
         final long srcLen = srcFile.length();
