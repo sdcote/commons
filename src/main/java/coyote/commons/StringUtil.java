@@ -136,18 +136,16 @@ public final class StringUtil {
      */
     public static String ISO8859_1;
 
-    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
     static {
         final String iso = System.getProperty("ISO_8859_1");
         if (iso != null) {
             StringUtil.ISO8859_1 = iso;
         } else {
-            new String(new byte[]{(byte) 20}, StandardCharsets.ISO_8859_1);
-
             StringUtil.ISO8859_1 = "ISO-8859-1";
         }
     }
+
+    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 
     /**
@@ -165,14 +163,10 @@ public final class StringUtil {
      * @return the bytes representing the encoded text or null if the text is null
      */
     public static byte[] getBytes(String text) {
-        byte[] retval = null;
-        if (text != null) {
-            try {
-                retval = text.getBytes(StringUtil.ISO8859_1);
-            } catch (final Exception ex) {
-            }
+        if (text == null) {
+            return null;
         }
-        return retval;
+        return text.getBytes(StandardCharsets.ISO_8859_1);
     }
 
     /**
@@ -182,13 +176,10 @@ public final class StringUtil {
      * @return the decoded string or null if the passed data was null.
      */
     public static String getString(byte[] bytes) {
-        String retval = null;
-        try {
-            retval = new String(bytes, StringUtil.ISO8859_1);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (bytes == null) {
+            return null;
         }
-        return retval;
+        return new String(bytes, StandardCharsets.ISO_8859_1);
     }
 
     /**
@@ -283,6 +274,7 @@ public final class StringUtil {
      * @return XML String converted to an XML safe string.
      */
     public static String XMLToString(final String string) {
+        if (string == null) return null;
         return StringUtil.tokenSubst(StringUtil.XML_ENTITYREFS, string, false);
     }
 
@@ -376,6 +368,7 @@ public final class StringUtil {
      * @return Restored string.
      */
     public static String StringToXML(final String string) {
+        if (string == null) return null;
         return StringUtil.tokenSubst(StringUtil.XML_ENTITYREFS, StringUtil.notNull(string), true);
     }
 

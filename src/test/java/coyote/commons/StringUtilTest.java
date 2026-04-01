@@ -10,15 +10,21 @@ package coyote.commons;
 //import static org.junit.Assert.*;
 
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 
+ * Unit tests for StringUtil class.
+ * These tests also serve as documentation for how to use the various methods in StringUtil.
  */
 public class StringUtilTest {
   private static final byte[] BYTES_FIXTURE = { 'a', 'b', 'c' };
@@ -589,6 +595,201 @@ public class StringUtilTest {
 
 
 
+
+  @Test
+  @DisplayName("Test token substitution")
+  public void testTokenSubst() {
+    String[] tokens = {"[name]", "Junie", "[action]", "coding"};
+    String template = "Hello [name], I am [action]!";
+    assertEquals("Hello Junie, I am coding!", StringUtil.tokenSubst(tokens, template, true));
+    
+    // Testing order/reverse substitution
+    String[] tokens2 = {"&", "&amp;", "<", "&lt;"};
+    String text = "& <";
+    // If fromStart is true, '&' is replaced first, then '<'
+    assertEquals("&amp; &lt;", StringUtil.tokenSubst(tokens2, text, true));
+  }
+
+  @Test
+  @DisplayName("Test character substitution")
+  public void testCharSubst() {
+    assertEquals("b-n-n-", StringUtil.charSubst('a', '-', "banana"));
+    assertEquals("", StringUtil.charSubst('a', '-', ""));
+    assertEquals("", StringUtil.charSubst('a', '-', null));
+  }
+
+  @Test
+  @DisplayName("Test XML/HTML conversion")
+  public void testXmlHtmlConversion() {
+    String original = "John & Mary < 'smith' > \"cool\"";
+    String xml = StringUtil.StringToXML(original);
+    assertNotNull(xml);
+    assertTrue(xml.contains("&amp;"));
+    assertTrue(xml.contains("&lt;"));
+    
+    String back = StringUtil.XMLToString(xml);
+    assertEquals(original, back);
+    
+    String html = StringUtil.StringToHTML(original);
+    assertNotNull(html);
+    assertTrue(html.contains("&amp;"));
+    
+    // Test HTMLToString (Note: current implementation removes &nbsp;)
+    assertEquals("test", StringUtil.HTMLToString("test&nbsp;"));
+  }
+
+  @Test
+  @DisplayName("Test text presence checks")
+  public void testHasText() {
+    assertTrue(StringUtil.hasText("abc"));
+    assertTrue(StringUtil.hasText("  abc  "));
+    assertFalse(StringUtil.hasText("   "));
+    assertFalse(StringUtil.hasText(""));
+    assertFalse(StringUtil.hasText((String)null));
+    
+    assertTrue(StringUtil.hasLength(" "));
+    assertFalse(StringUtil.hasLength(""));
+    assertFalse(StringUtil.hasLength((String)null));
+  }
+
+  @Test
+  @DisplayName("Test blank checks")
+  public void testIsBlank() {
+    assertTrue(StringUtil.isBlank(null));
+    assertTrue(StringUtil.isBlank(""));
+    assertTrue(StringUtil.isBlank("   "));
+    assertFalse(StringUtil.isBlank("abc"));
+    
+    assertFalse(StringUtil.isNotBlank("   "));
+    assertTrue(StringUtil.isNotBlank("abc"));
+  }
+
+  @Test
+  @DisplayName("Test number conversion and checks")
+  public void testNumbers() throws Exception {
+    assertTrue(StringUtil.isNumber("123"));
+    assertFalse(StringUtil.isNumber("-123.45")); // StringUtil.isNumber only allows digits
+    assertFalse(StringUtil.isNumber("abc"));
+    
+    assertTrue(StringUtil.isDigits("12345"));
+    assertFalse(StringUtil.isDigits("123.45"));
+    
+    assertEquals("A", StringUtil.numberToLetter(1, true));
+    assertEquals("z", StringUtil.numberToLetter(26, false));
+    // StringUtil.numberToLetter currently only supports range 1-26
+  }
+
+  @Test
+  @DisplayName("Test string replacement")
+  public void testReplace() {
+    assertEquals("hello world", StringUtil.replace("hello java", "java", "world"));
+    assertEquals("aaaa", StringUtil.replace("abaaba", "b", ""));
+  }
+
+  @Test
+  @DisplayName("Test soundex")
+  public void testSoundex() {
+    assertEquals("R16300", StringUtil.soundex("Robert"));
+    assertEquals("R16300", StringUtil.soundex("Rupert"));
+  }
+
+  @Test
+  @DisplayName("Test array utilities")
+  public void testArrayUtils() {
+    String[] array = {"zero", "one", "two"};
+    assertEquals("one", StringUtil.safeGetStringFromArray(1, array, 0));
+    assertEquals("zero", StringUtil.safeGetStringFromArray(5, array, 0));
+    
+    assertEquals(2, StringUtil.findStringInArray("two", array, -1));
+    assertEquals(-1, StringUtil.findStringInArray("three", array, -1));
+    
+    assertEquals("zero, one and two", StringUtil.arrayToCommaList(array));
+  }
+
+  @Test
+  @DisplayName("Test notation conversions")
+  public void testNotation() {
+    assertEquals("myjava_class", StringUtil.asJavaName("my-java_class"));
+    assertEquals("myJavaClass", StringUtil.asCamelNotation("my java class"));
+  }
+
+  @Test
+  @DisplayName("Test filename and path utilities")
+  public void testPathUtils() {
+    assertEquals("test", StringUtil.extension("file.test"));
+    assertNull(StringUtil.extension("file"));
+    
+    assertEquals("coyote.commons", StringUtil.getJavaPackage("coyote.commons.StringUtil"));
+    assertEquals("StringUtil", StringUtil.getLocalJavaName("coyote.commons.StringUtil"));
+    
+    assertEquals("file.txt", StringUtil.getLocalFileName("/path/to/file.txt"));
+  }
+
+  @Test
+  @DisplayName("Test padding and centering")
+  public void testPaddingMore() {
+    assertEquals("  abc  ", StringUtil.padCenter("abc", 7));
+    assertEquals("+++abc+++", StringUtil.padCenter("abc", '+', 9));
+  }
+
+  @Test
+  @DisplayName("Test split and join")
+  public void testSplit() {
+    List<String> result = StringUtil.split("one,two,three", ",");
+    assertEquals(3, result.size());
+    assertEquals("two", result.get(1));
+    
+    String[] tokens = StringUtil.tokenizeToStringArray("one;two,three", ";,", true, true);
+    assertEquals(3, tokens.length);
+  }
+
+  @Test
+  @DisplayName("Test digest and random ID")
+  public void testDigestAndRandom() {
+    String id = StringUtil.generateRandomId(10);
+    assertEquals(10, id.length());
+    
+    String digest = StringUtil.digestString("hello");
+    assertNotNull(digest);
+    assertEquals(StringUtil.digestString("hello"), digest);
+  }
+
+  @Test
+  @DisplayName("Test miscellaneous methods")
+  public void testMisc() {
+    assertEquals("Hello", StringUtil.getCapitalized("hello"));
+    assertEquals("123", StringUtil.stripChars("1a2b3c", "abc"));
+    assertEquals("abc", StringUtil.unquote("\"abc\""));
+    assertEquals("abc", StringUtil.unquote("'abc'"));
+  }
+
+  @Test
+  @DisplayName("Test newString and getBytes with StandardCharsets")
+  public void testStandardCharsets() {
+    byte[] utf8Bytes = StringUtil.getBytesUtf8("hello");
+    assertEquals("hello", StringUtil.newStringUtf8(utf8Bytes));
+    
+    byte[] isoBytes = StringUtil.getBytes("hello");
+    assertEquals("hello", StringUtil.getString(isoBytes));
+  }
+
+  @Test
+  @DisplayName("Test search methods")
+  public void testSearch() {
+    assertTrue(StringUtil.containsAny("hello", new char[]{'a', 'e', 'i'}));
+    assertFalse(StringUtil.containsAny("hello", new char[]{'x', 'y', 'z'}));
+    
+    assertEquals(2, StringUtil.countMatches("hello hello", "hello"));
+    assertTrue(StringUtil.equalsAny("one", new String[]{"one", "two"}));
+  }
+
+  @Test
+  @DisplayName("Test UUID conversion")
+  public void testUuid() {
+    UUID uuid = UUID.randomUUID();
+    String digest = StringUtil.digestUuid(uuid, 8);
+    assertEquals(8, digest.length());
+  }
 
   @Test
   public void testTrimChar() {
