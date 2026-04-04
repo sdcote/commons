@@ -5,8 +5,10 @@
 
     "Reader" : {
       "class" : "DirectoryReader",
-      "directory" : "[#$sys.user.home#]",
-      "pattern" : ".*"
+      "directory" : "/Volumes/PRO-G40/Media/Pictures1",
+      "pattern1" : ".*",
+      "pattern2" : "(?i)^IMG_.*..*$",
+      "pattern" : "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
     },
 
     "Writer": { "class": "ConsoleWriter", "format": "json" },

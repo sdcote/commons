@@ -56,8 +56,9 @@ public class ConfigTag {
     public static final String LISTEN = "Listen";
     public static final String LOGGING = "logging";
     public static final String MESSAGE = "Message";
-    public static final String MODE = "mode";
     public static final String NAME = "name";
+    public static final String MODE = "mode";
+    public static final String MOVE = "move";
     public static final String OVERWRITE = "overwrite";
     public static final String PASSWORD = "password";
     public static final String PATH = "path";

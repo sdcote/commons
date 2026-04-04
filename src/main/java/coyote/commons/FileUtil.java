@@ -456,7 +456,7 @@ public final class FileUtil {
      * @param source            directory from which the files are to be read
      * @param target            directory to which files are to be written
      * @param pattern           regex pattern to match on the fully qualified filename
-     * @param recurse           true to also search the sub-directories of the source directory
+     * @param recurse           true to also search the subdirectories of the source directory
      * @param preserveHierarchy true to maintain the hierarchy in the target directory for recursive searches
      * @param keepDate          true to keep the date of the target file the same as the source file, false to keep the current date/time
      * @param overwrite         true to overwrite files in the target directory with the same name if they exist
@@ -471,10 +471,6 @@ public final class FileUtil {
         if (StringUtil.isNotBlank(pattern)) {
 
             final List<File> foundFiles = FileUtil.getFiles(source, pattern, recurse);
-
-//      if (Log.isLogging(Log.DEBUG_EVENTS)) {
-//        Log.debug("Found " + foundFiles.size() + " files with a pattern of '" + pattern + "' in " + source.getAbsolutePath() + " - resurse:" + recurse);
-//      }
 
             if (recurse) {
                 // collect files matching the pattern from potentially many different directories
@@ -527,7 +523,7 @@ public final class FileUtil {
 
                                 } else {
                                     // The target file already exists, but we are not allowed to
-                                    // overwrite it and we are not allow to create a new file
+                                    // overwrite it, and we are not allow to create a new file
                                     // with a different name so don't copy the file and set the
                                     // return flag to false indicating that at least one file did
                                     // not get copied.
@@ -610,7 +606,7 @@ public final class FileUtil {
      * @param source            directory from which the files are to be read
      * @param target            directory to which files are to be written
      * @param pattern           regex pattern to match on the fully qualified filename
-     * @param recurse           true to also search the sub-directories of the source directory
+     * @param recurse           true to also search the subdirectories of the source directory
      * @param preserveHierarchy true to maintain the hierarchy in the target directory for recursive searches
      * @param keepDate          true to keep the data of the target file the same as the source file, false to keep the current date/time
      * @param overwrite         true to overwrite files in the target directory with the same name if they exist
