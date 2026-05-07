@@ -88,7 +88,7 @@ public class Delete extends AbstractFileTask {
       }
 
     } else {
-      Log.warn(String.format( "Task.delete_config_error", ConfigTag.FILE, ConfigTag.DIRECTORY));
+      Log.warn(String.format("Task.Delete configuration error: missing %s or %s", ConfigTag.FILE, ConfigTag.DIRECTORY));
     }
 
   }

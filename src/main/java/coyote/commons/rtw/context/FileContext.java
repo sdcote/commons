@@ -118,7 +118,7 @@ public class FileContext extends PersistentContext {
         // format it in the default format
         frame.put(Symbols.PREVIOUS_RUN_DATETIME, new SimpleDateFormat(RTW.DEFAULT_DATETIME_FORMAT).format((Date)rundate));
       } else {
-        Log.warn(String.format( "Context.run_date_reset %s", rundate));
+        Log.warn(String.format("Run date reset to: %s", rundate));
       }
     }
 

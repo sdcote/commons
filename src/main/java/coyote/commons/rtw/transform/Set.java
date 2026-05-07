@@ -81,7 +81,7 @@ public class Set extends AbstractFieldTransform implements FrameTransform {
 
     String token = getConfiguration().getString(ConfigTag.VALUE);
     if (token == null) {
-      Log.warn(String.format( "Transform.Set_setting_null_to_field", getFieldName()));
+      Log.warn(String.format("Setting null to field '%s'", getFieldName()));
     } else {
       fieldValue = token;
     }
@@ -89,7 +89,7 @@ public class Set extends AbstractFieldTransform implements FrameTransform {
     if (StringUtil.isNotBlank(getExpression())) {
       token = getConfiguration().getString(ConfigTag.DEFAULT);
       if (token == null) {
-        Log.warn(String.format( "Transform.Set_setting_null_by_default", getFieldName()));
+        Log.warn(String.format("Setting null by default to field '%s'", getFieldName()));
       } else {
         defaultValue = token;
       }
@@ -123,7 +123,7 @@ public class Set extends AbstractFieldTransform implements FrameTransform {
           }
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn(String.format( "Transform.Set_boolean_evaluation_error", e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error during set: %s", e.getMessage()));
       }
 
     } else {

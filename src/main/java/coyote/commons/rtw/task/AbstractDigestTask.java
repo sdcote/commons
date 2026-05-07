@@ -80,17 +80,17 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
             String digest = null;
             try {
               digest = digest(file, getDigest());
-              Log.debug(String.format( "Digest.results %s %s %s", file.getAbsolutePath(), ALGORITHM, digest));
+              Log.debug(String.format("%s results for '%s': %s", ALGORITHM, file.getAbsolutePath(), digest));
 
               final String digestFilename = file.getAbsolutePath() + CHECKSUM_EXTENSION;
               final File digestFile = new File(digestFilename);
 
               if (StringUtil.isNotBlank(expectedDigest)) {
                 if (StringUtil.equalsIgnoreCase(digest, expectedDigest.trim())) {
-                  Log.info(String.format( "Digest.verified %s %s", ALGORITHM, file.getAbsolutePath()));
+                  Log.info(String.format("%s verified for %s", ALGORITHM, file.getAbsolutePath()));
                   getContext().set(digestFilename, digest);
                 } else {
-                  final String msg = String.format( "Digest.verification_failed %s %s %s", ALGORITHM, source, file.getAbsolutePath());
+                  final String msg = String.format("%s verification failed for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                   if (haltOnError) {
                     throw new TaskException(msg);
                   } else {
@@ -104,10 +104,10 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
                     final String expected = FileUtil.fileToString(digestFile);
                     if (StringUtil.isNotBlank(expected)) {
                       if (StringUtil.equalsIgnoreCase(digest, expected.trim())) {
-                        Log.info(String.format( "Digest.verified %s", ALGORITHM, file.getAbsolutePath()));
+                        Log.info(String.format("%s verified for %s", ALGORITHM, file.getAbsolutePath()));
                         getContext().set(digestFilename, digest);
                       } else {
-                        final String msg = String.format( "Digest.verification_failed %s %s %s", ALGORITHM, source, file.getAbsolutePath());
+                        final String msg = String.format("%s verification failed for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                         if (haltOnError) {
                           throw new TaskException(msg);
                         } else {
@@ -116,7 +116,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
                         }
                       }
                     } else {
-                      final String msg = String.format( "Digest.blank_digest_data %s %s %s", ALGORITHM, source, file.getAbsolutePath());
+                      final String msg = String.format("%s digest file is blank for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                       if (haltOnError) {
                         throw new TaskException(msg);
                       } else {
@@ -125,7 +125,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
                       }
                     }
                   } else {
-                    final String msg = String.format( "Digest.could_not_read_digest_file", ALGORITHM, source, file.getAbsolutePath()).toString();
+                    final String msg = String.format("Could not read %s digest file for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                     if (haltOnError) {
                       throw new TaskException(msg);
                     } else {
@@ -134,11 +134,11 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
                     }
                   }
                 } else {
-                  Log.warn(String.format( "Digest.no_digest_data", ALGORITHM, file.getAbsolutePath()));
+                  Log.warn(String.format("No %s digest data found for %s", ALGORITHM, file.getAbsolutePath()));
                 }
               }
             } catch (final IOException e) {
-              final String msg = String.format( "Digest.calculation_error", ALGORITHM, e.getMessage(), source, file.getAbsolutePath()).toString();
+              final String msg = String.format("%s calculation error for %s (%s): %s", ALGORITHM, file.getAbsolutePath(), source, e.getMessage());
               if (haltOnError) {
                 throw new TaskException(msg);
               } else {
@@ -147,7 +147,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
               }
             }
           } else {
-            final String msg = String.format( "Digest.empty_source_file", ALGORITHM, source, file.getAbsolutePath()).toString();
+            final String msg = String.format("%s source file is empty: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
             if (haltOnError) {
               throw new TaskException(msg);
             } else {
@@ -156,7 +156,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
             }
           }
         } else {
-          final String msg = String.format( "Digest.source_could_not_be_read", ALGORITHM, source, file.getAbsolutePath()).toString();
+          final String msg = String.format("%s source file could not be read: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -165,7 +165,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
           }
         }
       } else {
-        final String msg = String.format( "Digest.source_does_not_exist", ALGORITHM, source, file.getAbsolutePath()).toString();
+        final String msg = String.format("%s source file does not exist: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
@@ -174,7 +174,7 @@ public abstract class AbstractDigestTask extends AbstractFileTask {
         }
       }
     } else {
-      final String msg = String.format( "Digest.configuration_error", getClass().getSimpleName(), ConfigTag.SOURCE).toString();
+      final String msg = String.format("%s configuration error: missing %s", getClass().getSimpleName(), ConfigTag.SOURCE);
       if (haltOnError) {
         throw new TaskException(msg);
       } else {

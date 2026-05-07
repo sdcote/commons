@@ -63,7 +63,7 @@ public class CheckSize extends AbstractFileTask {
             }
           }
         } else {
-          Log.warn(String.format( "%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
+          Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
         }
       } else {
         final String msg = String.format( "Task.failed_file_does_not_exist", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();

@@ -119,17 +119,17 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
             String checksum = null;
             try {
               checksum = getChecksum(file, getChecksum());
-              Log.debug(String.format( "Checksum.results", file.getAbsolutePath(), ALGORITHM, checksum));
+              Log.debug(String.format("%s results for '%s': %s", ALGORITHM, file.getAbsolutePath(), checksum));
 
               final String checksumFilename = file.getAbsolutePath() + CHECKSUM_EXTENSION;
               final File checksumFile = new File(checksumFilename);
 
               if (StringUtil.isNotBlank(expectedChecksum)) {
                 if (StringUtil.equalsIgnoreCase(checksum, expectedChecksum.trim())) {
-                  Log.info(String.format( "Checksum.verified", ALGORITHM, file.getAbsolutePath()));
+                  Log.info(String.format("%s verified for %s", ALGORITHM, file.getAbsolutePath()));
                   getContext().set(checksumFilename, checksum);
                 } else {
-                  final String msg = String.format( "Checksum.verification_failed", ALGORITHM, source, file.getAbsolutePath()).toString();
+                  final String msg = String.format("%s verification failed for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                   if (haltOnError) {
                     throw new TaskException(msg);
                   } else {
@@ -143,10 +143,10 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
                     final String expected = FileUtil.fileToString(checksumFile);
                     if (StringUtil.isNotBlank(expected)) {
                       if (StringUtil.equalsIgnoreCase(checksum, expected.trim())) {
-                        Log.info(String.format( "Checksum.verified", ALGORITHM, file.getAbsolutePath()));
+                        Log.info(String.format("%s verified for %s", ALGORITHM, file.getAbsolutePath()));
                         getContext().set(checksumFilename, checksum);
                       } else {
-                        final String msg = String.format( "Checksum.verification_failed", ALGORITHM, source, file.getAbsolutePath()).toString();
+                        final String msg = String.format("%s verification failed for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                         if (haltOnError) {
                           throw new TaskException(msg);
                         } else {
@@ -155,7 +155,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
                         }
                       }
                     } else {
-                      final String msg = String.format( "Checksum.blank_digest_data", ALGORITHM, source, file.getAbsolutePath()).toString();
+                      final String msg = String.format("%s digest file is blank for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                       if (haltOnError) {
                         throw new TaskException(msg);
                       } else {
@@ -164,7 +164,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
                       }
                     }
                   } else {
-                    final String msg = String.format( "Checksum.could_not_read_digest_file", ALGORITHM, source, file.getAbsolutePath()).toString();
+                    final String msg = String.format("Could not read %s digest file for %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
                     if (haltOnError) {
                       throw new TaskException(msg);
                     } else {
@@ -173,11 +173,11 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
                     }
                   }
                 } else {
-                  Log.warn(String.format( "Checksum.no_digest_data", ALGORITHM, file.getAbsolutePath()));
+                  Log.warn(String.format("No %s digest data found for %s", ALGORITHM, file.getAbsolutePath()));
                 }
               }
             } catch (final IOException e) {
-              final String msg = String.format( "Checksum.calculation_error", ALGORITHM, e.getMessage(), source, file.getAbsolutePath()).toString();
+              final String msg = String.format("%s calculation error for %s (%s): %s", ALGORITHM, file.getAbsolutePath(), source, e.getMessage());
               if (haltOnError) {
                 throw new TaskException(msg);
               } else {
@@ -186,7 +186,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
               }
             }
           } else {
-            final String msg = String.format( "Checksum.empty_source_file", ALGORITHM, source, file.getAbsolutePath()).toString();
+            final String msg = String.format("%s source file is empty: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
             if (haltOnError) {
               throw new TaskException(msg);
             } else {
@@ -195,7 +195,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
             }
           }
         } else {
-          final String msg = String.format( "Checksum.source_could_not_be_read", ALGORITHM, source, file.getAbsolutePath()).toString();
+          final String msg = String.format("%s source file could not be read: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -204,7 +204,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
           }
         }
       } else {
-        final String msg = String.format( "Checksum.source_does_not_exist", ALGORITHM, source, file.getAbsolutePath()).toString();
+        final String msg = String.format("%s source file does not exist: %s (%s)", ALGORITHM, file.getAbsolutePath(), source);
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
@@ -213,7 +213,7 @@ public abstract class AbstractChecksumTask extends AbstractFileTask {
         }
       }
     } else {
-      final String msg = String.format( "Checksum.configuration_error", getClass().getSimpleName(), ConfigTag.SOURCE).toString();
+      final String msg = String.format("%s configuration error: missing %s", getClass().getSimpleName(), ConfigTag.SOURCE);
       if (haltOnError) {
         throw new TaskException(msg);
       } else {

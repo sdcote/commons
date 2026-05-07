@@ -100,7 +100,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
         if (DatabaseDialect.ORACLE.equalsIgnoreCase(database)) {
             Log.debug("Database.skipping_oracle_schema_check");
         } else {
-            Log.debug(String.format("Database.looking_for_schema", getSchema()));
+            Log.debug(String.format("Looking for schema '%s'", getSchema()));
             if (!DatabaseUtil.schemaExists(getSchema(), conn)) {
                 if (isAutoCreate()) {
                     final String username = getConnector().getUserName();
@@ -158,7 +158,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
 
                 final String command = DatabaseDialect.getCreate(database, schema, symbolTable);
 
-                Log.debug(String.format("Writer.creating_table", getClass().getSimpleName(), getTable(), command));
+                Log.debug(String.format("%s creating table '%s' with command: %s", getClass().getSimpleName(), getTable(), command));
 
                 Statement stmt = null;
                 try {
@@ -166,7 +166,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                     stmt.executeUpdate(command);
 
                 } catch (final Exception e) {
-                    Log.error(String.format("Writer.jdbc_table_create_error", getTable(), e.getMessage()));
+                    Log.error(String.format("Error creating table '%s': %s", getTable(), e.getMessage()));
                 } finally {
                     try {
                         stmt.close();
@@ -205,7 +205,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
         if (!closed) {
             closed = true;
             if (frameset.size() > 0) {
-                Log.debug(String.format("Writer.completing_batch", getClass().getSimpleName(), frameset.size()));
+                Log.debug(String.format("%s completing batch (size: %d)", getClass().getSimpleName(), frameset.size()));
                 writeBatch();
                 frameset.clearAll();
             }
@@ -223,7 +223,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                     ps.close();
                     ps = null;
                 } catch (final SQLException e) {
-                    Log.error(String.format("Writer.Could not close prepared statement: {%s}", e.getMessage()));
+                    Log.error(String.format("Could not close prepared statement: %s", e.getMessage()));
                 }
             }
 
@@ -231,13 +231,13 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 // if it looks like we created the connection ourselves (e.g. we have a
                 // configured target) close the connection
                 if (StringUtil.isNotBlank(getTarget())) {
-                    Log.debug(String.format("Writer.closing_connection", getClass().getSimpleName(), getTarget()));
+                    Log.debug(String.format("%s closing connection to %s", getClass().getSimpleName(), getTarget()));
 
                     try {
                         connection.close();
                         connection = null;
                     } catch (final SQLException e) {
-                        Log.error(String.format("Writer.Could not close connection cleanly: {%s}", e.getMessage()));
+                        Log.error(String.format("Could not close connection cleanly: %s", e.getMessage()));
                     }
                 }
             }
@@ -312,7 +312,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 connection = getConnector().getConnection();
 
                 if (connection != null) {
-                    Log.debug(String.format("Writer.connected_to", getClass().getSimpleName(), getTarget()));
+                    Log.debug(String.format("%s connected to %s", getClass().getSimpleName(), getTarget()));
 
                     String product;
                     final DatabaseMetaData meta = connection.getMetaData();
@@ -321,11 +321,11 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                         product = meta.getDatabaseProductName();
                         if (StringUtil.isBlank(product)) {
                             product = DatabaseDialect.ORACLE;
-                            Log.debug(String.format("Database.no_product_name", meta, product));
+                            Log.debug(String.format("No database product name found in metadata (%s) - using %s", meta, product));
                         }
                     } else {
                         product = DatabaseDialect.ORACLE;
-                        Log.debug(String.format("Database.no_metadata", product));
+                        Log.debug(String.format("No database metadata found - using %s", product));
                     }
 
                     database = product.toUpperCase();
@@ -344,7 +344,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                     symbolTable.put(DatabaseDialect.DRIVER_MINOR_SYM, meta.getDriverMinorVersion());
 
                     // log debug information about the database
-                    Log.debug(String.format("Writer.connected_to_product", getClass().getSimpleName(), meta.getDatabaseProductName(), meta.getDatabaseProductVersion(), meta.getDatabaseMajorVersion(), meta.getDatabaseMinorVersion()));
+                    Log.debug(String.format("%s connected to %s (%s) version %d.%d", getClass().getSimpleName(), meta.getDatabaseProductName(), meta.getDatabaseProductVersion(), meta.getDatabaseMajorVersion(), meta.getDatabaseMinorVersion()));
                 } else {
                     getContext().setError("Connector could not get a connection to the database");
                 }
@@ -642,11 +642,11 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 try {
                     database.setConfiguration(cfg);
                     if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                        Log.debug(String.format("Component.using_target", getClass().getSimpleName(), database.getTarget()));
-                        Log.debug(String.format("Component.using_driver", getClass().getSimpleName(), database.getDriver()));
-                        Log.debug(String.format("Component.using_library", getClass().getSimpleName(), database.getLibrary()));
-                        Log.debug(String.format("Component.using_user", getClass().getSimpleName(), database.getUserName()));
-                        Log.debug(String.format("Component.using_password", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
+                        Log.debug(String.format("%s using target: %s", getClass().getSimpleName(), database.getTarget()));
+                        Log.debug(String.format("%s using driver: %s", getClass().getSimpleName(), database.getDriver()));
+                        Log.debug(String.format("%s using library: %s", getClass().getSimpleName(), database.getLibrary()));
+                        Log.debug(String.format("%s using user: %s", getClass().getSimpleName(), database.getUserName()));
+                        Log.debug(String.format("%s using password length: %d", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
                     }
                 } catch (final ConfigurationException e) {
                     context.setError("Could not configure database connector: " + e.getClass().getSimpleName() + " - " + e.getMessage());
@@ -658,29 +658,29 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 }
             }
         } else {
-            Log.debug(String.format("Writer.using_existing_connection", getClass().getSimpleName()));
+            Log.debug(String.format("%s using existing connection", getClass().getSimpleName()));
         }
 
         setSchema(getString(ConfigTag.SCHEMA));
         if (StringUtil.isBlank(getString(ConfigTag.SCHEMA))) {
             context.setError("Could not determine the '" + ConfigTag.SCHEMA + "' value");
         }
-        Log.debug(String.format("Writer.using_schema", getClass().getSimpleName(), getSchema()));
+        Log.debug(String.format("%s using schema: %s", getClass().getSimpleName(), getSchema()));
 
         setTable(getString(ConfigTag.TABLE));
         if (StringUtil.isBlank(getString(ConfigTag.TABLE))) {
             context.setError("Could not determine the '" + ConfigTag.TABLE + "' value");
         }
-        Log.debug(String.format("Writer.using_table", getClass().getSimpleName(), getTable()));
+        Log.debug(String.format("%s using table: %s", getClass().getSimpleName(), getTable()));
 
         setAutoCreate(getBoolean(ConfigTag.AUTO_CREATE));
-        Log.debug(String.format("Writer.autocreate_tables", getClass().getSimpleName(), isAutoCreate()));
+        Log.debug(String.format("%s auto-create tables: %b", getClass().getSimpleName(), isAutoCreate()));
 
         setAutoAdjust(getBoolean(ConfigTag.AUTO_ADJUST));
-        Log.debug(String.format("Writer.autoadjust_tables", getClass().getSimpleName(), isAutoAdjust()));
+        Log.debug(String.format("%s auto-adjust tables: %b", getClass().getSimpleName(), isAutoAdjust()));
 
         setBatchSize(getInteger(ConfigTag.BATCH));
-        Log.debug(String.format("Writer.using_batch_size", getClass().getSimpleName(), getBatchSize()));
+        Log.debug(String.format("%s using batch size: %d", getClass().getSimpleName(), getBatchSize()));
 
         // validate and cache our batch size
         if (getBatchSize() < 1) {
@@ -734,7 +734,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                         getContext().setError("Cannot add byte arrays to table");
                         break;
                     case DataField.STRING:
-                        Log.debug(String.format("Database.saving_field_as", getClass().getSimpleName(), field.getName(), indx, "String"));
+                        Log.debug(String.format("%s saving field '%s' (index %d) as %s", getClass().getSimpleName(), field.getName(), indx, "String"));
                         if (field.isNull()) {
                             pstmt.setNull(indx, VARCHAR);
                         } else {
@@ -811,7 +811,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                         }
                         break;
                     case DataField.URI:
-                        Log.debug(String.format("Database.saving_field_as", getClass().getSimpleName(), field.getName(), indx, "String"));
+                        Log.debug(String.format("%s saving field '%s' (index %d) as %s", getClass().getSimpleName(), field.getName(), indx, "String"));
                         pstmt.setString(indx, field.getStringValue());
                         break;
                     case DataField.ARRAY:
@@ -850,7 +850,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                     writeFrame(frame);
                 }
             } catch (final IllegalArgumentException e) {
-                Log.warn(String.format("Writer.boolean_evaluation_error", expression, e.getMessage()));
+                Log.warn(String.format("Boolean evaluation error for condition '%s': %s", expression, e.getMessage()));
             }
         } else {
             // Unconditionally writing frame
@@ -867,7 +867,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
             // sure the table exists
             if (checkTable()) {
                 SQL = generateInsertSQL();
-                Log.debug(String.format("Writer.using_sql", getClass().getSimpleName(), SQL));
+                Log.debug(String.format("%s using SQL: %s", getClass().getSimpleName(), SQL));
 
                 final Connection connection = getConnection();
                 try {
@@ -919,7 +919,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
             if (getContext().isNotInError()) {
                 if (batchsize <= 1) {
                     final DataFrame frame = frameset.get(0);
-                    Log.debug(String.format("Writer.writing_single_frame", getClass().getSimpleName(), frame.toString()));
+                    Log.debug(String.format("%s writing single frame: %s", getClass().getSimpleName(), frame.toString()));
 
                     int indx = 1;
                     for (final String name : frameset.getColumns()) {
@@ -930,7 +930,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                         }
                     }
 
-                    Log.debug(String.format("Writer.executing_sql", getClass().getSimpleName(), ps.toString()));
+                    Log.debug(String.format("%s executing SQL: %s", getClass().getSimpleName(), ps.toString()));
 
                     try {
                         ps.execute();
@@ -941,7 +941,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 } else {
                     // Now write a batch
                     for (final DataFrame frame : frameset.getRows()) {
-                        Log.debug(String.format("Writer.writing_frame", this.getClass().getSimpleName(), frame));
+                        Log.debug(String.format("%s writing frame: %s", this.getClass().getSimpleName(), frame));
 
                         int indx = 1;
                         for (final String name : frameset.getColumns()) {
@@ -982,11 +982,11 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
      * @param frame the frame to be written
      */
     private void writeFrame(final DataFrame frame) {
-        Log.debug(String.format("Writer.writing_fields", getClass().getSimpleName(), frame.size()));
+        Log.debug(String.format("%s writing fields: %d", getClass().getSimpleName(), frame.size()));
         frameset.add(frame);
 
         if (frameset.size() >= batchsize) {
-            Log.debug(String.format("Writer.writing_batch", getClass().getSimpleName(), frameset.size(), batchsize));
+            Log.debug(String.format("%s writing batch (size: %d, limit: %d)", getClass().getSimpleName(), frameset.size(), batchsize));
             writeBatch();
         }
 

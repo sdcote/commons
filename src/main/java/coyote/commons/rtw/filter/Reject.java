@@ -65,7 +65,7 @@ public class Reject extends AbstractFrameFilter implements FrameFilter {
           return false;
         }
       } catch (IllegalArgumentException e) {
-        Log.warn(String.format( "Filter.reject_boolean_evaluation_error %s", e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error during reject: %s", e.getMessage()));
       }
     } else {
 

@@ -42,7 +42,7 @@ public class Unzip extends AbstractFileTask {
               throw new TaskException("Could not unzip file: " + e.getMessage(), e);
             }
           } else {
-            Log.warn(String.format( "%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
+            Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
           }
         } else {
           final String msg = String.format( "Task.failed_file_cannot_be_read %s - %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());

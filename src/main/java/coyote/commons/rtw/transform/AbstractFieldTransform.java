@@ -101,11 +101,11 @@ public abstract class AbstractFieldTransform extends AbstractFrameTransform impl
             retval = performTransform(frame);
           } else {
             if (Log.isLogging(Log.DEBUG_EVENTS)) {
-              Log.debug(String.format( "Transform.boolean_evaluation_false", getCondition()));
+              Log.debug(String.format("Boolean evaluation of condition '%s' resulted in false", getCondition()));
             }
           }
         } catch (final IllegalArgumentException e) {
-          Log.error(String.format( "Transform.boolean_evaluation_error", getCondition(), e.getMessage()));
+          Log.error(String.format("Boolean evaluation error for condition '%s': %s", getCondition(), e.getMessage()));
         }
       } else {
         retval = performTransform(frame);

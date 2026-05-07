@@ -37,7 +37,7 @@ public class JsonWriter extends AbstractFrameFileWriter implements FrameWriter, 
           writeFrame(frame);
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn(String.format( "Writer.boolean_evaluation_error %s %s", expression, e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error for condition '%s': %s", expression, e.getMessage()));
       }
     } else {
       // Unconditionally writing frame

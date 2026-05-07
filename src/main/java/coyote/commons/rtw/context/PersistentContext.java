@@ -117,10 +117,10 @@ public abstract class PersistentContext extends TransformContext {
             symbols.put(Symbols.PREVIOUS_RUN_EPOCH_MILLIS, prevrun.getTime());
           }
         } else {
-          Log.warn(String.format( "Context.previous_run_date_parsing_error", value, "Unknown Format", "Ignored"));
+          Log.warn(String.format("Error parsing previous run date '%s' using unknown format - ignored", value));
         }
       } catch (Exception e) {
-        Log.warn(String.format( "Context.previous_run_date_parsing_error", value, e.getClass().getSimpleName(), e.getMessage()));
+        Log.warn(String.format("Error parsing previous run date '%s' (%s): %s", value, e.getClass().getSimpleName(), e.getMessage()));
       }
     }
   }

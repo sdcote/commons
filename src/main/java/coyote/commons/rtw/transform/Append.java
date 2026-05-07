@@ -61,7 +61,7 @@ public class Append extends AbstractFieldTransform implements FrameTransform {
 
     String token = getConfiguration().getString(ConfigTag.VALUE);
     if (token == null) {
-      Log.warn(String.format( "Transform.Append_setting_null_to_field", getFieldName()));
+      Log.warn(String.format("Appending null to field '%s'", getFieldName()));
     } else {
       fieldValue = token;
     }
@@ -86,7 +86,7 @@ public class Append extends AbstractFieldTransform implements FrameTransform {
           append(frame);
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn(String.format( "Transform.Append_boolean_evaluation_error", e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error during append: %s", e.getMessage()));
       }
     } else {
       // unconditionally set the value

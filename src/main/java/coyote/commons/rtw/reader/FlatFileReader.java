@@ -315,7 +315,7 @@ public class FlatFileReader extends AbstractFrameReader implements FrameReader, 
 
         format = formats.get(key);
         if (format == null) {
-          Log.warn(String.format( "Reader.could_not_find_format_for_key", key, context.getRow() + 1, keyStart, keyLength));
+          Log.warn(String.format("Could not find format for key '%s' (row %d, start %d, length %d) - ignoring", key, context.getRow() + 1, keyStart, keyLength));
         } else {
           if (Log.isLogging(Log.DEBUG_EVENTS))
             Log.debug(String.format( "Reader.parsing_record_type", key, context.getRow() + 1));

@@ -116,7 +116,7 @@ public class RunJob extends AbstractListener implements ContextListener {
      */
     private URI confirmConfigurationLocation(final String cfgLoc) {
         URI cfgUri = null;
-        final StringBuffer errMsg = new StringBuffer(String.format( "Listener.runjob.confirming_cfg_location", cfgLoc) + StringUtil.CRLF);
+        final StringBuffer errMsg = new StringBuffer(String.format("Confirming configuration location: %s", cfgLoc) + StringUtil.CRLF);
 
         if (StringUtil.isNotBlank(cfgLoc)) {
 
@@ -141,22 +141,22 @@ public class RunJob extends AbstractListener implements ContextListener {
                 }
 
                 if (cfgUri == null) {
-                    errMsg.append(String.format( "Listener.runjob.cfg_file_not_found", cfgLoc) + StringUtil.CRLF);
+                    errMsg.append(String.format("Configuration file not found: %s", cfgLoc) + StringUtil.CRLF);
                     Log.error(errMsg.toString());
                 } else {
                     final File test = UriUtil.getFile(cfgUri);
                     if (!test.exists() || !test.canRead()) {
-                        errMsg.append(String.format( "Listener.runjob.cfg_file_not_readable", test.getAbsolutePath()) + StringUtil.CRLF);
+                        errMsg.append(String.format("Configuration file not readable: %s", test.getAbsolutePath()) + StringUtil.CRLF);
                         Log.error(errMsg.toString());
                     } else {
-                        Log.debug(String.format( "Listener.runjob.cfg_reading_from_file", test.getAbsolutePath()));
+                        Log.debug(String.format("Reading configuration from file: %s", test.getAbsolutePath()));
                     }
                 }
             } else {
-                Log.info(String.format( "Listener.runjob.cfg_reading_from_network"));
+                Log.info("Reading configuration from network");
             }
         } else {
-            System.err.println(String.format( "Listener.runjob.no_config_uri_defined"));
+            System.err.println("No configuration URI defined");
         }
         return cfgUri;
     }
@@ -180,15 +180,15 @@ public class RunJob extends AbstractListener implements ContextListener {
                         if (alternativeFile.exists()) {
                             retval = FileUtil.getFileURI(alternativeFile);
                         } else {
-                            errMsg.append(String.format( "Listener.runjob.no_common_cfg_file", cfgFile.getAbsolutePath()) + StringUtil.CRLF);
-                            errMsg.append(String.format( "Listener.runjob.cfg_file_not_found", cfgLoc) + StringUtil.CRLF);
+                            errMsg.append(String.format("Common configuration file not found: %s", cfgFile.getAbsolutePath()) + StringUtil.CRLF);
+                            errMsg.append(String.format("Configuration file not found: %s", cfgLoc) + StringUtil.CRLF);
                         }
                     }
                 } else {
-                    errMsg.append(String.format( "Listener.runjob.cfg_dir_is_not_directory", appDir) + StringUtil.CRLF);
+                    errMsg.append(String.format("Configuration directory is not a directory: %s", appDir) + StringUtil.CRLF);
                 }
             } else {
-                errMsg.append(String.format( "Runjob cfg dir '%s' does not exist.%n", appDir));
+                errMsg.append(String.format("Configuration directory '%s' does not exist.%n", appDir));
             }
         }
         return retval;
@@ -211,22 +211,22 @@ public class RunJob extends AbstractListener implements ContextListener {
                             if (alternativeFile.exists()) {
                                 retval = FileUtil.getFileURI(alternativeFile);
                             } else {
-                                errMsg.append(String.format( "Listener.runjob.no_work_dir_file", cfgFile.getAbsolutePath()) + StringUtil.CRLF);
+                                errMsg.append(String.format("Work directory file not found: %s", cfgFile.getAbsolutePath()) + StringUtil.CRLF);
                                 errMsg.append(String.format( "Listener.runjob.cfg_file_not_found", cfgLoc) + StringUtil.CRLF);
                             }
                         }
                     } else {
-                        errMsg.append(String.format( "Listener.runjob.wrk_dir_is_not_directory", wrkDir) + StringUtil.CRLF);
+                        errMsg.append(String.format("Work directory is not a directory: %s", wrkDir) + StringUtil.CRLF);
                     }
                 } else {
-                    errMsg.append(String.format( "Listener.runjob.wrk_dir_does_not_exist", wrkDir) + StringUtil.CRLF);
+                    errMsg.append(String.format("Work directory does not exist: %s", wrkDir) + StringUtil.CRLF);
                 }
 
             } else {
-                errMsg.append(String.format( "Listener.runjob.work_dir_not_set_in_engine") + StringUtil.CRLF);
+                errMsg.append("Work directory not set in engine" + StringUtil.CRLF);
             }
         } else {
-            errMsg.append(String.format( "Listener.runjob.no_reference_to_engine") + StringUtil.CRLF);
+            errMsg.append("No reference to engine" + StringUtil.CRLF);
         }
         return retval;
     }
@@ -243,7 +243,7 @@ public class RunJob extends AbstractListener implements ContextListener {
             if (alternativeFile.exists()) {
                 retval = FileUtil.getFileURI(alternativeFile);
             } else {
-                errMsg.append(String.format( "Runjob no local cfg file %s", localfile.getAbsolutePath()) + StringUtil.CRLF);
+                errMsg.append(String.format("No local configuration file: %s", localfile.getAbsolutePath()) + StringUtil.CRLF);
             }
         }
         return retval;

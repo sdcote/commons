@@ -90,14 +90,14 @@ public class Replace extends AbstractFieldTransform implements FrameTransform {
             retval = frame;
           }
         } catch (final IllegalArgumentException e) {
-          Log.warn(String.format( "Transform.boolean_evaluation_error", this.getClass().getName(), e.getMessage()));
+          Log.warn(String.format("Boolean evaluation error in %s: %s", this.getClass().getName(), e.getMessage()));
           retval = frame;
         }
       } else {
         retval = perfomReplace(frame);
       }
     } else {
-      Log.warn(String.format( "Transform.no_working_frame", this.getClass().getName()));
+      Log.warn(String.format("No working frame in %s", this.getClass().getName()));
       retval = new DataFrame();
     }
     return retval;

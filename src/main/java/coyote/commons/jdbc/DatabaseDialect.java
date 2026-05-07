@@ -258,7 +258,7 @@ public class DatabaseDialect {
         }
 
         if (StringUtil.isBlank(type)) {
-          Log.debug(String.format("Database.could_not_find_type", DatabaseDialect.class.getSimpleName(), fieldtype, type, typeMap.get(DEFAULT), fieldname));
+          Log.debug(String.format("Could not find type definition for database '%s', field '%s' - using default: %s", fieldtype, fieldname, typeMap.get(DEFAULT)));
           type = typeMap.get(DEFAULT);
         }
 
@@ -285,7 +285,7 @@ public class DatabaseDialect {
       return getSQL(database, CREATE, symbols);
 
     } else {
-      Log.error(String.format("Could not find type definition for '{}' database", database));
+      Log.error(String.format("Could not find type definition for database '%s'", database));
     }
 
     return null;
@@ -334,7 +334,7 @@ public class DatabaseDialect {
         }
 
         if (StringUtil.isBlank(type)) {
-          Log.debug(String.format("Database.could_not_find_type", DatabaseDialect.class.getSimpleName(), fieldtype, type, typeMap.get(DEFAULT), fieldname));
+          Log.debug(String.format("Could not find type definition for database '%s', field '%s' - using default: %s", fieldtype, fieldname, typeMap.get(DEFAULT)));
           type = typeMap.get(DEFAULT);
         }
 
@@ -381,7 +381,7 @@ public class DatabaseDialect {
       return getSQL(database, CREATE, symbols);
 
     } else {
-      Log.error(String.format("Could not find type definition for '{}' database", database));
+      Log.error(String.format("Could not find type definition for database '%s'", database));
     }
 
     return null;

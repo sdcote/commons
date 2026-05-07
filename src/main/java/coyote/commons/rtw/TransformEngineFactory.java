@@ -244,7 +244,7 @@ public class TransformEngineFactory {
             Log.error("Invalid Schedule section - expecting complex type");
           }
         } else {
-          Log.debug(String.format( "Unrecognized configuration section '%s'", field.getName()));
+        Log.debug(String.format("Unrecognized configuration section '%s'", field.getName()));
         }
       }
     }
@@ -286,7 +286,7 @@ public class TransformEngineFactory {
       } catch (ConfigurationException e) {
         Log.error("Vault configuration exception",e);
       } catch (VaultException e) {
-        Log.error(String.format("Could not open vault %s",e.getMessage()),e);
+        Log.error(String.format("Could not open vault: %s", e.getMessage()), e);
       }
     } else {
       Log.error("Missing vault configuration. No vault created.");
@@ -314,12 +314,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameReader) {
           engine.setPreloader((FrameReader) object);
-          Log.debug(String.format( "EngineFactory created preloader %s", object.getClass().getName()));
+          Log.debug(String.format("EngineFactory created preloader %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "Specified class (%s) is not a preloader", object.getClass().getName()));
+          Log.error(String.format("Specified class (%s) is not a preloader", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "Could not create an instance of specified preloader %s", className));
+        Log.error(String.format("Could not create an instance of specified preloader %s", className));
       }
     } // cfg !null    
   }
@@ -343,12 +343,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameAggregator) {
           engine.addAggregator((FrameAggregator) object);
-          Log.debug(String.format( "EngineFactory created aggregator %s", object.getClass().getName()));
+          Log.debug(String.format("EngineFactory created aggregator %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "Specified class (%s) is not an aggregator", object.getClass().getName()));
+          Log.error(String.format("Specified class (%s) is not an aggregator", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "Could not create an instance of specified aggregator %s", className));
+        Log.error(String.format("Could not create an instance of specified aggregator %s", className));
       }
     } // cfg !null    
   }
@@ -375,15 +375,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof FrameValidator) {
               engine.addValidator((FrameValidator) object);
-              Log.debug(String.format( "EngineFactory.created_validator", object.getClass().getName(), validatorConfig));
+              Log.debug(String.format("EngineFactory created validator %s with configuration: %s", object.getClass().getName(), validatorConfig));
             } else {
-              Log.error(String.format( "EngineFactory.specified_class_is_not_a_validator", field.getName()));
+              Log.error(String.format("Specified class (%s) is not a validator", field.getName()));
             }
           } else {
-            Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_validator", className));
+            Log.error(String.format("Could not create instance of specified validator: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.frame_validator_did_not_contain_valid_configuration", field.getStringValue()));
+          Log.error(String.format("Frame validator did not contain valid configuration: %s", field.getStringValue()));
         }
       } // for each validator
     } // cfg !null
@@ -414,15 +414,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof FrameTransform) {
               engine.addTransformer((FrameTransform) object);
-              Log.debug(String.format( "EngineFactory.created_frame_transformer", object.getClass().getName(), transformerConfig));
+              Log.debug(String.format("EngineFactory created frame transformer %s with configuration: %s", object.getClass().getName(), transformerConfig));
             } else {
-              Log.error(String.format( "EngineFactory.specified_class_was_not_a_transformer", field.getName()));
+              Log.error(String.format("Specified class (%s) was not a transformer", field.getName()));
             }
           } else {
-            Log.error(String.format( "EngineFactory.could_not_create_an_instance_of_specified_transformer", className));
+            Log.error(String.format("Could not create an instance of specified transformer: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.transformer_task_did_not_contain_valid_configuration", field.getStringValue()));
+          Log.error(String.format("Transformer task did not contain valid configuration: %s", field.getStringValue()));
         }
       } // for each transformer
     } // cfg !null
@@ -444,15 +444,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof FrameFilter) {
               int seq = engine.addFilter((FrameFilter) object);
-              Log.debug(String.format( "EngineFactory.created_filter", object.getClass().getName(), seq, cfg));
+              Log.debug(String.format("EngineFactory created filter %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, cfg));
             } else {
-              Log.error(String.format( "EngineFactory.class_not_filter", object.getClass().getName()));
+              Log.error(String.format("Specified class (%s) is not a filter", object.getClass().getName()));
             }
           } else {
-            Log.error(String.format( "EngineFactory.coult_not_create_filter", className));
+            Log.error(String.format("Could not create filter: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.filter_config_not_section", field.getStringValue()));
+          Log.error(String.format("Filter configuration not a section: %s", field.getStringValue()));
         }
       } // for each task
     } // cfg !null
@@ -474,15 +474,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof TransformTask) {
               int seq = engine.addPreProcessTask((TransformTask) object);
-              Log.debug(String.format( "EngineFactory.created_preprocess_task", object.getClass().getName(), seq, taskConfig));
+              Log.debug(String.format("EngineFactory created preprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, taskConfig));
             } else {
-              Log.error(String.format( "EngineFactory.preprocess_class_not_transform_task", object.getClass().getName()));
+              Log.error(String.format("Preprocess class (%s) is not a transform task", object.getClass().getName()));
             }
           } else {
-            Log.error(String.format( "EngineFactory.could_not_create_preprocess_task", className));
+            Log.error(String.format("Could not create preprocess task: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.preprocess_task_config_not_section", field.getStringValue()));
+          Log.error(String.format("Preprocess task configuration not a section: %s", field.getStringValue()));
         }
       } // for each task
     } // cfg !null
@@ -504,15 +504,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof TransformTask) {
               int seq = engine.addPostProcessTask((TransformTask) object);
-              Log.debug(String.format( "EngineFactory.Created postprocess task {} seq={} cfg={}", object.getClass().getName(), seq, cfg));
+              Log.debug(String.format("EngineFactory created postprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, cfg));
             } else {
-              Log.error(String.format( "EngineFactory.Specified post-process class was not a transform task"));
+              Log.error("Specified post-process class was not a transform task");
             }
           } else {
-            Log.error(String.format( "EngineFactory.Could not create an instance of the specified post-process task '{}'", className));
+            Log.error(String.format("Could not create an instance of the specified post-process task: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.Post-process task did not contain a configuration, only scalar {}", field.getStringValue()));
+          Log.error(String.format("Post-process task did not contain a configuration, only scalar: %s", field.getStringValue()));
         }
       } // for each task 
     } // cfg !null
@@ -560,15 +560,15 @@ public class TransformEngineFactory {
                 context.setConfiguration(cfg);
                 engine.setContext(context);
                 context.setEngine(engine);
-                Log.debug(String.format( "EngineFactory.created_custom_context", context.getClass().getName()));
+                Log.debug(String.format("EngineFactory created custom context %s", context.getClass().getName()));
               } catch (Exception e) {
-                Log.error(String.format( "EngineFactory.could_not_configure_specified_context", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.error(String.format("Could not configure specified context %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
               }
             } else {
-              Log.warn(String.format( "EngineFactory.specified_context_not_transformcontext", className));
+              Log.warn(String.format("Specified context (%s) is not a transform context", className));
             }
           } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_context", className, e.getClass().getName(), e.getMessage()));
+            Log.error(String.format("Could not create instance of specified context %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
           }
         } else {
           // this is a regular, in-memory context with these settings
@@ -576,11 +576,11 @@ public class TransformEngineFactory {
           context.setConfiguration(cfg);
           engine.setContext(context);
           context.setEngine(engine);
-          Log.debug(String.format( "EngineFactory.created_context", context.getClass().getName()));
+          Log.debug(String.format("EngineFactory created context %s", context.getClass().getName()));
         }
-        Log.debug(String.format( "EngineFactory.loaded_context", context.getClass().getName()));
+        Log.debug(String.format("EngineFactory loaded context %s", context.getClass().getName()));
       } else {
-        Log.warn(String.format( "EngineFactory.could_not_replace_existing_context"));
+        Log.warn("Could not replace existing context");
       }
     } // cfg !null
   }
@@ -598,12 +598,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameWriter) {
           engine.addWriter((FrameWriter) object);
-          Log.debug(String.format( "EngineFactory.created_writer", object.getClass().getName()));
+          Log.debug(String.format("EngineFactory created writer %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_is_not_a_writer", object.getClass().getName()));
+          Log.error(String.format("Specified class (%s) is not a writer", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_writer", className));
+        Log.error(String.format("Could not create instance of specified writer: %s", className));
       }
     } // cfg !null
   }
@@ -628,12 +628,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameMapper) {
           engine.setMapper((FrameMapper) object);
-          Log.debug(String.format( "EngineFactory.created_mapper", object.getClass().getName()));
+          Log.debug(String.format("EngineFactory created mapper %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory.specified_class_not_framemapper", object.getClass().getName()));
+          Log.error(String.format("Specified class (%s) is not a frame mapper", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory.could_not_create_specified_mapper", className));
+        Log.error(String.format("Could not create specified mapper: %s", className));
       }
     } // cfg !null
   }
@@ -653,12 +653,12 @@ public class TransformEngineFactory {
       if (object != null) {
         if (object instanceof FrameReader) {
           engine.setReader((FrameReader) object);
-          Log.debug(String.format( "EngineFactory created reader %s", object.getClass().getName()));
+          Log.debug(String.format("EngineFactory created reader %s", object.getClass().getName()));
         } else {
-          Log.error(String.format( "EngineFactory specified class (%s) is not a reader", object.getClass().getName()));
+          Log.error(String.format("Specified class (%s) is not a reader", object.getClass().getName()));
         }
       } else {
-        Log.error(String.format( "EngineFactory could not create instance of specified reader: %s", className));
+        Log.error(String.format("Could not create instance of specified reader: %s", className));
       }
     } // cfg !null
   }
@@ -690,15 +690,15 @@ public class TransformEngineFactory {
           if (object != null) {
             if (object instanceof ContextListener) {
               engine.addListener((ContextListener) object);
-              Log.debug(String.format( "EngineFactory.created_listener", object.getClass().getName()));
+              Log.debug(String.format("EngineFactory created listener %s", object.getClass().getName()));
             } else {
-              Log.error(String.format( "EngineFactory.specified_class_is_not_a_listener", object.getClass().getName()));
+              Log.error(String.format("Specified class (%s) is not a listener", object.getClass().getName()));
             }
           } else {
-            Log.error(String.format( "EngineFactory.could_not_create_instance_of_specified_listener", className));
+            Log.error(String.format("Could not create instance of specified listener: %s", className));
           }
         } else {
-          Log.error(String.format( "EngineFactory.listener_configuration_invalid", field.getStringValue()));
+          Log.error(String.format("Listener configuration invalid: %s", field.getStringValue()));
         }
       } // for each listener 
     } // cfg !null

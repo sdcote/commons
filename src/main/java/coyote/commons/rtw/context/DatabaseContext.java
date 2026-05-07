@@ -105,7 +105,7 @@ public class DatabaseContext extends PersistentContext {
       if (rundate instanceof Date) {
         frame.put(Symbols.PREVIOUS_RUN_DATETIME, rundate);
       } else {
-        Log.warn(String.format("Context.run_date_reset", rundate));
+        Log.warn(String.format("Run date reset to: %s", rundate));
       }
     }
 

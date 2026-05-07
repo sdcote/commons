@@ -33,7 +33,7 @@ public class KeepOnly extends AbstractFieldTransform implements FrameTransform {
                     retval = (DataFrame) frame.clone();
                 }
             } catch (final IllegalArgumentException e) {
-                Log.warn(String.format( "Transform.KeepOnly_boolean_evaluation_error", e.getMessage()));
+                Log.warn(String.format("Boolean evaluation error during keep-only: %s", e.getMessage()));
                 retval = (DataFrame) frame.clone();
             }
         } else {

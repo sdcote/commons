@@ -114,7 +114,7 @@ public class ReadIntoContext extends AbstractFileTask {
               }
             }
           } else {
-            Log.warn(String.format( "%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
+            Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
           }
         } else {
           final String msg = String.format( "Task.failed_file_cannot_be_read", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();

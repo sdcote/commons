@@ -122,7 +122,7 @@ public abstract class MarshalingFrameReader extends AbstractFrameReader implemen
             Log.debug("Source URI did not contain a scheme, assuming a filename");
             sourceFile = new File(source);
           } else {
-            Log.warn(String.format( "Reader.source_is_not_file", source));
+            Log.warn(String.format("Source '%s' is not a file", source));
           }
         }
       } else {

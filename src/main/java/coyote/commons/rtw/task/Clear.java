@@ -51,7 +51,7 @@ public class Clear extends AbstractFileTask {
       }
 
     } else {
-      Log.warn(String.format( "Task.Clear has no {%s} or {%s} argument - nothing to do.", ConfigTag.FILE, ConfigTag.DIRECTORY));
+      Log.warn(String.format("Task.Clear has no %s or %s argument - nothing to do.", ConfigTag.FILE, ConfigTag.DIRECTORY));
     }
 
   }

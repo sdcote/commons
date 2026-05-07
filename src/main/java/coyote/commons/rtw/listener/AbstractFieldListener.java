@@ -76,11 +76,11 @@ public abstract class AbstractFieldListener extends AbstractListener implements 
             process(txnContext);
           } else {
             if (Log.isLogging(Log.DEBUG_EVENTS)) {
-              Log.debug(String.format( "Listener.boolean_evaluation_false %s", getCondition()));
+              Log.debug(String.format("Boolean evaluation of condition '%s' resulted in false", getCondition()));
             }
           }
         } catch (final IllegalArgumentException e) {
-          Log.error(String.format( "Listener.boolean_evaluation_error %s %s", getCondition(), e.getMessage()));
+          Log.error(String.format("Boolean evaluation error for condition '%s': %s", getCondition(), e.getMessage()));
         }
       } else {
         process(txnContext);

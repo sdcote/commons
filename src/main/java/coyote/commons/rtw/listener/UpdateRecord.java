@@ -45,11 +45,11 @@ public class UpdateRecord extends AbstractDatabaseListener implements ContextLis
               performCreate(cntxt);
             } else {
               if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                Log.debug(String.format("Listener.boolean_evaluation_false", getCondition()));
+                Log.debug(String.format("Boolean evaluation of condition '%s' resulted in false", getCondition()));
               }
             }
           } catch (final IllegalArgumentException e) {
-            Log.error(String.format("Listener.boolean_evaluation_error", getCondition(), e.getMessage()));
+            Log.error(String.format("Boolean evaluation error for condition '%s': %s", getCondition(), e.getMessage()));
           }
         } else {
           performCreate(cntxt);

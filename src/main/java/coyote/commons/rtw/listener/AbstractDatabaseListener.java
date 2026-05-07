@@ -475,7 +475,7 @@ public abstract class AbstractDatabaseListener extends AbstractListener implemen
           stmt.executeUpdate(command);
 
         } catch (Exception e) {
-          Log.error(String.format("Writer.jdbc_table_create_error", table, e.getMessage()));
+          Log.error(String.format("Error creating table '%s': %s", table, e.getMessage()));
         } finally {
           try {
             stmt.close();
@@ -575,11 +575,11 @@ public abstract class AbstractDatabaseListener extends AbstractListener implemen
             execute(context);
           } else {
             if (Log.isLogging(Log.DEBUG_EVENTS)) {
-              Log.debug(String.format("Listener.boolean_evaluation_false", getCondition()));
+              Log.debug(String.format("Boolean evaluation of condition '%s' resulted in false", getCondition()));
             }
           }
         } catch (final IllegalArgumentException e) {
-          Log.error(String.format("Listener.boolean_evaluation_error", getCondition(), e.getMessage()));
+          Log.error(String.format("Boolean evaluation error for condition '%s': %s", getCondition(), e.getMessage()));
         }
       } else {
         if (!initialized) {

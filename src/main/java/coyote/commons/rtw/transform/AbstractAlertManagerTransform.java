@@ -137,7 +137,7 @@ public abstract class AbstractAlertManagerTransform extends AbstractFieldTransfo
                     retval = generateMessageFrom(frame); // generate the message
                 }
             } catch (final IllegalArgumentException e) {
-                Log.warn(String.format( "Transform.Set_boolean_evaluation_error", e.getMessage()));
+                Log.warn(String.format("Boolean evaluation error during alert transform: %s", e.getMessage()));
             }
         } else {
             retval = generateMessageFrom(frame); // unconditionally generate the message

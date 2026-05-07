@@ -403,20 +403,20 @@ public abstract class AbstractSnapJob implements SnapJob {
                             try {
                                 coyote.commons.log.Log.addLogger(name, logger);
                             } catch (Exception e) {
-                                System.out.println(String.format( "Could not add configured logger", name, logger.getClass(), e.getMessage()));
+                                System.out.println(String.format( "Could not add configured logger '%s' (%s): %s", name, logger.getClass().getName(), e.getMessage()));
                                 System.exit(11);
                             }
                         } else {
-                            System.err.println(String.format( "could_not_create_an_instance_of_the_specified_logger",name));
+                            System.err.println(String.format( "Could not create an instance of the specified logger '%s'", name));
                             System.exit(11);
                         }
 
                     } else {
-                        System.err.println(String.format( "no_logger_classname", cfgFrame.toString()));
+                        System.err.println(String.format( "No logger classname specified in configuration: %s", cfgFrame.toString()));
                         System.exit(11);
                     }
                 } else {
-                    System.err.println(String.format( "invalid_logger_configuration_section"));
+                    System.err.println("Invalid logger configuration section");
                     System.exit(11);
                 } // must be a frame/section
 
@@ -451,17 +451,17 @@ public abstract class AbstractSnapJob implements SnapJob {
                         try {
                             retval.setConfig(cfg);
                         } catch (Exception e) {
-                            coyote.commons.log.Log.error(String.format( "could_not_configure_logger", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            coyote.commons.log.Log.error(String.format( "Could not configure logger %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        coyote.commons.log.Log.warn(String.format( "instance_is_not_a_logger", className));
+                        coyote.commons.log.Log.warn(String.format( "Instance of %s is not a logger", className));
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                          InvocationTargetException e) {
-                    coyote.commons.log.Log.error(String.format( "logger_instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                    coyote.commons.log.Log.error(String.format( "Error instantiating logger %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
                 }
             } else {
-                coyote.commons.log.Log.error(String.format( "logger_configuration_did_not_contain_a_classname"));
+                coyote.commons.log.Log.error("Logger configuration did not contain a classname");
             }
         }
 

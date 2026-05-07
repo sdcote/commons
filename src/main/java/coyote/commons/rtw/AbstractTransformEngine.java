@@ -339,7 +339,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                             task.close();
                         }
                     } catch (IOException e) {
-                        Log.warn(String.format("Engine.problems_closing_postprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                        Log.warn(String.format("Problems closing post-process task %s - %s: %s", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                     }
                 }
                 getContext().setState("Complete");
@@ -555,7 +555,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                     task.close();
                 }
             } catch (IOException e) {
-                Log.warn(String.format("Engine.problems_closing_preprocess_task", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing pre-process task %s - %s: %s", task.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -791,7 +791,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                         // process the frames emitted from the previous aggregators
                         frames = aggregator.process(frames, txnContext);
                     } catch (Exception e) {
-                        Log.error(String.format("Engine.aggregation_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
+                        Log.error(String.format("Aggregation error %s: %s\n%s", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
                         e.printStackTrace();
                         txnContext.setError(e.getMessage());
                         frames = null;
@@ -824,13 +824,13 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
                         writer.write(txnContext.getTargetFrame());
                         txnContext.fireWrite(txnContext, writer);
                     } catch (Exception e) {
-                        Log.error(String.format("Engine.write_error", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
+                        Log.error(String.format("Write error %s: %s\n%s", e.getClass().getSimpleName(), e.getMessage(), ExceptionUtil.stackTrace(e)));
                         e.printStackTrace();
                         txnContext.setError(e.getMessage());
                     }
                 } else {
                     if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                        Log.notice(String.format("Engine.writer_skipped_disabled", writer.getClass().getSimpleName()));
+                        Log.notice(String.format("Writer %s skipped - disabled", writer.getClass().getSimpleName()));
                     }
                 }
             }
@@ -1054,7 +1054,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 reader.close();
             } catch (Exception e) {
-                Log.warn(String.format("Problems closing reader %s (%s) - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing reader %s - %s: %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
 
@@ -1068,7 +1068,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 writer.close();
             } catch (Exception e) {
-                Log.warn(String.format("Problems closing writer %s (%s) - %s", reader.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing writer %s - %s: %s", writer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1081,7 +1081,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 mapper.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_mapper", mapper.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing mapper %s - %s: %s", mapper.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1094,7 +1094,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 filter.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_filter", filter.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing filter %s - %s: %s", filter.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1107,7 +1107,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 validator.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_validator", validator.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing validator %s - %s: %s", validator.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1120,7 +1120,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 transformer.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_transformer", transformer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing transformer %s - %s: %s", transformer.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }
@@ -1133,7 +1133,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
             try {
                 listener.close();
             } catch (Exception e) {
-                Log.warn(String.format("Engine.problems_closing_listener", listener.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                Log.warn(String.format("Problems closing listener %s - %s: %s", listener.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
         }
     }

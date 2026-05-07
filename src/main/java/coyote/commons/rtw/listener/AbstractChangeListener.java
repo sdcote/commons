@@ -442,11 +442,11 @@ public abstract class AbstractChangeListener extends AbstractMonitoringListener 
             localSample(txnContext);
           } else {
             if (Log.isLogging(Log.DEBUG_EVENTS)) {
-              Log.debug(String.format( "Task.boolean_evaluation_false", getCondition()));
+              Log.debug(String.format("Boolean evaluation of condition '%s' resulted in false", getCondition()));
             }
           }
         } catch (final IllegalArgumentException e) {
-          Log.error(String.format( "Task.boolean_evaluation_error", getCondition(), e.getMessage()));
+          Log.error(String.format("Boolean evaluation error for condition '%s': %s", getCondition(), e.getMessage()));
         }
       } else {
         sample(txnContext);

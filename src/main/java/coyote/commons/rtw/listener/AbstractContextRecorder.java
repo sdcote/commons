@@ -60,7 +60,7 @@ public abstract class AbstractContextRecorder extends AbstractListener implement
         onRead = cfg.getAsBoolean(ConfigTag.READ);
         Log.debug(String.format( "ContextRecorder.read_flag_set_as %s", onRead));
       } catch (DataFrameException e) {
-        Log.warn(String.format( "ContextRecorder.read_flag_not_valid %s", e.getMessage()));
+        Log.warn(String.format("Read flag '%s' is not a valid boolean: %s", getConfiguration().getString(ConfigTag.READ), e.getMessage()));
         onRead = false;
       }
     } else {
@@ -72,7 +72,7 @@ public abstract class AbstractContextRecorder extends AbstractListener implement
         onWrite = cfg.getAsBoolean(ConfigTag.WRITE);
         Log.debug(String.format( "ContextRecorder.write_flag_set_as %s", onWrite));
       } catch (DataFrameException e) {
-        Log.warn(String.format( "ContextRecorder.write_flag_not_valid %s", e.getMessage()));
+        Log.warn(String.format("Write flag '%s' is not a valid boolean: %s", getConfiguration().getString(ConfigTag.WRITE), e.getMessage()));
         onWrite = false;
       }
     } else {

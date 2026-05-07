@@ -42,7 +42,7 @@ public class Remove extends AbstractFieldTransform implements FrameTransform {
 
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn(String.format( "Transform.remove_boolean_evaluation_error", e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error during remove: %s", e.getMessage()));
       }
     } else{
       if (frame != null) {
@@ -69,12 +69,12 @@ public class Remove extends AbstractFieldTransform implements FrameTransform {
               context.getWorkingFrame().remove(getFieldName());
             }
           } else {
-            Log.warn(String.format( "Transform.context not set"));
+            Log.warn("Transform context not set");
           }
 
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn(String.format( "Transform.remove_boolean_evaluation_error", e.getMessage()));
+        Log.warn(String.format("Boolean evaluation error during remove: %s", e.getMessage()));
       }
     }
 
