@@ -13,6 +13,8 @@ import coyote.commons.log.Log;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -37,6 +39,8 @@ public class Scheduler extends ThreadJob {
   private final Object mutex = new Object();
   private long WAIT_TIME = 50;
   public static final long SCHED = Log.getCode("SCHEDULER");
+
+  private ExecutorService executor = null;
 
   public static final long SECOND_INTERVAL = 1000l;
   public static final long MINUTE_INTERVAL = SECOND_INTERVAL * 60;
@@ -76,7 +80,9 @@ public class Scheduler extends ThreadJob {
    * Method initialize
    */
   public void initialize() {
-// This is where I keep my threadpool...IF I HAD ONE!
+    if (executor == null) {
+      executor = Executors.newCachedThreadPool();
+    }
   }
 
 
@@ -146,7 +152,11 @@ public class Scheduler extends ThreadJob {
                 Log.append(SCHED, "Running " + target + " in threadpool");
 
                 // Run the Scheduled Job in the ExecutorService
-                // TODO: Implement ExecutorService handling
+                if (executor != null) {
+                  executor.execute(target);
+                } else {
+                  Log.append(SCHED, "ExecutorService not initialized, cannot run job: " + target);
+                }
 
                 // Increment the execution counter
                 target.incrementExecutionCount();
@@ -198,7 +208,9 @@ public class Scheduler extends ThreadJob {
   public void terminate() {
     Log.append(SCHED, getClass().getName() + " is terminating");
 
-    // Stop the threadpool?
+    if (executor != null) {
+      executor.shutdown();
+    }
 
   }
 

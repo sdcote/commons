@@ -68,7 +68,7 @@ public class ThreadJob implements Runnable {
   protected volatile long idle_time = 0;
 
   /** The time when we start idling due to inactivity */
-  protected long idle_timeout = 30000;
+  protected volatile long idle_timeout = 30000;
 
   /** The how long we pause when idling due to inactivity */
   protected volatile long idle_wait_time = 1000;
@@ -171,18 +171,23 @@ public class ThreadJob implements Runnable {
    * @return the thread in which this job is running.
    */
   public Thread daemonize(final Thread thread) {
-    current_thread = thread;
+    synchronized (mutex) {
+      if (isActive()) {
+        return current_thread;
+      }
+      current_thread = thread;
 
-    // only user threads keep the JVM running
-    current_thread.setDaemon(false);
+      // only user threads keep the JVM running
+      current_thread.setDaemon(false);
 
-    // start it
-    current_thread.start();
+      // start it
+      current_thread.start();
 
-    // give the thread a chance to start
-    Thread.yield();
+      // give the thread a chance to start
+      Thread.yield();
 
-    return current_thread;
+      return current_thread;
+    }
   }
 
 
@@ -496,18 +501,20 @@ public class ThreadJob implements Runnable {
    * Set all our flags and get ready to run.
    */
   protected void init() {
-    // Set all our flags
-    restart = false;
-    shutdown = false;
-    suspended = false;
-    idle = false;
-    hyper = false;
+    synchronized (mutex) {
+      // Set all our flags
+      restart = false;
+      shutdown = false;
+      suspended = false;
+      idle = false;
+      hyper = false;
 
-    // Set the time we started
-    started_time = System.currentTimeMillis();
+      // Set the time we started
+      started_time = System.currentTimeMillis();
 
-    // Set the thread to time to go inactive at deactivate_time
-    idle_time = started_time + idle_timeout;
+      // Set the thread to time to go inactive at deactivate_time
+      idle_time = started_time + idle_timeout;
+    }
   }
 
 
@@ -617,7 +624,9 @@ public class ThreadJob implements Runnable {
    * @param flag indicating our idle state.
    */
   public void setIdle(final boolean flag) {
-    this.idle = flag;
+    synchronized (mutex) {
+      this.idle = flag;
+    }
   }
 
 
@@ -666,9 +675,11 @@ public class ThreadJob implements Runnable {
         }
 
         // Check to see if we should suspend execution
-        if (isSuspended()) {
-          // park for an indefinite period of time (resume will interrupt park)
-          park(0);
+        synchronized (mutex) {
+          while (isSuspended() && !isShutdown()) {
+            // park for an indefinite period of time (resume will interrupt park)
+            park(0);
+          }
         }
 
       } // if !shutdown
@@ -779,7 +790,9 @@ public class ThreadJob implements Runnable {
    *        false, keep looping until shutdown is called.
    */
   public void setDoWorkOnce(final boolean flag) {
-    doWorkOnce = flag;
+    synchronized (mutex) {
+      doWorkOnce = flag;
+    }
   }
 
 
@@ -805,7 +818,9 @@ public class ThreadJob implements Runnable {
    *          indicates use wait().
    */
   public void setParkSleep(final boolean b) {
-    parkSleep = b;
+    synchronized (mutex) {
+      parkSleep = b;
+    }
   }
 
 }
