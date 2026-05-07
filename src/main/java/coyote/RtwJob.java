@@ -26,25 +26,56 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * This is a Snap job that handles Read-Transform-Write tasks.
+ * This is a Snap job that handles Read-Transform-Write (RTW) tasks.
  *
- * <p>Using the coyote.commons.rtw package, this job uses a set of common classes to perform basic data processing.</p>
+ * <p>Using the {@code coyote.commons.rtw} package, this job uses a set of common classes to perform basic data
+ * processing. It initializes a {@link TransformEngine} based on the provided configuration and runs it.</p>
+ *
+ * <p>The job supports features like an ever-repeating execution, command-line argument passing to the engine's
+ * symbol table, and automatic determination of home and work directories based on environment or configuration.</p>
  */
 public class RtwJob extends AbstractSnapJob {
 
     /**
-     * If there is no specified directory in the APP_HOME system property, just use the current working directory
+     * If there is no specified directory in the {@code APP_HOME} system property, just use the current working directory.
      */
     public static final String DEFAULT_HOME = System.getProperty("user.dir");
+
+    /**
+     * The command line argument used to override the work directory.
+     */
     private static final String OVERRIDE_WORK_DIR_ARG = "-owd";
+
+    /**
+     * The name of the default work directory under the application home.
+     */
     private static final String WORK_DIR_NAME = "wrk";
+
+    /**
+     * The name of the default log directory (reserved for future use or descriptive purposes).
+     */
     private static final String LOG_DIR_NAME = "log";
+
+    /**
+     * The transformation engine that performs the actual data processing.
+     */
     TransformEngine engine = null;
+
+    /**
+     * Flag indicating whether the job should repeat its execution indefinitely.
+     */
     boolean repeat = false;
 
 
     /**
      * Configure the job and run any initialization prior to being started.
+     *
+     * <p>This method initializes the job name, home directory, work directory, and the transformation engine.
+     * It also populates the engine's symbol table with command-line arguments, environment variables, and
+     * system properties.</p>
+     *
+     * @param cfg The configuration for the job.
+     * @throws ConfigurationException If there is a problem with the configuration or engine initialization.
      */
     @Override
     public void configure(Config cfg) throws ConfigurationException {
@@ -97,7 +128,11 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * Start the engine running in the foreground.
+     * Start the transformation engine.
+     *
+     * <p>The engine will run until completion. If the {@code repeat} flag is set to {@code true},
+     * the engine will be restarted immediately after each run. Exceptions during execution are logged,
+     * and the engine is closed after each run (or each iteration if repeating).</p>
      */
     @Override
     public void start() {
@@ -133,7 +168,10 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * Shut everything down when the JRE terminates.
+     * Shut everything down when the job is requested to stop or the JRE terminates.
+     *
+     * <p>This calls {@link TransformEngine#shutdown()} to ensure that any long-running processes
+     * or resources held by the engine are properly handled.</p>
      *
      * <p>There is a shutdown hook registered with the JRE when this Job is
      * loaded. The shutdown hook will call this method when the JRE is
@@ -151,21 +189,13 @@ public class RtwJob extends AbstractSnapJob {
     /**
      * Determine the value of the "app.home" system property.
      *
-     * <p>If the app home property is already set, it is preserved, if not
-     * normalized. If there is no value, this attempts to determine the location
-     * of the configuration file used to configure this job and if found, uses
-     * that directory as the home directory of all transformation operations. The
-     * reasoning is that all artifacts should be kept together. Also, it is
-     * probable that the DX job will be called from a central location while
-     * each DX job will live is its own project directory.</p>
+     * <p>If the app home property is already set, it is preserved and normalized.
+     * If there is no value, this attempts to determine the location
+     * of the configuration file used to configure this job (via command-line arguments)
+     * and if found, uses that directory as the home directory of all transformation operations.
+     * The reasoning is that all artifacts should be kept together.</p>
      *
-     * <p>The most common use case is for the DX job to be called from a
-     * scheduler (e.g. cron) with an absolute path to a configuration file.
-     * Another very probable use case is the DX job being called from a
-     * project directory with one configuration file per directory.</p>
-     *
-     * <p>It is possible that multiple files with different configurations will
-     * exist in one directory.</p>
+     * <p>If it cannot be determined from arguments, it defaults to the current working directory.</p>
      */
     protected void determineHomeDirectory() {
         // If our home directory is not specified as a system property...
@@ -212,9 +242,16 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * Look for "-owd" and just use the current directory
-     * Look in system properties for "app.work"
-     * Look for app.home and user the 'wrk' directory under there
+     * Determine and initialize the work directory.
+     *
+     * <p>The logic follows these steps:
+     * <ol>
+     *     <li>Check for the {@code -owd} command line argument to override the work directory with the configuration directory or current directory.</li>
+     *     <li>Check the {@code app.work} system property.</li>
+     *     <li>Check for a {@code wrk} directory under {@code app.home}.</li>
+     *     <li>Default to the current working directory.</li>
+     * </ol>
+     * The resulting path is normalized and set in the {@code app.work} system property.</p>
      */
     protected void determineWorkDirectory() {
         File result = null;
@@ -299,7 +336,10 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * Ensure we have a name either in the configuration or the name of the configuration file from the command line.
+     * Ensure the job has a name.
+     *
+     * <p>If no name is set in the configuration, it attempts to use the name of the configuration
+     * file from the command line arguments as the job name.</p>
      */
     private void determineName() {
         if (StringUtil.isBlank(configuration.getName())) {
@@ -317,7 +357,12 @@ public class RtwJob extends AbstractSnapJob {
 
 
     /**
-     * @return
+     * Retrieve the directory containing the configuration file.
+     *
+     * <p>This is determined by parsing the {@code CONFIG_URI} system property.
+     * If it is a file URI, the parent directory is returned if it exists and is writable.</p>
+     *
+     * @return The absolute path to the configuration directory, or {@code null} if it cannot be determined.
      */
     private String getConfigDir() {
         String retval = null;

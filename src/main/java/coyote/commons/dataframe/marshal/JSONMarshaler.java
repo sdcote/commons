@@ -34,7 +34,7 @@ public class JSONMarshaler {
    * 
    * @param json
    * 
-   * @return Data frame containing the JSON represented data
+   * @return Data frame containing the JSON-represented data
    */
   public static List<DataFrame> marshal(final String json) throws MarshalException {
     List<DataFrame> retval = null;

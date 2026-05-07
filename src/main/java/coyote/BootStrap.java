@@ -35,7 +35,7 @@ import coyote.commons.snap.SnapJob;
 /**
  * This acts as a very generic loader of classes based on configuration files.
  * 
- * <p>The bootStrap loader takes an opinionated approach to running generic jobs allowing the developer to focus on business logic 
+ * <p>The bootstrap loader takes an opinionated approach to running generic jobs, allowing the developer to focus on business logic
  * instead of everything involved with creating CLI tools.</p>
  * 
  * <p>Snap Jobs are single-threaded components that perform some task, then exits. While the Job may be multithreaded, the
@@ -56,7 +56,7 @@ import coyote.commons.snap.SnapJob;
  * a file or resource has been received, it is parsed and used to dynamically load the class specified.</p>
  * 
   * APP_HOME - specific directory specified as a system property or environment variable
- *  CFG_HOME - usually a subsirectory named "cfg" under the APP_HOME directory.
+ *  CFG_HOME - usually a subdirectory named "cfg" under the APP_HOME directory.
  */
 public class BootStrap {
     private static Config configuration = null;

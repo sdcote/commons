@@ -20,9 +20,9 @@ import java.util.TreeSet;
  * Parses basic cron entries and provides some functions for scheduling.
  * 
  * <p>This class creates maps of valid values for each of the 5 time ranges: 
- * minutes, hours, days, months and weekdays. The maps can them be checked for
- * the existence of the argument values in those arrays. For example; if the 
- * current minute is 15 and the minutes map contains 15, then the current time 
+ * minutes, hours, days, months, and weekdays. The maps can them be checked for
+ * the existence of the argument values in those arrays. For example, if the
+ * current minute is 15 and the minute map contains 15, then the current time
  * passes the minute check. The rest of the date/time values can be checked 
  * accordingly.</p>
  * 
@@ -34,7 +34,7 @@ import java.util.TreeSet;
  * 
  * see https://en.wikipedia.org/wiki/Cron#CRON_expression
  * 
- * <p>Note: TreeSet is used only for assisting in development and debugging 
+ * <p>Note: TreeSet is used only for helping in development and debugging
  * when using the {@code dump()} method. It can be safely replaced with 
  * HashSet.</p>
  */
@@ -107,7 +107,7 @@ public class CronEntry {
    * <li>hours</li>
    * <li>day</li>
    * <li>month</li>
-   * <li>day of week</li></ol>
+   * <li>day of the week</li></ol>
    * Any missing fields will be defaulted to ANY (i.e."*").
    * 
    * <p>Only simple syntax is supported:<ol>
@@ -436,7 +436,7 @@ public class CronEntry {
    * 
    * <p>If it is desired to start the search from 0, then -1 should be used. 
    * This is important for those time maps which are zero-based as in minute, 
-   * hour and day of week.</p>
+   * hour, and day of week.</p>
    * 
    * @param timemap The time map to search
    * @param start the starting point, use -1 to start searching from the 

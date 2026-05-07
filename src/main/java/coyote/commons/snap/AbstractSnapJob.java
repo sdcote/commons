@@ -26,6 +26,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Base implementation of a SnapJob providing common functionality.
+ *
+ * <p>This class handles:
+ * <ul>
+ *   <li>Configuration management and preprocessing with symbols</li>
+ *   <li>Logging initialization and configuration</li>
+ *   <li>Symbol table management for template-based configurations</li>
+ *   <li>Operational statistics tracking</li>
+ *   <li>Command line argument storage</li>
+ *   <li>Operational context management</li>
+ * </ul>
+ */
 public abstract class AbstractSnapJob implements SnapJob {
 
     /** The component responsible for tracking operational statistics for all the components in this runtime */
@@ -38,7 +51,7 @@ public abstract class AbstractSnapJob implements SnapJob {
     protected String[] commandLineArguments = null;
     /** Logical identifier for this instance. May not be unique across the system. */
     protected String instanceName = null;
-    /** */
+    /** The operational context for this job, providing a shared space for job components to communicate. */
     private final OperationalContext context = new OperationalContext();
     /** Constant to assist in determining the full class name of loggers */
     private static final String LOGGER_PKG = coyote.commons.log.Log.class.getPackage().getName();
@@ -121,10 +134,16 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
+
     /**
+     * Configure the job with the provided configuration.
      *
-     * @param cfg
-     * @throws ConfigurationException
+     * <p>This method initializes the symbol table, pre-processes the configuration
+     * using the symbol table (resolving variables), and then initializes logging
+     * based on the processed configuration.</p>
+     *
+     * @param cfg The configuration for the job.
+     * @throws ConfigurationException If there is a problem with the configuration or initialization.
      */
     public void configure(Config cfg) throws ConfigurationException {
         if (cfg != null) configuration = cfg;
@@ -189,8 +208,9 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
+
     /**
-     *
+     * @return the configuration for this job.
      */
     public Config getConfig() {
         if (configuration == null) {
@@ -200,8 +220,9 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
+
     /**
-     *
+     * @return the operational context for this job.
      */
     public OperationalContext getContext() {
         return context;
@@ -211,12 +232,10 @@ public abstract class AbstractSnapJob implements SnapJob {
     /**
      * Access instrumentation services for this loader.
      *
-     * <p>
-     * This enables tracking operational statistics for all components in the
-     * runtime.
+     * <p>This enables tracking operational statistics for all components in
+     * the runtime.
      *
-     * <p>
-     * Statistics tracking is disabled by default but can be toggled antime.
+     * <p>Statistics tracking is disabled by default but can be toggled anytime.
      *
      * @return the StatBoard for this server.
      */
@@ -407,6 +426,12 @@ public abstract class AbstractSnapJob implements SnapJob {
 
 
 
+    /**
+     * Create a logger from the given configuration.
+     *
+     * @param cfg The configuration for the logger.
+     * @return The created logger, or null if it could not be created.
+     */
     private static Logger createLogger(Config cfg) {
         Logger retval = null;
         if (cfg != null) {
