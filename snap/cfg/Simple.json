@@ -24,8 +24,8 @@
       "batch": 5
     }
   },
-  "Logging": {
-    "StandardError": { "name": "error", "target": "STDERR", "categories": "error, fatal, warn" },
-    "StandardOutput": { "name": "default", "target": "STDOUT", "categories": "info, notice,debug,trace" }
-  }
+  "Logging": [
+    {"StandardError": { "name": "error", "target": "STDERR", "categories": "error, fatal, warn" }},
+    {"StandardOutput": { "name": "default", "target": "STDOUT", "categories": "info, notice, debug, trace" }}
+  ]
 }

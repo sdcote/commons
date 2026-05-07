@@ -263,22 +263,26 @@ public abstract class AbstractSnapJob implements SnapJob {
 
         // for each of the logger sections
         for (Config cfg : loggers) {
-
             // Find the individual loggers
             for (DataField field : cfg.getFields()) {
-
                 // each logger is a frame
                 if (field.isFrame()) {
-
                     DataFrame cfgFrame = (DataFrame) field.getObjectValue();
-                    // we need named sections, not arrays
-                    if (StringUtil.isNotBlank(field.getName())) {
+                    String className = field.getName();
 
+                    // If the name is blank, it's an array of objects like [{"Logger":{...}}, ...]
+                    // In this case, the first field of the frame is the logger class name
+                    if (StringUtil.isBlank(className) && cfgFrame.getFieldCount() > 0) {
+                        DataField firstField = cfgFrame.getField(0);
+                        if (firstField.isFrame()) {
+                            className = firstField.getName();
+                            cfgFrame = (DataFrame) firstField.getObjectValue();
+                        }
+                    }
+
+                    if (StringUtil.isNotBlank(className)) {
                         // start building the configuration for logger
                         Config loggerConfiguration = new Config();
-
-                        // use the name of the section as the class name
-                        String className = field.getName();
 
                         // Make sure the class is fully qualified
                         if (StringUtil.countOccurrencesOf(className, ".") < 1) {
@@ -290,7 +294,6 @@ public abstract class AbstractSnapJob implements SnapJob {
 
                         // add each of the fields in the config frame to the logger config
                         for (DataField lfield : cfgFrame.getFields()) {
-
                             // handle the target...make sure it is relative to ????
                             if (ConfigTag.TARGET.equalsIgnoreCase(lfield.getName())) {
                                 String cval = lfield.getStringValue();
