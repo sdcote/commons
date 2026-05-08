@@ -171,6 +171,7 @@ public class ConfigTag {
     public static final String MONTHS = "months";
     public static final String MILLIS = "millis";
     public static final String SECONDS = "seconds";
+    public static final String INTERVAL = "interval";
 
     // Manager
 

@@ -1,13 +1,14 @@
 # DirectoryChangeReader Documentation
 
 ## Overview
-The `DirectoryChangeReader` is a component designed to monitor a specific directory structure for changes, specifically the creation and deletion of files and directories. It is built to be used within the RTW (Read-Transform-Write) framework.
+The `DirectoryChangeReader` is a component designed to monitor a specific directory structure for changes, including the creation, deletion, and modification of files and directories. It is built to be used within the RTW (Read-Transform-Write) framework.
 
 When the reader is initialized, it performs an initial scan of the configured directory to establish a baseline state. Subsequent calls to its `read()` method will trigger a rescan to detect any differences from the previous state.
 
 ## Key Features
 - **Baseline Establishment**: Scans the directory on startup so it only reports changes occurring after initialization.
 - **Recursive Monitoring**: Monitors the entire directory tree from the root directory provided by default, but can be configured to scan only the top-level directory.
+- **Change Detection**: Detects when files or directories are created or deleted, and when files are modified (detected by changes in file size).
 - **Change Queuing**: If multiple changes are detected in a single scan (e.g., deleting a directory with multiple files), they are queued and returned one by one in subsequent `read()` calls without re-scanning until the queue is empty.
 - **Configurable Polling**: If no changes are found, the reader waits for a configurable number of seconds before scanning again.
 - **Blocking Read**: The `read()` method will not return until a change is detected, making it ideal for event-driven workflows.
@@ -22,7 +23,7 @@ The `DirectoryChangeReader` is configured via a JSON structure (or a `DataFrame`
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `directory` | String | (Required) | The absolute or relative path of the directory to monitor. |
-| `seconds` | Integer | 6 | The number of seconds to wait between scans when no changes are detected. |
+| `interval` | Integer | 6 | The number of seconds to wait between scans when no changes are detected. (Deprecated: `seconds`) |
 | `recurse` | Boolean | true | Whether to scan subdirectories. If false, only the top-level directory is monitored. |
 | `include` | String / Array | None | One or more regular expressions. If provided, only files/directories matching at least one expression are reported. |
 | `exclude` | String / Array | None | One or more regular expressions. Files/directories matching any of these expressions are ignored. |
@@ -34,7 +35,9 @@ The `DirectoryChangeReader` is configured via a JSON structure (or a `DataFrame`
 Each `read()` call returns a `DataFrame` containing the following fields:
 
 - `filename`: The absolute path of the file or directory that changed.
-- `change`: The type of change, either `"Created"` or `"Deleted"`.
+- `change`: The type of change: `"Created"`, `"Deleted"`, or `"Modified"`.
+- `previousSize`: The size in bytes before modification (Modified only).
+- `currentSize`: The size in bytes after creation or modification.
 
 ---
 
@@ -49,7 +52,7 @@ In many ETL processes, a "landing zone" directory is used where external systems
   "Reader": {
     "class": "coyote.commons.rtw.reader.DirectoryChangeReader",
     "directory": "/data/landing_zone",
-    "seconds": 5,
+    "interval": 5,
     "include": [ ".*\\.csv" ]
   }
 }
@@ -64,7 +67,7 @@ If you are maintaining a mirror of a directory, you need to know when items are 
   "Reader": {
     "class": "coyote.commons.rtw.reader.DirectoryChangeReader",
     "directory": "/shared/assets",
-    "seconds": 10
+    "interval": 10
   }
 }
 ```
@@ -95,7 +98,7 @@ Monitor all changes in a project directory but ignore the `build` and `.git` dir
   "Reader": {
     "class": "coyote.commons.rtw.reader.DirectoryChangeReader",
     "directory": "/projects/my_app",
-    "seconds": 2,
+    "interval": 2,
     "exclude": [
       ".*[\\\\/]build[\\\\/].*",
       ".*[\\\\/]\\.git[\\\\/].*"
@@ -118,7 +121,7 @@ Monitor only the top-level directory for new or removed files, ignoring any chan
 }
 ```
 
-A common approach is to add Listeners to perform specific operations when reads are performed, such as logging, triggering workflows, or sending notifications.
+A common approach is to add Listeners to perform specific operations when reads are performed, such as logging, triggering workflows, or sending notifications. Some listeners trigger `onEnd(TransformContext)` and make use of any transforms that have been applied. A `FileListener` may perform some custom activity when a file or directory has meen created or deleted.
 
 
 ---
@@ -126,17 +129,17 @@ A common approach is to add Listeners to perform specific operations when reads 
 ## Developer Information
 
 ### Implementation Details
-The reader maintains an internal `Set<String>` representing the absolute paths of all files and directories currently in the monitored structure.
+The reader maintains an internal `Map<String, Long>` representing the absolute paths and current sizes of all files and directories in the monitored structure.
 
 1. **`open()`**: Calls `scanDirectory()` to populate the initial `currentState`.
 2. **`read()`**:
     - If `pendingChanges` queue is empty:
         - Calls `scanDirectory()` to get `newState`.
-        - Compares `currentState` and `newState` to find deletions and creations.
+        - Compares `currentState` and `newState` to find deletions, creations, and modifications (size changes).
         - If no changes, sleeps for `scanInterval` and repeats.
         - If changes found, updates `currentState = newState`.
     - Polls the next `Change` from `pendingChanges`.
-    - Returns a `DataFrame` representing the change.
+    - Returns a `DataFrame` representing the change, including `previousSize` and `currentSize` metadata.
 
 ### Class Reference
 - **FQN**: `coyote.commons.rtw.reader.DirectoryChangeReader`
@@ -146,3 +149,6 @@ The reader maintains an internal `Set<String>` representing the absolute paths o
     - `CHANGE_FIELD`: "change"
     - `CREATED`: "Created"
     - `DELETED`: "Deleted"
+    - `MODIFIED`: "Modified"
+    - `PREVIOUS_SIZE`: "previousSize"
+    - `CURRENT_SIZE`: "currentSize"

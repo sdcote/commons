@@ -16,7 +16,7 @@ public interface ContextListener extends ConfigurableComponent {
      * context is a transaction or the transform. If the context is an instance
      * of TransformContext, the engine is about to terminate.
      *
-     * @param context the context which is ending
+     * @param context the context that is ending
      */
     void onEnd(OperationalContext context);
 
@@ -30,7 +30,7 @@ public interface ContextListener extends ConfigurableComponent {
      * context is a transaction or the transform. If the context is an instance
      * of TransformContext, the engine is about to start reading.
      *
-     * @param context the context which is starting
+     * @param context the context that is starting
      */
     void onStart(OperationalContext context);
 
@@ -46,7 +46,7 @@ public interface ContextListener extends ConfigurableComponent {
      * for every writer defined in the configuration.
      *
      * @param context the transaction context
-     * @param writer the writer which just called to write a frame
+     * @param writer the writer who just called to write a frame
      */
     void onWrite(TransactionContext context, FrameWriter writer);
 
@@ -54,7 +54,7 @@ public interface ContextListener extends ConfigurableComponent {
 
 
     /**
-     * Called just after a frame has been read by a reader.
+     * Called just after a reader has read a frame.
      *
      * @param context the transaction context
      * @param reader the reader doing the reading
@@ -70,7 +70,7 @@ public interface ContextListener extends ConfigurableComponent {
      * <p>The listener should use reflection (instanceof) to check if the
      * context is a transaction or the transform.
      *
-     * @param context the context which has been set to error.
+     * @param context the context that has been set to error.
      */
     void onError(OperationalContext context);
 
@@ -128,10 +128,10 @@ public interface ContextListener extends ConfigurableComponent {
      * Preload the listener with historic data.
      *
      * <p>Some listeners may require prior frames to determine how to operate.
-     * An example of this is a listener which generates an event when frame
+     * An example of this is a listener that generates an event when frame
      * values breach an averaged threshold. The generated average will be more
-     * accurate if the listener has the prior values before the first frame is
-     * read in by the reader. This method allows the listener to preload these
+     * accurate if the listener has the prior values before the reader reads
+     * in the first frame. This method allows the listener to preload these
      * historic frames if they are provided.
      *
      * <p>Oldest frames are expected to be loaded first.

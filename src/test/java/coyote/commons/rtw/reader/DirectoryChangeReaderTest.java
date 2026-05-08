@@ -32,6 +32,29 @@ public class DirectoryChangeReaderTest {
     }
 
     @Test
+    public void testIntervalTag() throws Exception {
+        DataFrame cfg = new DataFrame()
+                .set(ConfigTag.DIRECTORY, testDir.getAbsolutePath())
+                .set(ConfigTag.INTERVAL, 1);
+        Config config = new Config(cfg);
+
+        DirectoryChangeReader reader = new DirectoryChangeReader();
+        reader.setConfiguration(config);
+        TransformContext context = new TransformContext();
+        reader.open(context);
+        assertFalse(context.isInError());
+
+        TransactionContext txnContext = new TransactionContext(context);
+
+        File newFile = new File(testDir, "interval_test.txt");
+        assertTrue(newFile.createNewFile());
+
+        DataFrame frame = reader.read(txnContext);
+        assertNotNull(frame);
+        assertEquals(newFile.getAbsolutePath(), frame.getAsString(DirectoryChangeReader.FILENAME_FIELD));
+    }
+
+    @Test
     public void testDetection() throws Exception {
         DataFrame cfg = new DataFrame()
                 .set(ConfigTag.DIRECTORY, testDir.getAbsolutePath())
@@ -61,6 +84,20 @@ public class DirectoryChangeReaderTest {
         assertNotNull(frame);
         assertEquals(newFile.getAbsolutePath(), frame.getAsString(DirectoryChangeReader.FILENAME_FIELD));
         assertEquals(DirectoryChangeReader.DELETED, frame.getAsString(DirectoryChangeReader.CHANGE_FIELD));
+
+        // Test Modification (Size change)
+        assertTrue(newFile.createNewFile());
+        frame = reader.read(txnContext); // consume the creation
+        
+        FileUtil.stringToFile("some data", newFile.getAbsolutePath());
+        frame = reader.read(txnContext);
+        assertNotNull(frame);
+        assertEquals(newFile.getAbsolutePath(), frame.getAsString(DirectoryChangeReader.FILENAME_FIELD));
+        assertEquals(DirectoryChangeReader.MODIFIED, frame.getAsString(DirectoryChangeReader.CHANGE_FIELD));
+        assertTrue(frame.contains(DirectoryChangeReader.PREVIOUS_SIZE));
+        assertTrue(frame.contains(DirectoryChangeReader.CURRENT_SIZE));
+        assertEquals(0L, frame.getAsLong(DirectoryChangeReader.PREVIOUS_SIZE));
+        assertEquals(9L, frame.getAsLong(DirectoryChangeReader.CURRENT_SIZE));
     }
 
     @Test
