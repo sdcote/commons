@@ -5,7 +5,6 @@
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
  */
-
 package coyote.commons.network.http;
 
 import java.io.Closeable;
@@ -50,7 +49,7 @@ import coyote.commons.security.OperationFrequency;
 /**
  * This is the core of the HTTP Server.
  * 
- * <p>This class should be sub-classed and the {@link #serve(HTTPSession)} 
+ * <p>This class should be subclassed and the {@link #serve(HTTPSession)}
  * method overridden to serve the request.
  */
 public abstract class HTTPD {
@@ -75,9 +74,9 @@ public abstract class HTTPD {
   protected final IpAcl acl = new IpAcl(IpAcl.DENY);
   /**
    * This is our Denial of Service tracker. It keeps a list of times a request
-   * is made and if requests come in to frequently from an address or network,
-   * the server can perform remediation such as blacklisting throttling and  of
-   * course security event notification.
+   * is made, and if requests come in to frequently from an address or network,
+   * the server can perform remediation such as blacklisting throttling and of
+   *  course, security event notification.
    */
   protected final OperationFrequency dosTable = new OperationFrequency();
   /**
@@ -87,7 +86,7 @@ public abstract class HTTPD {
   protected AuthProvider authProvider = new DefaultAuthProvider();
   /**
    * Pseudo-Parameter to use to store the actual query string in the
-   * parameters map for later re-processing.
+   * parameter map for later re-processing.
    */
   protected static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
   private static final String MIMETYPE_RESOURCE = "httpd/mimetypes.properties";
@@ -108,7 +107,7 @@ public abstract class HTTPD {
    * Decode parameters from a URL, handing the case where a single parameter
    * name might have been supplied several times, by return lists of values.
    * 
-   * <p>In general these lists will contain a single element.</p>
+   * <p>In general, these lists will contain a single element.</p>
    * 
    * @param parms original HTTPD parameters values, as passed to the 
    *        {@code serve()} method.
@@ -126,7 +125,7 @@ public abstract class HTTPD {
    * Decode parameters from a URL, handing the case where a single parameter
    * name might have been supplied several times, by return lists of values.
    * 
-   * <p>In general these lists will contain a single element.</p>
+   * <p>In general, these lists will contain a single element.</p>
    * 
    * @param queryString a query string pulled from the URL.
    * @return a map of {@code String} (parameter name) to 
@@ -160,7 +159,7 @@ public abstract class HTTPD {
    * 
    * @param str the percent encoded {@code String}
    * 
-   * @return expanded form of the input, for example "foo%20bar" becomes
+   * @return expanded form of the input, for example, "foo%20bar" becomes
    *         "foo bar"
    */
   protected static String decodePercent(final String str) {
@@ -192,7 +191,7 @@ public abstract class HTTPD {
 
   /**
    * Creates an SSLSocketFactory for HTTPS. Pass a loaded KeyStore and an
-   * array of loaded KeyManagers. These objects must properly
+   * array of loaded KeyManagers. These objects must be properly
    * loaded/initialized by the caller.
    *
    * @param loadedKeyStore the keystore to use
@@ -221,7 +220,7 @@ public abstract class HTTPD {
 
   /**
    * Creates an SSLSocketFactory for HTTPS. Pass a loaded KeyStore and a
-   * loaded KeyManagerFactory. These objects must properly loaded/initialized
+   * loaded KeyManagerFactory. These objects must be properly loaded/initialized
    * by the caller.
    *
    * @param loadedKeyStore a loaded KeyStore
@@ -340,7 +339,7 @@ public abstract class HTTPD {
 
 
   /**
-   * Constructs an HTTP server on given port.
+   * Constructs an HTTP server on a given port.
    *
    * @param port the port to bind
    */
@@ -352,9 +351,9 @@ public abstract class HTTPD {
 
 
   /**
-   * Constructs an HTTP server on given hostname and port.
+   * Constructs an HTTP server on a given hostname and port.
    *
-   * @param hostname the host name to resolve to determine the IP address on which to listen
+   * @param hostname the host name to resolve to determine the IP address on which to listen to
    * @param port the port to bind
    */
   public HTTPD(final String hostname, final int port) {
@@ -369,7 +368,7 @@ public abstract class HTTPD {
 
 
   /**
-   * Add an entry into this servers IP Access Control List.
+   * Add an entry into this server IP Access Control List.
    * 
    * @param network the network address for the entry
    * @param allowed true to allow any address matching the given network to 
@@ -391,10 +390,10 @@ public abstract class HTTPD {
    * <p>This is what the check will return if it does not find an explicit rule 
    * to match against.</p>
    * 
-   * <p>Setting this to TRUE, turns the IP Access Control List into a blacklist 
+   * <p>Setting this to TRUE turns the IP Access Control List into a blacklist
    * which allows everything unless it is granted access by an entry in this 
    * list. Setting this to FALSE turns this into a whitelist which denies 
-   * everything unless it is allows by an entry on this list. This is the 
+   * everything unless it is allowed by an entry on this list. This is the
    * default for the server and should not be changed unless there is a very 
    * specific need.</p>
    * 
@@ -431,7 +430,7 @@ public abstract class HTTPD {
 
 
   /**
-   * Create a instance of the client handler, subclasses can return a subclass
+   * Create an instance of the client handler, subclasses can return a subclass
    * of the ClientHandler.
    * 
    * @param finalAccept the socket the client is connected to
@@ -470,7 +469,7 @@ public abstract class HTTPD {
 
 
   /**
-   * @return return the port on which this server is <i>actually</i> listening. May be -1 for an inactive socket.
+   * @return return the port on which this server is <i>actually</i> listening to. Maybe -1 for an inactive socket.
    * 
    * @see #getPort()
    */

@@ -13,7 +13,11 @@ To enable the HTTP server in a `DaemonJob`, add a `Server` section to your job c
   "Job": {
     "class": "coyote.DaemonJob",
     "Server": {
-      "port": 8080,
+      "port": 8443,
+      "Secure": {
+        "filename": "/keystore.jks",
+        "password": "password"
+      },
       "ipacl": {
         "127.0.0.1": "allow",
         "default": "deny"
@@ -24,6 +28,33 @@ To enable the HTTP server in a `DaemonJob`, add a `Server` section to your job c
 ```
 
 The `Server` section supports the full configuration of the Coyote HTTP Server, including ports, IP ACLs, and SSL/TLS.
+
+### Enabling SSL/HTTPS
+
+To enable secure connections in the `DaemonJob` HTTP server, add a `Secure` section to the `Server` configuration.
+
+```json
+"Server": {
+  "port": 8443,
+  "Secure": {
+    "filename": "/keystore.jks",
+    "password": "password"
+  }
+}
+```
+
+- **`filename`**: The path to the Java Keystore (JKS) file. This path is relative to the application's classpath.
+- **`password`**: The passphrase for the keystore.
+
+#### Preparing a Keystore
+
+You can generate a self-signed certificate and keystore using the `keytool` command:
+
+```bash
+keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password -validity 360 -keysize 2048
+```
+
+Place the generated `keystore.jks` in your resources directory (e.g., `src/main/resources`) so it is available on the classpath.
 
 ### Endpoints
 

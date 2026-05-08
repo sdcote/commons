@@ -7,10 +7,12 @@
  */
 package coyote;
 
+import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
+import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.auth.GenericAuthProvider;
 import coyote.commons.network.http.responder.HTTPDRouter;
 import coyote.commons.rtw.ConfigTag;
@@ -28,6 +30,7 @@ import java.io.IOException;
 public class DaemonJob extends AbstractSnapJob {
 
     private HTTPDRouter server = null;
+
 
     /**
      * Configure the job with the provided configuration.
@@ -75,11 +78,28 @@ public class DaemonJob extends AbstractSnapJob {
                 if (serverConfig.containsIgnoreCase(ConfigTag.FREQUENCY)) {
                     server.configDosTables(new Config(serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.FREQUENCY).getName())));
                 }
+
+                if (serverConfig.containsIgnoreCase(ConfigTag.SECURE)) {
+                    try {
+                        DataFrame secureFrame = serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.SECURE).getName());
+                        Config secureConfig = new Config(secureFrame);
+                        String keystorePath = secureConfig.getString(ConfigTag.FILE);
+                        String password = secureConfig.getString(ConfigTag.PASSWORD);
+                        if (StringUtil.isNotBlank(keystorePath) && StringUtil.isNotBlank(password)) {
+                            server.makeSecure(HTTPD.makeSSLSocketFactory(keystorePath, password.toCharArray()), null);
+                        } else {
+                            Log.error("Incomplete secure configuration: file and password are required.");
+                        }
+                    } catch (Exception e) {
+                        Log.error("Could not configure SSL: " + e.getMessage());
+                    }
+                }
             } catch (Exception e) {
                 Log.error("Could not configure HTTP Server: " + e.getMessage());
             }
         }
     }
+
 
     /**
      * Start the daemon job.
@@ -97,6 +117,7 @@ public class DaemonJob extends AbstractSnapJob {
             }
         }
     }
+
 
     /**
      * Shut everything down when the job is requested to stop.

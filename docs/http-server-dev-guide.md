@@ -196,11 +196,33 @@ server.setDefaultAllow(false); // Deny everything else
 
 ### SSL/TLS
 
-To enable HTTPS, you must provide an `SSLServerSocketFactory`:
+To enable HTTPS, you must provide an `SSLServerSocketFactory` to the server instance. You can use the static helper methods in `HTTPD` to create a factory from a keystore on the classpath.
+
+#### Enabling SSL Programmatically
 
 ```java
-server.makeSecure(HTTPD.makeSSLSocketFactory("/keystore.jks", "password".toCharArray()), null);
+// Create a secure socket factory using a keystore and its password
+SSLServerSocketFactory sslFactory = HTTPD.makeSSLSocketFactory("/keystore.jks", "password".toCharArray());
+
+// Apply the factory to the server with optional protocols (null for defaults)
+server.makeSecure(sslFactory, null);
 ```
+
+The `HTTPD` class provides several overloads of `makeSSLSocketFactory` to accommodate different ways of loading keys:
+
+1.  `makeSSLSocketFactory(KeyStore loadedKeyStore, KeyManager[] keyManagers)`
+2.  `makeSSLSocketFactory(KeyStore loadedKeyStore, KeyManagerFactory loadedKeyFactory)`
+3.  `makeSSLSocketFactory(String keyAndTrustStoreClasspathPath, char[] passphrase)`
+
+#### Preparing the Keystore
+
+A Java Keystore (JKS) can be prepared using the `keytool` utility. A common command to generate a self-signed certificate for local development is:
+
+```bash
+keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password -validity 360 -keysize 2048
+```
+
+The resulting `keystore.jks` file should then be placed in the project's resource directory (e.g., `src/main/resources`) so it is included in the classpath at runtime.
 
 ## Denial of Service (DoS) Configuration
 
@@ -239,5 +261,3 @@ To prevent the `dosTable` from growing indefinitely, you can periodically expire
 // Remove any entries that haven't made a request in the last hour
 server.dosTable.expire(3600000);
 ```
-
-For details on how the HTTP server is implemented and used within the `DaemonJob`, see the [DaemonJob HTTP Server Guide](daemonjob-http-server.md).
