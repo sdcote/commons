@@ -774,7 +774,7 @@ public class DataFrame implements Cloneable {
    * Return the object value of the indexed field.
    *
    * @param i The zero-based index of the field to return. The first element is
-   *          at index zero, the second is at index 1 and so on.
+   *          at index zero, the second is at index 1, and so on.
    *
    * @return The object value of the field at the given index, or null if there 
    *         was no value at that index (out-of-bounds)
@@ -880,10 +880,10 @@ public class DataFrame implements Cloneable {
   /**
    * Add a frame field to the existing array of fields.
    * 
-   * <p>Null fields will not be added to the list and will retun a negative 
+   * <p>Null fields will not be added to the list and will return a negative
    * index.
    * 
-   * @param field The field to place in the frames array of fields
+   * @param field The field to place in the frame array of fields
    * 
    * @return the index of the placed value or -1 if the given frame is null.
    */
@@ -982,7 +982,7 @@ public class DataFrame implements Cloneable {
    * }
    * </code></pre>
    * 
-   * <p><strong>NOTE:</strong> The value is not checked prior to removing the 
+   * <p><strong>NOTE:</strong> The value is not checked before removing the
    * existing field which means if the object is not supported, the end state 
    * of the frame will be the named field will have been removed from the 
    * frame and no value replacing it. This is by design, allowing the invalid 
@@ -1011,7 +1011,7 @@ public class DataFrame implements Cloneable {
    * }
    * </code></pre>
    * 
-   * <p><strong>NOTE:</strong> The value is not checked prior to removing the 
+   * <p><strong>NOTE:</strong> The value is not checked before removing the
    * existing fields which means if the object is not supported, the end state 
    * of the frame will be the named fields will have been removed from the 
    * frame and no value replacing it. This is by design, allowing the invalid 

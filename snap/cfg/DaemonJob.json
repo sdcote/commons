@@ -13,22 +13,15 @@
     "Job": [
       {
         "RtwJob": {
-          "Reader": {
-            "class": "DirectoryTripwireReader",
-            "directory": "C:\\Users\\scote\\Downloads"
-          },
-          "Writer": {
-            "class": "ConsoleWriter",
-            "format": "json",
-            "indent": true
-          }
+          "Reader": { "class": "DirectoryTripwireReader", "directory": "C:\\Users\\scote\\Downloads" },
+          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
         }
       }
+    ],
+    "Logging": [
+      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
     ]
-  },
-  "Logging": [
-    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
-  ]
+  }
 }
 
