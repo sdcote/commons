@@ -185,4 +185,12 @@ public class MergeDirectoryTest {
       assertTrue(file1.exists()); // Should NOT be moved because it would overwrite
       assertEquals("old content", FileUtil.fileToString(targetFile1));
   }
+
+  @Test
+  public void testDefaults() throws Exception {
+    MergeDirectory task = new MergeDirectory();
+    assertFalse( task.isMove());
+    assertTrue( task.isRename());
+    assertFalse( task.isOverwrite());
+  }
 }

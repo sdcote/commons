@@ -29,9 +29,9 @@ import coyote.commons.rtw.eval.Evaluator;
  * <p>Values in the configuration are first used as keys to the context. If 
  * there is no value with that name in the context, the task uses the value as 
  * a literal argument. The primary use case is to just use the literal value in 
- * the configuration, but this context look-up gives the tasks the ability to 
- * get dynamic values from the context which were placed there by other 
- * components during runtime operation.
+ * the configuration. However, this context look-up allows the tasks to get
+ * dynamic values from the context which were placed there by other components
+ * during runtime operation.
  */
 public abstract class AbstractTransformTask extends AbstractConfigurableComponent implements TransformTask {
   protected boolean haltOnError = true;
@@ -43,7 +43,7 @@ public abstract class AbstractTransformTask extends AbstractConfigurableComponen
   /**
    * Return the conditional expression from the configuration.
    * 
-   * @return the condition which must evaluate to true before the task is to 
+   * @return the condition that must evaluate to true before the task is to
    *         execute.
    */
   public String getCondition() {
@@ -110,7 +110,7 @@ public abstract class AbstractTransformTask extends AbstractConfigurableComponen
    * to make sure there are no issues or conflicts with other settings. For
    * example, settings that were present during configuration may have changed
    * at the time of initialization. If there are any issues during
-   * initialization, simply place an error in the Transform context:
+   * initialization, place an error in the Transform context:
    * {@code context.setError("Initialization error");}</p>
    *
    * <p>Once all components have been initialized, the engine will start

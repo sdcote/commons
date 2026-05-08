@@ -88,13 +88,13 @@ public class MergeDirectory extends AbstractFileTask {
   }
 
   /**
-   * @return true if the target file is to be renamed if it exists and overwrite is false, false otherwise.
+   * @return true if the target file is to be renamed if it exists and overwrite is false, true otherwise.
    */
   public boolean isRename() {
     if (configuration.containsIgnoreCase(ConfigTag.RENAME)) {
       return getBoolean(ConfigTag.RENAME);
     }
-    return false;
+    return true; // protect the target by default
   }
 
   /**
@@ -123,6 +123,7 @@ public class MergeDirectory extends AbstractFileTask {
     }
 
     try {
+      Log.debug("Merging " + sourceDir.getAbsolutePath() + " into " + targetDir.getAbsolutePath());
       merge(sourceDir, targetDir);
     } catch (IOException e) {
       throw new TaskException("Error merging directories: " + e.getMessage(), e);
@@ -143,6 +144,7 @@ public class MergeDirectory extends AbstractFileTask {
       }
     }
 
+    Log.debug("Processing files in " + source.getAbsolutePath());
     File[] files = source.listFiles();
     if (files != null) {
       for (File file : files) {
@@ -152,6 +154,7 @@ public class MergeDirectory extends AbstractFileTask {
           if (isMove()) {
             File[] remainingFiles = file.listFiles();
             if (remainingFiles == null || remainingFiles.length == 0) {
+              Log.debug("Removing empty directory " + file.getAbsolutePath());
               FileUtil.deleteDirectory(file);
             }
           }
@@ -175,9 +178,12 @@ public class MergeDirectory extends AbstractFileTask {
     boolean move = isMove();
 
     if (target.exists()) {
+      Log.debug("Target file " + target.getAbsolutePath() + " already exists");
       if (overwrite) {
+        Log.debug("Overwriting target file " + target.getAbsolutePath());
         performOperation(source, target, move);
       } else if (rename) {
+        Log.debug("Renaming target file " + target.getAbsolutePath());
         File uniqueTarget = getUniqueFile(target);
         performOperation(source, uniqueTarget, move);
       } else {
@@ -186,6 +192,7 @@ public class MergeDirectory extends AbstractFileTask {
         }
       }
     } else {
+      Log.debug("Copying file " + source.getAbsolutePath() + " to " + target.getAbsolutePath());
       performOperation(source, target, move);
     }
   }
@@ -200,8 +207,10 @@ public class MergeDirectory extends AbstractFileTask {
    */
   private void performOperation(File source, File target, boolean move) throws IOException {
     if (move) {
+      Log.debug("Moving file " + source.getAbsolutePath() + " to " + target.getAbsolutePath());
       FileUtil.moveFile(source, target);
     } else {
+      Log.debug("Copying file " + source.getAbsolutePath() + " to " + target.getAbsolutePath());
       FileUtil.copyFile(source, target);
     }
   }

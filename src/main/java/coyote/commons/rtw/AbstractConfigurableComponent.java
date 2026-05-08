@@ -31,7 +31,7 @@ public abstract class AbstractConfigurableComponent implements ConfigurableCompo
     protected File jobDirectory = new File(System.getProperty("user.dir"));
 
     /**
-     * Accessor for this tasks job directory.
+     * Accessor for this task's job directory.
      *
      * @return the job directory for this task
      */

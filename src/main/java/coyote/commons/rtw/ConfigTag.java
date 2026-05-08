@@ -177,6 +177,7 @@ public class ConfigTag {
 
     public static final String IPACL = "ipacl";
     public static final String FREQUENCY = "frequency";
+    public static final String SERVER = "Server";
 
     // Sorting Options
 

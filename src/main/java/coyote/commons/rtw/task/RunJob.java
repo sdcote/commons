@@ -31,7 +31,7 @@ import coyote.commons.template.Template;
  * This task runs a data transfer job using the current context.
  * 
  * <p>Using this task, it is possible to run several jobs as one, each with a 
- * set of conditions determining if it should run. This give allow for more 
+ * set of conditions determining if it should run. This give allows for more 
  * complex processing scenarios.
  * 
  * <p>This task can be configured thusly:<pre>
@@ -50,9 +50,11 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
 
   /**
-   * Confirm the configuration URI
+   * Confirm the configuration URI.
    *
-   * @throws TaskException
+   * @param cfgLoc the location of the configuration file.
+   * @return the URI of the configuration file, or null if it could not be found.
+   * @throws TaskException if there was a problem confirming the configuration location.
    */
   private URI confirmConfigurationLocation(final String cfgLoc) throws TaskException {
     URI cfgUri = null;
@@ -114,6 +116,14 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
 
 
+  /**
+   * Check the application configuration directory for the configuration file.
+   *
+   * @param cfgLoc the location of the configuration file.
+   * @param errMsg the buffer to append error messages to.
+   * @return the URI of the configuration file, or null if it could not be found.
+   * @throws TaskException if there was a problem checking the directory.
+   */
   private URI checkAppCfgDirectory(String cfgLoc, StringBuffer errMsg) throws TaskException {
     URI retval = null;
     final String path = System.getProperties().getProperty(BootStrap.APP_HOME);
@@ -149,6 +159,14 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
 
 
+  /**
+   * Check the work directory for the configuration file.
+   *
+   * @param cfgLoc the location of the configuration file.
+   * @param errMsg the buffer to append error messages to.
+   * @return the URI of the configuration file, or null if it could not be found.
+   * @throws TaskException if there was a problem checking the directory.
+   */
   private URI checkWorkDirectory(String cfgLoc, StringBuffer errMsg) throws TaskException {
     URI retval = null;
     if (getContext() != null && getContext().getEngine() != null) {
@@ -188,6 +206,14 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
 
 
+  /**
+   * Check the current directory for the configuration file.
+   *
+   * @param cfgLoc the location of the configuration file.
+   * @param errMsg the buffer to append error messages to.
+   * @return the URI of the configuration file, or null if it could not be found.
+   * @throws TaskException if there was a problem checking the directory.
+   */
   private URI checkCurrentDirectory(String cfgLoc, StringBuffer errMsg) throws TaskException {
     URI retval = null;
     File localfile = new File(cfgLoc);
@@ -209,7 +235,9 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
 
   /**
+   * Run the job defined in the configuration.
    *
+   * @throws TaskException if there was a problem running the job.
    */
   @Override
   protected void performTask() throws TaskException {
@@ -240,7 +268,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
           engine.setName(FileUtil.getBase(cfgUri.toString()));
         }
 
-        // place the jobs context in our context under the name of the job being run
+        // place the job's context in our context under the name of the job being run
         String contextKey = engine.getName();
 
         // Set the engine's work directory to this task's job directory  

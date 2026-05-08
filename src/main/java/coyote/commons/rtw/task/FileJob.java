@@ -31,18 +31,18 @@ import coyote.commons.rtw.context.TransformContext;
  * those files appear. This is useful for buffering jobs during an outage and
  * processing them when the system comes back up.
  * 
- * <p>A group of FIleJobs can be set up to "watch" a dedicated directory and a 
+ * <p>A group of FIleJobs can be set up to "watch" a dedicated directory, and a
  * "dispatching" FileJob can take files out of a main directory and pass each 
- * file to one of the "watched" directories enabling a fan-out pattern of 
+ * file to one of the "watched" directories, enabling a fan-out pattern of
  * workers. This allows the "dispatcher" to be throttled and even disabled to 
  * suspend processing while the jobs collect in the "dispatching" directory. 
  * The "dispatcher" can then be started at a later time, sending jobs to other
  * directories for processing.
  * 
- * <p>This "dispatcher" pattern has the benefit of being fault tolerant in 
- * that if the dispatcher fails, work file will continue to buffer in the, 
+ * <p>This "dispatcher" pattern has the benefit of being fault-tolerant in
+ * that if the dispatcher fails, a work file will continue to buffer in the
  * directory until the dispatcher is restarted. At that time, all the files 
- * will be processed in turn without data loss. Addidtionally, by using 
+ * will be processed in turn without data loss. Additionally, by using
  * separate file jobs to actually process the data, the file processing can 
  * scale by increasing the number of workers. By moving files to a separate 
  * "work" directory and publishing a "job" message to a message queue, it is 
@@ -53,7 +53,7 @@ import coyote.commons.rtw.context.TransformContext;
  * tolerance and data loss protection.     
  * 
  * <p>Another use case is the analytics of data in batches. Each batch of data 
- * can be set in a separate file and and an analytic job run on each batch 
+ * can be set in a separate file, and an analytic job runs on each batch
  * with the results being appended (i.e. aggregated) to a file for later 
  * reporting.
  * 
@@ -76,7 +76,7 @@ import coyote.commons.rtw.context.TransformContext;
  * 
  * <p>The {@code directory} is the path to the directory from which a file 
  * listing is taken. It is mandatory and always best to specify an absolute 
- * path to eliminate confusion.
+ * path to remove confusion.
  * 
  * <p>The {@code pattern} is the RegEx pattern filenames are to match. If not
  * specified, all files in the directory will be returned.
