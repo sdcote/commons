@@ -580,7 +580,7 @@ public abstract class HTTPD {
 
 
   /**
-   * Start the server.
+   * Start the server in a daemon thread.
    * 
    * @throws IOException if the socket is in use.
    */
@@ -607,9 +607,13 @@ public abstract class HTTPD {
 
   /**
    * Start the server.
+   *
+   * <p>This will start the server running as a user thread, blocking the JVM
+   * until specifically terminated, or as a daemon thread, the JVM will exit
+   * and terminate the thread regardless of its running state.</p>
    * 
    * @param timeout timeout to use for socket connections.
-   * @param daemon start the thread daemon or not.
+   * @param daemon start the thread as a daemon or not.
    * 
    * @throws IOException if the socket is in use.
    */

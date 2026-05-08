@@ -286,24 +286,6 @@ public class ThreadJob implements Runnable {
 
   /**
    * Request this object to shut down.
-   *
-   * <p>This probably will not do what is expected. It will mark the ThreadJob
-   * instance to shut down, not the subclass instance of this ThreadJob class.
-   * It is important to understand the scoping model. One might think
-   * that calling this method on all the references in a thread pool would
-   * cause all the objects in that pool to have their shutdown flags set to
-   * false. In fact, they do not!</p>
-   *
-   * <p>If you have a class called MyJob that extends ThreadJob, and you place
-   * instances of MyJob in a ThreadPool and start them running, the only way
-   * you can get MyJob to terminate gracefully is if you call shutdown() on the
-   * reference to the MyJob object. Calling shutdown on the ThreadJob reference
-   * never sets the shutdown flag in the MyJob reference!</p>
-   *
-   * <p>So be careful how you design your shutdown routines. Keep references to
-   * objects that need to be shutdown and call their shutdown methods not their
-   * super-class methods, otherwise the subclasses will not get the shutdown
-   * message.</p>
    */
   public void shutdown() {
     synchronized (mutex) {

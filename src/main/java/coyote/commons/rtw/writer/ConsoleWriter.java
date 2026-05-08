@@ -98,7 +98,7 @@ public class ConsoleWriter extends AbstractFrameWriter {
         } else if (StringUtil.equalsIgnoreCase(CSV_FORMAT, getFormat())) {
           System.out.println(CSVMarshaler.marshal(frame));
         } else {
-          System.out.println("Don't know how to format data into '" + getFormat() + "'");
+          System.out.println(String.format("Don't know how to format data into '%s'", getFormat()));
         }
       } else {
         if (StringUtil.equalsIgnoreCase(JSON_FORMAT, getFormat())) {
@@ -108,7 +108,7 @@ public class ConsoleWriter extends AbstractFrameWriter {
         } else if (StringUtil.equalsIgnoreCase(CSV_FORMAT, getFormat())) {
           System.out.println(CSVMarshaler.marshal(frame));
         } else {
-          System.out.println("Don't know how to format data into '" + getFormat() + "'");
+          System.out.println(String.format("Don't know how to format data into '%s'", getFormat()));
         }
       }
     } else {

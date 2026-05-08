@@ -231,7 +231,7 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
             }
             return Long.toHexString(cis.getChecksum().getValue());
         } catch (IOException e) {
-            Log.error("DirectoryTripwireReader: Could not calculate checksum for " + file.getAbsolutePath() + " - " + e.getMessage());
+            Log.warn("DirectoryTripwireReader: Could not calculate checksum for " + file.getAbsolutePath() + " - " + e.getMessage());
             return null;
         }
     }

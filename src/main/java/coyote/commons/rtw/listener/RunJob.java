@@ -212,7 +212,7 @@ public class RunJob extends AbstractListener implements ContextListener {
                                 retval = FileUtil.getFileURI(alternativeFile);
                             } else {
                                 errMsg.append(String.format("Work directory file not found: %s", cfgFile.getAbsolutePath()) + StringUtil.CRLF);
-                                errMsg.append(String.format( "Listener.runjob.cfg_file_not_found", cfgLoc) + StringUtil.CRLF);
+                                errMsg.append(String.format("Configuration file not found: %s", cfgLoc) + StringUtil.CRLF);
                             }
                         }
                     } else {

@@ -263,7 +263,7 @@ public class DuplicateFileReader extends AbstractFrameReader implements FrameRea
             }
             return Long.toHexString(cis.getChecksum().getValue());
         } catch (IOException e) {
-            Log.error("DuplicateFileReader: Could not calculate checksum for " + file.getAbsolutePath() + " - " + e.getMessage());
+            Log.warn("DuplicateFileReader: Could not calculate checksum for " + file.getAbsolutePath() + " - " + e.getMessage());
             return null;
         }
     }

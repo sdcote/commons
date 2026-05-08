@@ -144,10 +144,10 @@ public abstract class AbstractValidator extends AbstractConfigurableComponent im
       try {
         cfg.getBoolean(ConfigTag.HALT_ON_FAIL);
       } catch (Exception e) {
-        Log.info(String.format( "Validator.invalid_halt_config", cfg.getString(ConfigTag.HALT_ON_FAIL)));
+        Log.info(String.format("Invalid halt configuration: %s", cfg.getString(ConfigTag.HALT_ON_FAIL)));
       }
     } else {
-      Log.debug(String.format( "Validator.no_halt_config"));
+      Log.debug("No halt configuration");
     }
   }
 

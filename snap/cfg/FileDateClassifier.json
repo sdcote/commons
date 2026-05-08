@@ -14,8 +14,8 @@
     },
 
     "Logging": [
-      {"StandardError": { "name": "error", "target": "STDERR", "categories": "error, fatal, warn" }},
-      {"StandardOutput": { "name": "default", "target": "STDOUT", "categories": "info, notice,debug,trace" }}
+      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
     ]
 
   }

@@ -155,7 +155,7 @@ public class TransformEngineFactory {
           if (field.isFrame()) {
             configPreloader((DataFrame) field.getObjectValue(), retval);
           } else {
-            Log.error("Invalid filters configuration section");
+            Log.error("Invalid preloader configuration section");
           }
         } else if (StringUtil.equalsIgnoreCase(ConfigTag.FILTER, field.getName())) {
           if (field.isFrame()) {

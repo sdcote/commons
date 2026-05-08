@@ -56,12 +56,12 @@ public class ScheduledJob extends ThreadJob {
     protected volatile ScheduledJob chainedJob = null;
 
     /**
-     * Used to implement a doubly-linked list in the Scheduler
+     * Used to implement a doubly linked list in the Scheduler
      */
     protected volatile ScheduledJob nextJob = null;
 
     /**
-     * Used to implement a doubly-linked list in the Scheduler
+     * Used to implement a doubly linked list in the Scheduler
      */
     protected volatile ScheduledJob previousJob = null;
 
@@ -245,7 +245,7 @@ public class ScheduledJob extends ThreadJob {
     /**
      * Set the date/time which this job is considered too old to run.
      *
-     * @param date the date/time which this job is considered too old to run.
+     * @param date the date/time that this job is considered too old to run.
      * @return a reference to this ScheduledJob for method chaining.
      */
     public ScheduledJob setExpirationTime(Date date) {
@@ -259,7 +259,7 @@ public class ScheduledJob extends ThreadJob {
     /**
      * Set the date/time which this job is considered too old to run.
      *
-     * @param cal the date/time which this job is considered too old to run.
+     * @param cal the date/time that this job is considered too old to run.
      * @return a reference to this ScheduledJob for method chaining.
      */
     public ScheduledJob setExpirationTime(Calendar cal) {

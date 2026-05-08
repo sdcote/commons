@@ -250,14 +250,14 @@ public class WaitForFile extends AbstractFileTask {
     WatchService watchService = FileSystems.getDefault().newWatchService();
 
     Path path = Paths.get(System.getProperty("user.dir"));
-    System.out.println("Watching " + path.getFileName());
+    System.out.println(String.format("Watching %s", path.getFileName()));
 
     path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
 
     WatchKey key;
     while ((key = watchService.take()) != null) {
       for (WatchEvent<?> event : key.pollEvents()) {
-        System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
+        System.out.println(String.format("Event kind: %s. File affected: %s.", event.kind(), event.context()));
       }
       key.reset();
     }

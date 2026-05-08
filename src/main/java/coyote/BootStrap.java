@@ -173,11 +173,11 @@ public class BootStrap {
                         retval.setCommandLineArguments(args);
                         retval.configure(cfgFrame);
                     } catch (ConfigurationException e) {
-                        System.err.println("could_not_config_job" + object.getClass().getName() + " " + e.getClass().getSimpleName() + " " + e.getMessage());
+                        System.err.println(String.format("Could not configure job %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         System.exit(6);
                     }
                 } else {
-                    System.err.println("class_is_not_job" + className);
+                    System.err.println(String.format("Class is not a job: %s", className));
                     System.exit(5);
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
@@ -232,7 +232,7 @@ public class BootStrap {
 
         // Make sure we have a configuration
         if (StringUtil.isBlank(cfgLoc)) {
-            System.err.println("error_no_config");
+                        System.err.println("No configuration location specified.");
             System.exit(8);
         }
 
@@ -311,7 +311,7 @@ public class BootStrap {
                 }
             }
         } catch (IOException | ConfigurationException e) {
-            System.err.println("error_reading_configuration "+ cfgUri+ " - " + e.getLocalizedMessage()+""+ ExceptionUtil.stackTrace(e));
+            System.err.println(String.format("Error reading configuration %s - %s %s", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace(e)));
             System.exit(7);
         }
 
@@ -400,8 +400,8 @@ public class BootStrap {
                                                     cfgUri = FileUtil.getFileURI(alternativeFile);
                                                 } else {
                                                     // we tried the local and shared locations, report error
-                                                    errMsg.append( "no_common_cfg_file "+ cfgFile.getAbsolutePath() + StringUtil.CRLF);
-                                                    errMsg.append("cfg_file_not_found "+ cfgLoc  + StringUtil.CRLF);
+                                                    errMsg.append(String.format("No common configuration file: %s%s", cfgFile.getAbsolutePath(), StringUtil.CRLF));
+                                                    errMsg.append(String.format("Configuration file not found: %s%s", cfgLoc, StringUtil.CRLF));
                                                     System.out.println(errMsg.toString());
                                                     System.exit(9);
                                                 }
@@ -409,7 +409,7 @@ public class BootStrap {
                                         }
                                     } else {
                                         // the specified config directory was not a directory
-                                        errMsg.append("cfg_dir_is_not_directory "+ appDir + StringUtil.CRLF);
+                                        errMsg.append(String.format("Configuration directory is not a directory: %s%s", appDir, StringUtil.CRLF));
                                         System.out.println(errMsg.toString());
                                         System.exit(10);
                                     }
@@ -424,7 +424,7 @@ public class BootStrap {
                                     cfgUri = FileUtil.getFileURI(alternativeFile);
                                 } else {
                                     // no shared config directory provided in system properties
-                                    errMsg.append( "cfg_dir_not_provided "+ APP_HOME + StringUtil.CRLF);
+                                    errMsg.append(String.format("Configuration directory not provided: %s%s", APP_HOME, StringUtil.CRLF));
                                     System.out.println(errMsg.toString());
                                     System.exit(12);
                                 }
@@ -443,23 +443,23 @@ public class BootStrap {
                 if (UriUtil.isFile(cfgUri)) {
                     File test = UriUtil.getFile(cfgUri);
                     if (!test.exists() || !test.canRead()) {
-                        errMsg.append("cfg_file_not_readable "+ test.getAbsolutePath() + StringUtil.CRLF);
+                        errMsg.append(String.format("Configuration file not readable: %s%s", test.getAbsolutePath(), StringUtil.CRLF));
                         System.out.println(errMsg.toString());
                         System.exit(13);
                     }
-                    Log.info( "cfg_reading_from_file "+ test.getAbsolutePath());
+                    Log.info(String.format("Reading configuration from file: %s", test.getAbsolutePath()));
                 } else {
-                    Log.info("cfg_reading_from_network");
+                    Log.info("Reading configuration from network");
                 }
             } else {
-                errMsg.append( "cfg_file_not_found"+ cfgLoc + StringUtil.CRLF);
+                errMsg.append(String.format("Configuration file not found: %s%s", cfgLoc, StringUtil.CRLF));
                 System.out.println(errMsg.toString());
                 System.exit(9);
 
             }
 
         } else {
-            System.err.println("no_config_uri_defined");
+            System.err.println("No configuration URI defined");
             System.exit(1);
         }
 

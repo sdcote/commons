@@ -416,7 +416,7 @@ public abstract class AbstractSnapJob implements SnapJob {
                         System.exit(11);
                     }
                 } else {
-                    System.err.println("Invalid logger configuration section");
+                    System.err.println(String.format("Invalid logger configuration section"));
                     System.exit(11);
                 } // must be a frame/section
 
@@ -461,7 +461,7 @@ public abstract class AbstractSnapJob implements SnapJob {
                     coyote.commons.log.Log.error(String.format( "Error instantiating logger %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
                 }
             } else {
-                coyote.commons.log.Log.error("Logger configuration did not contain a classname");
+                coyote.commons.log.Log.error(String.format("Logger configuration did not contain a classname"));
             }
         }
 
