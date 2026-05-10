@@ -81,7 +81,7 @@ public class RtwJob extends AbstractSnapJob {
     public void configure(Config cfg) throws ConfigurationException {
         try {
             super.configure(cfg);
-
+Log.trace(String.format("Configuring %s",this.getClass().getSimpleName()));
             // Support the concept of an ever-repeating job
             try {
                 repeat = configuration.getBoolean(ConfigTag.REPEAT);
@@ -138,7 +138,7 @@ public class RtwJob extends AbstractSnapJob {
      */
     @Override
     public void start() {
-        Log.info("Starting");
+        Log.trace(String.format("Starting %s",this.getClass().getSimpleName()));
 
         if (engine != null) {
             Log.trace("Job.running: " + engine.getName());
@@ -163,7 +163,7 @@ public class RtwJob extends AbstractSnapJob {
             while (repeat);
 
         } else {
-            Log.fatal("RtwJob.no_engine");
+            Log.fatal("No engine configured.");
         }
 
     }

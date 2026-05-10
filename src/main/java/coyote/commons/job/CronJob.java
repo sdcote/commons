@@ -82,6 +82,15 @@ public class CronJob extends ScheduledJob {
   }
 
 
+  @Override
+  public long getNextExecutionTime() {
+    if (cronEntry != null) {
+      return cronEntry.getNextTime();
+    }
+    return super.getNextExecutionTime();
+  }
+
+
   /**
    * Overridden to calculate the interval based on the next cron time.
    *
@@ -94,10 +103,7 @@ public class CronJob extends ScheduledJob {
    */
   @Override
   public long getExecutionInterval() {
-    if (cronEntry != null) {
-      return cronEntry.getNextTime() - System.currentTimeMillis();
-    }
-    return super.getExecutionInterval();
+    return getNextExecutionTime() - System.currentTimeMillis();
   }
 
 }

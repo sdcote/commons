@@ -80,6 +80,7 @@ public class Scheduler extends ThreadJob {
    * Method initialize
    */
   public void initialize() {
+    Log.trace(String.format("Initializing %s",this.getClass().getSimpleName()));
     if (executor == null) {
       executor = Executors.newCachedThreadPool();
     }
@@ -101,6 +102,7 @@ public class Scheduler extends ThreadJob {
    * the next job in the queue.</p>
    */
   public void doWork() {
+    Log.trace(String.format("Scheduler.doWork()"));
     synchronized (mutex) {
       if (nextJob != null) {
         long executionTime = System.currentTimeMillis();
@@ -171,7 +173,7 @@ public class Scheduler extends ThreadJob {
                 // If we have no limit or have not exceeded our limit...
                 if ((target.getExecutionLimit() == 0) || (target.getExecutionLimit() > 0) && (target.getExecutionCount() < target.getExecutionLimit())) {
                   // ...reschedule the job
-                  target.setExecutionTime(target.getExecutionInterval() + System.currentTimeMillis());
+                  target.setExecutionTime(target.getNextExecutionTime());
                   Log.append(SCHED, "Set execution time to " + new Date(target.getExecutionTime()) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval());
                   schedule(target);
                   Log.append(SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date(target.getExecutionTime()) + "\r\nState of Jobs After Rescheduling Target (Next) Job:\r\n" + dump());

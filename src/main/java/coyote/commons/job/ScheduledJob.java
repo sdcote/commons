@@ -147,6 +147,14 @@ public class ScheduledJob extends ThreadJob {
 
 
     /**
+     * @return the time in epoch milliseconds the job should next execute.
+     */
+    public long getNextExecutionTime() {
+        return System.currentTimeMillis() + getExecutionInterval();
+    }
+
+
+    /**
      * Set the number of milliseconds between executions of this job
      *
      * @param executionInterval the number of milliseconds between executions of this job

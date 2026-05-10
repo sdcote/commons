@@ -260,9 +260,9 @@ public class CronEntryTest {
     assertTrue(result.contains("1"));
     assertTrue(result.contains("5"));
 
-    // Wrapped range is not supported by current implementation based on inspection, 
+    // Wrapped range is not supported by the current implementation based on inspection, 
     // it will throw Exception if it doesn't parse correctly or returns empty if logic doesn't match.
-    // Let's test comma separated ranges
+    // Let's test comma-separated ranges
     result = CronEntry.parseRangeParam("1-2,10-12", 59, 0);
     assertEquals(5, result.size());
     assertTrue(result.contains("1"));
@@ -273,73 +273,106 @@ public class CronEntryTest {
   }
 
 
-  /**
-   * Test method for {@link coyote.commons.CronEntry#parse(java.lang.String)}.
-   */
   @Test
-  public void testParse() {
+  public void testParse() throws ParseException {
     CronEntry subject = null;
 
-    try {
-      subject = CronEntry.parse(null);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    // Test null pattern
+    subject = CronEntry.parse(null);
+    assertNotNull(subject);
+    assertEquals("*", subject.getMinutePattern());
+    assertEquals("*", subject.getHourPattern());
+    assertEquals("*", subject.getDayPattern());
+    assertEquals("*", subject.getMonthPattern());
+    assertEquals("*", subject.getDayOfWeekPattern());
+    assertTrue(subject.minutePasses(0));
+    assertTrue(subject.minutePasses(59));
 
+    // Test wildcard pattern
     String pattern = "* * * * *";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("*", subject.getMinutePattern());
+    assertEquals("*", subject.getHourPattern());
+    assertEquals("*", subject.getDayPattern());
+    assertEquals("*", subject.getMonthPattern());
+    assertEquals("*", subject.getDayOfWeekPattern());
+    assertTrue(subject.minutePasses(30));
+    assertTrue(subject.hourPasses(12));
+    assertTrue(subject.dayPasses(15));
+    assertTrue(subject.monthPasses(6));
+    assertTrue(subject.weekDayPasses(3));
 
+    // Test question mark pattern (should be treated as wildcard)
     pattern = "? ? ? ? ?";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("?", subject.getMinutePattern());
+    assertTrue(subject.minutePasses(0));
+    assertTrue(subject.hourPasses(0));
 
+    // Test divisors
     pattern = "/15 3 * * ?";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("/15", subject.getMinutePattern());
+    assertEquals("3", subject.getHourPattern());
+    assertTrue(subject.minutePasses(0));
+    assertTrue(subject.minutePasses(15));
+    assertTrue(subject.minutePasses(30));
+    assertTrue(subject.minutePasses(45));
+    assertFalse(subject.minutePasses(1));
+    assertTrue(subject.hourPasses(3));
+    assertFalse(subject.hourPasses(4));
 
+    // Test complex patterns
     pattern = "*/15 3 */2 * 1-6";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("*/15", subject.getMinutePattern());
+    assertEquals("3", subject.getHourPattern());
+    assertEquals("*/2", subject.getDayPattern());
+    assertEquals("*", subject.getMonthPattern());
+    assertEquals("1-6", subject.getDayOfWeekPattern());
+    assertTrue(subject.minutePasses(0));
+    assertTrue(subject.minutePasses(45));
+    assertTrue(subject.hourPasses(3));
+    assertTrue(subject.dayPasses(2));
+    assertTrue(subject.dayPasses(4));
+    assertFalse(subject.dayPasses(3));
+    assertTrue(subject.weekDayPasses(1));
+    assertTrue(subject.weekDayPasses(6));
+    assertFalse(subject.weekDayPasses(0));
 
-    pattern = "B A D * *";
-    try {
-      subject = CronEntry.parse(pattern);
-      fail("Did not detect invalid pattern of '" + pattern + "'");
-    } catch (ParseException e) {}
+    // Test invalid pattern
+    final String invalidPattern = "B A D * *";
+    assertThrows(ParseException.class, () -> {
+      CronEntry.parse(invalidPattern);
+    }, "Did not detect invalid pattern of '" + invalidPattern + "'");
 
+    // Test empty string pattern
     pattern = "";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("*", subject.getMinutePattern());
+    assertTrue(subject.minutePasses(0));
 
+    // Test pattern with too many fields (should ignore extra fields based on current implementation)
     pattern = "* * * * * * * * * * * * * *";
-    try {
-      subject = CronEntry.parse(pattern);
-      //System.out.println(subject);
-    } catch (ParseException e) {
-      fail(e.getMessage());
-    }
+    subject = CronEntry.parse(pattern);
+    assertEquals("*", subject.getMinutePattern());
+    assertEquals("*", subject.getHourPattern());
+    assertEquals("*", subject.getDayPattern());
+    assertEquals("*", subject.getMonthPattern());
+    assertEquals("*", subject.getDayOfWeekPattern());
+
+    // Test missing fields (should default to wildcard)
+    pattern = "5 10";
+    subject = CronEntry.parse(pattern);
+    assertEquals("5", subject.getMinutePattern());
+    assertEquals("10", subject.getHourPattern());
+    assertEquals("*", subject.getDayPattern());
+    assertEquals("*", subject.getMonthPattern());
+    assertEquals("*", subject.getDayOfWeekPattern());
+    assertTrue(subject.minutePasses(5));
+    assertFalse(subject.minutePasses(0));
+    assertTrue(subject.hourPasses(10));
+    assertTrue(subject.dayPasses(1));
   }
 
 

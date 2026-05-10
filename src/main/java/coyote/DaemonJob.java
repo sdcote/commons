@@ -9,6 +9,7 @@ package coyote;
 
 import coyote.commons.ClasspathUtil;
 import coyote.commons.CronEntry;
+import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
@@ -85,7 +86,7 @@ public class DaemonJob extends AbstractSnapJob {
                     for (DataField field : jobSection.getFields()) {
                         if (field.isFrame()) {
                             Config jobCfg = new Config((DataFrame) field.getObjectValue());
-                            loadJob(jobCfg);
+                            scheduler.schedule(loadJob(jobCfg));
                         } else {
                             Log.debug("Skipping non-frame job configuration: " + field);
                             continue;
@@ -93,7 +94,7 @@ public class DaemonJob extends AbstractSnapJob {
                     }
                 } else {
                     // This looks like a single Job object
-                    loadJob(jobSection);
+                    scheduler.schedule(loadJob(jobSection));
                 }
             }
         } catch (Exception e) {
@@ -142,7 +143,7 @@ public class DaemonJob extends AbstractSnapJob {
         if (cfgs.size() > 0) {
             Config scheduleCfg = cfgs.get(0);
 
-            if(scheduleCfg.containsIgnoreCase(ConfigTag.MILLIS)){
+            if (scheduleCfg.containsIgnoreCase(ConfigTag.MILLIS)) {
                 // This is a standard scheduled job with an interval in milliseconds
                 long millis = scheduleCfg.getLong(ConfigTag.MILLIS, 1000);
                 retval = new ScheduledJob();
@@ -198,10 +199,7 @@ public class DaemonJob extends AbstractSnapJob {
                     try {
                         snapJob.configure(cfgFrame);
 
-                        // retval.setWork(snapJob);
-                        retval.setDoWorkOnce(true);
-
-
+                        retval.setWork(new SnapJobRunner(snapJob));
 
 
                     } catch (ConfigurationException e) {
@@ -329,4 +327,18 @@ public class DaemonJob extends AbstractSnapJob {
         }
     }
 
+    private class SnapJobRunner implements Runnable {
+        SnapJob snapJob;
+
+        public SnapJobRunner(SnapJob snapJob) { this.snapJob = snapJob; }
+
+        @Override
+        public void run() {
+            try {
+                snapJob.start();
+            } catch (Exception e) {
+                Log.error("The job threw an exception and terminated: " + e.getLocalizedMessage() + " - " + ExceptionUtil.stackTrace(e));
+            }
+        }
+    }
 }
