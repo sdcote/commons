@@ -193,7 +193,7 @@ public class CronEntry {
    * 
    * @return a hash map filled with values specified by the string; will not be null
    */
-  private static TreeSet<String> parseRangeParam( String token, int maximum, int start ) {
+  static TreeSet<String> parseRangeParam( String token, int maximum, int start ) {
     String[] paramarray;
     if ( token.indexOf( "," ) != -1 ) {
       paramarray = token.split( "," );
@@ -257,7 +257,7 @@ public class CronEntry {
    *  
    * @return a list of values represented by that range
    */
-  private static String fillRange( String range ) {
+  static String fillRange( String range ) {
     // if no delimiter, just return the range as a value
     if ( range.indexOf( "-" ) == -1 ) {
       return range + ",";
@@ -488,35 +488,35 @@ public class CronEntry {
 
 
 
-  private boolean weekDayPasses( int val ) {
+  boolean weekDayPasses( int val ) {
     return ( weekday.contains( Integer.toString( val ) ) );
   }
 
 
 
 
-  private boolean monthPasses( int val ) {
+  boolean monthPasses( int val ) {
     return ( month.contains( Integer.toString( val ) ) );
   }
 
 
 
 
-  private boolean dayPasses( int val ) {
+  boolean dayPasses( int val ) {
     return ( day.contains( Integer.toString( val ) ) );
   }
 
 
 
 
-  private boolean hourPasses( int val ) {
+  boolean hourPasses( int val ) {
     return ( hours.contains( Integer.toString( val ) ) );
   }
 
 
 
 
-  private boolean minutePasses( int val ) {
+  boolean minutePasses( int val ) {
     return ( minutes.contains( Integer.toString( val ) ) );
   }
 

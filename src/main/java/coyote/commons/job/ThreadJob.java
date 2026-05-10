@@ -102,7 +102,7 @@ public class ThreadJob implements Runnable {
 
 
   /**
-   *
+   * Default constructor for ThreadJob.
    */
   public ThreadJob() {
     super();
@@ -110,6 +110,7 @@ public class ThreadJob implements Runnable {
 
 
   /**
+   * Create a ThreadJob with the given Runnable work.
    *
    * @param job the Runnable work to perform
    */
@@ -190,6 +191,23 @@ public class ThreadJob implements Runnable {
     }
   }
 
+  /**
+   * Get the Runnable work this job is performing.
+   *
+   * @return the Runnable work object.
+   */
+  public Runnable getWork() {
+    return work;
+  }
+
+  /**
+   * Set the Runnable work for this job to perform.
+   *
+   * @param work the Runnable work to perform.
+   */
+  public void setWork(Runnable work) {
+    this.work = work;
+  }
 
   /**
    * Wait for the ThreadJob to go active.
@@ -227,6 +245,30 @@ public class ThreadJob implements Runnable {
     } // if not active
 
   }
+
+
+  /**
+   * Wait for the job to become inactive within the specified timeout period.
+   *
+   * @param timeout The number of milliseconds to wait for the thread to exit
+   *                the main run loop completely.
+   */
+  public void waitForInActive(final long timeout) {
+    if (isActive()) {
+      final long tout = System.currentTimeMillis() + timeout;
+      while (tout > System.currentTimeMillis()) {
+        synchronized (activeLock) {
+          try {
+            activeLock.wait(10);
+          } catch (final Throwable t) {}
+        }
+        if (!isActive()) {
+          break;
+        }
+      }
+    }
+  }
+
 
 
   /**
@@ -400,7 +442,7 @@ public class ThreadJob implements Runnable {
    * <p>When this object's {@code suspend()} method is called, the code
    * will proceed to a place where it can stop processing. It will then call
    * this method to wait until the {@code resume()} method is called or 
-   * the given number of milliseconds expire.</p>
+   * the given number of milliseconds expires.</p>
    * 
    * <p>This method has two styles of parking. By default, it will perform a
    * {@code wait()} operation on these jobs mutex. This is the least CPU-taxing method. The second style of parking involves using the

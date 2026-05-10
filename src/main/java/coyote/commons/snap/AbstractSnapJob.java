@@ -190,6 +190,19 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
+    @Override
+    public void run() {
+        start();
+    }
+
+    @Override
+    public void start() {
+    }
+
+    @Override
+    public void stop() {
+    }
+
     /**
      * Initialize the symbol table in the context with system properties and
      * other useful data.

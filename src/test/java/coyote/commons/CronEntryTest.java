@@ -112,6 +112,167 @@ public class CronEntryTest {
 
 
 
+  @Test
+  public void testDivisorPatterns() throws ParseException {
+    CronEntry subject;
+
+    // Every 15 minutes: 0, 15, 30, 45
+    subject = CronEntry.parse("*/15 * * * *");
+    assertTrue(subject.minutePasses(0));
+    assertTrue(subject.minutePasses(15));
+    assertTrue(subject.minutePasses(30));
+    assertTrue(subject.minutePasses(45));
+    assertFalse(subject.minutePasses(1));
+    assertFalse(subject.minutePasses(14));
+
+    // Range with divisor: minutes 10 through 20, every 2 minutes: 10, 12, 14, 16, 18, 20
+    subject = CronEntry.parse("10-20/2 * * * *");
+    assertTrue(subject.minutePasses(10));
+    assertTrue(subject.minutePasses(12));
+    assertTrue(subject.minutePasses(20));
+    assertFalse(subject.minutePasses(9));
+    assertFalse(subject.minutePasses(11));
+    assertFalse(subject.minutePasses(21));
+
+    // Every 3 hours
+    subject = CronEntry.parse("* */3 * * *");
+    assertTrue(subject.hourPasses(0));
+    assertTrue(subject.hourPasses(3));
+    assertTrue(subject.hourPasses(21));
+    assertFalse(subject.hourPasses(1));
+    assertFalse(subject.hourPasses(2));
+  }
+
+
+  @Test
+  public void testListPatterns() throws ParseException {
+    // List of minutes
+    CronEntry subject = CronEntry.parse("1,15,30,45 * * * *");
+    assertTrue(subject.minutePasses(1));
+    assertTrue(subject.minutePasses(15));
+    assertTrue(subject.minutePasses(30));
+    assertTrue(subject.minutePasses(45));
+    assertFalse(subject.minutePasses(0));
+    assertFalse(subject.minutePasses(2));
+
+    // List with ranges
+    subject = CronEntry.parse("1,5-10,15,20-25 * * * *");
+    assertTrue(subject.minutePasses(1));
+    assertTrue(subject.minutePasses(5));
+    assertTrue(subject.minutePasses(7));
+    assertTrue(subject.minutePasses(10));
+    assertTrue(subject.minutePasses(15));
+    assertTrue(subject.minutePasses(20));
+    assertTrue(subject.minutePasses(25));
+    assertFalse(subject.minutePasses(0));
+    assertFalse(subject.minutePasses(2));
+    assertFalse(subject.minutePasses(11));
+  }
+
+
+  @Test
+  public void testComplexPatterns() throws ParseException {
+    // 0 0 1,15 * 1-5  -> Midnight on 1st and 15th, but only if it's Mon-Fri
+    CronEntry subject = CronEntry.parse("0 0 1,15 * 1-5");
+    Calendar cal = new GregorianCalendar(2023, Calendar.MAY, 1, 0, 0); // May 1, 2023 is Monday
+    assertTrue(subject.mayRunAt(cal));
+
+    cal.set(2023, Calendar.MAY, 15, 0, 0); // May 15, 2023 is Monday
+    assertTrue(subject.mayRunAt(cal));
+
+    cal.set(2023, Calendar.MAY, 2, 0, 0); // May 2 is Tuesday, but not 1st or 15th
+    assertFalse(subject.mayRunAt(cal));
+
+    cal.set(2023, Calendar.MAY, 14, 0, 0); // May 14, 2023 is Sunday
+    assertFalse(subject.mayRunAt(cal));
+  }
+
+
+  @Test
+  public void testLeapYear() throws ParseException {
+    // Every day in February
+    CronEntry subject = CronEntry.parse("0 0 * 2 *");
+
+    // Feb 29, 2024 (Leap year)
+    Calendar cal = new GregorianCalendar(2024, Calendar.FEBRUARY, 29, 0, 0);
+    assertTrue(subject.mayRunAt(cal));
+
+    // Feb 29, 2023 (Not a leap year - Calendar will roll over to March 1st usually, but let's see how mayRunAt handles it)
+    cal.set(2023, Calendar.FEBRUARY, 29, 0, 0);
+    // In GregorianCalendar, setting Feb 29 2023 results in March 1 2023
+    assertEquals(Calendar.MARCH, cal.get(Calendar.MONTH));
+    assertFalse(subject.mayRunAt(cal));
+  }
+
+
+  @Test
+  public void testNextTimeEdgeCases() throws ParseException {
+    // Run at 23:59 every day
+    CronEntry subject = CronEntry.parse("59 23 * * *");
+
+    Calendar cal = new GregorianCalendar(2023, Calendar.DECEMBER, 31, 23, 58, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+
+    long next = subject.getNextTime(cal);
+    Calendar nextCal = new GregorianCalendar();
+    nextCal.setTimeInMillis(next);
+
+    assertEquals(2023, nextCal.get(Calendar.YEAR));
+    assertEquals(Calendar.DECEMBER, nextCal.get(Calendar.MONTH));
+    assertEquals(31, nextCal.get(Calendar.DAY_OF_MONTH));
+    assertEquals(23, nextCal.get(Calendar.HOUR_OF_DAY));
+    assertEquals(59, nextCal.get(Calendar.MINUTE));
+
+    // Next one should be Jan 1st 23:59 of NEXT year
+    cal.setTimeInMillis(next);
+    cal.add(Calendar.MINUTE, 1); // 00:00 Jan 1 2024
+
+    next = subject.getNextTime(cal);
+    nextCal.setTimeInMillis(next);
+    assertEquals(2024, nextCal.get(Calendar.YEAR));
+    assertEquals(Calendar.JANUARY, nextCal.get(Calendar.MONTH));
+    assertEquals(1, nextCal.get(Calendar.DAY_OF_MONTH));
+    assertEquals(23, nextCal.get(Calendar.HOUR_OF_DAY));
+    assertEquals(59, nextCal.get(Calendar.MINUTE));
+  }
+
+
+  @Test
+  public void testFillRange() {
+    assertEquals("1,2,3,4,5,", CronEntry.fillRange("1-5"));
+    assertEquals("0,1,2,", CronEntry.fillRange("0-2"));
+    assertEquals("10,", CronEntry.fillRange("10-10"));
+  }
+
+
+  @Test
+  public void testParseRangeParamInternal() {
+    // Minutes: 0-59
+    TreeSet<String> result = CronEntry.parseRangeParam("*/15", 59, 0);
+    assertEquals(4, result.size());
+    assertTrue(result.contains("0"));
+    assertTrue(result.contains("15"));
+    assertTrue(result.contains("30"));
+    assertTrue(result.contains("45"));
+
+    result = CronEntry.parseRangeParam("1-5", 59, 0);
+    assertEquals(5, result.size());
+    assertTrue(result.contains("1"));
+    assertTrue(result.contains("5"));
+
+    // Wrapped range is not supported by current implementation based on inspection, 
+    // it will throw Exception if it doesn't parse correctly or returns empty if logic doesn't match.
+    // Let's test comma separated ranges
+    result = CronEntry.parseRangeParam("1-2,10-12", 59, 0);
+    assertEquals(5, result.size());
+    assertTrue(result.contains("1"));
+    assertTrue(result.contains("2"));
+    assertTrue(result.contains("10"));
+    assertTrue(result.contains("11"));
+    assertTrue(result.contains("12"));
+  }
+
+
   /**
    * Test method for {@link coyote.commons.CronEntry#parse(java.lang.String)}.
    */

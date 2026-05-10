@@ -10,7 +10,7 @@ import coyote.commons.cfg.ConfigurationException;
  * <p>A SnapJob follows a simple lifecycle: configuration, initialization (implied), and execution
  * (start/stop).</p>
  */
-public interface SnapJob {
+public interface SnapJob extends Runnable {
 
     /**
      * The name of the property used to define the application's working directory.

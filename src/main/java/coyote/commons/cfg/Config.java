@@ -14,6 +14,7 @@ import coyote.commons.dataframe.DataFrame;
 import coyote.commons.dataframe.DataFrameException;
 import coyote.commons.dataframe.marshal.JSONMarshaler;
 import coyote.commons.dataframe.marshal.MarshalException;
+import coyote.commons.log.Log;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -333,16 +334,34 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     }
 
     /**
-     * Perform a case insensitive search for the first value with the given name
-     * and returns it as a long.
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a Long value.
      *
      * @param tag the name of the configuration attribute for which to search
-     * @return the first value with the given name as a long
-     * @throws NumberFormatException if the field could not be found or if the value
-     *                               could not be parsed into a long.
+     * @return the first value with the given name as a Long value.
+     * @throws NumberFormatException if the field could not be found, or if the value
+     *                               could not be parsed into a Long value.
      */
     public long getLong(final String tag) throws NumberFormatException {
         return Long.parseLong(getString(tag));
+    }
+
+    /**
+     * Perform a case-insensitive search for the first value with the given name
+     * and returns it as a long value, or the default value if the field could
+     * not be found or the value could not be parsed into a long value.
+     *
+     * @param tag          the name of the configuration attribute for which to search
+     * @param defaultValue the value to return if the field is missing or invalid
+     * @return the first value with the given name as a long value or the default value
+     */
+    public long getLong(final String tag, long defaultValue) {
+        try {
+            return getLong(tag);
+        } catch (NumberFormatException e) {
+            Log.warn(String.format("Failed to parse long value for tag %s - %s ", tag, e));
+            return defaultValue;
+        }
     }
 
     /**

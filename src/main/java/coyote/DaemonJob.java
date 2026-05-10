@@ -7,12 +7,14 @@
  */
 package coyote;
 
+import coyote.commons.ClasspathUtil;
 import coyote.commons.CronEntry;
 import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
+import coyote.commons.job.CronJob;
 import coyote.commons.job.ScheduledJob;
 import coyote.commons.job.Scheduler;
 import coyote.commons.log.Log;
@@ -28,6 +30,9 @@ import coyote.commons.snap.SnapJob;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.util.List;
+
 
 /**
  * DaemonJob class that extends AbstractSnapJob.
@@ -37,15 +42,13 @@ import java.lang.reflect.InvocationTargetException;
 public class DaemonJob extends AbstractSnapJob {
 
     /**
-     * HTTP server used for remote monitoring and control.
-     */
-    private HTTPDRouter server = null;
-
-    /**
      * Scheduler used for job scheduling and execution.
      */
     private final Scheduler scheduler = new Scheduler();
-
+    /**
+     * HTTP server used for remote monitoring and control.
+     */
+    private HTTPDRouter server = null;
 
     /**
      * Configure the job with the provided configuration.
@@ -60,6 +63,7 @@ public class DaemonJob extends AbstractSnapJob {
         if (cfg.containsIgnoreCase(ConfigTag.SERVER)) {
             configureServer(cfg);
         }
+
         if (cfg.containsIgnoreCase(ConfigTag.JOB)) {
             configureJobs(cfg);
         }
@@ -75,92 +79,151 @@ public class DaemonJob extends AbstractSnapJob {
      */
     private void configureJobs(Config cfg) throws ConfigurationException {
         try {
-            for (Config jobCfg : cfg.getSections(ConfigTag.JOB)) {
-                for (DataField field : jobCfg.getFields()) {
-                    if (field.isFrame() && StringUtil.isNotEmpty(field.getName())
-                            && !field.getName().equalsIgnoreCase(ConfigTag.NAME)
-                            && !field.getName().equalsIgnoreCase(ConfigTag.DESCRIPTION)
-                            && !field.getName().equalsIgnoreCase(ConfigTag.INTERVAL)
-                            && !field.getName().equalsIgnoreCase(ConfigTag.SCHEDULE)
-                            && !field.getName().equalsIgnoreCase(ConfigTag.REPEAT)) {
-
-                        String className = field.getName();
-                        Config taskCfg = new Config((DataFrame) field.getObjectValue());
-
-                        // if the class is not fully qualified, assume the same namespace as the bootstrap loader.
-                        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                            className = BootStrap.class.getPackage().getName() + "." + className;
-                        }
-
-                        try {
-                            Class<?> clazz = Class.forName(className);
-                            Constructor<?> ctor = clazz.getConstructor();
-                            Object object = ctor.newInstance();
-
-                            if (object instanceof SnapJob) {
-                                final SnapJob job = (SnapJob) object;
-                                job.setCommandLineArguments(getCommandLineArguments());
-                                job.configure(taskCfg);
-
-                                ScheduledJob scheduledJob = new ScheduledJob(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        job.start();
-                                    }
-                                });
-
-                                if (jobCfg.containsIgnoreCase(ConfigTag.NAME)) {
-                                    scheduledJob.setName(jobCfg.getString(ConfigTag.NAME));
-                                } else {
-                                    scheduledJob.setName(className);
-                                }
-
-                                if (jobCfg.containsIgnoreCase(ConfigTag.DESCRIPTION)) {
-                                    scheduledJob.setDescription(jobCfg.getString(ConfigTag.DESCRIPTION));
-                                }
-
-                                // If the SnapJob does not define a repeat pattern in its configuration,
-                                // use the default pattern of "* * * * *"
-                                String schedule = "* * * * *";
-                                boolean hasSchedule = false;
-                                if (jobCfg.containsIgnoreCase(ConfigTag.SCHEDULE)) {
-                                    schedule = jobCfg.getString(ConfigTag.SCHEDULE);
-                                    hasSchedule = true;
-                                }
-
-                                try {
-                                    CronEntry cron = CronEntry.parse(schedule);
-                                    scheduledJob.setExecutionTime(cron.getNextTime());
-                                } catch (Exception e) {
-                                    Log.error("Invalid cron schedule: " + e.getMessage());
-                                }
-
-                                if (jobCfg.containsIgnoreCase(ConfigTag.INTERVAL)) {
-                                    scheduledJob.setExecutionInterval(jobCfg.getLong(ConfigTag.INTERVAL));
-                                    scheduledJob.setRepeatable(true);
-                                } else if (hasSchedule) {
-                                    scheduledJob.setRepeatable(true);
-                                }
-
-                                if (jobCfg.containsIgnoreCase(ConfigTag.REPEAT)) {
-                                    scheduledJob.setRepeatable(jobCfg.getAsBoolean(ConfigTag.REPEAT));
-                                }
-
-                                scheduler.schedule(scheduledJob);
-                            } else {
-                                Log.error(String.format("Class is not a job: %s", className));
-                            }
-                        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                                 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                            Log.error("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
+            for (Config jobSection : cfg.getSections(ConfigTag.JOB)) {
+                if (jobSection.isArray()) {
+                    // This is an array of job objects
+                    for (DataField field : jobSection.getFields()) {
+                        if (field.isFrame()) {
+                            Config jobCfg = new Config((DataFrame) field.getObjectValue());
+                            loadJob(jobCfg);
+                        } else {
+                            Log.debug("Skipping non-frame job configuration: " + field);
+                            continue;
                         }
                     }
+                } else {
+                    // This looks like a single Job object
+                    loadJob(jobSection);
                 }
             }
         } catch (Exception e) {
             Log.error(String.format("Could not configure jobs: %s", e.getMessage()));
             throw new ConfigurationException("Job scheduling failed", e);
         }
+    }
+
+    CronEntry parseSchedule(Config scheduleCfg) throws ConfigurationException {
+        CronEntry cronentry = new CronEntry();
+
+        // go through each in order, this allows the user to determine how
+        // attributes are applied by processing them in order they appear and
+        // overwriting previous attributes.
+        for (DataField field : scheduleCfg.getFields()) {
+            if (ConfigTag.PATTERN.equalsIgnoreCase(field.getName())) {
+                try {
+                    cronentry = CronEntry.parse(field.getStringValue());
+                } catch (ParseException e) {
+                    Log.error(String.format("Problems parsing Schedule pattern: %s", e.getMessage()));
+                }
+            } else if (ConfigTag.MINUTES.equalsIgnoreCase(field.getName())) {
+                cronentry.setMinutePattern(field.getStringValue());
+            } else if (ConfigTag.HOURS.equalsIgnoreCase(field.getName())) {
+                cronentry.setHourPattern(field.getStringValue());
+            } else if (ConfigTag.MONTHS.equalsIgnoreCase(field.getName())) {
+                cronentry.setMonthPattern(field.getStringValue());
+            } else if (ConfigTag.DAYS.equalsIgnoreCase(field.getName())) {
+                cronentry.setDayPattern(field.getStringValue());
+            } else if (ConfigTag.DAYS_OF_WEEK.equalsIgnoreCase(field.getName())) {
+                cronentry.setDayOfWeekPattern(field.getStringValue());
+            }
+        }
+        return cronentry;
+    }
+
+    private ScheduledJob loadJob(Config config) throws ConfigurationException {
+        Log.debug("Loading job configuration: " + config.toString());
+        ScheduledJob retval = null;
+
+        // use the first attribute of the configuration as the classname.
+        DataField configField = config.getField(0);
+
+        // Get the "Schedule" config section. THis describes how often the Job is to be run
+        List<Config> cfgs = config.getSections(ConfigTag.SCHEDULE);
+        if (cfgs.size() > 0) {
+            Config scheduleCfg = cfgs.get(0);
+
+            if(scheduleCfg.containsIgnoreCase(ConfigTag.MILLIS)){
+                // This is a standard scheduled job with an interval in milliseconds
+                long millis = scheduleCfg.getLong(ConfigTag.MILLIS, 1000);
+                retval = new ScheduledJob();
+                retval.setExecutionInterval(millis);
+            } else {
+                // assume this is a CronEntry pattern
+                CronJob cronJob = new CronJob();
+                CronEntry cronentry = parseSchedule(scheduleCfg);
+                cronJob.setCronEntry(cronentry);
+                retval = cronJob;
+            }
+        } else {
+            // If there is no Schedule section, Just set this job to repeat with an intervale of 1 second
+            retval = new CronJob();
+        }
+
+        // Try to determine the class name for the job
+        if (configField != null && StringUtil.isNotEmpty(configField.getName())) {
+            String className = configField.getName();
+            Config cfgFrame = new Config();
+            if (configField.isFrame()) {
+                cfgFrame = new Config((DataFrame) configField.getObjectValue());
+            }
+
+            // if the class is not fully qualified, try to look it up
+            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+                try {
+                    Log.info("Resolving Job class: " + className);
+                    List<String> names = ClasspathUtil.resolve(className);
+                    if (names.isEmpty()) {
+                        Log.error("Failed to resolve Job class: " + className);
+                        throw new ConfigurationException("Failed to resolve Job class: " + className);
+                    } else if (names.size() > 1) {
+                        Log.error("Ambiguous Job class resolution for: " + className + ", found multiple matches: " + names);
+                        throw new ConfigurationException("Ambiguous Job class resolution for: " + className + ", found multiple matches: " + names);
+                    } else {
+                        Log.info("Resolved Job class: " + className + " to: " + names.get(0));
+                        className = names.get(0);
+                    }
+
+                } catch (Exception e) {
+                    Log.error("Failed to resolve class ", e);
+                }
+            }
+
+            try {
+                Class<?> clazz = Class.forName(className);
+                Constructor<?> ctor = clazz.getConstructor();
+                Object object = ctor.newInstance();
+
+                if (object instanceof SnapJob) {
+                    SnapJob snapJob = (SnapJob) object;
+                    try {
+                        snapJob.configure(cfgFrame);
+
+                        // retval.setWork(snapJob);
+                        retval.setDoWorkOnce(true);
+
+
+
+
+                    } catch (ConfigurationException e) {
+                        System.err.printf("Could not configure snap job %s - %s: %s%n", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage());
+                        System.exit(6);
+                    }
+                } else {
+                    System.err.printf("Class is not a job: %s%n", className);
+                    System.exit(5);
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+                     | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
+                System.exit(4);
+            }
+
+        } else {
+            System.err.println("Empty configuration.");
+        }
+
+        // Return the scheduled job we created to run the job in this configuration
+        return retval;
     }
 
 
@@ -250,9 +313,16 @@ public class DaemonJob extends AbstractSnapJob {
 
     /**
      * Shut everything down when the job is requested to stop.
+     *
+     * <p>This is used by a shutdown hook to ensure the HTTP server and the
+     * scheduler is shut down correctly before the JVM exits.</p>
      */
     @Override
     public void stop() {
+
+        scheduler.shutdown();
+        scheduler.waitForInActive(3000);
+
         if (server != null && server.isAlive()) {
             server.stop();
             Log.info("HTTP listener stopped");

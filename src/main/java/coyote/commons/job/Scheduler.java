@@ -300,7 +300,7 @@ public class Scheduler extends ThreadJob {
    * @param starts when the job is to next run
    * @param interval number of milliseconds between runs
    * @param ends the expiration time
-   * @param limit to maximum number of times the task is to run
+   * @param limit to the maximum number of times the task is to run
    * 
    * @return a reference to the job placed in the scheduler
    */

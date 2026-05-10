@@ -102,8 +102,10 @@ public class RtwJob extends AbstractSnapJob {
             engine = TransformEngineFactory.getInstance(getConfig());
 
             // store the command line arguments in the symbol table of the engine
-            for (int x = 0; x < commandLineArguments.length; x++) {
-                engine.getSymbolTable().put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
+            if (commandLineArguments != null) {
+                for (int x = 0; x < commandLineArguments.length; x++) {
+                    engine.getSymbolTable().put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
+                }
             }
 
             // store environment variables in the symbol table
@@ -342,7 +344,7 @@ public class RtwJob extends AbstractSnapJob {
      * file from the command line arguments as the job name.</p>
      */
     private void determineName() {
-        if (StringUtil.isBlank(configuration.getName())) {
+        if (StringUtil.isBlank(configuration.getName()) && commandLineArguments != null) {
             String cfgName = null;
             // use the first non-delimited argument as the config location, others are considered arguments to the BootStrap loader
             for (int x = 0; x < commandLineArguments.length; x++) {
