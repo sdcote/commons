@@ -36,26 +36,36 @@ import java.util.List;
 
 
 /**
- * DaemonJob class that extends AbstractSnapJob.
- * It operates by being called from the BootStrap based on a configuration file.
- * The configuration contains a list of jobs and logging settings.
+ * DaemonJob is a specialized job that manages multiple sub-jobs using a scheduler.
+ *
+ * <p>This job acts as a container for other jobs, allowing them to be scheduled
+ * according to specific intervals or cron-like patterns. It also provides an
+ * optional HTTP server for remote monitoring and control of the scheduled jobs.</p>
+ *
+ * <p>The configuration for this job typically includes a "Server" section for
+ * HTTP settings and one or more "Job" sections defining the tasks to be run.</p>
  */
 public class DaemonJob extends AbstractSnapJob {
 
     /**
-     * Scheduler used for job scheduling and execution.
+     * The scheduler used for managing the execution of sub-jobs.
      */
     private final Scheduler scheduler = new Scheduler();
+
     /**
-     * HTTP server used for remote monitoring and control.
+     * The HTTP server used for remote monitoring and control.
+     * This may be null if no server configuration is provided.
      */
     private HTTPDRouter server = null;
 
     /**
-     * Configure the job with the provided configuration.
+     * Configures this DaemonJob instance using the provided configuration.
      *
-     * @param cfg The configuration for the job.
-     * @throws ConfigurationException If there is a problem with the configuration.
+     * <p>This method initializes the HTTP server if a "Server" section is present
+     * and schedules any jobs defined in the "Job" sections.</p>
+     *
+     * @param cfg The configuration containing server and job definitions.
+     * @throws ConfigurationException If there is an error in the configuration format or content.
      */
     @Override
     public void configure(Config cfg) throws ConfigurationException {
@@ -73,16 +83,18 @@ public class DaemonJob extends AbstractSnapJob {
 
 
     /**
-     * Configure the jobs with the provided configuration.
+     * Parses the "Job" sections of the configuration and schedules them.
      *
-     * @param cfg The configuration for the jobs.
-     * @throws ConfigurationException If there is a problem with the configuration.
+     * <p>Job sections can be individual objects or arrays of job configurations.</p>
+     *
+     * @param cfg The main configuration containing the job sections.
+     * @throws ConfigurationException If there is an error during job configuration or scheduling.
      */
     private void configureJobs(Config cfg) throws ConfigurationException {
         try {
             for (Config jobSection : cfg.getSections(ConfigTag.JOB)) {
                 if (jobSection.isArray()) {
-                    // This is an array of job objects
+                    // If the job section is an array, iterate through and schedule each job frame
                     for (DataField field : jobSection.getFields()) {
                         if (field.isFrame()) {
                             Config jobCfg = new Config((DataFrame) field.getObjectValue());
@@ -93,7 +105,7 @@ public class DaemonJob extends AbstractSnapJob {
                         }
                     }
                 } else {
-                    // This looks like a single Job object
+                    // Otherwise, treat the section as a single job configuration
                     scheduler.schedule(loadJob(jobSection));
                 }
             }
@@ -103,12 +115,19 @@ public class DaemonJob extends AbstractSnapJob {
         }
     }
 
+    /**
+     * Parses a schedule configuration into a CronEntry.
+     *
+     * <p>This supports both full cron patterns and individual time components (minutes, hours, etc.).
+     * Attributes are processed in the order they appear, allowing later ones to override earlier ones.</p>
+     *
+     * @param scheduleCfg The configuration frame containing schedule attributes.
+     * @return A CronEntry representing the parsed schedule.
+     * @throws ConfigurationException If there is a problem parsing the configuration.
+     */
     CronEntry parseSchedule(Config scheduleCfg) throws ConfigurationException {
         CronEntry cronentry = new CronEntry();
 
-        // go through each in order, this allows the user to determine how
-        // attributes are applied by processing them in order they appear and
-        // overwriting previous attributes.
         for (DataField field : scheduleCfg.getFields()) {
             if (ConfigTag.PATTERN.equalsIgnoreCase(field.getName())) {
                 try {
@@ -131,14 +150,24 @@ public class DaemonJob extends AbstractSnapJob {
         return cronentry;
     }
 
+    /**
+     * Loads and initializes a job based on its configuration.
+     *
+     * <p>This method determines the execution schedule (interval or cron) and
+     * instantiates the job class, resolving it if it is not fully qualified.</p>
+     *
+     * @param config The configuration frame for the job.
+     * @return A ScheduledJob instance ready to be added to the scheduler.
+     * @throws ConfigurationException If the job class cannot be resolved or instantiated.
+     */
     private ScheduledJob loadJob(Config config) throws ConfigurationException {
         Log.debug("Loading job configuration: " + config.toString());
         ScheduledJob retval = null;
 
-        // use the first attribute of the configuration as the classname.
+        // Use the first attribute of the configuration as the classname.
         DataField configField = config.getField(0);
 
-        // Get the "Schedule" config section. THis describes how often the Job is to be run
+        // Get the "Schedule" config section. This describes how often the Job is to be run.
         List<Config> cfgs = config.getSections(ConfigTag.SCHEDULE);
         if (cfgs.size() > 0) {
             Config scheduleCfg = cfgs.get(0);
@@ -149,18 +178,18 @@ public class DaemonJob extends AbstractSnapJob {
                 retval = new ScheduledJob();
                 retval.setExecutionInterval(millis);
             } else {
-                // assume this is a CronEntry pattern
+                // Assume this is a CronEntry pattern
                 CronJob cronJob = new CronJob();
                 CronEntry cronentry = parseSchedule(scheduleCfg);
                 cronJob.setCronEntry(cronentry);
                 retval = cronJob;
             }
         } else {
-            // If there is no Schedule section, Just set this job to repeat with an intervale of 1 second
+            // If there is no Schedule section, default to repeating every 1 second
             retval = new CronJob();
         }
 
-        // Try to determine the class name for the job
+        // Try to determine and instantiate the class name for the job
         if (configField != null && StringUtil.isNotEmpty(configField.getName())) {
             String className = configField.getName();
             Config cfgFrame = new Config();
@@ -168,7 +197,7 @@ public class DaemonJob extends AbstractSnapJob {
                 cfgFrame = new Config((DataFrame) configField.getObjectValue());
             }
 
-            // if the class is not fully qualified, try to look it up
+            // If the class name is not fully qualified, attempt to resolve it via ClasspathUtil
             if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
                 try {
                     Log.info("Resolving Job class: " + className);
@@ -190,6 +219,7 @@ public class DaemonJob extends AbstractSnapJob {
             }
 
             try {
+                // Instantiate the job class and wrap it in a SnapJobRunner
                 Class<?> clazz = Class.forName(className);
                 Constructor<?> ctor = clazz.getConstructor();
                 Object object = ctor.newInstance();
@@ -198,10 +228,7 @@ public class DaemonJob extends AbstractSnapJob {
                     SnapJob snapJob = (SnapJob) object;
                     try {
                         snapJob.configure(cfgFrame);
-
                         retval.setWork(new SnapJobRunner(snapJob));
-
-
                     } catch (ConfigurationException e) {
                         System.err.printf("Could not configure snap job %s - %s: %s%n", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage());
                         System.exit(6);
@@ -220,21 +247,26 @@ public class DaemonJob extends AbstractSnapJob {
             System.err.println("Empty configuration.");
         }
 
-        // Return the scheduled job we created to run the job in this configuration
         return retval;
     }
 
 
     /**
-     * Configure the HTTP server with the provided configuration.
+     * Initializes the HTTP server using the provided configuration.
      *
-     * @param cfg The configuration for the HTTP server.
+     * <p>This sets up the port, authentication, default routes, IP ACLs,
+     * DoS protection, and SSL if configured.</p>
+     *
+     * @param cfg The configuration frame containing the "Server" section.
+     * @throws ConfigurationException If there is an error during server initialization.
      */
     private void configureServer(Config cfg) throws ConfigurationException {
         try {
             DataFrame serverFrame = cfg.getAsFrame(cfg.getFieldIgnoreCase(ConfigTag.SERVER).getName());
             Config serverConfig = new Config(serverFrame);
-            int port = 80;
+            int port = 80; // Default HTTP port
+
+            // Handle port configuration
             if (serverConfig.containsIgnoreCase(ConfigTag.PORT)) {
                 try {
                     port = serverConfig.getInt(ConfigTag.PORT);
@@ -245,6 +277,7 @@ public class DaemonJob extends AbstractSnapJob {
 
             server = new HTTPDRouter(port);
 
+            // Configure Authentication
             if (serverConfig.containsIgnoreCase(GenericAuthProvider.AUTH_SECTION) || serverConfig.containsIgnoreCase(GenericAuthProvider.USER_SECTION)) {
                 DataFrame authFrame = null;
                 if (serverConfig.containsIgnoreCase(GenericAuthProvider.AUTH_SECTION)) {
@@ -255,18 +288,22 @@ public class DaemonJob extends AbstractSnapJob {
                 server.setAuthProvider(new GenericAuthProvider(new Config(authFrame)));
             }
 
+            // Set up routes
             server.addDefaultRoutes();
             server.addRoute("/api/command", CommandResponder.class, this);
             server.addRoute("/api/status", StatusResponder.class, this);
 
+            // Configure IP Access Control List
             if (serverConfig.containsIgnoreCase(ConfigTag.IPACL)) {
                 server.configIpACL(new Config(serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.IPACL).getName())));
             }
 
+            // Configure Denial of Service protection
             if (serverConfig.containsIgnoreCase(ConfigTag.FREQUENCY)) {
                 server.configDosTables(new Config(serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.FREQUENCY).getName())));
             }
 
+            // Configure SSL/TLS
             if (serverConfig.containsIgnoreCase(ConfigTag.SECURE)) {
                 try {
                     DataFrame secureFrame = serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.SECURE).getName());
@@ -290,7 +327,10 @@ public class DaemonJob extends AbstractSnapJob {
 
 
     /**
-     * Start the daemon job.
+     * Starts the DaemonJob.
+     *
+     * <p>This method starts the HTTP server (if configured) and then runs the
+     * scheduler. The scheduler will block the current thread until it is shut down.</p>
      */
     @Override
     public void start() {
@@ -308,16 +348,14 @@ public class DaemonJob extends AbstractSnapJob {
         // If we are here, the scheduler has completed and is terminated. (i.e., it was shut down)
     }
 
-
     /**
-     * Shut everything down when the job is requested to stop.
+     * Shuts down the DaemonJob and all its components.
      *
-     * <p>This is used by a shutdown hook to ensure the HTTP server and the
-     * scheduler is shut down correctly before the JVM exits.</p>
+     * <p>This ensures that both the scheduler and the HTTP server are stopped
+     * gracefully before the JVM exits.</p>
      */
     @Override
     public void stop() {
-
         scheduler.shutdown();
         scheduler.waitForInActive(3000);
 
@@ -327,11 +365,25 @@ public class DaemonJob extends AbstractSnapJob {
         }
     }
 
+    /**
+     * A wrapper for SnapJob instances to allow them to be executed by the scheduler.
+     */
     private class SnapJobRunner implements Runnable {
+        /**
+         * The job to be executed.
+         */
         SnapJob snapJob;
 
+        /**
+         * Creates a new SnapJobRunner for the specified job.
+         *
+         * @param snapJob The job to run.
+         */
         public SnapJobRunner(SnapJob snapJob) { this.snapJob = snapJob; }
 
+        /**
+         * Executes the job.
+         */
         @Override
         public void run() {
             try {
