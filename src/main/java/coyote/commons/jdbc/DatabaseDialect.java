@@ -22,7 +22,7 @@ import coyote.commons.template.Template;
 
 /**
  * This class holds the mapping of different database types to DataFrame types
- * so tables can be created in different databases for DX data.
+ * so tables can be created in different databases.
  */
 public class DatabaseDialect {
 

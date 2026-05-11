@@ -31,14 +31,14 @@ import coyote.commons.rtw.writer.JdbcWriter;
  * This wraps a FrameReader and a JdbcWriter together to perform the loading of 
  * a file into a database.
  * 
- * <p>There are just some things that are best perfomed in a database and 
- * through the use of lighweight databases such as H2 and SQLlite it is 
+ * <p>There are just some things that are best performed in a database. Through
+ * the use of lightweight databases such as H2 and SQLite, it is
  * possible to stage large amounts of data on disk without consuming large 
- * amounts of memory. The data can then be used in reader, writers, transforms 
+ * amounts of memory. The data can then be used in readers, writers, transforms,
  * and other components without replicating functionality in the framework.
  * 
  * <p>It is possible to create a database for a specific task and then remove 
- * it from disk once the job is complete with post-processing tasks. This 
+ * it from the disk once the job is complete with post-processing tasks. This
  * allows for some rather dynamic processing as CSV files can be generated in 
  * other jobs before this job is executed, allowing for the creating of JDBC
  * databases with fresh data. 

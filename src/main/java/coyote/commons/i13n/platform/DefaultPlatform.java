@@ -16,7 +16,7 @@ import java.util.Locale;
 
 
 /**
- * The Platform class provides a variety of platform specific information in a
+ * The Platform class provides a variety of platform-specific information in a
  * standard manner.
  */
 public class DefaultPlatform implements Platform {
@@ -112,7 +112,7 @@ public class DefaultPlatform implements Platform {
 
 
     /**
-     * Default constructor, should not be used.
+     * Default constructor should not be used.
      */
     public DefaultPlatform() {
         super();
@@ -125,7 +125,7 @@ public class DefaultPlatform implements Platform {
      * <p>Every attempt will be made to delete the file when the runtime exits
      * normally but the file will probably remain if the VM is halted.
      *
-     * @return A file reference that will be deleted when the VM exits, or null
+     * @return A file reference that will be deleted when the VM exits or null
      * if the file could not be created for any reason.
      */
     static File createTempFile() {

@@ -24,9 +24,9 @@ import coyote.commons.StringUtil;
  * using different or updated {@code SymbolTable} objects so different values
  * can be used. The original use case for this class was creating an email body
  * for a monitoring system which would send an email with the details of an
- * event in consistent manner. The details of the event were different (e.g.
+ * event in a consistent manner. The details of the event were different (e.g.,
  * time, error message, component in error, severity addressee, etc.) and
- * concatenating strings was just to cumbersome. This class made it easy to
+ * concatenating strings were just too cumbersome. This class made it easy to
  * create a template of the message and populate the symbol table with the
  * details of event and let the template fill in the variables.</p>
  *
@@ -36,7 +36,7 @@ import coyote.commons.StringUtil;
  * represent.</p>
  *
  * <p>If the token is preceded with a &quot;$&quot;, then the token is treated
- * as a key to be used to lookup an object in a symbol table. That object's
+ * as a key to be used to look up an object in a symbol table. That object's
  * <code>toString</code> method is called and the returning value placed in the
  * position where the token was found. This is analogous to a variable lookup.
  * If the token is not found in the table or the symbols object returns a null
@@ -94,7 +94,7 @@ public class Template extends StringParser {
 
 
   /**
-   * Resolve the template string with the given symbol table, but leave the
+   * Resolve the template string with the given symbol table but leave the
    * unresolved variables in the template.
    *
    * <p>This enables several passes through the template with different symbol
@@ -207,11 +207,11 @@ public class Template extends StringParser {
    * Lookup the given tag in the given symbol table and object cache.
    *
    * @param tag the tag this method is to resolve
-   * @param symbols The hash of scalar typed data mapped by name
+   * @param symbols The hash of scalar-typed data mapped by name
    * @param cache the hash table of object instances that may provide dynamic
    *        data
    * @param preprocess true indicates unresolved symbols should remain in the
-   *        result, false means they should be replaced with an empty string.
+   *        result; false means they should be replaced with an empty string.
    *
    * @return a string representing the data behind the given tag.
    */

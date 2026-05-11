@@ -38,12 +38,22 @@ import java.util.List;
 /**
  * DaemonJob is a specialized job that manages multiple sub-jobs using a scheduler.
  *
- * <p>This job acts as a container for other jobs, allowing them to be scheduled
- * according to specific intervals or cron-like patterns. It also provides an
- * optional HTTP server for remote monitoring and control of the scheduled jobs.</p>
+ * <p>This job acts as a container for other jobs, allowing them to be
+ * scheduled according to specific intervals or cron-like patterns. These jobs
+ * are assumed to be {@code SnapJob} configurations. Any {@code SnapJob}
+ * configuration can be place in this {@code DaemonJob} and with the addition
+ * of a "Schedule" configuration, that job will be run repeatedly at regular
+ * intervals.</p>
+ *
+ * <p>This class also provides an optional HTTP server for remote monitoring
+ * and control of the scheduled jobs. THis allows the DaemonJob to run as a
+ * background process while still providing the ability to monitor and control
+ * the jobs remotely.</p>
  *
  * <p>The configuration for this job typically includes a "Server" section for
- * HTTP settings and one or more "Job" sections defining the tasks to be run.</p>
+ * HTTP settings and a "Job" section defining the tasks to be run. The "Job"
+ * section is either a single JSON object representing a SnapJob or an array of
+ * SnapJob objects.</p>
  */
 public class DaemonJob extends AbstractSnapJob {
 

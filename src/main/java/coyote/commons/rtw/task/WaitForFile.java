@@ -33,9 +33,9 @@ import coyote.commons.rtw.TaskException;
  * This task will wait for a file to arrive and to be readable.
  * 
  * <p>This looks in a specific directory for files. It does not recurse into
- * subdirectories so it is easier to add backup files to subdirectories 
+ * subdirectories, so it is easier to add backup files to subdirectories
  * without triggering this task. This makes it easier to look for files in a 
- * directory, process them and place them in a subdirectory for easier file 
+ * directory, process them, and place them in a subdirectory for easier file
  * management.
  * 
  * <p>If a directory is configured that directory will be used. If there is no 

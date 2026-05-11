@@ -1,0 +1,36 @@
+{
+  "DaemonJob": {
+    "Job": [
+      {
+        "RtwJob": {
+          "Name": "ThreeMinuteJob",
+          "Schedule": { "minutes": "*/3" },
+          "Reader": {
+            "class": "StaticReader",
+            "fields": {
+              "JobName": "ThreeMinuteJob",
+              "RunId": "[#$UUID#]",
+              "Timestamp": "[#$iso8601date#]"
+            }
+          },
+          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
+        }
+      },
+      {
+        "RtwJob": {
+          "Name": "TwoMinuteJob",
+          "Schedule": { "minutes": "*/2" },
+          "Reader": {
+            "class": "StaticReader",
+            "fields": {
+              "JobName": "TwoMinuteJob",
+              "RunId": "[#$UUID#]",
+              "Timestamp": "[#$iso8601date#]"
+            }
+          },
+          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
+        }
+      }
+    ]
+  }
+}
