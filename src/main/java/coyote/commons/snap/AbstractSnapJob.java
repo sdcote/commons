@@ -13,6 +13,7 @@ import coyote.commons.i13n.StatBoard;
 import coyote.commons.i13n.StatBoardImpl;
 import coyote.commons.log.Logger;
 import coyote.commons.rtw.ConfigTag;
+import coyote.commons.rtw.Symbols;
 import coyote.commons.rtw.context.OperationalContext;
 import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
@@ -155,19 +156,28 @@ public abstract class AbstractSnapJob implements SnapJob {
         // System properties override environment variables
         symbols.readSystemProperties();
 
-        String preprocessedConfiguration = Template.preProcess(configuration.toString(), symbols);
+        // store the command line arguments in our symbol table
+        if (commandLineArguments != null) {
+            for (int x = 0; x < commandLineArguments.length; x++) {
+                symbols.put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
+            }
+        }
+
+        // DO NOT pre-process configuration - Let the components do that themselves otherwise some values will be locked in at
+        // configuration time, not when the components run as is the case with the DaemonJob.
+        String rawConfiguration = configuration.toString();
 
         if(System.getProperty("os.name").toLowerCase().contains("win")){
             // (?<!\\) -> Negative lookbehind: not preceded by a backslash
             // \\      -> The literal backslash to find
             // (?!\\)  -> Negative lookahead: not followed by a backslash
             String regex = "(?<!\\\\)\\\\(?!\\\\)";
-            preprocessedConfiguration = preprocessedConfiguration.replaceAll(regex, "\\\\\\\\");
+            rawConfiguration = rawConfiguration.replaceAll(regex, "\\\\\\\\");
         }
 
 
         // Replace all values in the configuration with symbols - runtime variables
-        configuration = new Config(preprocessedConfiguration);
+        configuration = new Config(rawConfiguration);
 
         // setup logging as soon as we can
         initLogging();
@@ -263,7 +273,7 @@ public abstract class AbstractSnapJob implements SnapJob {
      * <p>This looks for a section named logging in the main configuration and loads the
      * loggers from there.</p>
      */
-    private void initLogging() {
+    protected void initLogging() {
         List<Config> loggers = configuration.getSections(ConfigTag.LOGGING);
 
         // There is a logger section, remove all the existing loggers and start

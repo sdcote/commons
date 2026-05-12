@@ -81,7 +81,7 @@ public class RtwJob extends AbstractSnapJob {
     public void configure(Config cfg) throws ConfigurationException {
         try {
             super.configure(cfg);
-Log.trace(String.format("Configuring %s",this.getClass().getSimpleName()));
+
             // Support the concept of an ever-repeating job
             try {
                 repeat = configuration.getBoolean(ConfigTag.REPEAT);
@@ -98,24 +98,12 @@ Log.trace(String.format("Configuring %s",this.getClass().getSimpleName()));
             // Ensure we have a place for our work files if necessary
             determineWorkDirectory();
 
+            // Have the Engine Factory use our symbol table.
+            // This will help the Vault to resolve template values.
+            TransformEngineFactory.setSymbols(symbols);
+
             // have the Engine Factory create a transformation engine based on our configuration
             engine = TransformEngineFactory.getInstance(getConfig());
-
-            // store the command line arguments in the symbol table of the engine
-            if (commandLineArguments != null) {
-                for (int x = 0; x < commandLineArguments.length; x++) {
-                    engine.getSymbolTable().put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
-                }
-            }
-
-            // store environment variables in the symbol table
-            for (String envName : System.getenv().keySet()) {
-                engine.getSymbolTable().put(Symbols.ENVIRONMENT_VAR_PREFIX + envName, System.getenv().get(envName));
-            }
-
-            for (String propName : System.getProperties().stringPropertyNames()) {
-                engine.getSymbolTable().put(Symbols.SYSTEM_PROPERTY_PREFIX + propName, System.getProperty(propName));
-            }
 
             if (StringUtil.isBlank(engine.getName())) {
                 Log.trace("Job.unnamed_engine_configured");

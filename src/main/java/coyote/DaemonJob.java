@@ -213,8 +213,6 @@ public class DaemonJob extends AbstractSnapJob {
             retval = new CronJob();
         }
 
-
-
         // Use the first attribute of the configuration as the classname of the job class.
         DataField configField = config.getField(0);
 
@@ -257,6 +255,7 @@ public class DaemonJob extends AbstractSnapJob {
                     SnapJob snapJob = (SnapJob) object;
                     try {
                         snapJob.configure(cfgFrame);
+                        snapJob.setCommandLineArguments(commandLineArguments);
                         retval.setWork(new SnapJobRunner(snapJob));
                     } catch (ConfigurationException e) {
                         System.err.printf("Could not configure snap job %s - %s: %s%n", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage());
