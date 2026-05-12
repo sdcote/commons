@@ -61,5 +61,16 @@ public class Symbols {
     public static final String CONTEXT_ERROR = "ContextError"; // error message in the context
     public static final String VERSION = "Version";
     public static final String NODE_ID = "NodeID";
+    public static final String HOSTNAME = "Hostname";
+    public static final String FQDN = "FQDN";
+    public static final String IPADDR = "IPAddr";
+    public static final String USERNAME = "Username";
+    public static final String USER_HOME = "UserHome";
+    public static final String TMP_DIR = "TmpDir";
+    public static final String OS_NAME = "OSName";
+    public static final String OS_VERSION = "OSVersion";
+    public static final String OS_ARCH = "OSArch";
+    public static final String RANDOM_INT = "RandomInt";
+    public static final String RANDOM_LONG = "RandomLong";
 
 }

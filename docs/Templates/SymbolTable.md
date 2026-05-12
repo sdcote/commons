@@ -53,6 +53,19 @@ The following symbols are always available in a `SymbolTable`, even if not expli
 | `CRLF` | Carriage Return + New Line | `\r\n` |
 | `FS` | File Separator | `/` or `\` |
 | `PS` | Path Separator | `:` or `;` |
+| `HT` | Horizontal Tab | `\t` |
+| `UUID` | A random UUID | `550e8400-e29b-41d4-a716-446655440000` |
+| `Hostname` | The local host name | `myhost` |
+| `FQDN` | The fully qualified domain name | `myhost.example.com` |
+| `IPAddr` | The local IP address | `192.168.1.10` |
+| `Username` | The current user name | `jdoe` |
+| `UserHome` | The user's home directory | `/home/jdoe` |
+| `TmpDir` | The system temporary directory | `/tmp` |
+| `OSName` | The operating system name | `Linux` |
+| `OSVersion` | The operating system version | `5.15.0-60-generic` |
+| `OSArch` | The operating system architecture | `amd64` |
+| `RandomInt` | A random integer | `12345678` |
+| `RandomLong` | A random long | `1234567890123456` |
 | `symbolDump` | A full dump of the table contents | (debugging info) |
 
 ### Encrypted Values

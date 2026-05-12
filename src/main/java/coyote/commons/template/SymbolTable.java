@@ -427,6 +427,28 @@ public class SymbolTable extends HashMap {
         return StringUtil.NL;
       } else if ("UUID".equals(symbol)) {
         return UUID.randomUUID().toString();
+      } else if (Symbols.HOSTNAME.equals(symbol)) {
+        return NetUtil.getLocalRelativeHostName();
+      } else if (Symbols.FQDN.equals(symbol)) {
+        return NetUtil.getLocalQualifiedHostName();
+      } else if (Symbols.IPADDR.equals(symbol)) {
+        return NetUtil.getLocalAddressString();
+      } else if (Symbols.USERNAME.equals(symbol)) {
+        return System.getProperty("user.name");
+      } else if (Symbols.USER_HOME.equals(symbol)) {
+        return System.getProperty("user.home");
+      } else if (Symbols.TMP_DIR.equals(symbol)) {
+        return System.getProperty("java.io.tmpdir");
+      } else if (Symbols.OS_NAME.equals(symbol)) {
+        return System.getProperty("os.name");
+      } else if (Symbols.OS_VERSION.equals(symbol)) {
+        return System.getProperty("os.version");
+      } else if (Symbols.OS_ARCH.equals(symbol)) {
+        return System.getProperty("os.arch");
+      } else if (Symbols.RANDOM_INT.equals(symbol)) {
+        return Integer.toString(new Random().nextInt());
+      } else if (Symbols.RANDOM_LONG.equals(symbol)) {
+        return Long.toString(new Random().nextLong());
       } else if ("symbolDump".equals(symbol)) {
         return dump();
       }
