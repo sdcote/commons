@@ -24,7 +24,7 @@ import java.util.*;
 
 
 /**
- * The Config class models a component that is used to make file-based
+ * The Config class models a component used to make file-based
  * configuration of components easier than using property files.
  *
  * <p>The primary goal of this class is to allow hierarchical configurations to
@@ -214,7 +214,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
     /**
-     * Perform a case insensitive search for the first value with the given name
+     * Perform a case-insensitive search for the first value with the given name
      * and returns it as a boolean.
      *
      * @param tag the name of the configuration attribute for which to search
@@ -247,12 +247,14 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return getString(CLASS_TAG);
     }
 
+
     /**
      * @param name the class name to set in this config
      */
     public void setClassName(final String name) {
         put(Config.CLASS_TAG, name);
     }
+
 
     /**
      * Retrieve a named ConfigSlot from the configuration
@@ -271,8 +273,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         }
     }
 
+
     /**
-     * Perform a case insensitive search for the first value with the given name
+     * Perform a case-insensitive search for the first value with the given name
      * and returns it as a double.
      *
      * @param tag the name of the configuration attribute for which to search
@@ -284,6 +287,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return Double.parseDouble(getString(tag));
     }
 
+
     /**
      * Access the current number of elements set in this configuration.
      *
@@ -293,8 +297,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return fields.size();
     }
 
+
     /**
-     * Perform a case insensitive search for the first value with the given name
+     * Perform a case-insensitive search for the first value with the given name
      * and returns it as a float.
      *
      * @param tag the name of the configuration attribute for which to search
@@ -306,12 +311,14 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return Float.parseFloat(getString(tag));
     }
 
+
     /**
      * @return the id of this config
      */
     public String getId() {
         return getString(ID_TAG);
     }
+
 
     /**
      * @param id the id of the config to set
@@ -320,8 +327,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         this.put(ID_TAG, id);
     }
 
+
     /**
-     * Perform a case insensitive search for the first value with the given name
+     * Perform a case-insensitive search for the first value with the given name
      * and returns it as an integer.
      *
      * @param tag the name of the configuration attribute for which to search
@@ -332,6 +340,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     public int getInt(final String tag) throws NumberFormatException {
         return Integer.parseInt(getString(tag));
     }
+
 
     /**
      * Perform a case-insensitive search for the first value with the given name
@@ -345,6 +354,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     public long getLong(final String tag) throws NumberFormatException {
         return Long.parseLong(getString(tag));
     }
+
 
     /**
      * Perform a case-insensitive search for the first value with the given name
@@ -364,6 +374,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         }
     }
 
+
     /**
      * @return the name of this config
      */
@@ -371,12 +382,14 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return getString(NAME_TAG);
     }
 
+
     /**
      * @param name the name of the config to set
      */
     public void setName(final String name) {
         this.put(NAME_TAG, name);
     }
+
 
     /**
      * Return the first section with the given name.
@@ -401,12 +414,13 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return null;
     }
 
+
     /**
      * Return all the configuration sections within this section
      *
      * <p>This will not return scalar attributes, just the embedded sections.
      *
-     * @return The list of sections. May be empty, but never null;
+     * @return The list of sections. Maybe empty, but never null;
      */
     public List<Config> getSections() {
         final List<Config> retval = new ArrayList<Config>();
@@ -425,6 +439,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         // return what we have found
         return retval;
     }
+
 
     /**
      * Return all the configuration sections with the given name.
@@ -455,6 +470,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return retval;
     }
 
+
     /**
      * Perform a case insensitive search for the first value with the given name
      * and returns it as a short.
@@ -468,6 +484,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return Short.parseShort(getString(tag));
     }
 
+
     /**
      * Perform a case-insensitive search for the first value with the given name.
      *
@@ -479,6 +496,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     public String getString(final String tag) {
         return getString(tag, true);
     }
+
 
     /**
      * Perform a search for the first value with the given name.
@@ -500,6 +518,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         return null;
     }
 
+
     /**
      * Remove the referenced ConfigSlot
      *
@@ -512,6 +531,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
             }
         }
     }
+
 
     /**
      * Use the set configuration slots and prime the configuration with those
@@ -537,6 +557,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         }
 
     }
+
 
     /**
      * @return Formatted, multi-line JSON string representing the record.
@@ -589,7 +610,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      *
      * <p><strong>NOTE:</strong> The frame should either be an array {@code
      * DataFrame.isArray()} of be a frame of all the same type. The first field
-     * is checked for the type of an array to create an return. If any of the
+     * is checked for the type of array to create a return. If any of the
      * remaining fields differ in type, a ClassCastException will be thrown and
      * the data will be incomplete.</p>
      *
@@ -705,6 +726,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
         }
         return retval;
     }
+
 
     /**
      * Convenience method to return the value of the named field as a boolean

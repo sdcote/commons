@@ -20,11 +20,11 @@ import java.util.Random;
  * 
  * <p>One solution is to use uncommon words. It's even better to use words 
  * that don't actually exist in dictionaries. The problem is, these words can 
- * be too difficult to remember and the result is little more than groups of
+ * be too challenging to remember, and the result is little more than groups of
  * randomized characters delimited with spaces.
  * 
  * <p>One way to make these words easier to remember is to make your brain 
- * think they are words by grouping characters into "pronounceable" tokens 
+ * think they are words by grouping characters into "pronounceable" tokens,
  * making them easier to remember.
  * 
  * <p>This program uses statistics on the frequency of three-letter sequences 
@@ -42,7 +42,7 @@ public class PPG {
 
 
   /**
-   * Generate a pass phrase utilizing a set of randomized characters which form 
+   * Generate a pass phrase using a set of randomized characters which form
    * "pronounceable" tokens.
    * 
    * <p>Anecdotal evidence seems to indicate using pass-phrases of only 2 to 4 
@@ -163,7 +163,7 @@ public class PPG {
 
 
 /**
- * Class which holds the character distribution data
+ * Class that holds the character distribution data
  */
 class Data {
   static int triples[][][] = null;

@@ -174,13 +174,27 @@ public class DaemonJob extends AbstractSnapJob {
         Log.debug("Loading job configuration: " + config.toString());
         ScheduledJob retval = null;
 
-        // Use the first attribute of the configuration as the classname.
-        DataField configField = config.getField(0);
+        // There should be only one element in this configuration, the name of the element is the name of the Job class
+        if( config.getElementCount() != 1 ) {
+            throw new ConfigurationException("Job configuration must have exactly one element, the name of the Job class");
+        }
 
+        List<Config> sections = config.getSections();
+        if(sections.isEmpty()) {
+            throw new ConfigurationException("Job configuration must have a frame as the first element");
+        }
+
+        // Get the configuration for the job
+        Config jobConfig = sections.get(0);
         // Get the "Schedule" config section. This describes how often the Job is to be run.
-        List<Config> cfgs = config.getSections(ConfigTag.SCHEDULE);
-        if (cfgs.size() > 0) {
-            Config scheduleCfg = cfgs.get(0);
+        List<Config> scheduleConfig = jobConfig.getSections(ConfigTag.SCHEDULE);
+
+
+
+
+
+        if (scheduleConfig.size() > 0) {
+            Config scheduleCfg = scheduleConfig.get(0);
 
             if (scheduleCfg.containsIgnoreCase(ConfigTag.MILLIS)) {
                 // This is a standard scheduled job with an interval in milliseconds
@@ -195,9 +209,14 @@ public class DaemonJob extends AbstractSnapJob {
                 retval = cronJob;
             }
         } else {
-            // If there is no Schedule section, default to repeating every 1 second
+            // If there is no Schedule section, default to repeating every 1 minute
             retval = new CronJob();
         }
+
+
+
+        // Use the first attribute of the configuration as the classname of the job class.
+        DataField configField = config.getField(0);
 
         // Try to determine and instantiate the class name for the job
         if (configField != null && StringUtil.isNotEmpty(configField.getName())) {

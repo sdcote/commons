@@ -20,6 +20,7 @@ public class CronJob extends ScheduledJob {
   public CronJob() {
     super();
     setRepeatable(true);
+    cronEntry = new CronEntry();
   }
 
 
@@ -85,7 +86,9 @@ public class CronJob extends ScheduledJob {
   @Override
   public long getNextExecutionTime() {
     if (cronEntry != null) {
-      return cronEntry.getNextTime();
+      GregorianCalendar cal = new GregorianCalendar();
+      cal.setTimeInMillis(Math.max(System.currentTimeMillis(), getExecutionTime()));
+      return cronEntry.getNextTime(cal);
     }
     return super.getNextExecutionTime();
   }
@@ -103,7 +106,10 @@ public class CronJob extends ScheduledJob {
    */
   @Override
   public long getExecutionInterval() {
-    return getNextExecutionTime() - System.currentTimeMillis();
+    if (cronEntry != null) {
+      return Math.max(0, getNextExecutionTime() - System.currentTimeMillis());
+    }
+    return super.getExecutionInterval();
   }
 
 }

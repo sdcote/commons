@@ -425,6 +425,8 @@ public class SymbolTable extends HashMap {
         return StringUtil.HT;
       } else if ("NL".equals(symbol)) {
         return StringUtil.NL;
+      } else if ("UUID".equals(symbol)) {
+        return UUID.randomUUID().toString();
       } else if ("symbolDump".equals(symbol)) {
         return dump();
       }

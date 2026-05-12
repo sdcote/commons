@@ -102,7 +102,6 @@ public class Scheduler extends ThreadJob {
    * the next job in the queue.</p>
    */
   public void doWork() {
-    Log.trace(String.format("Scheduler.doWork()"));
     synchronized (mutex) {
       if (nextJob != null) {
         long executionTime = System.currentTimeMillis();
