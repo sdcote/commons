@@ -98,7 +98,6 @@ public class UmlModeler {
         node1.addStereotype(HOST_STEREOTYPE); // as of XMI 2.5.1 tagged values require a stereotype
         node1.addComment(new UmlComment("This is a comment for Node1"));
 
-
         UmlNode node2 = new UmlNode("Node2");
         hostPkg.addElement(node2);
         node2.addElement(new UmlPort("80"));
@@ -146,21 +145,21 @@ public class UmlModeler {
         diagram.add(element);
 
         // Add node 4 to the diagram
-//        element = new UmlShape(node4);
-//        element.setBounds(new DiagramBounds(300, 100, 120, 80));
-//        diagram.add(element);
+        element = new UmlShape(node4);
+        element.setBounds(new DiagramBounds(300, 100, 120, 80));
+        diagram.add(element);
 
         // Place the port on the edge of Node4
-//        UmlNamedElement modelElement = node4.getElementByName("5432");
-//        element = new UmlShape(modelElement);
-//        element.setBounds(new DiagramBounds(420, 110, 10, 10));
-//        diagram.add(element);
+        UmlNamedElement modelElement = node4.getElementByName("5432");
+        element = new UmlShape(modelElement);
+        element.setBounds(new DiagramBounds(420, 110, 10, 10));
+        diagram.add(element);
 
         // ToDo: We don't represent lines yet
-//        UmlEdge line = new UmlEdge(dependency);
-//        line.addWayPoint(220,140);
-//        line.addWayPoint(300,140);
-//        diagram.add(line);
+        UmlEdge line = new UmlEdge(dependency);
+        line.addWayPoint(220,140);
+        line.addWayPoint(300,140);
+        diagram.add(line);
 
         return model;
     }

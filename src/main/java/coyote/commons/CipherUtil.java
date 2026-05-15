@@ -23,7 +23,7 @@ import coyote.commons.security.XTEACipher;
 
 
 /**
- * Very basic cipher utilities to assist with privacy.
+ * Very basic cipher utilities to help with privacy and, at the very least, obfuscation.
  */
 public class CipherUtil {
   public static final String CIPHER_KEY = "CoyoteCommons";
@@ -47,7 +47,7 @@ public class CipherUtil {
   static final byte[] DEFAULT_IV = new byte[] { -90, 4, 13, 127, 54, 1, -34, -5, 8, 1, 2, -32, 44, 77, 98, 32 };
 
   // Something to generate salt for our data
-  private static Random random = new Random( System.currentTimeMillis() );
+  private static final Random random = new Random( System.currentTimeMillis() );
 
   public static final String DEFAULT_CIPHER = BlowfishCipher.CIPHER_NAME;
   private static final Map<String, Cipher> cipherMap = new HashMap<String, Cipher>();
@@ -58,7 +58,7 @@ public class CipherUtil {
   }
 
   //The line separator string of the operating system.
-  private static final String LINE_FEED = System.getProperty( "line.separator" );
+  private static final String LINE_FEED = System.lineSeparator();
 
   // 6-bit nibbles to Base64 characters.
   private static final char[] charMap = new char[64];
@@ -94,14 +94,14 @@ public class CipherUtil {
   /**
    * Common utility to encrypt data.
    * 
-   * <p>The string is encoded into bytes using UTF-16, pased to the encryption 
-   * algorithm and the resulting encrypted data encoded using base64 encoding
+   * <p>The string is encoded into bytes using UTF-16, passed to the encryption
+   * algorithm, and the resulting encrypted data encoded using base64 encoding
    * for easy packaging and transmission across a variety of media.  
    * 
    * <p>The name of the encryption algorithm is assumed to be Blowfish unless 
    * otherwise specified in the {@code cipher.name} system property. Other 
    * algorithms can be statically registered with this class beyond the public 
-   * domain and JRE provided ciphers.
+   * domain and JRE-provided ciphers.
    * 
    * <p>Similarly, the decryption key is assumed to be the toolkit default 
    * unless otherwise specified in the {@code cipher.key} system property. It 
@@ -135,7 +135,7 @@ public class CipherUtil {
    * <p>The name of the encryption algorithm is assumed to be Blowfish unless 
    * otherwise specified in the {@code cipher.name} system property. Other 
    * algorithms can be statically registered with this class beyond the public 
-   * domain and JRE provided ciphers.
+   * domain and JRE-provided ciphers.
    * 
    * <p>Similarly, the decryption key is assumed to be the toolkit default 
    * unless otherwise specified in the {@code cipher.key} system property. It 
@@ -165,9 +165,9 @@ public class CipherUtil {
    * <p>There are a few steps and options for deciphering text and this method 
    * uses a set of defaults:<ol>
    * <li>Decode the cipher data into bytes using Base64 encoding.</li>
-   * <li>Use the default (Blowfish) cipher and initialize it with a default 16 
-   * octet (128 bit) key and decrypt the data.</li>
-   * <li>Four bytes of random salt is assumed to prepend the data so those 4 
+   * <li>Use the default (Blowfish) cipher and initialize it with a default
+   * 16-octet (128-bit) key and decrypt the data.</li>
+   * <li>Four bytes of random salt is assumed to prepend the data, so those 4
    * bytes are removed.</li>
    * <li>The bytes are converted into a string using UTF-16 encoding.</li></ol>
    * 
@@ -185,7 +185,7 @@ public class CipherUtil {
 
 
   /**
-   * Decipher the given text using the given cipher, key and assume the data is 
+   * Decipher the given text using the given cipher, key, and assume the data is
    * prepended with the given number of bytes of random data.
    * 
    * @param cipherText the text to decipher
@@ -285,7 +285,7 @@ public class CipherUtil {
    * 
    * @return An array containing the decoded data bytes.
    * 
-   * @throws IllegalArgumentException If the input is not valid Base64 encoded data.
+   * @throws IllegalArgumentException If the input is not valid, Base64 encoded data.
   */
   public static byte[] decode( final char[] in, final int iOff, int iLen ) {
     if ( ( iLen % 4 ) != 0 ) {
@@ -341,7 +341,7 @@ public class CipherUtil {
    * 
    * @return An array containing the decoded data bytes.
    * 
-   * @throws IllegalArgumentException If the input is not valid Base64 encoded data.
+   * @throws IllegalArgumentException If the input is not valid, Base64 encoded data.
    */
   public static byte[] decode( final String s ) {
     return decode( s.toCharArray() );
@@ -351,16 +351,16 @@ public class CipherUtil {
 
 
   /**
-   * Decodes a byte array from Base64 format and ignores line separators, tabs 
+   * Decodes a byte array from the Base64 format and ignores line separators, tabs,
    * and blanks.
    * 
-   * <p>CR, LF, Tab and Space characters are ignored in the input data.
+   * <p>CR, LF, Tab, and Space characters are ignored in the input data.
    * 
    * @param s A Base64 String to be decoded.
    * 
    * @return An array containing the decoded data bytes.
    * 
-   * @throws IllegalArgumentException If the input is not valid Base64 encoded data.
+   * @throws IllegalArgumentException If the input is not valid, Base64 encoded data.
    */
   public static byte[] decodeLines( final String s ) {
     final char[] buf = new char[s.length()];
@@ -399,18 +399,18 @@ public class CipherUtil {
   /**
    * Encrypt the text and return a string that can be later decrypted.
    * 
-   * <p>There are a few steps and options for enciphering text and this method 
+   * <p>There are a few steps and options for enciphering text, and this method
    * uses a set of defaults:<ol>
    * <li>The string is converted into bytes using UTF-16 encoding. This 
    * should be available on all platforms.</li>
    * <li>Four bytes of random salt is added to the beginning of the encoded 
    * data.</li>
-   * <li>Use the default (Blowfish) cipher and initialize it with a default 16 
-   * octet (128 bit) key and encrypt the salted data.</li>
+   * <li>Use the default (Blowfish) cipher and initialize it with a default
+   *  16-octet (128-bit) key and encrypt the salted data.</li>
    * <li>Encode the cipher data into a string using Base64 encoding.</li></ol>
    * 
-   * <p>The result is a text string which can be sent or stored on any media 
-   * which supports strings.
+   * <p>The result is a text string that can be sent or stored on any media
+   * that supports strings.
    * 
    * @param text The text to encrypt
    * 
@@ -490,7 +490,7 @@ public class CipherUtil {
    * @param plainText The text to encode
    * @param cipherName The name of the cipher to use
    * @param key Base64 encoding of the bytes to use as the initialization 
-   *        vector (i.e. key) for the cipher
+   *        vector (i.e., key) for the cipher
    *        
    * @return Base64 encoding of the encrypted data representing the given plain text
    * 
@@ -633,7 +633,7 @@ public class CipherUtil {
    * Encodes a byte array into base64 format and breaks the output into lines.
    * 
    * @param in An array containing the data bytes to be encoded.
-    * @param iOff Offset of the first byte in {@code in} to be processed.
+   * @param iOff Offset of the first byte in {@code in} to be processed.
    * @param iLen Number of bytes to be processed in {@code in}, starting at {@code iOff}.
    * @param lineLen Line length for the output data. Should be a multiple of 4.
    * @param lineSeparator The line separator to be used to separate the output lines.
@@ -736,13 +736,13 @@ public class CipherUtil {
   /**
    * Pad the given the data to the given block size according to RFC 1423.
    * 
-   * <p>First the data is padded to blocks of data using a PKCS5 DES CBC
+   * <p>First, the data is padded to blocks of data using a PKCS5 DES CBC
    * encryption padding scheme described in section 1.1 of RFC-1423.
    * 
    * <p>The last byte of the stream is ALWAYS the number of bytes added to the 
    * end of the data. If the data ends on a boundary, then there will be eight
    * bytes of padding:<pre>
-   * 88888888 - all of the last block is padding.
+   * 88888888 - all the last block is padding.
    * X7777777 - the last seven bytes are padding.
    * XX666666 - the last six bytes are padding.
    * XXX55555 - etc.
@@ -811,7 +811,7 @@ public class CipherUtil {
 
 
   /**
-   * Remove padding that is at the end of the data using RFC 1423.
+   * Remove padding at the end of the data using RFC 1423.
    * 
    * @param data the byte array to trim.
    * 
@@ -832,4 +832,5 @@ public class CipherUtil {
 
     return data;
   }
+
 }

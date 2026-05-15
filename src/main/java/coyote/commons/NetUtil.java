@@ -873,7 +873,7 @@ public class NetUtil {
 
 
   /**
-   * Return a InetAddress that is suitable for use as a broadcast address.
+   * Return an InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
    * address to calculate the broadcast address for the given subnet mask.
@@ -902,7 +902,7 @@ public class NetUtil {
 
 
   /**
-   * Return a InetAddress that is suitable for use as a broadcast address.
+   * Return an InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
    * address to calculate the broadcast address for the given subnet mask.
@@ -911,7 +911,7 @@ public class NetUtil {
    * @param mask Valid dotted-quad netmask.
    *
    * @return an InetAddress capable of being used as a broadcast address in the
-   *         given nodes subnet.
+   *         given nodes' subnet.
    */
   public static InetAddress getBroadcastAddress( String addr, String mask ) {
     InetAddress node = null;
@@ -940,7 +940,7 @@ public class NetUtil {
 
 
   /**
-   * Return a InetAddress that is suitable for use as a broadcast address.
+   * Return an InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
    * address to calculate the broadcast address for the given subnet mask.
@@ -969,7 +969,7 @@ public class NetUtil {
 
 
   /**
-   * Return a InetAddress that is suitable for use as a broadcast address.
+   * Return an InetAddress that is suitable for use as a broadcast address.
    *
    * <p>Take a mask in the form of "255.255.111.0" and apply it to the local
    * address to calculate the broadcast address for the given subnet mask.
@@ -1009,10 +1009,8 @@ public class NetUtil {
     int i = port;
     DatagramSocket dgramsocket = null;
 
-    // If no address was given, then try to determine our local address so
-    // we
-    // can use our main address instead of 127.0.0.1 which may be chosen by
-    // the
+    // If no address was given, then try to determine our local address so we
+    // can use our main address instead of 127.0.0.1 which may be chosen by the
     // VM if it is not specified in the DatagramSocket constructor
     if ( address == null ) {
       address = getLocalAddress();
@@ -1057,7 +1055,7 @@ public class NetUtil {
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.
+   * to get the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    * @param port the port to use as the starting point for binding
@@ -1096,7 +1094,7 @@ public class NetUtil {
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.
+   * to get the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    * @param port the port to use as the starting point for binding
@@ -1134,7 +1132,7 @@ public class NetUtil {
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.
+   * to get the next available datagram server.
    *
    * @param port the port to use as the starting point for binding
    *
@@ -1159,7 +1157,7 @@ public class NetUtil {
    * yet when a call is made to open a socket at that port, another thread may
    * have already opened a socket on that port. A better way would be to use
    * the <code>getNextDatagramSocket(address,port)</code> method if it desired
-   * to obtain the next available datagram server.
+   * to get the next available datagram server.
    *
    * @param address the address to which the datagram socket should be bound
    *
@@ -1173,7 +1171,7 @@ public class NetUtil {
 
 
   /**
-   * Set the cached Fully-qualified hostname to avoid additional DNS lookups.
+   * Set the cached Fully qualified hostname to avoid additional DNS lookups.
    *
    * @param name the name to use as the local host name.
    */

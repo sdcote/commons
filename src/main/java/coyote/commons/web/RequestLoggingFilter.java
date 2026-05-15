@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Filter for viewing Request Parameters and Session Attributes in log.
+ * Filter for viewing Request Parameters and Session Attributes in the log.
  * 
  * In your web.xml, add the following:
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * &lt;/filter-mapping&gt;
  * </pre>
  * 
- * <p>Use of Java Logging is assumed. Make sure you logging framework is 
+ * <p>Use of Java Logging is assumed. Make sure your logging framework is
  * registered with the Java framework for unified logging.
  */
 public class RequestLoggingFilter implements Filter {

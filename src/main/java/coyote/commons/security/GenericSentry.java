@@ -4,11 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import coyote.commons.Log;
 import coyote.commons.network.IpAcl;
-import coyote.commons.web.Sentry;
 
 
 /**
- * This class is intended to demonstrate the use of the Sentry interface with the commons security classes.
+ * This class is intended to demonstrate the use of the Sentry interface with the Commons security classes.
  */
 public class GenericSentry implements Sentry {
 

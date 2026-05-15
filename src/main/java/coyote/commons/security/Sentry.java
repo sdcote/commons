@@ -1,17 +1,17 @@
-package coyote.commons.web;
+package coyote.commons.security;
 
 import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * A utility class which allows for the aggregation of security function into a single component.
+ * A utility class that allows for the aggregation of security function into a single component.
  */
 public interface Sentry {
 
   /**
    * Set the access control list rules.
    * 
-   * <p>The rules are a semicolon delimited list of CIDR networks with a 
+   * <p>The rules are a semicolon-delimited list of CIDR networks with a
    * directive of either ALLOW or DENY for that network. For example:
    * <pre>192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY</pre>Where everything 
    * coming from the 192.168.0.0/255.255.0.0 network is allowed, 

@@ -83,7 +83,7 @@ public final class Decimal implements Comparable<Decimal>, Serializable {
 
 
   /**
-   * Constructor unly used for NaN instance.
+   * Constructor only used for NaN instance.
    */
   private Decimal() {
     value = null;

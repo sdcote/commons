@@ -64,11 +64,11 @@ public class FrameFormatter {
 
 
     /**
-     * Display the given frame in human readable, multi-line text with an
+     * Display the given frame in human-readable, multi-line text with an
      * indentation of 2 characters.
      *
      * @param frame The frame to format
-     * @return an easy to read test representation of the given frame.
+     * @return an easy-to-read test representation of the given frame.
      */
     public static String prettyPrint(DataFrame frame) {
         return prettyPrint(frame, 2);
@@ -99,7 +99,7 @@ public class FrameFormatter {
      *
      * @param frame  The frame to format
      * @param indent number of columns to indent each successive level
-     * @return an easy to read test representation of the given frame.
+     * @return an easy-to-read test representation of the given frame.
      */
     private static String prettyPrint(final DataFrame frame, final int indent) {
         String padding = null;
@@ -256,7 +256,7 @@ public class FrameFormatter {
 
 
     /**
-     * This is a quick & dirty method to escape some common characters. Should
+     * This is a quick and dirty method to escape some common characters. Should
      * only use for the content of an attribute or tag.
      *
      * @param content The string to transform

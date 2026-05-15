@@ -38,7 +38,7 @@ import java.util.Vector;
  * <ul>
  * <li><strong>*</strong> - Matches any number of any characters
  * <li><strong>?</strong> - Matches one of any characters
- * <li><strong>[]</strong> - Matches any of enclosed characters, ranges (e.g.,
+ * <li><strong>[]</strong> - Matches any of enclosed characters; ranges (e.g.,
  * [a-z]) are supported.
  * </ul>
  */
