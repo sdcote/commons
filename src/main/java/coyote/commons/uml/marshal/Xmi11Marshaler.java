@@ -14,7 +14,7 @@ import java.util.Date;
 
 
 /**
- * This marshals models into a generally-supported XMI 1.1 file.
+ * This marshals models into a generally supported XMI 1.1 file.
  * 
  * <p>The processing instruction is not included as it is not known at the time 
  * of XML generation what encoding will be used.

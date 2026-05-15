@@ -1,11 +1,9 @@
 package coyote.commons.uml.marshal;
 
 import coyote.commons.StringUtil;
-import coyote.commons.uml.DiagramBounds;
-import coyote.commons.uml.UmlDiagram;
-import coyote.commons.uml.UmlDiagramElement;
-import coyote.commons.uml.UmlModel;
+import coyote.commons.uml.*;
 
+import java.awt.Point;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -216,13 +214,86 @@ public class SparxExtension implements MarshalerExtension {
         b.append(lineEnd(level));
         int seq = 1;
         for (UmlDiagramElement element : diagram.getDiagramElements()) {
-            genDiagramElement(b, element, seq++, (level > -1) ? level + 1 : level);
+            if (element instanceof UmlShape) {
+                genDiagramElement(b, element, seq++, (level > -1) ? level + 1 : level);
+            }
         }
         b.append(getPadding(level));
         b.append("</elements>");
         b.append(lineEnd(level));
 
+        b.append(getPadding(level));
+        b.append("<connectors>");
+        b.append(lineEnd(level));
+        for (UmlDiagramElement element : diagram.getDiagramElements()) {
+            if (element instanceof UmlEdge) {
+                genConnector(b, (UmlEdge) element, (level > -1) ? level + 1 : level);
+            }
+        }
+        b.append(getPadding(level));
+        b.append("</connectors>");
+        b.append(lineEnd(level));
+    }
 
+    private void genConnector(StringBuilder b, UmlEdge edge, int level) {
+        b.append(getPadding(level));
+        b.append("<connector xmi:idref=\"");
+        b.append(edge.getId());
+        b.append("\">");
+        b.append(lineEnd(level));
+
+        String pad = getPadding(level + 1);
+        b.append(pad);
+        b.append("<source xmi:idref=\"");
+        if (edge.getSubject() instanceof UmlDependency) {
+            b.append(((UmlDependency) edge.getSubject()).getClientId());
+        }
+        b.append("\">");
+        b.append(lineEnd(level));
+        b.append(pad);
+        b.append("<model side=\"Right\"/>");
+        b.append(lineEnd(level));
+        b.append(pad);
+        b.append("</source>");
+        b.append(lineEnd(level));
+
+        b.append(pad);
+        b.append("<target xmi:idref=\"");
+        if (edge.getSubject() instanceof UmlDependency) {
+            b.append(((UmlDependency) edge.getSubject()).getSupplierId());
+        }
+        b.append("\">");
+        b.append(lineEnd(level));
+        b.append(pad);
+        b.append("<model side=\"Left\"/>");
+        b.append(lineEnd(level));
+        b.append(pad);
+        b.append("</target>");
+        b.append(lineEnd(level));
+
+        if (!edge.getWayPoints().isEmpty()) {
+            b.append(pad);
+            b.append("<labels/>");
+            b.append(lineEnd(level));
+            b.append(pad);
+            b.append("<extendedProperties");
+            StringBuilder points = new StringBuilder();
+            for (Point p : edge.getWayPoints()) {
+                if (points.length() > 0) points.append(":");
+                points.append("(").append(p.x).append(",").append(p.y).append(")");
+            }
+            if (points.length() > 0) {
+                b.append(" routing=\"3\" edge=\"2\" sequence=\"1\" geometry=\"SX=0;SY=0;EX=0;EY=0;Path=");
+                b.append(points.toString());
+                b.append(";\"");
+            }
+            b.append("/>");
+            b.append(lineEnd(level));
+        }
+
+        b.append(getPadding(level));
+        b.append("</connector>");
+        b.append(lineEnd(level));
     }
 
     private void genDiagramElement(StringBuilder b, UmlDiagramElement element, int seqNumber, int level) {

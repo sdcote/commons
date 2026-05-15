@@ -25,8 +25,7 @@ public class UmlModeler {
     public static void main(String[] args) {
         Log.addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
 
-        UmlModeler modeler = new UmlModeler();
-        UmlModel model = modeler.buildUmlModel();
+        UmlModel model = createDeploymentModel();
 
         // Now that we have a UML Model in memory, we need to save it to disk
         // so it can be imported into your CASE tool of choice.
@@ -72,9 +71,9 @@ public class UmlModeler {
     /**
      * This is where you create the UML Model.
      *
-     * @return
+     * @return a UML model for a deployment diagram
      */
-    private UmlModel buildUmlModel() {
+    public static UmlModel createDeploymentModel() {
 
         // This is the root of the model.
         UmlModel model = new UmlModel("MyModel");
@@ -155,10 +154,10 @@ public class UmlModeler {
         element.setBounds(new DiagramBounds(420, 110, 10, 10));
         diagram.add(element);
 
-        // ToDo: We don't represent lines yet
+        // Add some waypoints
         UmlEdge line = new UmlEdge(dependency);
-        line.addWayPoint(220,140);
-        line.addWayPoint(300,140);
+        line.addWayPoint(220, 140);
+        line.addWayPoint(420, 115);
         diagram.add(line);
 
         return model;

@@ -171,6 +171,14 @@ public class Xmi25Marshaler extends AbstractMarshaler {
             genPort(b, (UmlPort) element, level);
         } else if (element instanceof UmlDependency) {
             genDependency(b, (UmlDependency) element, level);
+        } else if (element instanceof UmlAssociation) {
+            genAssociation(b, (UmlAssociation) element, level);
+        } else if (element instanceof UmlGeneralization) {
+            genGeneralization(b, (UmlGeneralization) element, level);
+        } else if (element instanceof UmlNode) {
+            genPackagedElements(b, element, level);
+        } else if (element instanceof UmlComponent) {
+            genPackagedElements(b, element, level);
         } else if (element instanceof UmlDiagram) {
             diagramsToApply.add((UmlDiagram) element);
         } else {
@@ -179,6 +187,105 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         }
 
         checkForStereotype(element);
+    }
+
+    private void genGeneralization(StringBuilder b, UmlGeneralization element, int level) {
+        b.append(getPadding(level));
+        b.append("<generalization xmi:type=\"uml:Generalization\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\" general=\"");
+        b.append(element.getSuperType());
+        b.append("\"/>");
+        b.append(lineEnd(level));
+    }
+
+    private void genAssociation(StringBuilder b, UmlAssociation element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<packagedElement xmi:type=\"uml:Association\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\"");
+        if (StringUtil.isNotEmpty(element.getName())) {
+            b.append(" name=\"");
+            b.append(element.getName());
+            b.append("\"");
+        }
+        b.append(" visibility=\"");
+        b.append(element.getVisibility().toString());
+        b.append("\"");
+
+        for (UmlAssociationEnd end : element.getEnds()) {
+            b.append(" memberEnd=\"");
+            b.append(end.getId());
+            b.append("\"");
+        }
+
+        b.append(">");
+        b.append(lineEnd(level));
+
+        for (UmlAssociationEnd end : element.getEnds()) {
+            genAssociationEnd(b, end, (level > -1) ? level + 1 : level);
+        }
+
+        b.append(pad);
+        b.append("</packagedElement>");
+        b.append(lineEnd(level));
+    }
+
+    private void genAssociationEnd(StringBuilder b, UmlAssociationEnd element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<ownedEnd xmi:type=\"uml:Property\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\"");
+        if (StringUtil.isNotEmpty(element.getName())) {
+            b.append(" name=\"");
+            b.append(element.getName());
+            b.append("\"");
+        }
+        b.append(" visibility=\"");
+        b.append(element.getVisibility().toString());
+        b.append("\" type=\"");
+        b.append(element.getType());
+        b.append("\" aggregation=\"");
+        b.append(element.getAggregation().toString().toLowerCase());
+        b.append("\" association=\"");
+        b.append(((UmlNamedElement) element.getParent()).getId());
+        b.append("\">");
+        b.append(lineEnd(level));
+
+        if (element.getMultiplicity() != null) {
+            genMultiplicity(b, element.getMultiplicity(), (level > -1) ? level + 1 : level);
+        }
+
+        b.append(pad);
+        b.append("</ownedEnd>");
+        b.append(lineEnd(level));
+    }
+
+    private void genMultiplicity(StringBuilder b, UmlMultiplicity multiplicity, int level) {
+        String pad = getPadding(level);
+        // Lower bound
+        b.append(pad);
+        b.append("<lowerValue xmi:type=\"uml:LiteralInteger\" xmi:id=\"");
+        b.append(UUID.randomUUID().toString());
+        b.append("\" value=\"");
+        b.append(multiplicity.getLowerBound());
+        b.append("\"/>");
+        b.append(lineEnd(level));
+
+        // Upper bound
+        b.append(pad);
+        b.append("<upperValue xmi:type=\"uml:LiteralUnlimitedNatural\" xmi:id=\"");
+        b.append(UUID.randomUUID().toString());
+        b.append("\" value=\"");
+        if (multiplicity.getUpperBound() == UmlMultiplicity.ANY) {
+            b.append("*");
+        } else {
+            b.append(multiplicity.getUpperBound());
+        }
+        b.append("\"/>");
+        b.append(lineEnd(level));
     }
 
     private void genDependency(StringBuilder b, UmlDependency element, int level) {
@@ -288,8 +395,34 @@ public class Xmi25Marshaler extends AbstractMarshaler {
 
     }
 
-    private void genUmlLine(StringBuilder b, UmlEdge element, int i) {
-        Log.error("UmlLine is not supported yet.");
+    private void genUmlLine(StringBuilder b, UmlEdge element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<umldi:ownedUmlDiagramElement xmi:type=\"umldi:UMLEdge\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\"");
+
+        b.append(" modelElement=\"");
+        b.append(element.getSubject().getId());
+        b.append("\">");
+        b.append(lineEnd(level));
+
+        if (element.getWayPoints().size() >= 2) {
+            String cpad = getPadding(level + 1);
+            for (java.awt.Point point : element.getWayPoints()) {
+                b.append(cpad);
+                b.append("<umldi:waypoint xmi:type=\"di:Point\" x=\"");
+                b.append(point.x);
+                b.append(".0\" y=\"");
+                b.append(point.y);
+                b.append(".0\"/>");
+                b.append(lineEnd(level));
+            }
+        }
+
+        b.append(pad);
+        b.append("</umldi:ownedUmlDiagramElement>");
+        b.append(lineEnd(level));
     }
 
     private void genUmlShape(StringBuilder b, UmlShape element, int level) {
@@ -352,9 +485,22 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         b.append(element.getVisibility().toString());
         b.append("\"");
 
-        if (element.hasOwnedElements()) {
+        boolean hasFeatures = (element instanceof UmlClassifier && !((UmlClassifier) element).getFeatures().isEmpty());
+        boolean hasNestedTypes = (element instanceof UmlClassifier && !((UmlClassifier) element).getDataTypes().isEmpty());
+
+        if (element.hasOwnedElements() || hasFeatures || hasNestedTypes || !element.getOwnedComments().isEmpty()) {
             b.append(">");
             b.append(lineEnd(level));
+
+            if (element instanceof UmlClassifier) {
+                UmlClassifier classifier = (UmlClassifier) element;
+                for (UmlFeature feature : classifier.getFeatures()) {
+                    genFeature(b, feature, (level > -1) ? level + 1 : level);
+                }
+                for (UmlDataType type : classifier.getDataTypes()) {
+                    genPackagedElements(b, type, (level > -1) ? level + 1 : level);
+                }
+            }
 
             for (UmlNamedElement child : element.getOwnedElements()) {
                 if (child.hasOwnedElements())
@@ -379,6 +525,56 @@ public class Xmi25Marshaler extends AbstractMarshaler {
         // Check to see if we need to register a stereotype
         checkForStereotype(element);
 
+    }
+
+    private void genFeature(StringBuilder b, UmlFeature element, int level) {
+        if (element instanceof UmlProperty) {
+            genProperty(b, (UmlProperty) element, level);
+        } else if (element instanceof UmlOperation) {
+            genOperation(b, (UmlOperation) element, level);
+        }
+    }
+
+    private void genProperty(StringBuilder b, UmlProperty element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<ownedAttribute xmi:type=\"uml:Property\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\" name=\"");
+        b.append(element.getName());
+        b.append("\" visibility=\"");
+        b.append(element.getVisibility().toString());
+        b.append("\" isStatic=\"");
+        b.append(element.isStatic() ? "true" : "false");
+        b.append("\" isReadOnly=\"");
+        b.append(element.isReadOnly() ? "true" : "false");
+        b.append("\"");
+
+        if (StringUtil.isNotEmpty(element.getTypeId())) {
+            b.append(" type=\"");
+            b.append(element.getTypeId());
+            b.append("\"");
+        }
+
+        b.append("/>");
+        b.append(lineEnd(level));
+    }
+
+    private void genOperation(StringBuilder b, UmlOperation element, int level) {
+        String pad = getPadding(level);
+        b.append(pad);
+        b.append("<ownedOperation xmi:type=\"uml:Operation\" xmi:id=\"");
+        b.append(element.getId());
+        b.append("\" name=\"");
+        b.append(element.getName());
+        b.append("\" visibility=\"");
+        b.append(element.getVisibility().toString());
+        b.append("\" isStatic=\"");
+        b.append(element.isStatic() ? "true" : "false");
+        b.append("\" isQuery=\"");
+        b.append(element.isQuery() ? "true" : "false");
+        b.append("\"/>");
+        b.append(lineEnd(level));
     }
 
     private void genComment(StringBuilder b, UmlComment comment, int level) {
