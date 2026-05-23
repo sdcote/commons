@@ -59,6 +59,11 @@ import coyote.commons.snap.SnapJob;
  *  CFG_HOME - usually a subdirectory named "cfg" under the APP_HOME directory.
  */
 public class BootStrap {
+
+    static{
+        Log.initConsoleLogging();
+    }
+
     private static Config configuration = null;
     private static String cfgLoc = null;
     private static URI cfgUri = null;
@@ -81,7 +86,6 @@ public class BootStrap {
                 e.printStackTrace(new java.io.PrintWriter(out, true));
                 String message = "UNCAUGHT THREAD EXCEPTION: " + t.getName() + ": " + e.getMessage() + "\n" + out.toString();
                 Log.fatal(message);
-                System.err.println(message);
             }
         });
     }
@@ -120,11 +124,11 @@ public class BootStrap {
             try {
                 job.start();
             } catch (Exception e) {
-                System.err.println("The job threw an exception and terminated: " + e.getLocalizedMessage() + " - " + ExceptionUtil.stackTrace(e));
+                Log.fatal("The job threw an exception and terminated: " + e.getLocalizedMessage() + " - " + ExceptionUtil.stackTrace(e));
                 System.exit(3);
             }
         } else {
-            System.err.println("No job was created.");
+            Log.fatal("No job was created.");
             System.exit(2);
         }
 
@@ -173,20 +177,20 @@ public class BootStrap {
                         retval.setCommandLineArguments(args);
                         retval.configure(cfgFrame);
                     } catch (ConfigurationException e) {
-                        System.err.println(String.format("Could not configure job %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                        Log.fatal(String.format("Could not configure job %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         System.exit(6);
                     }
                 } else {
-                    System.err.println(String.format("Class is not a job: %s", className));
+                    Log.fatal(String.format("Class is not a job: %s", className));
                     System.exit(5);
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
                      | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
+                Log.fatal("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
                 System.exit(4);
             }
         } else {
-            System.err.println("Empty configuration.");
+            Log.warn("Empty configuration.");
         }
         return retval;
     }
@@ -232,7 +236,7 @@ public class BootStrap {
 
         // Make sure we have a configuration
         if (StringUtil.isBlank(cfgLoc)) {
-                        System.err.println("No configuration location specified.");
+            Log.fatal("No configuration location specified.");
             System.exit(8);
         }
 
@@ -275,13 +279,13 @@ public class BootStrap {
                 // make sure it is a directory
                 if (homeDir.isDirectory()) {
                     if (!homeDir.canRead()) {
-                        System.out.println("The app.home property specified an un-readable (permissions) directory: " + appDir);
+                        Log.warn("The app.home property specified an un-readable (permissions) directory: " + appDir);
                     }
                 } else {
-                    System.out.println("The app.home property does not specify a directory: " + appDir);
+                    Log.warn("The app.home property does not specify a directory: " + appDir);
                 }
             } else {
-                System.out.println("The app.home property does not exist: " + appDir);
+                Log.notice("The app.home property does not exist: " + appDir);
             }
 
         }
