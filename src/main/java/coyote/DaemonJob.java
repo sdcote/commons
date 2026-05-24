@@ -19,9 +19,16 @@ import coyote.commons.job.CronJob;
 import coyote.commons.job.ScheduledJob;
 import coyote.commons.job.Scheduler;
 import coyote.commons.log.Log;
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Response;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.auth.GenericAuthProvider;
+import coyote.commons.network.http.responder.ClassloadingResponder;
 import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.network.http.responder.Resource;
+import coyote.commons.network.http.responder.Responder;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.daemonjob.CommandResponder;
 import coyote.commons.rtw.daemonjob.StatusResponder;
@@ -29,10 +36,12 @@ import coyote.commons.snap.AbstractSnapJob;
 import coyote.commons.snap.SnapJob;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -62,11 +71,13 @@ public class DaemonJob extends AbstractSnapJob {
      */
     private final Scheduler scheduler = new Scheduler();
 
+
     /**
      * The HTTP server used for remote monitoring and control.
      * This may be null if no server configuration is provided.
      */
     private HTTPDRouter server = null;
+
 
     /**
      * Configures this DaemonJob instance using the provided configuration.
@@ -125,6 +136,7 @@ public class DaemonJob extends AbstractSnapJob {
         }
     }
 
+
     /**
      * Parses a schedule configuration into a CronEntry.
      *
@@ -159,6 +171,7 @@ public class DaemonJob extends AbstractSnapJob {
         }
         return cronentry;
     }
+
 
     /**
      * Loads and initializes a job based on its configuration.
@@ -318,8 +331,10 @@ public class DaemonJob extends AbstractSnapJob {
 
             // Set up routes
             server.addDefaultRoutes();
+            server.addRoute("/", RedirectResponder.class, "daemonjob/index.html");
             server.addRoute("/api/command", CommandResponder.class, this);
             server.addRoute("/api/status", StatusResponder.class, this);
+            server.addRoute("daemonjob/(.)+", ClassloadingResponder.class, "daemonjob");
 
             // Configure IP Access Control List
             if (serverConfig.containsIgnoreCase(ConfigTag.IPACL)) {
@@ -376,6 +391,7 @@ public class DaemonJob extends AbstractSnapJob {
         // If we are here, the scheduler has completed and is terminated. (i.e., it was shut down)
     }
 
+
     /**
      * Shuts down the DaemonJob and all its components.
      *
@@ -392,6 +408,42 @@ public class DaemonJob extends AbstractSnapJob {
             Log.info("HTTP listener stopped");
         }
     }
+
+
+    /**
+     * A simple responder that redirects to another URI.
+     */
+    public static class RedirectResponder implements Responder {
+
+        @Override
+        public Response get(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            String target = resource.initParameter(String.class);
+            Response response = Response.createFixedLengthResponse(Status.REDIRECT, MimeType.HTML.getType(), "Redirecting to " + target);
+            response.addHeader("Location", target);
+            return response;
+        }
+
+        @Override
+        public Response post(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response put(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response delete(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response other(String method, Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+    }
+
 
     /**
      * A wrapper for SnapJob instances to allow them to be executed by the scheduler.
@@ -421,4 +473,5 @@ public class DaemonJob extends AbstractSnapJob {
             }
         }
     }
+
 }

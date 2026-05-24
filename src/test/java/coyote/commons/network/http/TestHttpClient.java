@@ -151,6 +151,7 @@ public class TestHttpClient {
       final URL obj = new URL( url );
       final HttpURLConnection con = (HttpURLConnection)obj.openConnection();
       con.setRequestMethod( method );
+      con.setInstanceFollowRedirects(false);
       con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
 
       final int responseCode = con.getResponseCode();
@@ -167,6 +168,18 @@ public class TestHttpClient {
 
         testResponse.setData( response.toString() );
         testResponse.setComplete( true );
+      } else {
+        testResponse.setStatus( con.getResponseCode() );
+        final BufferedReader in = new BufferedReader( new InputStreamReader( con.getErrorStream() ) );
+        String inputLine;
+        final StringBuffer response = new StringBuffer();
+        if (in != null) {
+            while ( ( inputLine = in.readLine() ) != null ) {
+              response.append( inputLine );
+            }
+            in.close();
+            testResponse.setData( response.toString() );
+        }
       }
     } catch ( final Exception e ) {
       testResponse.setException( e );

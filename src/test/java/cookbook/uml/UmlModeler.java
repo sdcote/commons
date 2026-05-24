@@ -157,8 +157,8 @@ public class UmlModeler {
 
         // ToDo: We don't represent lines yet
         UmlEdge line = new UmlEdge(dependency);
-        line.addWayPoint(220,140);
-        line.addWayPoint(300,140);
+        //line.addWayPoint(220,140);
+        //line.addWayPoint(300,140);
         diagram.add(line);
 
         return model;

@@ -49,7 +49,7 @@ public class SimpleWebServer extends HTTPD {
 
   /**
    * Starts as a stand-alone file server and waits for Enter.
-   * <p>Parameters as as follows
+   * <p>Parameters as follows
    * <li>-h or --host</li>
    * <li>-p or --port 8080 is the default</li>
    * <li>-q or --quiet</li>
