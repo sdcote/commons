@@ -6,6 +6,10 @@ import java.util.Iterator;
  * Utility class to format the contents of a StatBoard into a human-readable string.
  */
 public class StatBoardFormatter {
+  private StatBoardFormatter() {
+    /* This utility class should not be instantiated */
+  }
+
 
   private static final String LINE_SEP = System.getProperty("line.separator");
 
@@ -78,6 +82,65 @@ public class StatBoardFormatter {
     }
 
     return b.toString();
+  }
+
+  /**
+   * Formats the given StatBoard into an alternate human-readable string.
+   *
+   * @param statBoard the StatBoard to format
+   * @return a human-readable string representation of the StatBoard's state and contents.
+   */
+  public static String format2(StatBoard statBoard) {
+    if (statBoard == null) {
+      return "NULL StatBoard";
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("StatBoard: ").append(statBoard.getId()).append("\n");
+    sb.append("Uptime: ").append(statBoard.getUptimeString()).append("\n");
+
+    // Format Timers
+    Iterator<TimingMaster> it = statBoard.getTimerIterator();
+    if (it.hasNext()) {
+      sb.append("\nTimers:\n");
+      sb.append(String.format("%-40s %10s %15s %15s\n", "Name", "Hits", "Total Time", "Avg Time"));
+      sb.append("-------------------------------------------------------------------------------------\n");
+      while (it.hasNext()) {
+        TimingMaster tm = it.next();
+        // TimingMaster.toString() usually provides some info, but we can customize it
+        sb.append(String.format("%-40s %10d %15d %15.2f\n",
+                tm.getName(),
+                tm.getGloballyActive(), // This might be the hit count depending on implementation
+                tm.getAccrued(),
+                (tm.getGloballyActive() > 0 ? (double)tm.getAccrued() / tm.getGloballyActive() : 0)));
+      }
+    }
+
+    // Format Counters
+    Iterator<Counter> cit = statBoard.getCounterIterator();
+    if (cit.hasNext()) {
+      sb.append("\nCounters:\n");
+      sb.append(String.format("%-40s %15s\n", "Name", "Value"));
+      sb.append("-------------------------------------------------------------\n");
+      while (cit.hasNext()) {
+        Counter c = cit.next();
+        sb.append(String.format("%-40s %15d\n", c.getName(), c.getValue()));
+      }
+    }
+
+    // Format Gauges
+    Iterator<Gauge> git = statBoard.getGaugeIterator();
+    if (git.hasNext()) {
+      sb.append("\nGauges:\n");
+      sb.append(String.format("%-40s %15s %15s\n", "Name", "Total", "Avg/sec"));
+      sb.append("----------------------------------------------------------------------------\n");
+      while (git.hasNext()) {
+        Gauge g = git.next();
+        sb.append(String.format("%-40s %15d %15.2f\n", g.getName(), g.getTotal(), g.getValuePerSecond()));
+      }
+    }
+
+    return sb.toString();
   }
 
 }

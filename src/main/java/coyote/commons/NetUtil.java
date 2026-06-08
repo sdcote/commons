@@ -21,9 +21,12 @@ import java.net.PasswordAuthentication;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import coyote.commons.log.Log;
 import coyote.commons.network.IpAddress;
 import coyote.commons.network.IpNetwork;
 
@@ -40,7 +43,7 @@ public class NetUtil {
 
   final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-  /** System property which specifies the user name for the proxy server */
+  /** System property which specifies the username for the proxy server */
   public static final String PROXY_USER = "http.proxyUser";
 
   /** System property which specifies the user password for the proxy server */
@@ -49,7 +52,19 @@ public class NetUtil {
   /** System property which specifies the proxy server host name */
   public static final String PROXY_HOST = "http.proxyHost";
 
+  private static final List<IpNetwork> NON_ROUTABLE_NETWORKS = new ArrayList<>();
 
+  static{
+    try {
+      NON_ROUTABLE_NETWORKS.add(new IpNetwork("10.0.0.0/8"));
+      NON_ROUTABLE_NETWORKS.add(new IpNetwork("172.16.0.0/12"));
+      NON_ROUTABLE_NETWORKS.add(new IpNetwork("192.168.0.0/16"));
+      NON_ROUTABLE_NETWORKS.add(new IpNetwork("169.254.0.0/16"));
+      NON_ROUTABLE_NETWORKS.add(new IpNetwork("127.0.0.0/8"));
+    } catch (Exception e) {
+      Log.error("Failed to initialize non-routable networks: " + e.getMessage());
+    }
+  }
 
 
   /**
@@ -58,7 +73,24 @@ public class NetUtil {
   private NetUtil() {}
 
 
-
+  /**
+   * Checks if the given IP address is within one of the non-routable ranges.
+   *
+   * @param ip the IP address to check
+   * @return true if the IP is in a non-routable range, false otherwise.
+   */
+  public static boolean isNonRoutable(String ip) {
+    if (ip == null || ip.isEmpty()) {
+      return false;
+    }
+    for (IpNetwork network : NON_ROUTABLE_NETWORKS) {
+      if (network.contains(ip)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
 
   /**
    * Check if system properties have data needed for loading an Authenticator

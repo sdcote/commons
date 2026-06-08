@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
@@ -102,6 +104,37 @@ public class NetUtilTest {
   }
 
 
+
+
+  @Test
+  public void testIsNonRoutable() {
+    // RFC 1918 Private ranges
+    assertTrue(NetUtil.isNonRoutable("10.0.0.1"));
+    assertTrue(NetUtil.isNonRoutable("10.255.255.255"));
+    assertTrue(NetUtil.isNonRoutable("172.16.0.1"));
+    assertTrue(NetUtil.isNonRoutable("172.31.255.255"));
+    assertTrue(NetUtil.isNonRoutable("192.168.0.1"));
+    assertTrue(NetUtil.isNonRoutable("192.168.255.255"));
+
+    // Link-local range
+    assertTrue(NetUtil.isNonRoutable("169.254.0.1"));
+    assertTrue(NetUtil.isNonRoutable("169.254.255.255"));
+
+    // Loopback range
+    assertTrue(NetUtil.isNonRoutable("127.0.0.1"));
+    assertTrue(NetUtil.isNonRoutable("127.255.255.255"));
+
+    // Routable (public) IP addresses
+    assertFalse(NetUtil.isNonRoutable("8.8.8.8"));
+    assertFalse(NetUtil.isNonRoutable("1.1.1.1"));
+    assertFalse(NetUtil.isNonRoutable("172.15.255.255"));
+    assertFalse(NetUtil.isNonRoutable("172.32.0.0"));
+
+    // Edge cases
+    assertFalse(NetUtil.isNonRoutable(null));
+    assertFalse(NetUtil.isNonRoutable(""));
+    assertFalse(NetUtil.isNonRoutable("invalid-ip"));
+  }
 
 
   /**
