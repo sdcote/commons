@@ -1249,6 +1249,30 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
     }
 
 
+    @Override
+    public List<TransformTask> getPreProcessTasks() {
+        return preProcesses;
+    }
+
+
+    @Override
+    public List<TransformTask> getPostProcessTasks() {
+        return postProcesses;
+    }
+
+
+    @Override
+    public List<FrameTransform> getTransformers() {
+        return transformers;
+    }
+
+
+    @Override
+    public List<FrameWriter> getWriters() {
+        return writers;
+    }
+
+
     /**
      *
      */

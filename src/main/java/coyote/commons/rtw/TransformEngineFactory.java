@@ -152,99 +152,85 @@ public class TransformEngineFactory {
                     if (field.isFrame()) {
                         configReader((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid reader configuration section");
+                        throw new RTWConfigurationException("Invalid reader configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.VAULT, field.getName())) {
                     if (field.isFrame()) {
                         configVault((DataFrame) field.getObjectValue());
                     } else {
-                        Log.error("Invalid vault configuration section");
+                        throw new RTWConfigurationException("Invalid vault configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.PRELOAD, field.getName())) {
                     if (field.isFrame()) {
                         configPreloader((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid preloader configuration section");
+                        throw new RTWConfigurationException("Invalid preloader configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.FILTER, field.getName())) {
                     if (field.isFrame()) {
                         configFilters((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid filters configuration section");
+                        throw new RTWConfigurationException("Invalid filters configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.MAPPER, field.getName())) {
                     if (field.isFrame()) {
                         configMapper((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid mapper configuration section");
+                        throw new RTWConfigurationException("Invalid mapper configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.AGGREGATOR, field.getName())) {
                     if (field.isFrame()) {
                         configAggregator((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid aggregator configuration section");
+                        throw new RTWConfigurationException("Invalid aggregator configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.WRITER, field.getName())) {
                     if (field.isFrame()) {
                         configWriter((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid writer configuration section");
+                        throw new RTWConfigurationException("Invalid writer configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.VALIDATE, field.getName())) {
                     if (field.isFrame()) {
                         configValidation((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid validate configuration section");
+                        throw new RTWConfigurationException("Invalid validate configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.TRANSFORM, field.getName())) {
                     if (field.isFrame()) {
                         configTransformer((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid transform configuration section");
+                        throw new RTWConfigurationException("Invalid transform configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.PREPROCESS, field.getName()) || StringUtil.equalsIgnoreCase(ConfigTag.TASK, field.getName())) {
                     if (field.isFrame()) {
                         configPreProcess((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid pre-process configuration section");
+                        throw new RTWConfigurationException("Invalid pre-process configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.POSTPROCESS, field.getName())) {
                     if (field.isFrame()) {
                         configPostProcess((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid post-process configuration section");
+                        throw new RTWConfigurationException("Invalid post-process configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.CONTEXT, field.getName())) {
                     if (field.isFrame()) {
                         configContext(new Config((DataFrame) field.getObjectValue()), retval);
                     } else {
-                        Log.error("Invalid context configuration section");
+                        throw new RTWConfigurationException("Invalid context configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.CLASS, field.getName())) {
                     // ignore the CLASS field...it is used by the Loader, but not by us.
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.LISTENER, field.getName())) {
                     if (field.isFrame()) {
-                        DataFrame cfgFrame = (DataFrame) field.getObjectValue();
-                        if (cfgFrame != null) {
-                            // there can be many listeners
-                            if (cfgFrame.isArray()) {
-                                for (DataField cfgfield : cfgFrame.getFields()) {
-                                    if (cfgfield.isFrame()) {
-                                        configListener((DataFrame) cfgfield.getObjectValue(), retval);
-                                    } else {
-                                        Log.error("Invalid listener configuration section");
-                                    }
-                                }
-                            } else {
-                                configListener(cfgFrame, retval);
-                            }
-                        } // null / empty check
+                        configListener((DataFrame) field.getObjectValue(), retval);
                     } else {
-                        Log.error("Invalid listener configuration section");
+                        throw new RTWConfigurationException("Invalid listener configuration section");
                     }
                 } else if (StringUtil.equalsIgnoreCase(ConfigTag.NAME, field.getName())) {
                     if (field.isFrame()) {
-                        Log.error("Invalid Name value - expecting simple type (string)");
+                        throw new RTWConfigurationException("Invalid Name value - expecting simple type (string)");
                     } else {
                         retval.setName(field.getStringValue());
                     }
@@ -293,13 +279,11 @@ public class TransformEngineFactory {
             try {
                 Vault vault = builder.build();
                 Template.putStatic(VaultProxy.LOOKUP_TAG, new VaultProxy(vault));
-            } catch (ConfigurationException e) {
-                Log.error("Vault configuration exception", e);
-            } catch (VaultException e) {
-                Log.error(String.format("Could not open vault: %s", e.getMessage()), e);
+            } catch (ConfigurationException | VaultException e) {
+                throw new RTWConfigurationException("Vault configuration error: " + e.getMessage(), e);
             }
         } else {
-            Log.error("Missing vault configuration. No vault created.");
+            throw new RTWConfigurationException("Missing vault configuration.");
         }
     }
 
@@ -317,8 +301,8 @@ public class TransformEngineFactory {
             if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
                 className = READER_PKG + "." + className;
                 cfg.put(ConfigTag.CLASS, className);
-            } else {
-                Log.error("NO Reader Class in configuration: " + cfg);
+            } else if (className == null) {
+                throw new RTWConfigurationException("NO Reader Class in preloader configuration: " + cfg);
             }
             Object object = RTW.createComponent(cfg);
             if (object != null) {
@@ -326,10 +310,10 @@ public class TransformEngineFactory {
                     engine.setPreloader((FrameReader) object);
                     Log.debug(String.format("EngineFactory created preloader %s", object.getClass().getName()));
                 } else {
-                    Log.error(String.format("Specified class (%s) is not a preloader", object.getClass().getName()));
+                    throw new RTWConfigurationException(String.format("Specified class (%s) is not a preloader", object.getClass().getName()));
                 }
             } else {
-                Log.error(String.format("Could not create an instance of specified preloader %s", className));
+                throw new RTWConfigurationException(String.format("Could not create an instance of specified preloader %s", className));
             }
         } // cfg !null
     }
@@ -343,24 +327,56 @@ public class TransformEngineFactory {
      */
     private static void configAggregator(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            // Make sure the class is fully qualified
-            String className = findString(ConfigTag.CLASS, cfg);
-            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                className = AGGREGATOR_PKG + "." + className;
-                cfg.put(ConfigTag.CLASS, className);
-            }
-            Object object = RTW.createComponent(cfg);
-            if (object != null) {
-                if (object instanceof FrameAggregator) {
-                    engine.addAggregator((FrameAggregator) object);
-                    Log.debug(String.format("EngineFactory created aggregator %s", object.getClass().getName()));
-                } else {
-                    Log.error(String.format("Specified class (%s) is not an aggregator", object.getClass().getName()));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame aggregatorConfig = (DataFrame) field.getObjectValue();
+                        String className = aggregatorConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Aggregator configuration array element does not contain a class attribute");
+                        } else {
+                            createAggregator(className, aggregatorConfig, engine);
+                        }
+                    } else {
+                        throw new RTWConfigurationException(String.format("Aggregator configuration array element is not a section: %s", field.getStringValue()));
+                    }
                 }
             } else {
-                Log.error(String.format("Could not create an instance of specified aggregator %s", className));
+                String className = cfg.getAsString(ConfigTag.CLASS);
+                if (StringUtil.isNotBlank(className)) {
+                    createAggregator(className, cfg, engine);
+                } else {
+                    for (DataField field : cfg.getFields()) {
+                        className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame aggregatorConfig = (DataFrame) field.getObjectValue();
+                        createAggregator(className, aggregatorConfig, engine);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Aggregator configuration not a section: %s", field.getStringValue()));
+                    }
+                    } // for each aggregator
+                }
             }
         } // cfg !null
+    }
+
+
+    private static void createAggregator(String className, DataFrame aggregatorConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = AGGREGATOR_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, aggregatorConfig);
+        if (object != null) {
+            if (object instanceof FrameAggregator) {
+                engine.addAggregator((FrameAggregator) object);
+                Log.debug(String.format("EngineFactory created aggregator %s with configuration: %s", object.getClass().getName(), aggregatorConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) is not an aggregator", object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create an instance of specified aggregator %s", className));
+        }
     }
 
 
@@ -372,31 +388,51 @@ public class TransformEngineFactory {
      */
     private static void configValidation(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = VALIDATOR_PKG + "." + className;
-                }
-
-                // All tasks must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame validatorConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, validatorConfig);
-                    if (object != null) {
-                        if (object instanceof FrameValidator) {
-                            engine.addValidator((FrameValidator) object);
-                            Log.debug(String.format("EngineFactory created validator %s with configuration: %s", object.getClass().getName(), validatorConfig));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame validatorConfig = (DataFrame) field.getObjectValue();
+                        String className = validatorConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Validator configuration array element does not contain a class attribute");
                         } else {
-                            Log.error(String.format("Specified class (%s) is not a validator", field.getName()));
+                            createValidator(className, validatorConfig, engine);
                         }
                     } else {
-                        Log.error(String.format("Could not create instance of specified validator: %s", className));
+                        throw new RTWConfigurationException(String.format("Validator configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Frame validator did not contain valid configuration: %s", field.getStringValue()));
                 }
-            } // for each validator
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame validatorConfig = (DataFrame) field.getObjectValue();
+                        createValidator(className, validatorConfig, engine);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Frame validator configuration not a section: %s", field.getStringValue()));
+                    }
+                } // for each validator
+            }
         } // cfg !null
+    }
+
+
+    private static void createValidator(String className, DataFrame validatorConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = VALIDATOR_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, validatorConfig);
+        if (object != null) {
+            if (object instanceof FrameValidator) {
+                engine.addValidator((FrameValidator) object);
+                Log.debug(String.format("EngineFactory created validator %s with configuration: %s", object.getClass().getName(), validatorConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) is not a validator", object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create instance of specified validator: %s", className));
+        }
     }
 
 
@@ -412,121 +448,188 @@ public class TransformEngineFactory {
      */
     private static void configTransformer(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = TRANSFORM_PKG + "." + className;
-                }
-
-                // All tasks must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame transformerConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, transformerConfig);
-                    if (object != null) {
-                        if (object instanceof FrameTransform) {
-                            engine.addTransformer((FrameTransform) object);
-                            Log.debug(String.format("EngineFactory created frame transformer %s with configuration: %s", object.getClass().getName(), transformerConfig));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame transformerConfig = (DataFrame) field.getObjectValue();
+                        String className = transformerConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Transformer configuration array element does not contain a class attribute");
                         } else {
-                            Log.error(String.format("Specified class (%s) was not a transformer", field.getName()));
+                            createTransformer(className, transformerConfig, engine);
                         }
                     } else {
-                        Log.error(String.format("Could not create an instance of specified transformer: %s", className));
+                        throw new RTWConfigurationException(String.format("Transformer configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Transformer task did not contain valid configuration: %s", field.getStringValue()));
                 }
-            } // for each transformer
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame transformerConfig = (DataFrame) field.getObjectValue();
+                        createTransformer(className, transformerConfig, engine);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Transformer task did not contain valid configuration: %s", field.getStringValue()));
+                    }
+                } // for each transformer
+            }
         } // cfg !null
+    }
+
+
+    private static void createTransformer(String className, DataFrame transformerConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = TRANSFORM_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, transformerConfig);
+        if (object != null) {
+            if (object instanceof FrameTransform) {
+                engine.addTransformer((FrameTransform) object);
+                Log.debug(String.format("EngineFactory created frame transformer %s with configuration: %s", object.getClass().getName(), transformerConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) was not a transformer", className));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create an instance of specified transformer: %s", className));
+        }
     }
 
 
     private static void configFilters(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = FILTER_PKG + "." + className;
-                }
-
-                // All filters must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame taskConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, taskConfig);
-                    if (object != null) {
-                        if (object instanceof FrameFilter) {
-                            int seq = engine.addFilter((FrameFilter) object);
-                            Log.debug(String.format("EngineFactory created filter %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, cfg));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame filterConfig = (DataFrame) field.getObjectValue();
+                        String className = filterConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Filter configuration array element does not contain a class attribute");
                         } else {
-                            Log.error(String.format("Specified class (%s) is not a filter", object.getClass().getName()));
+                            createFilter(className, filterConfig, engine);
                         }
                     } else {
-                        Log.error(String.format("Could not create filter: %s", className));
+                        throw new RTWConfigurationException(String.format("Filter configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Filter configuration not a section: %s", field.getStringValue()));
                 }
-            } // for each task
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame filterConfig = (DataFrame) field.getObjectValue();
+                        createFilter(className, filterConfig, engine);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Filter configuration not a section: %s", field.getStringValue()));
+                    }
+                } // for each task
+            }
         } // cfg !null
+    }
+
+
+    private static void createFilter(String className, DataFrame filterConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = FILTER_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, filterConfig);
+        if (object != null) {
+            if (object instanceof FrameFilter) {
+                int seq = engine.addFilter((FrameFilter) object);
+                Log.debug(String.format("EngineFactory created filter %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, filterConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) is not a filter", object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create filter: %s", className));
+        }
     }
 
 
     private static void configPreProcess(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = TASK_PKG + "." + className;
-                }
-
-                // All tasks must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame taskConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, taskConfig);
-                    if (object != null) {
-                        if (object instanceof TransformTask) {
-                            int seq = engine.addPreProcessTask((TransformTask) object);
-                            Log.debug(String.format("EngineFactory created preprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, taskConfig));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame taskConfig = (DataFrame) field.getObjectValue();
+                        String className = taskConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Preprocess task configuration array element does not contain a class attribute");
                         } else {
-                            Log.error(String.format("Preprocess class (%s) is not a transform task", object.getClass().getName()));
+                            createTask(className, taskConfig, engine, true);
                         }
                     } else {
-                        Log.error(String.format("Could not create preprocess task: %s", className));
+                        throw new RTWConfigurationException(String.format("Preprocess task configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Preprocess task configuration not a section: %s", field.getStringValue()));
                 }
-            } // for each task
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame taskConfig = (DataFrame) field.getObjectValue();
+                        createTask(className, taskConfig, engine, true);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Preprocess task configuration not a section: %s", field.getStringValue()));
+                    }
+                } // for each task
+            }
         } // cfg !null
     }
 
 
     private static void configPostProcess(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = TASK_PKG + "." + className;
-                }
-
-                // All tasks must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame taskConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, taskConfig);
-                    if (object != null) {
-                        if (object instanceof TransformTask) {
-                            int seq = engine.addPostProcessTask((TransformTask) object);
-                            Log.debug(String.format("EngineFactory created postprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, cfg));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame taskConfig = (DataFrame) field.getObjectValue();
+                        String className = taskConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Post-process task configuration array element does not contain a class attribute");
                         } else {
-                            Log.error("Specified post-process class was not a transform task");
+                            createTask(className, taskConfig, engine, false);
                         }
                     } else {
-                        Log.error(String.format("Could not create an instance of the specified post-process task: %s", className));
+                        throw new RTWConfigurationException(String.format("Post-process task configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Post-process task did not contain a configuration, only scalar: %s", field.getStringValue()));
                 }
-            } // for each task
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame taskConfig = (DataFrame) field.getObjectValue();
+                        createTask(className, taskConfig, engine, false);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Post-process task configuration not a section: %s", field.getStringValue()));
+                    }
+                } // for each task
+            }
         } // cfg !null
+    }
+
+
+    private static void createTask(String className, DataFrame taskConfig, TransformEngine engine, boolean isPreProcess) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = TASK_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, taskConfig);
+        if (object != null) {
+            if (object instanceof TransformTask) {
+                int seq;
+                if (isPreProcess) {
+                    seq = engine.addPreProcessTask((TransformTask) object);
+                    Log.debug(String.format("EngineFactory created preprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, taskConfig));
+                } else {
+                    seq = engine.addPostProcessTask((TransformTask) object);
+                    Log.debug(String.format("EngineFactory created postprocess task %s (seq: %d) with configuration: %s", object.getClass().getName(), seq, taskConfig));
+                }
+            } else {
+                throw new RTWConfigurationException(String.format("%s class (%s) is not a transform task", (isPreProcess ? "Preprocess" : "Post-process"), object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create %s task: %s", (isPreProcess ? "preprocess" : "post-process"), className));
+        }
     }
 
 
@@ -573,14 +676,14 @@ public class TransformEngineFactory {
                                 context.setEngine(engine);
                                 Log.debug(String.format("EngineFactory created custom context %s", context.getClass().getName()));
                             } catch (Exception e) {
-                                Log.error(String.format("Could not configure specified context %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                                throw new RTWConfigurationException(String.format("Could not configure specified context %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()), e);
                             }
                         } else {
-                            Log.warn(String.format("Specified context (%s) is not a transform context", className));
+                            throw new RTWConfigurationException(String.format("Specified context (%s) is not a transform context", className));
                         }
                     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException |
                              IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        Log.error(String.format("Could not create instance of specified context %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
+                        throw new RTWConfigurationException(String.format("Could not create instance of specified context %s - %s: %s", className, e.getClass().getName(), e.getMessage()), e);
                     }
                 } else {
                     // this is a regular, in-memory context with these settings
@@ -600,24 +703,56 @@ public class TransformEngineFactory {
 
     private static void configWriter(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            // Make sure the class is fully qualified
-            String className = findString(ConfigTag.CLASS, cfg);
-            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                className = WRITER_PKG + "." + className;
-                cfg.put(ConfigTag.CLASS, className);
-            }
-            Object object = RTW.createComponent(cfg);
-            if (object != null) {
-                if (object instanceof FrameWriter) {
-                    engine.addWriter((FrameWriter) object);
-                    Log.debug(String.format("EngineFactory created writer %s", object.getClass().getName()));
-                } else {
-                    Log.error(String.format("Specified class (%s) is not a writer", object.getClass().getName()));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame writerConfig = (DataFrame) field.getObjectValue();
+                        String className = writerConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Writer configuration array element does not contain a class attribute");
+                        } else {
+                            createWriter(className, writerConfig, engine);
+                        }
+                    } else {
+                        throw new RTWConfigurationException(String.format("Writer configuration array element is not a section: %s", field.getStringValue()));
+                    }
                 }
             } else {
-                Log.error(String.format("Could not create instance of specified writer: %s", className));
+                String className = cfg.getAsString(ConfigTag.CLASS);
+                if (StringUtil.isNotBlank(className)) {
+                    createWriter(className, cfg, engine);
+                } else {
+                    for (DataField field : cfg.getFields()) {
+                        className = field.getName();
+                        if (field.isFrame()) {
+                            DataFrame writerConfig = (DataFrame) field.getObjectValue();
+                            createWriter(className, writerConfig, engine);
+                        } else {
+                            throw new RTWConfigurationException(String.format("Writer configuration not a section: %s", field.getStringValue()));
+                        }
+                    } // for each writer
+                }
             }
         } // cfg !null
+    }
+
+
+    private static void createWriter(String className, DataFrame writerConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = WRITER_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, writerConfig);
+        if (object != null) {
+            if (object instanceof FrameWriter) {
+                engine.addWriter((FrameWriter) object);
+                Log.debug(String.format("EngineFactory created writer %s with configuration: %s", object.getClass().getName(), writerConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) is not a writer", object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create instance of specified writer: %s", className));
+        }
     }
 
 
@@ -642,10 +777,10 @@ public class TransformEngineFactory {
                     engine.setMapper((FrameMapper) object);
                     Log.debug(String.format("EngineFactory created mapper %s", object.getClass().getName()));
                 } else {
-                    Log.error(String.format("Specified class (%s) is not a frame mapper", object.getClass().getName()));
+                    throw new RTWConfigurationException(String.format("Specified class (%s) is not a frame mapper", object.getClass().getName()));
                 }
             } else {
-                Log.error(String.format("Could not create specified mapper: %s", className));
+                throw new RTWConfigurationException(String.format("Could not create specified mapper: %s", className));
             }
         } // cfg !null
     }
@@ -658,8 +793,8 @@ public class TransformEngineFactory {
             if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
                 className = READER_PKG + "." + className;
                 cfg.put(ConfigTag.CLASS, className);
-            } else {
-                Log.error("NO Reader Class in configuration: " + cfg);
+            } else if (className == null) {
+                throw new RTWConfigurationException("NO Reader Class in reader configuration: " + cfg);
             }
             Object object = RTW.createComponent(cfg);
             if (object != null) {
@@ -667,10 +802,10 @@ public class TransformEngineFactory {
                     engine.setReader((FrameReader) object);
                     Log.debug(String.format("EngineFactory created reader %s", object.getClass().getName()));
                 } else {
-                    Log.error(String.format("Specified class (%s) is not a reader", object.getClass().getName()));
+                    throw new RTWConfigurationException(String.format("Specified class (%s) is not a reader", object.getClass().getName()));
                 }
             } else {
-                Log.error(String.format("Could not create instance of specified reader: %s", className));
+                throw new RTWConfigurationException(String.format("Could not create instance of specified reader: %s", className));
             }
         } // cfg !null
     }
@@ -689,31 +824,51 @@ public class TransformEngineFactory {
      */
     private static void configListener(DataFrame cfg, TransformEngine engine) {
         if (cfg != null) {
-            for (DataField field : cfg.getFields()) {
-                String className = field.getName();
-                if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                    className = LISTENER_PKG + "." + className;
-                }
-
-                // All listeners must have an object(frame) as its value.
-                if (field.isFrame()) {
-                    DataFrame listenerConfig = (DataFrame) field.getObjectValue();
-                    Object object = RTW.createComponent(className, listenerConfig);
-                    if (object != null) {
-                        if (object instanceof ContextListener) {
-                            engine.addListener((ContextListener) object);
-                            Log.debug(String.format("EngineFactory created listener %s", object.getClass().getName()));
+            if (cfg.isArray()) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame listenerConfig = (DataFrame) field.getObjectValue();
+                        String className = listenerConfig.getAsString(ConfigTag.CLASS);
+                        if (StringUtil.isBlank(className)) {
+                            throw new RTWConfigurationException("Listener configuration array element does not contain a class attribute");
                         } else {
-                            Log.error(String.format("Specified class (%s) is not a listener", object.getClass().getName()));
+                            createListener(className, listenerConfig, engine);
                         }
                     } else {
-                        Log.error(String.format("Could not create instance of specified listener: %s", className));
+                        throw new RTWConfigurationException(String.format("Listener configuration array element is not a section: %s", field.getStringValue()));
                     }
-                } else {
-                    Log.error(String.format("Listener configuration invalid: %s", field.getStringValue()));
                 }
-            } // for each listener
+            } else {
+                for (DataField field : cfg.getFields()) {
+                    String className = field.getName();
+                    if (field.isFrame()) {
+                        DataFrame listenerConfig = (DataFrame) field.getObjectValue();
+                        createListener(className, listenerConfig, engine);
+                    } else {
+                        throw new RTWConfigurationException(String.format("Listener configuration not a section: %s", field.getStringValue()));
+                    }
+                } // for each listener
+            }
         } // cfg !null
+    }
+
+
+    private static void createListener(String className, DataFrame listenerConfig, TransformEngine engine) {
+        if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
+            className = LISTENER_PKG + "." + className;
+        }
+
+        Object object = RTW.createComponent(className, listenerConfig);
+        if (object != null) {
+            if (object instanceof ContextListener) {
+                engine.addListener((ContextListener) object);
+                Log.debug(String.format("EngineFactory created listener %s with configuration: %s", object.getClass().getName(), listenerConfig));
+            } else {
+                throw new RTWConfigurationException(String.format("Specified class (%s) is not a listener", object.getClass().getName()));
+            }
+        } else {
+            throw new RTWConfigurationException(String.format("Could not create instance of specified listener: %s", className));
+        }
     }
 
 

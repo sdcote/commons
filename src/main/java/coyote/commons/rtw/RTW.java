@@ -15,7 +15,6 @@ import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
-import coyote.commons.log.LogMsg;
 import coyote.commons.rtw.context.TransformContext;
 
 import java.io.File;
@@ -36,11 +35,6 @@ public class RTW {
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
     public static final String DEFAULT_FRAMEPATH_NAME = "framePath";
     public static final String JSON_EXT = ".json";
-
-    public static final LogMsg.BundleBaseName MSG;
-    static {
-        MSG = new LogMsg.BundleBaseName("RtwMsg");
-    }
 
 
     public static enum Sort {
@@ -72,20 +66,20 @@ public class RTW {
                         try {
                             ((ConfigurableComponent)object).setConfiguration(new Config(cfg));
                         } catch (ConfigurationException e) {
-                            Log.error(LogMsg.createMsg(RTW.MSG, "DX.configuration_error", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            Log.error(String.format("Could not configure class %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        Log.warn(LogMsg.createMsg(RTW.MSG, "DX.instance_not_configurable", className));
+                        Log.warn(String.format("Instance of %s is not configurable", className));
                     }
                 }
 
                 retval = object;
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                      InvocationTargetException e) {
-                Log.error(LogMsg.createMsg(RTW.MSG, "DX.instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                Log.error(String.format("Could not instantiate class %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
             }
         } else {
-            Log.error(LogMsg.createMsg(RTW.MSG, "DX.config_frame_did_not_contain_a_class"));
+            Log.error("Configuration frame did not contain a class name");
         }
 
         return retval;
@@ -118,17 +112,17 @@ public class RTW {
                         try {
                             ((ConfigurableComponent)object).setConfiguration(new Config(cfg));
                         } catch (ConfigurationException e) {
-                            Log.error(LogMsg.createMsg(RTW.MSG, "DX.configuration_error", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            Log.error(String.format("Could not configure class %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        Log.warn(LogMsg.createMsg(RTW.MSG, "DX.instance_not_configurable", className));
+                        Log.warn(String.format("Instance of %s is not configurable", className));
                     }
                     retval = object;
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    Log.error(LogMsg.createMsg(RTW.MSG, "DX.instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                    Log.error(String.format("Could not instantiate class %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
                 }
             } else {
-                Log.error(LogMsg.createMsg(RTW.MSG, "DX.config_frame_did_not_contain_a_class"));
+                Log.error("Configuration frame did not contain a class name");
             }
         }
 
