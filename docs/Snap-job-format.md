@@ -117,6 +117,19 @@ The `logging` section allows for multiple loggers. Each logger is specified by i
 - **`target`**: The destination for logs (e.g., `stdout`, `stderr`, or a file path). Relative file paths are resolved against `app.home/log`.
 - **`categories`**: A comma-separated list of log levels to capture.
 
+## Relative File Resolution
+
+Snap jobs promote a sandboxed environment where each job has its own dedicated directory. As such, the **Job Directory** is the default parent for all relative file paths.
+
+When a relative path is encountered in the configuration (e.g., `"source": "input.txt"`), the system attempts to resolve it by searching in the following order:
+
+1.  **Job Directory**: (e.g., `snap/wrk/JobName/`) This is the primary location for job-specific data.
+2.  **Configuration Location**: The directory containing the job's configuration file.
+3.  **Work Directory**: The general `wrk` directory under `app.home`.
+4.  **Current Working Directory**: The directory from which the application was launched.
+
+This ensures that jobs are self-contained and portable, while still allowing for fallback to global locations if necessary.
+
 ## Symbol Substitution
 
 Configuration values can include symbols in the format `${symbol_name}`. These are resolved at runtime using the job's symbol table, which includes environment variables, system properties, and command-line arguments.

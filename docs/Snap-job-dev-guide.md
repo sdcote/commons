@@ -64,6 +64,6 @@ for (ScheduledJob job : jobs) {
 ## Best Practices
 
 - **Use the Symbol Table**: Use `symbols.getString(key)` or `Template.preProcess(value, symbols)` to allow configuration values to use environment variables and system properties.
-- **Respect Directories**: Always resolve output paths against `System.getProperty("app.work")` and input paths against `System.getProperty("app.home")`.
+- **Respect Directories**: Use the built-in `resolveFile(String)` or `resolveFile(File)` methods to ensure consistent relative path resolution. By default, relative paths are resolved against the **Job Directory**.
 - **Informative Logging**: Use the `Log` utility (`Log.debug`, `Log.info`, `Log.error`) to provide visibility into the job's progress and any issues encountered.
 - **Fail Fast**: Throw a `ConfigurationException` in `doConfigure()` if required parameters are missing or invalid to prevent the job from starting in an inconsistent state.

@@ -35,12 +35,7 @@ public class Delete extends AbstractFileTask {
     if (StringUtil.isNotBlank(filename)) {
       final String file = resolveArgument(filename);
 
-      File sourceFile = new File(filename);
-
-      // if not absolute, use the current job directory
-      if (!sourceFile.isAbsolute()) {
-        sourceFile = new File(getJobDirectory(), sourceFile.getPath());
-      }
+      File sourceFile = resolveFile(file);
       Log.debug(String.format( "Task.deleting_file", file, sourceFile.getAbsolutePath()));
 
       if (!FileUtil.deleteFile(sourceFile)) {
@@ -55,12 +50,7 @@ public class Delete extends AbstractFileTask {
 
     } else if (StringUtil.isNotBlank(directory)) {
       final String dir = resolveArgument(directory);
-      File dirFile = new File(dir);
-
-      // if not absolute, use the current job directory
-      if (!dirFile.isAbsolute()) {
-        dirFile = new File(getJobDirectory(), dirFile.getPath());
-      }
+      File dirFile = resolveFile(dir);
       Log.debug(String.format( "Task.deleting_directory", dir, dirFile.getAbsolutePath()));
 
       if (dirFile.exists()) {

@@ -78,10 +78,7 @@ public class DirectoryReader extends AbstractFrameReader implements FrameReader 
             return;
         }
 
-        File sourceDir = new File(source);
-        if (!sourceDir.isAbsolute()) {
-            sourceDir = RTW.resolveFile(sourceDir, getContext());
-        }
+        File sourceDir = resolveFile(source);
 
         if (sourceDir == null || !sourceDir.exists() || !sourceDir.isDirectory() || !sourceDir.canRead()) {
             String msg = "Reader.could_not_read_from_source " + getClass().getName() + " - " +

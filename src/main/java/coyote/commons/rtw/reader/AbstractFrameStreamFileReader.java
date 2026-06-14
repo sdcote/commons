@@ -63,10 +63,8 @@ protected BufferedReader reader = null;
                 Log.debug(String.format( "Reader.using_source_file", sourceFile.getAbsolutePath()));
             }
 
-            // if not absolute, use the CDX fixture to attempt to resolve the relative file
-            if (!sourceFile.isAbsolute()) {
-                sourceFile = RTW.resolveFile(sourceFile, getContext());
-            }
+            // resolve the source file
+            sourceFile = resolveFile(sourceFile);
 
             if (sourceFile.exists() && sourceFile.canRead()) {
                 try {

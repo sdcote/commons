@@ -92,6 +92,19 @@ Reading a messy data file, validating required fields, and filtering out incompl
 -   **Filter**: Removes records where the "status" is "deleted".
 -   **Writer**: `JdbcWriter`
 
+## File and Directory Resolution
+
+The `TransformEngine` uses a standardized approach for resolving relative file and directory paths. To promote isolation and portability, the **Job Directory** is used as the default parent for all relative paths.
+
+When a component (Reader, Writer, Task, etc.) encounters a relative path in its configuration, it resolves it using the following search order:
+
+1.  **Job Directory**: The dedicated workspace for the current job (e.g., `snap/wrk/JobName/`).
+2.  **Configuration Location**: The directory where the job's configuration file is located.
+3.  **Work Directory**: The general application working directory (usually `app.home/wrk`).
+4.  **Current Working Directory**: The directory from which the process was started.
+
+This hierarchy allows jobs to be "sandboxed" within their own directory while still providing access to shared resources or the current environment if needed.
+
 ## Developer Information
 To implement your own component, you should extend the appropriate abstract class or implement the interface. Most components benefit from extending `coyote.commons.rtw.AbstractConfigurableComponent` to gain access to standard configuration parsing and logging.
 

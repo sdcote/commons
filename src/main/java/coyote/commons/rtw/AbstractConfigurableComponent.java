@@ -37,10 +37,33 @@ public abstract class AbstractConfigurableComponent implements ConfigurableCompo
      */
     protected File getJobDirectory() {
         File retval = jobDirectory;
-//        if (context != null && context.getEngine() != null) {
-//            retval = context.getEngine().getJobDirectory();
-//        }
+        if (context != null && context.getSymbols() != null) {
+            String dir = context.getSymbols().getString(Symbols.JOB_DIRECTORY);
+            if (StringUtil.isNotBlank(dir)) {
+                retval = new File(dir);
+            }
+        }
         return retval;
+    }
+
+    /**
+     * Resolves a file using the current transform context.
+     *
+     * @param file the file to resolve
+     * @return the resolved file, or the original file if it could not be resolved.
+     */
+    protected File resolveFile(File file) {
+        return RTW.resolveFile(file, getContext());
+    }
+
+    /**
+     * Resolves a filename string using the current transform context.
+     *
+     * @param filename the filename to resolve
+     * @return the resolved file, or a new File object with the filename if it could not be resolved.
+     */
+    protected File resolveFile(String filename) {
+        return RTW.resolveFile(new File(filename), getContext());
     }
 
     /**

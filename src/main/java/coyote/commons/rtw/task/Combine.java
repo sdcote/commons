@@ -135,11 +135,9 @@ public class Combine extends AbstractFileTask implements TransformTask {
           targetFile = new File(target);
         }
 
-        // if not absolute, use the current job directory
+        // if we have a target file, resolve it
         if (targetFile != null) {
-          if (!targetFile.isAbsolute()) {
-            targetFile = new File(getJobDirectory(), targetFile.getPath());
-          }
+          targetFile = resolveFile(targetFile);
           Log.debug("Using a target file of " + targetFile.getAbsolutePath());
 
           try {

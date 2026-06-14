@@ -149,10 +149,10 @@ public class RTW {
      * locations.
      *
      * <p>Search for the file in the following locations:<ol>
-     * <li>Users current working directory
+     * <li>Job directory
      * <li>Configuration location, if it is a file system directory
      * <li>Work directory (from system properties)
-     * <li>Job directory</ol>
+     * <li>Users current working directory</ol>
      *
      * @param file the file to resolve
      * @param context the transform context containing the different file
@@ -163,7 +163,13 @@ public class RTW {
     public static File resolveFile(File file, TransformContext context) {
         File retval = file;
         if (file != null && !file.isAbsolute()) {
-            retval = new File(System.getProperty(System.getProperty("user.dir"), file.getPath()));
+            // Priority 1: Job Directory
+            String jobDir = context.getSymbols().getString(Symbols.JOB_DIRECTORY);
+            if (StringUtil.isNotBlank(jobDir)) {
+                retval = new File(jobDir, file.getPath());
+            }
+
+            // Priority 2: Configuration Location
             if (!retval.exists()) {
                 String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
                 if (StringUtil.isNotBlank(cfgUri)) {
@@ -179,12 +185,19 @@ public class RTW {
                         // The configuration may have come from the network
                     }
                 }
-                if (!retval.exists()) {
-                    retval = new File(context.getSymbols().getString(Symbols.WORK_DIRECTORY), file.getPath());
-                    if (!retval.exists()) {
-                        retval = new File(context.getSymbols().getString(Symbols.JOB_DIRECTORY), file.getPath());
-                    }
+            }
+
+            // Priority 3: Work Directory
+            if (!retval.exists()) {
+                String workDir = context.getSymbols().getString(Symbols.WORK_DIRECTORY);
+                if (StringUtil.isNotBlank(workDir)) {
+                    retval = new File(workDir, file.getPath());
                 }
+            }
+
+            // Priority 4: Current Working Directory
+            if (!retval.exists()) {
+                retval = new File(System.getProperty("user.dir"), file.getPath());
             }
         }
 

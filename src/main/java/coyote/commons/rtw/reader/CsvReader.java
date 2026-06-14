@@ -176,10 +176,8 @@ public class CsvReader extends AbstractFrameReader implements FrameReader, Confi
             } else {
                 Log.error("Using a source file of NULL_REF");
             }
-            // if not absolute, use the CDX fixture to attempt to resolve the relative file
-            if (!sourceFile.isAbsolute()) {
-                sourceFile = RTW.resolveFile(sourceFile, getContext());
-            }
+            // resolve the source file
+            sourceFile = resolveFile(sourceFile);
             Log.debug("Using an absolute source file of " + sourceFile.getAbsolutePath());
 
             // Basic checks

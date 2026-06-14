@@ -112,10 +112,7 @@ public class DirectoryChangeReader extends AbstractFrameReader implements FrameR
             return;
         }
 
-        directoryToMonitor = new File(source);
-        if (!directoryToMonitor.isAbsolute()) {
-            directoryToMonitor = RTW.resolveFile(directoryToMonitor, getContext());
-        }
+        directoryToMonitor = resolveFile(source);
 
         if (directoryToMonitor == null || !directoryToMonitor.exists() || !directoryToMonitor.isDirectory() || !directoryToMonitor.canRead()) {
             String msg = "DirectoryChangeReader: Could not read from source directory - " +
