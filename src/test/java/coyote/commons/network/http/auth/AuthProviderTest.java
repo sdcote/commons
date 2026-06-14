@@ -42,7 +42,6 @@ public class AuthProviderTest {
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
         port = NetUtil.getNextAvailablePort(port);
-        System.out.println("[DEBUG_LOG] Using port: " + port);
         server = new TestRouter(port);
 
         // set a test auth provider in the base server
@@ -64,8 +63,6 @@ public class AuthProviderTest {
                 }
             }
         } catch (IOException ioe) {
-            System.err.println("Setup failed: " + ioe.getMessage());
-            ioe.printStackTrace();
             fail("could not start server:" + ioe);
         }
     }

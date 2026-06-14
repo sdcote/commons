@@ -16,6 +16,7 @@ import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.context.TransformContext;
+import coyote.commons.template.SymbolTable;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -163,10 +164,14 @@ public class RTW {
     public static File resolveFile(File file, TransformContext context) {
         File retval = file;
         if (file != null && !file.isAbsolute()) {
+            SymbolTable symbols = (context != null) ? context.getSymbols() : null;
+
             // Priority 1: Job Directory
-            String jobDir = context.getSymbols().getString(Symbols.JOB_DIRECTORY);
-            if (StringUtil.isNotBlank(jobDir)) {
-                retval = new File(jobDir, file.getPath());
+            if (symbols != null) {
+                String jobDir = symbols.getString(Symbols.JOB_DIRECTORY);
+                if (StringUtil.isNotBlank(jobDir)) {
+                    retval = new File(jobDir, file.getPath());
+                }
             }
 
             // Priority 2: Configuration Location
@@ -188,8 +193,8 @@ public class RTW {
             }
 
             // Priority 3: Work Directory
-            if (!retval.exists()) {
-                String workDir = context.getSymbols().getString(Symbols.WORK_DIRECTORY);
+            if (!retval.exists() && symbols != null) {
+                String workDir = symbols.getString(Symbols.WORK_DIRECTORY);
                 if (StringUtil.isNotBlank(workDir)) {
                     retval = new File(workDir, file.getPath());
                 }
