@@ -41,17 +41,8 @@
     }
   ],
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "categories": "scheduler"
-      }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "scheduler" }
     }
   ]
 }
