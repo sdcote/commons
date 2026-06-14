@@ -1,6 +1,9 @@
 {
   "class": "coyote.RtwJob",
   "name": "WeatherForecast",
+  "schedule": {
+    "minutes": "*/2"
+  },
   "configuration": {
     "Preprocess": [
       {
@@ -30,17 +33,7 @@
     ]
   },
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "categories": "info, notice, debug, trace"
-      }
-    }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
   ]
 }

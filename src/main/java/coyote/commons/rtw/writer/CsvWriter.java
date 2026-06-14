@@ -12,9 +12,11 @@ import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
+import coyote.commons.csv.CSVReader;
 import coyote.commons.rtw.*;
 import coyote.commons.rtw.context.TransformContext;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,9 +25,9 @@ import java.util.List;
 
 
 /**
- * Writes data frames to a RFC 4180 formatted file.
+ * Writes data frames to an RFC 4180 formatted file.
  * 
- * <p>This is a basic CSV writer which takes dataframes as input and writes 
+ * <p>This is a basic CSV writer that takes dataframes as input and writes
  * them to a file suitable for import into other systems. It's easy to 
  * configure:<pre>
  * "Writer":{
@@ -48,7 +50,7 @@ import java.util.List;
  *   "dateformat" : "yyyy/MM/dd",</pre>
  * 
  * <p>The separator can be a numeric representing the Unicode character to use.
- * For example 9 can be used for the tab character as the tab character is 
+ * For example, 9 can be used for the tab character as the tab character is
  * ASCII character 9. If more than one character is specified, then only the 
  * first character is used.
  */
@@ -83,7 +85,7 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
   /** The list of fields we are to write in the order they are to be written */
   private final List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
 
-  public static char separator = SEPARATOR;
+  public char separator = SEPARATOR;
 
   private static final String SEPARATOR_TAG = "separator";
 
@@ -98,8 +100,12 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
    * 
    * @return a string builder with the data representing the processed line.
    */
-  private static StringBuilder processToken(final String token) {
+  private StringBuilder processToken(final String token) {
     final StringBuilder sb = new StringBuilder(INITIAL_STRING_SIZE);
+
+    if (token == null) {
+      return sb;
+    }
 
     // determine if we are to surround the token in quotes
     final boolean surroundToken = tokenContainsSpecialCharacters(token);
@@ -139,7 +145,10 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
    * 
    * @return true if the token contains special characters and needs to be surrounded in quotes, false otherwise
    */
-  private static boolean tokenContainsSpecialCharacters(final String token) {
+  private boolean tokenContainsSpecialCharacters(final String token) {
+    if (token == null) {
+      return false;
+    }
     boolean retval = false;
     char character;
     for (int x = 0; x < token.length(); x++) {
@@ -215,6 +224,20 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
       }
     }
 
+    // If we are using a header and the target file exists, read the header from the file to populate fields
+    if (fields.size() == 0 && isUsingHeader() && targetFile != null && targetFile.exists() && targetFile.length() > 0) {
+      try (CSVReader reader = new CSVReader(new FileReader(targetFile), separator)) {
+        String[] header = reader.readNext();
+        if (header != null) {
+          for (String fieldName : header) {
+            fields.add(new FieldDefinition(fieldName, null, false));
+          }
+        }
+      } catch (Exception e) {
+        Log.warn(String.format("Could not read header from existing file %s: %s", targetFile.getAbsolutePath(), e.getMessage()));
+      }
+    }
+
   }
 
 
@@ -227,20 +250,20 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
   public void setConfiguration(final Config cfg) throws ConfigurationException {
     super.setConfiguration(cfg);
 
-    Log.debug( "Writer.header_flag_is_set_as"+ this.isUsingHeader());
+    Log.debug(String.format("Writer header flag is set to %b", isUsingHeader()));
 
     // Check to see if a different date format is to be used
     if (cfg.containsIgnoreCase(ConfigTag.DATEFORMAT)) {
       try {
         DATEFORMAT = new SimpleDateFormat(cfg.getAsString(ConfigTag.DATEFORMAT));
       } catch (final Exception e) {
-        Log.warn( "Writer.date_format_pattern_is_not_valid"+ cfg.getAsString(ConfigTag.DATEFORMAT)+ e.getMessage());
+        Log.warn(String.format("Writer date format pattern '%s' is not valid: %s", cfg.getAsString(ConfigTag.DATEFORMAT), e.getMessage()));
         DATEFORMAT = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
       }
     } else {
-      Log.debug( "Writer.using_default_date_format"+ DATEFORMAT.toPattern());
+      Log.debug(String.format("Writer using default date format: %s", DATEFORMAT.toPattern()));
     }
-    Log.debug( "Writer.date_format_pattern_set_as"+ DATEFORMAT.toPattern());
+    Log.debug(String.format("Writer date format pattern set to %s", DATEFORMAT.toPattern()));
 
     final DataFrame fieldcfg = cfg.getSection(ConfigTag.FIELDS);
     if (fieldcfg != null) {
@@ -285,7 +308,7 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
 
 
   /**
-   * Set whether or not the writer should output a header before writing data.
+   * Set whether the writer should output a header before writing data.
    * 
    * @param flag true to instruct the writer to write a header before the first line of data, false to skip writing the header.
    */
@@ -301,6 +324,15 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
    */
   @Override
   public void write(final DataFrame frame) {
+    if (frame == null) {
+      Log.warn("Writer was passed a null frame to write.");
+      return;
+    }
+
+    if (frame.isEmpty()) {
+      Log.warn("Writer was passed an empty frame to write.");
+      // We still process empty frames as they might be intentional (e.g. just a row with separators)
+    }
 
     // If there is a conditional expression
     if (expression != null) {
@@ -311,7 +343,7 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
           writeFrame(frame);
         }
       } catch (final IllegalArgumentException e) {
-        Log.warn( "Writer.boolean_evaluation_error"+ expression+ e.getMessage());
+        Log.warn(String.format("Writer encountered a boolean evaluation error with expression '%s': %s", expression, e.getMessage()));
       }
     } else {
       // Unconditionally writing frame
@@ -329,6 +361,11 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
    * @param frame the frame to be written
    */
   private void writeFrame(final DataFrame frame) {
+    if (frame == null) {
+      Log.warn("Writer was passed a null frame to writeFrame.");
+      return;
+    }
+
     // The first frame sets the columns and column order
     if (rowNumber == 0) {
 
@@ -348,7 +385,7 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
       }
       if (isUsingHeader()) {
         if (isAppending() && getTargetSize() > 0) {
-          Log.debug(this.getClass().getSimpleName() + " is not writing header to existing file");
+          Log.debug(String.format("%s is not writing a header to the existing file: %s", this.getClass().getSimpleName(), getTarget()));
         } else {
           writeHeader();
         }
@@ -417,16 +454,21 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
           }
 
         } catch (final Exception e) {
-          Log.error( String.format("Writer.Problems writing {%s} - field {%s}", def.getName(), field.toString()));
+          Log.error(String.format("Writer problems writing field '%s' - field data: %s", def.getName(), field.toString()));
           token = "";
         }
       } else {
         // handle null fields with an empty string value
+        Log.warn(String.format("Writer encountered a null value for field: %s", def.getName()));
         token = "";
       }
 
       // escape any special characters otherwise just use the token as is
-      retval.append(tokenContainsSpecialCharacters(token) ? processToken(token) : token);
+      if (token == null) {
+        retval.append("");
+      } else {
+        retval.append(tokenContainsSpecialCharacters(token) ? processToken(token) : token);
+      }
       retval.append(separator);
     }
     if (retval.length() > 0) {
@@ -447,7 +489,6 @@ public class CsvWriter extends AbstractFrameFileWriter implements FrameWriter, C
    */
   @Override
   public void close() throws IOException {
-    fields.clear();
     super.close();
   }
 
