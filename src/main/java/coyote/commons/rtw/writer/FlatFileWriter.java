@@ -69,7 +69,7 @@ public class FlatFileWriter extends AbstractFrameFileWriter implements FrameWrit
             } else if (align.startsWith("C") || align.startsWith("c")) {
               alignment = 1;
             } else {
-              Log.warn(String.format( "Writer.Unrecognized {%s} configuration value of '{%s}' - defaulting to 'left' alignment", ConfigTag.ALIGN, align));
+              Log.warn(String.format("Unrecognized %s configuration value of '%s' - defaulting to 'left' alignment", ConfigTag.ALIGN, align));
             }
           }
 

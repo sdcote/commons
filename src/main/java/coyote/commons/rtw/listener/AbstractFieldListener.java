@@ -161,7 +161,7 @@ public abstract class AbstractFieldListener extends AbstractListener implements 
         }
       }
     } else {
-      Log.warn(String.format( "Listener.context not set"));
+      Log.warn("Context not set for listener");
     }
     return retval;
   }

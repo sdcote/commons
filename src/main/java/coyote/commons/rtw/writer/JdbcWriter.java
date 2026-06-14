@@ -171,7 +171,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                     try {
                         stmt.close();
                     } catch (final Exception e) {
-                        Log.warn(String.format("Problems closing create {} statement: {}", getTable(), e.getMessage()));
+                        Log.warn(String.format("Problems closing create %s statement: %s", getTable(), e.getMessage()));
                     }
                 }
 
@@ -214,7 +214,7 @@ public class JdbcWriter extends AbstractFrameWriter implements FrameWriter, Conf
                 try {
                     commit();
                 } catch (final SQLException e) {
-                    Log.warn(String.format("Writer.could_not_commit_prior_to_close", e.getMessage()));
+                    Log.warn(String.format("Could not commit prior to close: %s", e.getMessage()));
                 }
             }
 

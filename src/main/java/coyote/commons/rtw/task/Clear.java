@@ -39,19 +39,19 @@ public class Clear extends AbstractFileTask {
 
     if (StringUtil.isNotBlank(directory)) {
       final String dir = resolveArgument(directory);
-      Log.info(String.format( "Task.Clearing directory named {%s}", dir));
+      Log.info(String.format("Clearing directory named %s", dir));
 
       try {
         FileUtil.clearDir(dir, true, recurse);
       } catch (final Exception e) {
         if (haltOnError) {
-          getContext().setError(String.format("Task.Clearing directory operation '%s' failed: %s", dir, e.getMessage()));
+          getContext().setError(String.format("Clearing directory operation '%s' failed: %s", dir, e.getMessage()));
           return;
         }
       }
 
     } else {
-      Log.warn(String.format("Task.Clear has no %s or %s argument - nothing to do.", ConfigTag.FILE, ConfigTag.DIRECTORY));
+      Log.warn(String.format("Clear task has no %s or %s argument - nothing to do.", ConfigTag.FILE, ConfigTag.DIRECTORY));
     }
 
   }

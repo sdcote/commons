@@ -72,11 +72,11 @@ public abstract class AbstractSnapJob implements SnapJob {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread("JobHook") {
                 public void run() {
-                    Log.debug("Runtime_terminating");
+                    Log.debug("Runtime terminating");
                     if (job != null) {
                         job.stop();
                     }
-                    Log.debug("Runtime_terminated");
+                    Log.debug("Runtime terminated");
                 }
             });
         } catch (Exception e) {

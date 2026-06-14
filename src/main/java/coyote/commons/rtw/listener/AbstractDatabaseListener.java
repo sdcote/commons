@@ -480,7 +480,7 @@ public abstract class AbstractDatabaseListener extends AbstractListener implemen
           try {
             stmt.close();
           } catch (Exception e) {
-            Log.warn(String.format("Problems closing create {} statement: {}", table, e.getMessage()));
+            Log.warn(String.format("Problems closing create %s statement: %s", table, e.getMessage()));
           }
         }
 
