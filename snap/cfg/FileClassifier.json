@@ -1,16 +1,17 @@
 {
-  "RtwJob":{
-
-    "Vault": { "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault", "password": "[#$env.vault.password#]" },
-
-    "Reader" : {
-      "class" : "DirectoryReader",
-      "directory" : "/Volumes/PRO-G40/Media/Pictures1",
-      "pattern1" : ".*",
-      "pattern2" : "(?i)^IMG_.*..*$",
-      "pattern" : "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
+  "class": "coyote.RtwJob",
+  "configuration": {
+    "Vault": {
+      "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault",
+      "password": "[#$env.vault.password#]"
     },
-
+    "Reader": {
+      "class": "DirectoryReader",
+      "directory": "/Volumes/PRO-G40/Media/Pictures1",
+      "pattern1": ".*",
+      "pattern2": "(?i)^IMG_.*..*$",
+      "pattern": "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
+    },
     "Transform": {
       "FileClassifier": {
         "map": {
@@ -24,13 +25,20 @@
           "3gp": "videos"
         }
       }
+    }
+  },
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "categories": "error, fatal, warn"
+      }
     },
-
-    "Logging": [
-      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
-    ]
-
-  }
-
+    {
+      "StandardOutput": {
+        "name": "default",
+        "categories": "info, notice, debug, trace"
+      }
+    }
+  ]
 }

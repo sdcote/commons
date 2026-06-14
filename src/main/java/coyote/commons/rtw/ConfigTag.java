@@ -136,6 +136,7 @@ public class ConfigTag {
     public static final String CATEGORY = "category";
     public static final String ENABLED = "enabled";
     public static final String VAULT = "vault";
+    public static final String CONFIGURATION = "configuration";
 
     // Tasks
 

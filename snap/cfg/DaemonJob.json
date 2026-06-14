@@ -1,5 +1,6 @@
 {
-  "DaemonJob": {
+  "class": "coyote.DaemonJob",
+  "configuration": {
     "Server": {
       "Port": 8080,
       "Users": {
@@ -13,21 +14,45 @@
     "Job": [
       {
         "RtwJob": {
-          "Reader": { "class": "DirectoryTripwireReader", "directory": "/Users/sdcote/Downloads" },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
+          "Reader": {
+            "class": "DirectoryTripwireReader",
+            "directory": "/Users/sdcote/Downloads"
+          },
+          "Writer": {
+            "class": "ConsoleWriter",
+            "format": "json",
+            "indent": true
+          }
         }
       },
       {
         "RtwJob": {
-          "Reader": { "class": "DirectoryTripwireReader", "directory": "/var/log" },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
+          "Reader": {
+            "class": "DirectoryTripwireReader",
+            "directory": "/var/log"
+          },
+          "Writer": {
+            "class": "ConsoleWriter",
+            "format": "json",
+            "indent": true
+          }
         }
       }
-    ],
-    "Logging": [
-      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-      { "StandardOutput": { "name": "default", "categories": "scheduler" } }
     ]
-  }
+  },
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "categories": "error, fatal, warn"
+      }
+    },
+    {
+      "StandardOutput": {
+        "name": "default",
+        "categories": "scheduler"
+      }
+    }
+  ]
 }
 

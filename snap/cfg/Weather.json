@@ -1,11 +1,12 @@
 {
-  "RtwJob": {
-    "Name": "WeatherForecast",
+  "class": "coyote.RtwJob",
+  "name": "WeatherForecast",
+  "configuration": {
     "Preprocess": [
       {
-        "class":"WebGet",
-         "source": "https://api.open-meteo.com/v1/forecast?latitude=40.0205&longitude=-83.1775&current=temperature_2m,weather_code&temperature_unit=fahrenheit",
-         "target": "weather_data.json"
+        "class": "WebGet",
+        "source": "https://api.open-meteo.com/v1/forecast?latitude=40.0205&longitude=-83.1775&current=temperature_2m,weather_code&temperature_unit=fahrenheit",
+        "target": "weather_data.json"
       }
     ],
     "Reader": {
@@ -14,15 +15,32 @@
       "selector": "current"
     },
     "Transform": [
-      { "class": "Timestamp", "field": "ObservationTime" }
+      {
+        "class": "Timestamp",
+        "field": "ObservationTime"
+      }
     ],
     "Writer": [
-      {"class": "CsvWriter", "target": "weather_history.csv", "append": true, "header": true }
-    ],
-    "Logging": [
-      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
+      {
+        "class": "CsvWriter",
+        "target": "weather_history.csv",
+        "append": true,
+        "header": true
+      }
     ]
-
-  }
+  },
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "categories": "error, fatal, warn"
+      }
+    },
+    {
+      "StandardOutput": {
+        "name": "default",
+        "categories": "info, notice, debug, trace"
+      }
+    }
+  ]
 }

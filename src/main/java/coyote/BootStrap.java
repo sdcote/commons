@@ -9,8 +9,6 @@ package coyote;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -25,11 +23,10 @@ import coyote.commons.cli.ArgumentList;
 import coyote.commons.cli.ArgumentParser;
 import coyote.commons.cli.Options;
 import coyote.commons.cli.PosixParser;
-import coyote.commons.dataframe.DataField;
-import coyote.commons.dataframe.DataFrame;
-import coyote.commons.log.ConsoleAppender;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
+import coyote.commons.snap.AbstractSnapJob;
+import coyote.commons.snap.JobLoader;
 import coyote.commons.snap.SnapJob;
 
 /**
@@ -67,7 +64,7 @@ public class BootStrap {
     private static Config configuration = null;
     private static String cfgLoc = null;
     private static URI cfgUri = null;
-    public static String APP_HOME = "app.home";
+    public static String APP_HOME = AbstractSnapJob.APP_HOME;
 
     private static final String JSON_EXT = ".json";
 
@@ -146,51 +143,18 @@ public class BootStrap {
      * 
      * @param args the command line arguments passed to this bootstrap loader
      * 
-     * @return a configured job or null if there was no "CLASS" attribute in the root of the configuration indicating was not found.
+     * @return a configured job.
      */
     private static SnapJob loadJob(String[] args) {
         SnapJob retval = null;
-
-        // use the first attribute of the configuration as the classname.
-        DataField configField = configuration.getField(0);
-
-        if( configField!= null && StringUtil.isNotEmpty(configField.getName())) {
-            String className = configField.getName();
-            Config cfgFrame = new Config();
-            if (configField.isFrame()) {
-                cfgFrame = new Config((DataFrame) configField.getObjectValue());
+        try {
+            retval = JobLoader.loadJob(configuration);
+            if (retval != null) {
+                retval.setCommandLineArguments(args);
             }
-
-            // if the class is not fully qualified, assume the same namespace as the bootstrap loader.
-            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                className = BootStrap.class.getPackage().getName() + "." + className;
-            }
-
-            try {
-                Class<?> clazz = Class.forName(className);
-                Constructor<?> ctor = clazz.getConstructor();
-                Object object = ctor.newInstance();
-
-                if (object instanceof SnapJob) {
-                    retval = (SnapJob) object;
-                    try {
-                        retval.setCommandLineArguments(args);
-                        retval.configure(cfgFrame);
-                    } catch (ConfigurationException e) {
-                        Log.fatal(String.format("Could not configure job %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
-                        System.exit(6);
-                    }
-                } else {
-                    Log.fatal(String.format("Class is not a job: %s", className));
-                    System.exit(5);
-                }
-            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                     | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                Log.fatal("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
-                System.exit(4);
-            }
-        } else {
-            Log.warn("Empty configuration.");
+        } catch (ConfigurationException e) {
+            Log.fatal(String.format("Could not load/configure job: %s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            System.exit(6);
         }
         return retval;
     }

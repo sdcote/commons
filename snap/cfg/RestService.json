@@ -1,9 +1,10 @@
 {
-  "Description": [
-    "Shows how to listen to HTTP events and process them according to ReST practices.",
-    "This data transfer job listens for HTTP requests on a specific endpoint and exchanges data with a data store. In this case the data store is a local relational database, but it could be a remote instance in the cloud."
-  ],
-  "RtwJob": {
+  "class": "coyote.RtwJob",
+  "configuration": {
+    "Description": [
+      "Shows how to listen to HTTP events and process them according to ReST practices.",
+      "This data transfer job listens for HTTP requests on a specific endpoint and exchanges data with a data store. In this case the data store is a local relational database, but it could be a remote instance in the cloud."
+    ],
     "Task": {
       "DatabaseFixture": {
         "name": "H2",
@@ -39,9 +40,20 @@
       }
     }
   },
-  "Logging": [
-    {"StandardError": { "name": "error", "target": "STDERR", "categories": "error, fatal, warn" }},
-    {"StandardOutput": { "name": "default", "target": "STDOUT", "categories": "info, notice, httpd, debug,trace" }}
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "target": "STDERR",
+        "categories": "error, fatal, warn"
+      }
+    },
+    {
+      "StandardOutput": {
+        "name": "default",
+        "target": "STDOUT",
+        "categories": "info, notice, httpd, debug,trace"
+      }
+    }
   ]
-
 }

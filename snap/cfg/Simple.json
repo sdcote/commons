@@ -1,6 +1,7 @@
 {
-  "RtwJob": {
-    "Name": "Simple",
+  "class": "coyote.RtwJob",
+  "name": "Simple",
+  "configuration": {
     "Reader": {
       "class": "StaticReader",
       "fields": {
@@ -11,21 +12,38 @@
         "type": "gauge"
       }
     },
-    "Writer": { "enabled": false, "class": "ConsoleWriter", "format": "json", "indent": true },
-    "Writer": {
-      "class": "JdbcWriter",
-      "target": "jdbc:h2:[#$jobdir#]/demodb;MODE=Oracle",
-      "table": "user",
-      "autocreate": true,
-      "driver": "org.h2.Driver",
-      "library": "jar:[#FormatSymbol.toFileURI(user.home)#]/Tools/h2/bin/h2-1.4.200.jar!/",
-      "username": "sa",
-      "password": "",
-      "batch": 5
-    }
+    "Writer": [
+      {
+        "enabled": false,
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
+      },
+      {
+        "class": "JdbcWriter",
+        "target": "jdbc:h2:[#$jobdir#]/demodb;MODE=Oracle",
+        "table": "user",
+        "autocreate": true,
+        "driver": "org.h2.Driver",
+        "library": "jar:[#FormatSymbol.toFileURI(user.home)#]/Tools/h2/bin/h2-1.4.200.jar!/",
+        "username": "sa",
+        "password": "",
+        "batch": 5
+      }
+    ]
   },
-  "Logging": [
-    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "categories": "error, fatal, warn"
+      }
+    },
+    {
+      "StandardOutput": {
+        "name": "default",
+        "categories": "info, notice, debug, trace"
+      }
+    }
   ]
 }

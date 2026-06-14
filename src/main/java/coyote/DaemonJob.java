@@ -33,6 +33,7 @@ import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.daemonjob.CommandResponder;
 import coyote.commons.rtw.daemonjob.StatusResponder;
 import coyote.commons.snap.AbstractSnapJob;
+import coyote.commons.snap.JobLoader;
 import coyote.commons.snap.SnapJob;
 
 import java.io.IOException;
@@ -85,21 +86,19 @@ public class DaemonJob extends AbstractSnapJob {
      * <p>This method initializes the HTTP server if a "Server" section is present
      * and schedules any jobs defined in the "Job" sections.</p>
      *
-     * @param cfg The configuration containing server and job definitions.
      * @throws ConfigurationException If there is an error in the configuration format or content.
      */
     @Override
-    public void configure(Config cfg) throws ConfigurationException {
-        super.configure(cfg);
+    protected void doConfigure() throws ConfigurationException {
+        super.doConfigure();
 
-        if (cfg.containsIgnoreCase(ConfigTag.SERVER)) {
-            configureServer(cfg);
+        if (configuration.containsIgnoreCase(ConfigTag.SERVER)) {
+            configureServer(configuration);
         }
 
-        if (cfg.containsIgnoreCase(ConfigTag.JOB)) {
-            configureJobs(cfg);
+        if (configuration.containsIgnoreCase(ConfigTag.JOB)) {
+            configureJobs(configuration);
         }
-
     }
 
 
@@ -187,105 +186,38 @@ public class DaemonJob extends AbstractSnapJob {
         Log.debug("Loading job configuration: " + config.toString());
         ScheduledJob retval = null;
 
-        // There should be only one element in this configuration, the name of the element is the name of the Job class
-        if( config.getElementCount() != 1 ) {
-            throw new ConfigurationException("Job configuration must have exactly one element, the name of the Job class");
-        }
-
         List<Config> sections = config.getSections();
-        if(sections.isEmpty()) {
+        if (sections.isEmpty()) {
             throw new ConfigurationException("Job configuration must have a frame as the first element");
         }
 
-        // Get the configuration for the job
         Config jobConfig = sections.get(0);
-        // Get the "Schedule" config section. This describes how often the Job is to be run.
         List<Config> scheduleConfig = jobConfig.getSections(ConfigTag.SCHEDULE);
-
-
-
-
 
         if (scheduleConfig.size() > 0) {
             Config scheduleCfg = scheduleConfig.get(0);
 
             if (scheduleCfg.containsIgnoreCase(ConfigTag.MILLIS)) {
-                // This is a standard scheduled job with an interval in milliseconds
                 long millis = scheduleCfg.getLong(ConfigTag.MILLIS, 1000);
                 retval = new ScheduledJob();
                 retval.setExecutionInterval(millis);
             } else {
-                // Assume this is a CronEntry pattern
                 CronJob cronJob = new CronJob();
                 CronEntry cronentry = parseSchedule(scheduleCfg);
                 cronJob.setCronEntry(cronentry);
                 retval = cronJob;
             }
         } else {
-            // If there is no Schedule section, default to repeating every 1 minute
             retval = new CronJob();
         }
 
-        // Use the first attribute of the configuration as the classname of the job class.
-        DataField configField = config.getField(0);
-
-        // Try to determine and instantiate the class name for the job
-        if (configField != null && StringUtil.isNotEmpty(configField.getName())) {
-            String className = configField.getName();
-            Config cfgFrame = new Config();
-            if (configField.isFrame()) {
-                cfgFrame = new Config((DataFrame) configField.getObjectValue());
-            }
-
-            // If the class name is not fully qualified, attempt to resolve it via ClasspathUtil
-            if (className != null && StringUtil.countOccurrencesOf(className, ".") < 1) {
-                try {
-                    Log.info("Resolving Job class: " + className);
-                    List<String> names = ClasspathUtil.resolve(className);
-                    if (names.isEmpty()) {
-                        Log.error("Failed to resolve Job class: " + className);
-                        throw new ConfigurationException("Failed to resolve Job class: " + className);
-                    } else if (names.size() > 1) {
-                        Log.error("Ambiguous Job class resolution for: " + className + ", found multiple matches: " + names);
-                        throw new ConfigurationException("Ambiguous Job class resolution for: " + className + ", found multiple matches: " + names);
-                    } else {
-                        Log.info("Resolved Job class: " + className + " to: " + names.get(0));
-                        className = names.get(0);
-                    }
-
-                } catch (Exception e) {
-                    Log.error("Failed to resolve class ", e);
-                }
-            }
-
-            try {
-                // Instantiate the job class and wrap it in a SnapJobRunner
-                Class<?> clazz = Class.forName(className);
-                Constructor<?> ctor = clazz.getConstructor();
-                Object object = ctor.newInstance();
-
-                if (object instanceof SnapJob) {
-                    SnapJob snapJob = (SnapJob) object;
-                    try {
-                        snapJob.configure(cfgFrame);
-                        snapJob.setCommandLineArguments(commandLineArguments);
-                        retval.setWork(new SnapJobRunner(snapJob));
-                    } catch (ConfigurationException e) {
-                        System.err.printf("Could not configure snap job %s - %s: %s%n", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage());
-                        System.exit(6);
-                    }
-                } else {
-                    System.err.printf("Class is not a job: %s%n", className);
-                    System.exit(5);
-                }
-            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                     | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                System.err.println("Instantiation Error: " + className + " was not found - " + e.getClass().getName() + ": " + e.getMessage());
-                System.exit(4);
-            }
-
-        } else {
-            System.err.println("Empty configuration.");
+        try {
+            SnapJob snapJob = JobLoader.loadJob(config);
+            snapJob.setCommandLineArguments(commandLineArguments);
+            retval.setWork(new SnapJobRunner(snapJob));
+        } catch (ConfigurationException e) {
+            Log.error("Could not load/configure snap job: " + e.getMessage());
+            throw e;
         }
 
         return retval;
