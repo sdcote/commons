@@ -12,29 +12,31 @@
   },
   "Job": [
     {
-      "RtwJob": {
-        "Reader": {
-          "class": "DirectoryTripwireReader",
-          "directory": "/Users/sdcote/Downloads"
-        },
-        "Writer": {
-          "class": "ConsoleWriter",
-          "format": "json",
-          "indent": true
-        }
+      "name": "DownloadsWatch",
+      "class": "RtwJob",
+      "repeat": true,
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "/Users/sdcote/Downloads"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
       }
     },
     {
-      "RtwJob": {
-        "Reader": {
-          "class": "DirectoryTripwireReader",
-          "directory": "/var/log"
-        },
-        "Writer": {
-          "class": "ConsoleWriter",
-          "format": "json",
-          "indent": true
-        }
+      "name": "LogWatch",
+      "class": "RtwJob",
+      "repeat": true,
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "/var/log"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
       }
     }
   ],

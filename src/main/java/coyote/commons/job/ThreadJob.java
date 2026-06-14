@@ -315,7 +315,7 @@ public class ThreadJob implements Runnable {
    *
    * @param flag The boolean value to set to the active flag.
    */
-  protected void setActiveFlag(final boolean flag) {
+  public void setActiveFlag(final boolean flag) {
     synchronized (activeLock) {
       active = flag;
 

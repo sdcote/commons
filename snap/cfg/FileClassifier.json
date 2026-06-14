@@ -7,7 +7,7 @@
     },
     "Reader": {
       "class": "DirectoryReader",
-      "directory": "/Volumes/PRO-G40/Media/Pictures1",
+      "directory": "/Volumes/PRO-G40/Media/Pictures",
       "pattern1": ".*",
       "pattern2": "(?i)^IMG_.*..*$",
       "pattern": "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"

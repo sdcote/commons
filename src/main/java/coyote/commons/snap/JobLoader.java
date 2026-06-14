@@ -163,7 +163,7 @@ public class JobLoader {
         if (config.containsIgnoreCase(ConfigTag.NAME)) {
             snapJob.setName(config.getString(ConfigTag.NAME));
         }
-        retval.setWork(new SnapJobRunner(snapJob));
+        retval.setWork(new SnapJobRunner(snapJob, retval));
         return retval;
     }
 
@@ -198,9 +198,11 @@ public class JobLoader {
      */
     private static class SnapJobRunner implements Runnable {
         SnapJob snapJob;
+        ScheduledJob scheduledJob;
 
-        public SnapJobRunner(SnapJob snapJob) {
+        public SnapJobRunner(SnapJob snapJob, ScheduledJob scheduledJob) {
             this.snapJob = snapJob;
+            this.scheduledJob = scheduledJob;
         }
 
         @Override
@@ -216,6 +218,10 @@ public class JobLoader {
                 java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
                 e.printStackTrace(new java.io.PrintWriter(out, true));
                 Log.error(String.format("Job '%s' threw an exception and terminated: %s\n%s", jobName, e.getMessage(), out.toString()));
+            } finally {
+                if (scheduledJob != null) {
+                    scheduledJob.setActiveFlag(false);
+                }
             }
         }
     }

@@ -82,24 +82,21 @@ public class RtwJob extends AbstractSnapJob {
         if (engine != null) {
             Log.trace("Job.running: " + engine.getName());
 
-            do {
+            try {
+                engine.run();
+            } catch (final Exception e) {
+                Log.fatal("Job.exception_running_engine " + e.getClass().getSimpleName() + e.getMessage() + engine.getName() + engine.getClass().getSimpleName());
+                Log.fatal(ExceptionUtil.toString(e));
+                if (Log.isLogging(Log.DEBUG_EVENTS)) {
+                    Log.debug(ExceptionUtil.stackTrace(e));
+                }
+            } finally {
                 try {
-                    engine.run();
-                } catch (final Exception e) {
-                    Log.fatal("Job.exception_running_engine " + e.getClass().getSimpleName() + e.getMessage() + engine.getName() + engine.getClass().getSimpleName());
-                    Log.fatal(ExceptionUtil.toString(e));
-                    if (Log.isLogging(Log.DEBUG_EVENTS)) {
-                        Log.debug(ExceptionUtil.stackTrace(e));
-                    }
-                } finally {
-                    try {
-                        engine.close();
-                    } catch (final IOException ignore) {
-                    }
-                    Log.trace("Job completed: " + engine.getName());
-                } // try-catch-finally
-            }
-            while (repeat);
+                    engine.close();
+                } catch (final IOException ignore) {
+                }
+                Log.trace("Job completed: " + engine.getName());
+            } // try-catch-finally
 
         } else {
             Log.fatal("No engine configured.");
@@ -123,6 +120,7 @@ public class RtwJob extends AbstractSnapJob {
      */
     @Override
     public void stop() {
+        repeat = false;
         engine.shutdown();
     }
 
