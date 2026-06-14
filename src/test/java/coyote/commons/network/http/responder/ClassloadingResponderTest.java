@@ -26,8 +26,8 @@ public class ClassloadingResponderTest {
         port = NetUtil.getNextAvailablePort(port);
         server = new TestRouter(port);
         server.addDefaultRoutes();
-        // Add the route as it is configured in DaemonJob
-        server.addRoute("/", coyote.DaemonJob.RedirectResponder.class, "/daemonjob/index.html");
+        // Add the route as it is configured in BootStrap
+        server.addRoute("/", coyote.BootStrap.RedirectResponder.class, "/daemonjob/index.html");
         server.addRoute("/daemonjob/(.)+", ClassloadingResponder.class, "daemonjob");
 
         try {

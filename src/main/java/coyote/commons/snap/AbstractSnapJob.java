@@ -1,5 +1,6 @@
 package coyote.commons.snap;
 
+import coyote.commons.CoyoteEnvironment;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.FileUtil;
 import coyote.commons.Log;
@@ -48,8 +49,6 @@ public abstract class AbstractSnapJob implements SnapJob {
     /** A symbol table to support basic template functions */
     protected final SymbolTable symbols = new SymbolTable();
     /** Our configuration */
-    public static final String APP_HOME = "app.home";
-    public static final String APP_WORK = "app.work";
     public static final String OVERRIDE_WORK_DIR_ARG = "-owd";
     protected static final String DEFAULT_HOME = System.getProperty("user.dir");
 
@@ -95,26 +94,10 @@ public abstract class AbstractSnapJob implements SnapJob {
      * system properties or null if neither are defined.
      */
     protected static String getAppHome() {
-        return getVariable(APP_HOME);
+        return CoyoteEnvironment.getHomeDirectory();
     }
 
 
-    /**
-     * Returns the value from either the environment variables or the system
-     * properties with the system properties taking precedence over environment
-     * variables.
-     *
-     * @param variable the name of the variable to lookup
-     * @return The value from either the environment variables or system
-     * properties or null if neither are defined.
-     */
-    private static String getVariable(String variable) {
-        String retval = System.getenv().get(variable);
-        if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
-            retval = System.getProperties().getProperty(variable);
-        }
-        return retval;
-    }
 
 
     /**
@@ -154,30 +137,30 @@ public abstract class AbstractSnapJob implements SnapJob {
      * <p>If it cannot be determined from arguments, it defaults to the current working directory.</p>
      */
     protected void determineHomeDirectory() {
-        if (System.getProperty(APP_HOME) == null) {
+        if (System.getProperty(CoyoteEnvironment.APP_HOME) == null) {
             if (getCommandLineArguments() != null && getCommandLineArguments().length > 0) {
                 File cfgFile = new File(getCommandLineArguments()[0]);
                 if (cfgFile.exists()) {
                     if (cfgFile.getParentFile() != null) {
-                        System.setProperty(APP_HOME, cfgFile.getParentFile().getAbsolutePath());
+                        System.setProperty(CoyoteEnvironment.APP_HOME, cfgFile.getParentFile().getAbsolutePath());
                     } else {
-                        System.setProperty(APP_HOME, DEFAULT_HOME);
+                        System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
                     }
                 } else {
-                    System.setProperty(APP_HOME, DEFAULT_HOME);
+                    System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
                 }
             } else {
-                System.setProperty(APP_HOME, DEFAULT_HOME);
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
             }
         } else {
-            if (System.getProperty(APP_HOME).trim().equals(".")) {
-                System.setProperty(APP_HOME, DEFAULT_HOME);
-            } else if (StringUtil.isBlank(System.getProperty(APP_HOME))) {
-                System.setProperty(APP_HOME, DEFAULT_HOME);
+            if (System.getProperty(CoyoteEnvironment.APP_HOME).trim().equals(".")) {
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+            } else if (StringUtil.isBlank(System.getProperty(CoyoteEnvironment.APP_HOME))) {
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
             }
         }
-        System.setProperty(APP_HOME, FileUtil.normalizePath(System.getProperty(APP_HOME)));
-        Log.debug(String.format("Job home directory set to %s", System.getProperty(APP_HOME)));
+        System.setProperty(CoyoteEnvironment.APP_HOME, FileUtil.normalizePath(System.getProperty(CoyoteEnvironment.APP_HOME)));
+        Log.debug(String.format("Job home directory set to %s", System.getProperty(CoyoteEnvironment.APP_HOME)));
     }
 
     /**
@@ -201,13 +184,13 @@ public abstract class AbstractSnapJob implements SnapJob {
                     if (path == null) {
                         path = System.getProperty("user.dir");
                     }
-                    Log.debug("Overriding APP.WORK of '" + System.getProperties().getProperty(APP_WORK) + "' with '" + path + "'");
-                    System.setProperty(APP_WORK, path);
+                    Log.debug("Overriding APP.WORK of '" + System.getProperties().getProperty(CoyoteEnvironment.APP_WORK) + "' with '" + path + "'");
+                    System.setProperty(CoyoteEnvironment.APP_WORK, path);
                     break;
                 }
             }
         }
-        String path = System.getProperties().getProperty(APP_WORK);
+        String path = System.getProperties().getProperty(CoyoteEnvironment.APP_WORK);
         if (StringUtil.isNotBlank(path)) {
             Log.debug("Initializing APP.WORK directory '" + path + "'");
             String workDir = FileUtil.normalizePath(path);
@@ -234,7 +217,7 @@ public abstract class AbstractSnapJob implements SnapJob {
             }
         }
         if (result == null) {
-            String home = System.getProperty(APP_HOME);
+            String home = System.getProperty(CoyoteEnvironment.APP_HOME);
             if (StringUtil.isNotBlank(home)) {
                 File workingDir = new File(home, "wrk");
                 if (!workingDir.exists()) {
@@ -252,8 +235,8 @@ public abstract class AbstractSnapJob implements SnapJob {
         if (result == null) {
             result = new File(System.getProperty("user.dir"));
         }
-        System.setProperty(APP_WORK, result.getAbsolutePath());
-        Log.debug("APP.WORK set to " + System.getProperty(APP_WORK));
+        System.setProperty(CoyoteEnvironment.APP_WORK, result.getAbsolutePath());
+        Log.debug("APP.WORK set to " + System.getProperty(CoyoteEnvironment.APP_WORK));
     }
 
     protected String getConfigDir() {
@@ -297,8 +280,8 @@ public abstract class AbstractSnapJob implements SnapJob {
                 symbols.put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
             }
         }
-        symbols.put(Symbols.JOB_DIRECTORY, System.getProperty(APP_HOME));
-        symbols.put(Symbols.WORK_DIRECTORY, System.getProperty(APP_WORK));
+        symbols.put(Symbols.JOB_DIRECTORY, System.getProperty(CoyoteEnvironment.APP_HOME));
+        symbols.put(Symbols.WORK_DIRECTORY, System.getProperty(CoyoteEnvironment.APP_WORK));
     }
 
     protected void doConfigure() throws ConfigurationException {
@@ -355,6 +338,18 @@ public abstract class AbstractSnapJob implements SnapJob {
         }
     }
 
+
+
+    @Override
+    public String getName() {
+        return instanceName;
+    }
+
+
+    @Override
+    public void setName(String name) {
+        instanceName = name;
+    }
 
 
     /**

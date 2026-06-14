@@ -1,27 +1,28 @@
-# DaemonJob HTTP Server Guide
+# BootStrap HTTP Server Guide
 
-The `DaemonJob` can be configured to start an HTTP server that allows for remote control and monitoring via RESTful web services.
+The `BootStrap` loader can be configured to start an HTTP server that allows for remote control and monitoring of SnapJobs via RESTful web services.
 
 ## User Guide
 
 ### Configuration
 
-To enable the HTTP server in a `DaemonJob`, add a `Server` section to your job configuration.
+To enable the HTTP server, add a `Server` section to your configuration file.
 
 ```json
 {
   "Job": {
-    "class": "coyote.DaemonJob",
-    "Server": {
-      "port": 8443,
-      "Secure": {
-        "filename": "/keystore.jks",
-        "password": "password"
-      },
-      "ipacl": {
-        "127.0.0.1": "allow",
-        "default": "deny"
-      }
+    "class": "coyote.RtwJob",
+    "name": "MyJob"
+  },
+  "Server": {
+    "port": 8443,
+    "Secure": {
+      "filename": "/keystore.jks",
+      "password": "password"
+    },
+    "ipacl": {
+      "127.0.0.1": "allow",
+      "default": "deny"
     }
   }
 }
@@ -31,7 +32,7 @@ The `Server` section supports the full configuration of the Coyote HTTP Server, 
 
 ### Enabling SSL/HTTPS
 
-To enable secure connections in the `DaemonJob` HTTP server, add a `Secure` section to the `Server` configuration.
+To enable secure connections in the `BootStrap` HTTP server, add a `Secure` section to the `Server` configuration.
 
 ```json
 "Server": {
@@ -70,14 +71,15 @@ You can secure the HTTP server by adding a `Users` section to the `Server` confi
 ```json
 {
   "Job": {
-    "class": "coyote.DaemonJob",
-    "Server": {
-      "port": 8080,
-      "Users": {
-        "admin": {
-          "Password": "secretPassword",
-          "Groups": "admin,oper"
-        }
+    "class": "coyote.RtwJob",
+    "name": "MyJob"
+  },
+  "Server": {
+    "port": 8080,
+    "Users": {
+      "admin": {
+        "Password": "secretPassword",
+        "Groups": "admin,oper"
       }
     }
   }
@@ -151,9 +153,9 @@ To control the job, send a POST request to `/api/command` with a JSON body:
 ```
 
 Valid commands are:
-- `start`: Starts the job if it is not already running.
-- `stop`: Gracefully stops the job.
-- `shutdown`: Stops the job and terminates the daemon process.
+- `start`: Starts any jobs that are not already running.
+- `stop`: Gracefully stops all running jobs.
+- `shutdown`: Stops all jobs and terminates the loader process.
 
 ---
 
@@ -161,9 +163,9 @@ Valid commands are:
 
 ### Implementation Details
 
-The `DaemonJob` incorporates an HTTP server by using the `HTTPDRouter` class. This allows for sophisticated routing and the use of specialized responders.
+The `BootStrap` loader incorporates an HTTP server by using the `HTTPDRouter` class. This allows for sophisticated routing and the use of specialized responders.
 
-The `DaemonJob` instance is passed to the responders during initialization, allowing them to interact directly with the job's lifecycle and state.
+The `BootStrap` instance is passed to the responders during initialization, allowing them to interact directly with the loader's state and jobs.
 
 ### Modifying Existing Responders
 
@@ -183,7 +185,7 @@ Example adding a "reset" command:
 
 ```java
 case "reset":
-    job.reset(); // Assuming DaemonJob has a reset method
+    loader.reset(); // Assuming BootStrap has a reset method
     results.set("status", "reset complete");
     break;
 ```
@@ -210,8 +212,8 @@ To add entirely new endpoints and capabilities:
 1.  **Create a new Responder class**: Create a class in `coyote.commons.rtw.daemonjob` that extends `AbstractJsonResponder` (for JSON APIs) or `ServiceResponder`.
 2.  **Add Authentication (Optional)**: Use the `@Auth` annotation to secure the responder. To restrict access to a specific group, use `@Auth(groups = "admin")`.
 3.  **Implement Handler Methods**: Override `get`, `post`, `put`, or `delete` as needed.
-4.  **Access DaemonJob**: Use `resource.initParameter(DaemonJob.class)` to get the job instance.
-5.  **Register the Route**: In `coyote.DaemonJob.configure(Config)`, add your new route to the `server` instance.
+4.  **Access BootStrap**: Use `resource.initParameter(BootStrap.class)` to get the loader instance.
+5.  **Register the Route**: In `coyote.BootStrap.configureServer(Config)`, add your new route to the `server` instance.
 
 Example of a group-restricted responder:
 
@@ -220,15 +222,15 @@ Example of a group-restricted responder:
 public class ShutdownResponder extends AbstractJsonResponder {
     @Override
     public Response post(Resource resource, Map<String, String> urlParams, HTTPSession session) {
-        DaemonJob job = resource.initParameter(DaemonJob.class);
-        job.stop();
+        BootStrap loader = resource.initParameter(BootStrap.class);
+        // logic to shutdown the loader
         results.set("status", "System shutting down");
         return Response.createFixedLengthResponse(Status.OK, getMimeType(), results.toString());
     }
 }
 ```
 
-And registering it in `DaemonJob.configure`:
+And registering it in `BootStrap.configureServer`:
 
 ```java
 server.addRoute("/api/admin/shutdown", ShutdownResponder.class, this);
@@ -236,7 +238,7 @@ server.addRoute("/api/admin/shutdown", ShutdownResponder.class, this);
 
 ### Initialization
 
-The server is initialized in `DaemonJob.configure(Config)` when a `Server` configuration section is detected.
+The server is initialized in `BootStrap.configureServer(Config)` when a `Server` configuration section is detected.
 
 ```java
 server = new HTTPDRouter(port);
@@ -245,8 +247,8 @@ server.addRoute("/api/command", CommandResponder.class, this);
 server.addRoute("/api/status", StatusResponder.class, this);
 ```
 
-The `this` reference (the `DaemonJob` instance) is passed as an initialization parameter. Responders retrieve it using:
+The `this` reference (the `BootStrap` instance) is passed as an initialization parameter. Responders retrieve it using:
 
 ```java
-DaemonJob job = resource.initParameter(DaemonJob.class);
+BootStrap loader = resource.initParameter(BootStrap.class);
 ```

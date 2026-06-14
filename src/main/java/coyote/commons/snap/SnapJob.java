@@ -52,4 +52,14 @@ public interface SnapJob extends Runnable {
      */
     void setCommandLineArguments(String[] args);
 
+    /**
+     * @return the name of the job
+     */
+    String getName();
+
+    /**
+     * @param name the name of the job
+     */
+    void setName(String name);
+
 }

@@ -51,12 +51,14 @@ public class MyCustomJob extends AbstractSnapJob {
 
 ## Job Loading with JobLoader
 
-The `JobLoader` utility is responsible for instantiating and configuring jobs from a `Config` object. It supports both standard and legacy JSON formats.
+The `JobLoader` utility is responsible for instantiating and configuring jobs from a `Config` object. It supports both standard and legacy JSON formats, as well as multiple job configurations and scheduling.
 
 ```java
 Config myConfig = ...;
-SnapJob job = JobLoader.loadJob(myConfig);
-job.start();
+List<ScheduledJob> jobs = JobLoader.loadJobs(myConfig);
+for (ScheduledJob job : jobs) {
+    job.run();
+}
 ```
 
 ## Best Practices

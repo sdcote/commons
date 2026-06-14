@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
+import coyote.commons.CoyoteEnvironment;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
@@ -23,8 +26,23 @@ import coyote.commons.cli.ArgumentList;
 import coyote.commons.cli.ArgumentParser;
 import coyote.commons.cli.Options;
 import coyote.commons.cli.PosixParser;
+import coyote.commons.dataframe.DataFrame;
+import coyote.commons.job.ScheduledJob;
+import coyote.commons.job.Scheduler;
 import coyote.commons.log.Log;
+import coyote.commons.network.MimeType;
+import coyote.commons.network.http.HTTPD;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Response;
+import coyote.commons.network.http.Status;
+import coyote.commons.network.http.auth.GenericAuthProvider;
+import coyote.commons.network.http.responder.ClassloadingResponder;
+import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.network.http.responder.Resource;
+import coyote.commons.network.http.responder.Responder;
 import coyote.commons.rtw.ConfigTag;
+import coyote.commons.rtw.daemonjob.CommandResponder;
+import coyote.commons.rtw.daemonjob.StatusResponder;
 import coyote.commons.snap.AbstractSnapJob;
 import coyote.commons.snap.JobLoader;
 import coyote.commons.snap.SnapJob;
@@ -64,13 +82,14 @@ public class BootStrap {
     private static Config configuration = null;
     private static String cfgLoc = null;
     private static URI cfgUri = null;
-    public static String APP_HOME = AbstractSnapJob.APP_HOME;
+    private static final Scheduler scheduler = new Scheduler();
+    private static HTTPDRouter server = null;
+    public static String APP_HOME = CoyoteEnvironment.APP_HOME;
 
     private static final String JSON_EXT = ".json";
 
     /** Name ({@value}) of the system property containing the URI used to load the configuration. */
     public static final String CONFIG_DIR = "cfg.dir";
-
 
 
     static {
@@ -86,6 +105,7 @@ public class BootStrap {
             }
         });
     }
+
 
     /**
      * Main entry point of the bootstrap loader.
@@ -109,62 +129,191 @@ public class BootStrap {
         // Read in the configuration
         readConfig();
 
-        SnapJob job = loadJob(args);
+        List<ScheduledJob> jobs = null;
+        try {
+            jobs = JobLoader.loadJobs(configuration);
+        } catch (ConfigurationException e) {
+            Log.fatal(String.format("Could not load/configure jobs: %s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            System.exit(6);
+        }
 
-        // If we have a loader
-        if (job != null) {
-
-            // Register a shutdown method to terminate cleanly when the JVM exit
-            registerShutdownHook(job);
-
-            // Start the job running in the current thread
-            try {
-                job.start();
-            } catch (Exception e) {
-                Log.fatal("The job threw an exception and terminated: " + e.getLocalizedMessage() + " - " + ExceptionUtil.stackTrace(e));
-                System.exit(3);
-            }
-        } else {
-            Log.fatal("No job was created.");
+        if (jobs == null || jobs.isEmpty()) {
+            Log.fatal("No jobs were created.");
             System.exit(2);
         }
 
-        // We don't have to stop the job because the shutdown hook will do it for us when the runtime terminates.
-
-        // Normal termination
-        System.exit(0);
-
-    }
-
-    /**
-     * Determine the job class to use from the given configuration and create an instance of it.
-     * 
-     * <p>Once created, the job will be passed the configuration resulting in a configured job.</p>
-     * 
-     * @param args the command line arguments passed to this bootstrap loader
-     * 
-     * @return a configured job.
-     */
-    private static SnapJob loadJob(String[] args) {
-        SnapJob retval = null;
-        try {
-            retval = JobLoader.loadJob(configuration);
-            if (retval != null) {
-                retval.setCommandLineArguments(args);
+        // Configure server if needed
+        if (configuration.containsIgnoreCase(ConfigTag.SERVER)) {
+            try {
+                configureServer(configuration);
+            } catch (ConfigurationException e) {
+                Log.error("Could not configure HTTP Server: " + e.getMessage());
             }
-        } catch (ConfigurationException e) {
-            Log.fatal(String.format("Could not load/configure job: %s: %s", e.getClass().getSimpleName(), e.getMessage()));
-            System.exit(6);
         }
-        return retval;
+
+        // Determine if we should use the scheduler or just run a single job
+        boolean useScheduler = false;
+        if (jobs.size() > 1 || server != null) {
+            useScheduler = true;
+        } else {
+            for (ScheduledJob job : jobs) {
+                if (job.isRepeatable()) {
+                    useScheduler = true;
+                    break;
+                }
+            }
+        }
+
+        if (useScheduler) {
+            for (ScheduledJob job : jobs) {
+                scheduler.schedule(job);
+            }
+
+            if (server != null) {
+                try {
+                    server.start();
+                    Log.info(String.format("HTTP listener started on port %d", server.getListeningPort()));
+                } catch (IOException e) {
+                    Log.error(String.format("Could not start HTTP listener: %s", e.getMessage()));
+                }
+            }
+
+            // Register a shutdown method to terminate cleanly when the JVM exit
+            registerShutdownHook(null);
+
+            scheduler.run();
+        } else {
+            // Run the single job in the current thread
+            ScheduledJob scheduledJob = jobs.get(0);
+            registerShutdownHook(scheduledJob);
+            try {
+                scheduledJob.run();
+            } catch (Throwable e) {
+                Log.fatal("The single job threw an exception and the loader is terminating: " + e.getMessage());
+            }
+        }
+
+        System.exit(0);
+    }
+
+    /**
+     * Start the bootstrap loader.
+     */
+    public void start() {
+        if (server != null && !server.isAlive()) {
+            try {
+                server.start();
+            } catch (IOException e) {
+                Log.error("Could not start server: " + e.getMessage());
+            }
+        }
+        if (!scheduler.isActive()) {
+            scheduler.run();
+        }
+    }
+
+    /**
+     * Stop the bootstrap loader.
+     */
+    public void stop() {
+        scheduler.shutdown();
+        if (server != null) {
+            server.stop();
+        }
+    }
+
+    private static void configureServer(Config cfg) throws ConfigurationException {
+        try {
+            DataFrame serverFrame = cfg.getAsFrame(cfg.getFieldIgnoreCase(ConfigTag.SERVER).getName());
+            Config serverConfig = new Config(serverFrame);
+            int port = 80;
+
+            if (serverConfig.containsIgnoreCase(ConfigTag.PORT)) {
+                try {
+                    port = serverConfig.getInt(ConfigTag.PORT);
+                } catch (Exception e) {
+                    Log.error(String.format("Invalid port in server configuration: %s", e.getMessage()));
+                }
+            }
+
+            server = new HTTPDRouter(port);
+
+            if (serverConfig.containsIgnoreCase(GenericAuthProvider.AUTH_SECTION) || serverConfig.containsIgnoreCase(GenericAuthProvider.USER_SECTION)) {
+                DataFrame authFrame = null;
+                if (serverConfig.containsIgnoreCase(GenericAuthProvider.AUTH_SECTION)) {
+                    authFrame = serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(GenericAuthProvider.AUTH_SECTION).getName());
+                } else {
+                    authFrame = serverFrame;
+                }
+                server.setAuthProvider(new GenericAuthProvider(new Config(authFrame)));
+            }
+
+            server.addDefaultRoutes();
+            server.addRoute("/", RedirectResponder.class, "daemonjob/index.html");
+            server.addRoute("/api/command", CommandResponder.class, new BootStrap());
+            server.addRoute("/api/status", StatusResponder.class, new BootStrap());
+            server.addRoute("daemonjob/(.)+", ClassloadingResponder.class, "daemonjob");
+
+            if (serverConfig.containsIgnoreCase(ConfigTag.IPACL)) {
+                server.configIpACL(new Config(serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.IPACL).getName())));
+            }
+
+            if (serverConfig.containsIgnoreCase(ConfigTag.FREQUENCY)) {
+                server.configDosTables(new Config(serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.FREQUENCY).getName())));
+            }
+
+            if (serverConfig.containsIgnoreCase(ConfigTag.SECURE)) {
+                try {
+                    DataFrame secureFrame = serverConfig.getAsFrame(serverConfig.getFieldIgnoreCase(ConfigTag.SECURE).getName());
+                    Config secureConfig = new Config(secureFrame);
+                    String keystorePath = secureConfig.getString(ConfigTag.FILE);
+                    String password = secureConfig.getString(ConfigTag.PASSWORD);
+                    if (StringUtil.isNotBlank(keystorePath) && StringUtil.isNotBlank(password)) {
+                        server.makeSecure(HTTPD.makeSSLSocketFactory(keystorePath, password.toCharArray()), null);
+                    }
+                } catch (Exception e) {
+                    Log.error(String.format("Could not configure SSL: %s", e.getMessage()));
+                }
+            }
+        } catch (Exception e) {
+            throw new ConfigurationException("HTTP server configuration failed", e);
+        }
+    }
+
+    /**
+     * A simple responder that redirects to another URI.
+     */
+    public static class RedirectResponder implements Responder {
+        @Override
+        public Response get(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            String target = resource.initParameter(String.class);
+            Response response = Response.createFixedLengthResponse(Status.REDIRECT, MimeType.HTML.getType(), "Redirecting to " + target);
+            response.addHeader("Location", target);
+            return response;
+        }
+
+        @Override
+        public Response post(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response put(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response delete(Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
+
+        @Override
+        public Response other(String method, Resource resource, Map<String, String> urlParams, HTTPSession session) {
+            return get(resource, urlParams, session);
+        }
     }
 
 
-    /**
-     * 
-     * @param args
-     * @throws ArgumentException
-     */
     private static void parseArgs(String[] args) throws ArgumentException {
         final Options options = new Options();
         options.addOption("h", "help", false, "show help");
@@ -206,17 +355,18 @@ public class BootStrap {
 
     }
 
-    /**
-     * Add a shutdown hook into the JVM to help the job shut everything down nicely.
-     *
-     * @param job The job to terminate
-     */
-    protected static void registerShutdownHook(final SnapJob job) {
+    private static void registerShutdownHook(final ScheduledJob job) {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread("BootstrapHook") {
                 public void run() {
                     Log.debug("Runtime terminating, stopping job.");
-                    if (job != null) { job.stop(); }
+                    if (job != null) {
+                        job.shutdown();
+                    }
+                    scheduler.shutdown();
+                    if (server != null) {
+                        server.stop();
+                    }
                     Log.debug("Job stop completed.");
                 }
             });
@@ -228,7 +378,7 @@ public class BootStrap {
     protected static void confirmAppHome() {
         // see if there is an environment variable or a system property with a shared
         // configuration directory
-        String path = getAppHome();
+        String path = CoyoteEnvironment.getHomeDirectory();
 
         // if there is a application home directory specified
         if (StringUtil.isNotBlank(path)) {
@@ -434,28 +584,11 @@ public class BootStrap {
     }
 
     /**
-     * This returns the value of app.home from either the environment variables or the system properties, with the system properties
-     * overriding the environment variables.
-     *
      * @return The value of app.home from either the environment variables or system properties or null if neither are defined.
      */
     protected static String getAppHome() {
-        return getVariable(APP_HOME);
+        return CoyoteEnvironment.getHomeDirectory();
     }
 
-    /**
-     * Returns the value from either the environment variables or the system properties with the system properties taking precedence
-     * over environment variables.
-     *
-     * @param variable the name of the variable to lookup
-     * @return The value from either the environment variables or system properties or null if neither are defined.
-     */
-    private static String getVariable(String variable) {
-        String retval = System.getenv().get(variable);
-        if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
-            retval = System.getProperties().getProperty(variable);
-        }
-        return retval;
-    }
 
 }

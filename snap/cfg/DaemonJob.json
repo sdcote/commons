@@ -1,45 +1,43 @@
 {
-  "class": "coyote.DaemonJob",
-  "configuration": {
-    "Server": {
-      "Port": 8080,
-      "Users": {
-        "User": {
-          "Name": "admin",
-          "Password": "adminPassword",
-          "Groups": "admin"
+  "name": "DaemonJob",
+  "Server": {
+    "Port": 8080,
+    "Users": {
+      "User": {
+        "Name": "admin",
+        "Password": "adminPassword",
+        "Groups": "admin"
+      }
+    }
+  },
+  "Job": [
+    {
+      "RtwJob": {
+        "Reader": {
+          "class": "DirectoryTripwireReader",
+          "directory": "/Users/sdcote/Downloads"
+        },
+        "Writer": {
+          "class": "ConsoleWriter",
+          "format": "json",
+          "indent": true
         }
       }
     },
-    "Job": [
-      {
-        "RtwJob": {
-          "Reader": {
-            "class": "DirectoryTripwireReader",
-            "directory": "/Users/sdcote/Downloads"
-          },
-          "Writer": {
-            "class": "ConsoleWriter",
-            "format": "json",
-            "indent": true
-          }
-        }
-      },
-      {
-        "RtwJob": {
-          "Reader": {
-            "class": "DirectoryTripwireReader",
-            "directory": "/var/log"
-          },
-          "Writer": {
-            "class": "ConsoleWriter",
-            "format": "json",
-            "indent": true
-          }
+    {
+      "RtwJob": {
+        "Reader": {
+          "class": "DirectoryTripwireReader",
+          "directory": "/var/log"
+        },
+        "Writer": {
+          "class": "ConsoleWriter",
+          "format": "json",
+          "indent": true
         }
       }
-    ]
-  },
+    }
+  ],
   "logging": [
     {
       "StandardError": {
