@@ -7,7 +7,6 @@
  */
 package coyote.commons.zip;
 
-import java.io.File;
 
 
 /**

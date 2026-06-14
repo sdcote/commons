@@ -13,7 +13,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import coyote.commons.CipherUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.cfg.Config;

@@ -8,7 +8,6 @@
 package coyote.commons.rtw.daemonjob;
 
 import coyote.BootStrap;
-import coyote.commons.dataframe.DataFrame;
 import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;

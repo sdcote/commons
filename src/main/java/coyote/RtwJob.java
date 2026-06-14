@@ -8,22 +8,15 @@
 package coyote;
 
 import coyote.commons.ExceptionUtil;
-import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
-import coyote.commons.UriUtil;
-import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
-import coyote.commons.rtw.Symbols;
 import coyote.commons.rtw.TransformEngine;
 import coyote.commons.rtw.TransformEngineFactory;
 import coyote.commons.snap.AbstractSnapJob;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 
 /**
  * This is a Snap job that handles Read-Transform-Write (RTW) tasks.

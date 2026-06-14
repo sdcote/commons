@@ -43,9 +43,7 @@ import coyote.commons.network.http.responder.Responder;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.daemonjob.CommandResponder;
 import coyote.commons.rtw.daemonjob.StatusResponder;
-import coyote.commons.snap.AbstractSnapJob;
 import coyote.commons.snap.JobLoader;
-import coyote.commons.snap.SnapJob;
 
 /**
  * This acts as a very generic loader of classes based on configuration files.

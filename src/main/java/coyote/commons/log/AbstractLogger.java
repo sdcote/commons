@@ -7,7 +7,6 @@
  */
 package coyote.commons.log;
 
-import coyote.commons.UriUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.dataframe.DataField;
 

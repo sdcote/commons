@@ -13,7 +13,6 @@ import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.ConfigurableComponent;
 import coyote.commons.rtw.FrameReader;
-import coyote.commons.rtw.RTW;
 import coyote.commons.rtw.context.TransformContext;
 
 

@@ -1,6 +1,5 @@
 package coyote.commons.security;
 
-import java.security.KeyException;
 import java.util.Date;
 
 import coyote.commons.ByteUtil;

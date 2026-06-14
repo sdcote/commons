@@ -11,7 +11,6 @@ package coyote.commons.rtw.transform;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
-import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.FrameTransform;
 import coyote.commons.rtw.TransformException;
 import coyote.commons.rtw.transform.AbstractFieldTransform;

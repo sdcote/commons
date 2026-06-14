@@ -1,33 +1,19 @@
 package coyote.commons.snap;
 
 import coyote.commons.CoyoteEnvironment;
-import coyote.commons.ExceptionUtil;
 import coyote.commons.FileUtil;
 import coyote.commons.Log;
 import coyote.commons.StringUtil;
-import coyote.commons.UriUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
-import coyote.commons.dataframe.DataField;
-import coyote.commons.dataframe.DataFrame;
 import coyote.commons.i13n.StatBoard;
 import coyote.commons.i13n.StatBoardImpl;
-import coyote.commons.log.Logger;
-import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.Symbols;
 import coyote.commons.rtw.context.OperationalContext;
 import coyote.commons.template.SymbolTable;
-import coyote.commons.template.Template;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Base implementation of a SnapJob providing common functionality.

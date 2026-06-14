@@ -1,6 +1,5 @@
 package coyote.commons.uml.marshal;
 
-import coyote.commons.StringUtil;
 import coyote.commons.uml.DiagramBounds;
 import coyote.commons.uml.UmlDiagram;
 import coyote.commons.uml.UmlDiagramElement;
