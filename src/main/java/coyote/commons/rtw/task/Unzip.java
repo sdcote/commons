@@ -29,9 +29,9 @@ public class Unzip extends AbstractFileTask {
   protected void performTask() throws TaskException {
     final String source = getSourceOrFile();
     if (StringUtil.isNotBlank(source)) {
-      Log.debug(getClass().getSimpleName() + " using a filename of '" + source + "'");;
+      Log.debug(String.format("%s using a filename of '%s'", getClass().getSimpleName(), source));
       final File file = getExistingFile(source);
-      Log.debug(getClass().getSimpleName() + " using absolute filename of '" + file.getAbsolutePath() + "'");;
+      Log.debug(String.format("%s using absolute filename of '%s'", getClass().getSimpleName(), file.getAbsolutePath()));
 
       if (file.exists()) {
         if (file.canRead()) {
@@ -45,7 +45,7 @@ public class Unzip extends AbstractFileTask {
             Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
           }
         } else {
-          final String msg = String.format( "Task.failed_file_cannot_be_read %s - %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
+          final String msg = String.format("%s failed: File cannot be read %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -53,7 +53,7 @@ public class Unzip extends AbstractFileTask {
           }
         }
       } else {
-        final String msg = String.format( "Task.failed_file_does_not_exist %s %s %s", getClass().getSimpleName(), source, file.getAbsolutePath());
+        final String msg = String.format("%s failed: File does not exist: %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
         if (haltOnError) {
           throw new TaskException(msg);
         } else {

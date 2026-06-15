@@ -159,18 +159,18 @@ public class RunSql extends AbstractTransformTask implements TransformTask {
     if (!sourceFile.isAbsolute()) {
       sourceFile = RTW.resolveFile(sourceFile, getContext());
     }
-    Log.debug("Using an absolute source file of " + sourceFile.getAbsolutePath());
+    Log.debug(String.format("Using an absolute source file of %s", sourceFile.getAbsolutePath()));
 
     if (sourceFile.exists() && sourceFile.canRead()) {
       try {
         bufferedReader = new BufferedReader(new FileReader(sourceFile));
 
       } catch (final Exception e) {
-        Log.error("Could not create reader: " + e.getMessage());
+        Log.error(String.format("Could not create reader: %s", e.getMessage()));
         context.setError(e.getMessage());
       }
     } else {
-      context.setError(String.format("Reader.could_not_read_from_source", getClass().getName(), sourceFile.getAbsolutePath()).toString());
+      context.setError(String.format("Could not read from source: %s", sourceFile.getAbsolutePath()));
     }
 
     // If we don't have a connection, prepare to create one
@@ -182,7 +182,7 @@ public class RunSql extends AbstractTransformTask implements TransformTask {
       final Object obj = getContext().get(target);
       if (obj != null && obj instanceof DatabaseConnector) {
         setConnector((DatabaseConnector)obj);
-        Log.debug("Using database connector found in context bound to '" + target + "'");
+        Log.debug(String.format("Using database connector found in context bound to '%s'", target));
       }
 
       if (getConnector() == null) {
@@ -215,22 +215,22 @@ public class RunSql extends AbstractTransformTask implements TransformTask {
         try {
           database.setConfiguration(cfg);
           if (Log.isLogging(Log.DEBUG_EVENTS)) {
-            Log.debug(String.format("Component.using_target", getClass().getSimpleName(), database.getTarget()));
-            Log.debug(String.format("Component.using_driver", getClass().getSimpleName(), database.getDriver()));
-            Log.debug(String.format("Component.using_library", getClass().getSimpleName(), database.getLibrary()));
-            Log.debug(String.format("Component.using_user", getClass().getSimpleName(), database.getUserName()));
-            Log.debug(String.format("Component.using_password", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
+            Log.debug(String.format("%s is using target: %s", getClass().getSimpleName(), database.getTarget()));
+            Log.debug(String.format("%s is using driver: %s", getClass().getSimpleName(), database.getDriver()));
+            Log.debug(String.format("%s is using library: %s", getClass().getSimpleName(), database.getLibrary()));
+            Log.debug(String.format("%s is using user: %s", getClass().getSimpleName(), database.getUserName()));
+            Log.debug(String.format("%s is using password length: %d", getClass().getSimpleName(), StringUtil.isBlank(database.getPassword()) ? 0 : database.getPassword().length()));
           }
         } catch (final ConfigurationException e) {
           context.setError("Could not configure database connector: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
       }
     } else {
-      Log.debug(String.format("Component.using_existing_connection", getClass().getSimpleName()));
+      Log.debug(String.format("%s is using an existing connection", getClass().getSimpleName()));
     }
 
     setBatchSize(getInteger(ConfigTag.BATCH));
-    Log.debug(String.format("Component.using_batch_size", getClass().getSimpleName(), getBatchSize()));
+    Log.debug(String.format("%s is using batch size: %d", getClass().getSimpleName(), getBatchSize()));
 
     // validate and cache our batch size
     if (getBatchSize() < 1) {

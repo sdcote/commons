@@ -73,7 +73,7 @@ public class Copy extends AbstractFileTask {
       if (StringUtil.isNotBlank(target)) {
         // this is a file to file copy
         final String tgt = resolveFile(target).getAbsolutePath();
-        Log.debug(String.format( "Task.copy_file_to_file", src, tgt));
+        Log.debug(String.format("Copying file %s to %s", src, tgt));
 
         try {
           FileUtil.copyFile(src, tgt);
@@ -87,7 +87,7 @@ public class Copy extends AbstractFileTask {
       } else if (StringUtil.isNotBlank(toDir)) {
         // this is a file to directory copy
         final String tgt = resolveFile(toDir).getAbsolutePath();
-        Log.debug(String.format( "Task.Copying file named {%s} to directory named {%s}", src, tgt));
+        Log.debug(String.format("Copying file %s to directory %s", src, tgt));
 
         try {
           FileUtil.copyFileToDir(src, tgt);
@@ -112,7 +112,7 @@ public class Copy extends AbstractFileTask {
         // this is a directory to directory copy
         final String fDir = resolveFile(fromDir).getAbsolutePath();
         final String tDir = resolveFile(toDir).getAbsolutePath();
-        Log.debug(String.format( "Task.copying_directory", fDir, tDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename));
+        Log.debug(String.format("Copying directory %s to %s (pattern: %s, recurse: %b, preserve: %b, keepDate: %b, overwrite: %b, rename: %b)", fDir, tDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename));
 
         try {
           FileUtil.copyDirectory(fDir, tDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename);
@@ -123,7 +123,7 @@ public class Copy extends AbstractFileTask {
           }
         }
       } else {
-        String msg = String.format( "Task.copy_target_directory_missing").toString();
+        String msg = "Copy target directory missing";
         Log.warn(msg);
 
         if (haltOnError) {

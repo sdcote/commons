@@ -44,23 +44,23 @@ public class SetSymbol extends AbstractTransformTask implements TransformTask {
           if (result % 1 == 0) {
             long longValue = new Double(result).longValue();
             getContext().getSymbols().put(getSymbolName(), longValue);
-            Log.debug(getClass().getSimpleName() + " Set '" + getSymbolName() + "' to numeric value of '" + longValue + "' with expression: '" + expression + "'");
+            Log.debug(String.format("%s set '%s' to numeric value of '%d' with expression: '%s'", getClass().getSimpleName(), getSymbolName(), longValue, expression));
           } else {
             getContext().getSymbols().put(getSymbolName(), result);
-            Log.debug(getClass().getSimpleName() + " Set '" + getSymbolName() + "' to numeric value of '" + result + "' with expression: '" + expression + "'");
+            Log.debug(String.format("%s set '%s' to numeric value of '%f' with expression: '%s'", getClass().getSimpleName(), getSymbolName(), result, expression));
           }
         } catch (Exception e) {
           // maybe it is a boolean expression
           try {
             boolean result = evaluator.evaluateBoolean(expression);
             getContext().getSymbols().put(getSymbolName(), result);
-            Log.debug(getClass().getSimpleName() + " Set '" + getSymbolName() + "' to boolean value of '" + result + "' with expression: '" + expression + "'");
+            Log.debug(String.format("%s set '%s' to boolean value of '%b' with expression: '%s'", getClass().getSimpleName(), getSymbolName(), result, expression));
           } catch (IllegalArgumentException e1) {
-            Log.error(getClass().getSimpleName() + " could not evaluate expression '" + expression + "' - Numeric error: " + e.getMessage() + " - Boolean error: " + e1.getMessage());
+            Log.error(String.format("%s could not evaluate expression '%s' - Numeric error: %s - Boolean error: %s", getClass().getSimpleName(), expression, e.getMessage(), e1.getMessage()));
           }
         }
       } else {
-        Log.error(getClass().getSimpleName() + " did not have a value nor expression configured, value not set");
+        Log.error(String.format("%s did not have a value nor expression configured, value not set", getClass().getSimpleName()));
       }
     } else {
       getContext().getSymbols().put(getSymbolName(), resolveArgument(getSymbolValue()));

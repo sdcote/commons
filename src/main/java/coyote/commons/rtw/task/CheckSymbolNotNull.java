@@ -30,11 +30,11 @@ public class CheckSymbolNotNull extends AbstractTransformTask {
 
         if (cfg.contains(ConfigTag.SYMBOL)) {
             if (StringUtil.isBlank(cfg.getString(ConfigTag.SYMBOL))) {
-                throw new ConfigurationException(String.format( "Task.checksymbolnotnull.empty_cfg_param %s %s", getClass().getSimpleName(), ConfigTag.SYMBOL));
+                throw new ConfigurationException(String.format("%s configuration parameter '%s' is empty", getClass().getSimpleName(), ConfigTag.SYMBOL));
             }
             // we have a symbol name to check
         } else {
-            throw new ConfigurationException(String.format( "Task.checksymbolnotnull.missing_cfg_param %s %s", getClass().getSimpleName(), ConfigTag.SYMBOL));
+            throw new ConfigurationException(String.format("%s missing configuration parameter '%s'", getClass().getSimpleName(), ConfigTag.SYMBOL));
         }
 
     }
@@ -58,7 +58,7 @@ public class CheckSymbolNotNull extends AbstractTransformTask {
     @Override
     protected void performTask() throws TaskException {
         if (StringUtil.isEmpty(getContext().getSymbols().getString(getSymbolName())))
-            throw new TaskException(String.format( "Task.checksymbolnotnull.symbol_is_empty %s", getSymbolName()));
+            throw new TaskException(String.format("Symbol '%s' is empty or null", getSymbolName()));
     }
 
 }

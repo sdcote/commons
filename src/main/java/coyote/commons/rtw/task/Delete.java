@@ -36,10 +36,10 @@ public class Delete extends AbstractFileTask {
       final String file = resolveArgument(filename);
 
       File sourceFile = resolveFile(file);
-      Log.debug(String.format( "Task.deleting_file", file, sourceFile.getAbsolutePath()));
+      Log.debug(String.format("Deleting file %s (%s)", file, sourceFile.getAbsolutePath()));
 
       if (!FileUtil.deleteFile(sourceFile)) {
-        String msg = String.format( "Task.file_deletion_error", file, sourceFile.getAbsolutePath()).toString();
+        String msg = String.format("File deletion error: %s (%s)", file, sourceFile.getAbsolutePath());
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
@@ -51,14 +51,14 @@ public class Delete extends AbstractFileTask {
     } else if (StringUtil.isNotBlank(directory)) {
       final String dir = resolveArgument(directory);
       File dirFile = resolveFile(dir);
-      Log.debug(String.format( "Task.deleting_directory", dir, dirFile.getAbsolutePath()));
+      Log.debug(String.format("Deleting directory %s (%s)", dir, dirFile.getAbsolutePath()));
 
       if (dirFile.exists()) {
         if (dirFile.isDirectory()) {
           try {
             FileUtil.deleteDirectory(dirFile);
           } catch (final Exception e) {
-            String msg = String.format( "Task.directory_deletion_error", dir, dirFile.getAbsolutePath()).toString();
+            String msg = String.format("Directory deletion error: %s (%s)", dir, dirFile.getAbsolutePath());
             if (haltOnError) {
               throw new TaskException(msg);
             } else {
@@ -67,7 +67,7 @@ public class Delete extends AbstractFileTask {
             }
           }
         } else {
-          String msg = String.format( "Task.directory_specified_file_found", this.getClass().getName(), dir, dirFile.getAbsolutePath()).toString();
+          String msg = String.format("Directory specified but file found: %s (%s)", dir, dirFile.getAbsolutePath());
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -78,7 +78,7 @@ public class Delete extends AbstractFileTask {
       }
 
     } else {
-      Log.warn(String.format("Task.Delete configuration error: missing %s or %s", ConfigTag.FILE, ConfigTag.DIRECTORY));
+      Log.warn(String.format("Delete task configuration error: missing %s or %s", ConfigTag.FILE, ConfigTag.DIRECTORY));
     }
 
   }
