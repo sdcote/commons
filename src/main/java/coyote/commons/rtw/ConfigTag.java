@@ -54,7 +54,7 @@ public class ConfigTag {
     public static final String LIMIT = "limit";
     public static final String LINEMAP = "linemap";
     public static final String LISTEN = "Listen";
-    public static final String LOGGING = "logging";
+    public static final String LOGGING = "Logging";
     public static final String MESSAGE = "Message";
     public static final String NAME = "name";
     public static final String MODE = "mode";
@@ -136,7 +136,7 @@ public class ConfigTag {
     public static final String CATEGORY = "category";
     public static final String ENABLED = "enabled";
     public static final String VAULT = "vault";
-    public static final String CONFIGURATION = "configuration";
+    public static final String CONFIGURATION = "Configuration";
 
     // Tasks
 

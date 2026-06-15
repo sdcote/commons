@@ -120,7 +120,7 @@ final class LogKernel {
         for (final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
             final Logger logger = en.nextElement();
 
-            if ((logger.getMask() & code) != 0) {
+            if ((logger.getMask() & code) != 0 || (logger.getMask() == -1L)) {
                 logger.append(category, event, cause);
             }
         }
@@ -229,13 +229,15 @@ final class LogKernel {
      * @return The code for the given category.
      */
     public static synchronized long getCode(final String category) {
+        if (category == null) return 0;
+        String name = category.toUpperCase();
         if (LogKernel.stringToCode.size() < 64) {
-            Long code = LogKernel.stringToCode.get(category);
+            Long code = LogKernel.stringToCode.get(name);
 
             if (code == null) {
                 code = 1L << LogKernel.stringToCode.size();
-                LogKernel.stringToCode.put(category, code);
-                LogKernel.codeToString.put(code, category);
+                LogKernel.stringToCode.put(name, code);
+                LogKernel.codeToString.put(code, name);
             }
 
             return code;
@@ -323,7 +325,7 @@ final class LogKernel {
      * by the mask false otherwise
      */
     public static boolean isLogging(final long mask) {
-        return ((LogKernel.masks & mask) != 0);
+        return ((LogKernel.masks & mask) != 0) || (LogKernel.masks == -1L);
     }
 
     /**

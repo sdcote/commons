@@ -1,17 +1,19 @@
 {
-  "class": "coyote.RtwJob",
-  "configuration": {
-    "Vault": {
-      "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault",
-      "password": "[#$env.vault.password#]"
-    },
-    "Reader": {
-      "class": "DirectoryReader",
-      "directory": "[#$sys.user.home#][#$sys.file.separator#]Pictures[#$sys.file.separator#]Screenshots",
-      "pattern": ".*"
-    },
-    "Transform": {
-      "FileDateClassifier": {}
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "Vault": {
+        "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault",
+        "password": "[#$env.vault.password#]"
+      },
+      "Reader": {
+        "class": "DirectoryReader",
+        "directory": "[#$sys.user.home#][#$sys.file.separator#]Pictures[#$sys.file.separator#]Screenshots",
+        "pattern": ".*"
+      },
+      "Transform": {
+        "FileDateClassifier": {}
+      }
     }
   },
   "logging": [

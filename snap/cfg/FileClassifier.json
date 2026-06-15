@@ -1,28 +1,30 @@
 {
-  "class": "coyote.RtwJob",
-  "configuration": {
-    "Vault": {
-      "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault",
-      "password": "[#$env.vault.password#]"
-    },
-    "Reader": {
-      "class": "DirectoryReader",
-      "directory": "/Volumes/PRO-G40/Media/Pictures",
-      "pattern1": ".*",
-      "pattern2": "(?i)^IMG_.*..*$",
-      "pattern": "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
-    },
-    "Transform": {
-      "FileClassifier": {
-        "map": {
-          "jpg": "images",
-          "jpeg": "images",
-          "png": "images",
-          "gif": "images",
-          "mp4": "videos",
-          "mov": "videos",
-          "avi": "videos",
-          "3gp": "videos"
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "Vault": {
+        "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault",
+        "password": "[#$env.vault.password#]"
+      },
+      "Reader": {
+        "class": "DirectoryReader",
+        "directory": "/Volumes/PRO-G40/Media/Pictures",
+        "pattern1": ".*",
+        "pattern2": "(?i)^IMG_.*..*$",
+        "pattern": "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
+      },
+      "Transform": {
+        "FileClassifier": {
+          "map": {
+            "jpg": "images",
+            "jpeg": "images",
+            "png": "images",
+            "gif": "images",
+            "mp4": "videos",
+            "mov": "videos",
+            "avi": "videos",
+            "3gp": "videos"
+          }
         }
       }
     }

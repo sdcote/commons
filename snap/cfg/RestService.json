@@ -1,42 +1,44 @@
 {
-  "class": "coyote.RtwJob",
-  "configuration": {
-    "Description": [
-      "Shows how to listen to HTTP events and process them according to ReST practices.",
-      "This data transfer job listens for HTTP requests on a specific endpoint and exchanges data with a data store. In this case the data store is a local relational database, but it could be a remote instance in the cloud."
-    ],
-    "Task": {
-      "DatabaseFixture": {
-        "name": "H2",
-        "target": "jdbc:h2:./service",
-        "driver": "org.h2.jdbcx.JdbcDataSource",
-        "username": "sa"
-      }
-    },
-    "Reader": {
-      "class": "HttpReader",
-      "endpoint": "/api/entity/:sysid"
-    },
-    "Listener": {
-      "CreateRecord": {
-        "Condition": "match(Context.HttpMethod,POST) && match(Context.HttpResource,entity)",
-        "target": "H2",
-        "table": "ENTITY"
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "Description": [
+        "Shows how to listen to HTTP events and process them according to ReST practices.",
+        "This data transfer job listens for HTTP requests on a specific endpoint and exchanges data with a data store. In this case the data store is a local relational database, but it could be a remote instance in the cloud."
+      ],
+      "Task": {
+        "DatabaseFixture": {
+          "name": "H2",
+          "target": "jdbc:h2:./service",
+          "driver": "org.h2.jdbcx.JdbcDataSource",
+          "username": "sa"
+        }
       },
-      "ReadRecord": {
-        "Condition": "match(Context.HttpMethod,GET) && match(Context.HttpResource,entity)",
-        "target": "H2",
-        "table": "ENTITY"
+      "Reader": {
+        "class": "HttpReader",
+        "endpoint": "/api/entity/:sysid"
       },
-      "UpdateRecord": {
-        "Condition": "match(Context.HttpMethod,PUT) && match(Context.HttpResource,entity)",
-        "target": "H2",
-        "table": "ENTITY"
-      },
-      "DeleteRecord": {
-        "Condition": "match(Context.HttpMethod,DELETE) && match(Context.HttpResource,entity)",
-        "target": "H2",
-        "table": "ENTITY"
+      "Listener": {
+        "CreateRecord": {
+          "Condition": "match(Context.HttpMethod,POST) && match(Context.HttpResource,entity)",
+          "target": "H2",
+          "table": "ENTITY"
+        },
+        "ReadRecord": {
+          "Condition": "match(Context.HttpMethod,GET) && match(Context.HttpResource,entity)",
+          "target": "H2",
+          "table": "ENTITY"
+        },
+        "UpdateRecord": {
+          "Condition": "match(Context.HttpMethod,PUT) && match(Context.HttpResource,entity)",
+          "target": "H2",
+          "table": "ENTITY"
+        },
+        "DeleteRecord": {
+          "Condition": "match(Context.HttpMethod,DELETE) && match(Context.HttpResource,entity)",
+          "target": "H2",
+          "table": "ENTITY"
+        }
       }
     }
   },

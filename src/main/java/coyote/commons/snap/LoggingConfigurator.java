@@ -26,96 +26,117 @@ public class LoggingConfigurator {
     private static final String LOGGER_PKG = "coyote.commons.log";
 
     public static void configure(Config configuration, SymbolTable symbols, String appHome) {
-        List<Config> loggers = configuration.getSections(ConfigTag.LOGGING);
-
-        if (loggers.size() > 0) {
-            Log.removeAllLoggers();
-        }
-
-        for (Config cfg : loggers) {
-            for (DataField field : cfg.getFields()) {
+        if (configuration == null) return;
+        List<Config> loggers = new java.util.ArrayList<>();
+        for (DataField field : configuration.getFields()) {
+            if (ConfigTag.LOGGING.equalsIgnoreCase(field.getName())) {
                 if (field.isFrame()) {
-                    DataFrame cfgFrame = (DataFrame) field.getObjectValue();
-                    String className = field.getName();
-
-                    if (StringUtil.isBlank(className) && cfgFrame.getFieldCount() > 0) {
-                        DataField firstField = cfgFrame.getField(0);
-                        if (firstField.isFrame()) {
-                            className = firstField.getName();
-                            cfgFrame = (DataFrame) firstField.getObjectValue();
-                        }
-                    }
-
-                    if (StringUtil.isNotBlank(className)) {
-                        Config loggerConfiguration = new Config();
-                        if (className.indexOf('.') < 1) {
-                            className = LOGGER_PKG + "." + className;
-                        }
-                        loggerConfiguration.put(ConfigTag.CLASS, className);
-
-                        for (DataField lfield : cfgFrame.getFields()) {
-                            if (ConfigTag.TARGET.equalsIgnoreCase(lfield.getName())) {
-                                String cval = lfield.getStringValue();
-                                if (StringUtil.isNotEmpty(cval)) {
-                                    cval = Template.preProcess(cval, symbols);
-                                }
-
-                                if (!("stdout".equalsIgnoreCase(cval) || "stderr".equalsIgnoreCase(cval))) {
-                                    URI testTarget = UriUtil.parse(cval);
-                                    if (testTarget == null || testTarget.getScheme() == null) {
-                                        if (testTarget == null) {
-                                            File file = new File(cval);
-                                            URI fileUri = FileUtil.getFileURI(file);
-                                            if (fileUri != null) {
-                                                cval = fileUri.toString();
-                                            }
-                                        } else {
-                                            cval = "file://" + cval;
-                                        }
-                                    }
-
-                                    URI testUri = UriUtil.parse(cval);
-                                    if (testUri != null && UriUtil.isFile(testUri)) {
-                                        File logfile = UriUtil.getFile(testUri);
-                                        if (!logfile.isAbsolute()) {
-                                            String path = appHome;
-                                            if (StringUtil.isBlank(path)) {
-                                                String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
-                                                if (StringUtil.isNotBlank(cfgUri) && cfgUri.startsWith("file:")) {
-                                                    try {
-                                                        File cfgFile = UriUtil.getFile(new URI(cfgUri));
-                                                        path = (cfgFile != null && cfgFile.exists()) ? cfgFile.getParent() : System.getProperty("user.dir") + "/snap/log";
-                                                    } catch (URISyntaxException e) {
-                                                        path = System.getProperty("user.dir") + "/snap/log";
-                                                    }
-                                                } else {
-                                                    path = System.getProperty("user.dir") + "/snap/log";
-                                                }
-                                            } else {
-                                                path = path + "/log";
-                                            }
-                                            logfile = new File(path, logfile.getPath());
-                                            cval = FileUtil.getFileURI(logfile).toString();
-                                        }
-                                    }
-                                }
-                                loggerConfiguration.put(ConfigTag.TARGET, cval);
-                            } else {
-                                loggerConfiguration.put(lfield.getName(), lfield.getObjectValue());
-                            }
-                        }
-
-                        Logger logger = createLogger(loggerConfiguration);
-                        if (logger != null) {
-                            String name = loggerConfiguration.getString(ConfigTag.NAME);
-                            if (StringUtil.isBlank(name)) {
-                                name = className;
-                            }
-                            Log.addLogger(name, logger);
+                    Config cfg = new Config();
+                    cfg.populate((DataFrame) field.getObjectValue());
+                    loggers.add(cfg);
+                } else if (field.isArray()) {
+                    DataFrame array = (DataFrame) field.getObjectValue();
+                    for (DataField arrayField : array.getFields()) {
+                        if (arrayField.isFrame()) {
+                            Config cfg = new Config();
+                            cfg.populate((DataFrame) arrayField.getObjectValue());
+                            loggers.add(cfg);
                         }
                     }
                 }
             }
+        }
+
+        if (loggers.size() > 0) {
+            Log.removeAllLoggers();
+            for (Config cfg : loggers) {
+                for (DataField field : cfg.getFields()) {
+                    if (field.isFrame()) {
+                        DataFrame cfgFrame = (DataFrame) field.getObjectValue();
+                        String className = field.getName();
+
+                        if (StringUtil.isBlank(className) && cfgFrame.getFieldCount() > 0) {
+                            DataField firstField = cfgFrame.getField(0);
+                            if (firstField.isFrame()) {
+                                className = firstField.getName();
+                                cfgFrame = (DataFrame) firstField.getObjectValue();
+                            }
+                        }
+
+                        if (StringUtil.isNotBlank(className)) {
+                            Config loggerConfiguration = new Config();
+                            if (className.indexOf('.') < 1) {
+                                className = LOGGER_PKG + "." + className;
+                            }
+                            loggerConfiguration.put(ConfigTag.CLASS, className);
+
+                            for (DataField lfield : cfgFrame.getFields()) {
+                                if (ConfigTag.TARGET.equalsIgnoreCase(lfield.getName())) {
+                                    String cval = lfield.getStringValue();
+                                    if (StringUtil.isNotEmpty(cval)) {
+                                        cval = Template.preProcess(cval, symbols);
+                                    }
+
+                                    if (!("stdout".equalsIgnoreCase(cval) || "stderr".equalsIgnoreCase(cval))) {
+                                        URI testTarget = UriUtil.parse(cval);
+                                        if (testTarget == null || testTarget.getScheme() == null) {
+                                            if (testTarget == null) {
+                                                File file = new File(cval);
+                                                URI fileUri = FileUtil.getFileURI(file);
+                                                if (fileUri != null) {
+                                                    cval = fileUri.toString();
+                                                }
+                                            } else {
+                                                cval = "file://" + cval;
+                                            }
+                                        }
+
+                                        URI testUri = UriUtil.parse(cval);
+                                        if (testUri != null && UriUtil.isFile(testUri)) {
+                                            File logfile = UriUtil.getFile(testUri);
+                                            if (!logfile.isAbsolute()) {
+                                                String path = appHome;
+                                                if (StringUtil.isBlank(path)) {
+                                                    String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
+                                                    if (StringUtil.isNotBlank(cfgUri) && cfgUri.startsWith("file:")) {
+                                                        try {
+                                                            File cfgFile = UriUtil.getFile(new URI(cfgUri));
+                                                            path = (cfgFile != null && cfgFile.exists()) ? cfgFile.getParent() : System.getProperty("user.dir") + "/snap/log";
+                                                        } catch (URISyntaxException e) {
+                                                            path = System.getProperty("user.dir") + "/snap/log";
+                                                        }
+                                                    } else {
+                                                        path = System.getProperty("user.dir") + "/snap/log";
+                                                    }
+                                                } else {
+                                                    path = path + "/log";
+                                                }
+                                                logfile = new File(path, logfile.getPath());
+                                                cval = FileUtil.getFileURI(logfile).toString();
+                                            }
+                                        }
+                                    }
+                                    loggerConfiguration.put(ConfigTag.TARGET, cval);
+                                } else {
+                                    loggerConfiguration.put(lfield.getName(), lfield.getObjectValue());
+                                }
+                            }
+
+                            Logger logger = createLogger(loggerConfiguration);
+                            if (logger != null) {
+                                String name = loggerConfiguration.getString(ConfigTag.NAME);
+                                if (StringUtil.isBlank(name)) {
+                                    name = className;
+                                }
+                                Log.addLogger(name, logger);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Log.removeAllLoggers();
+            Log.addLogger(Log.DEFAULT_LOGGER_NAME, new coyote.commons.log.NullLogger());
         }
     }
 

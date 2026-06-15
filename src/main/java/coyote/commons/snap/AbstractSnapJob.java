@@ -6,6 +6,7 @@ import coyote.commons.Log;
 import coyote.commons.StringUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
+import coyote.commons.rtw.ConfigTag;
 import coyote.commons.i13n.StatBoard;
 import coyote.commons.i13n.StatBoardImpl;
 import coyote.commons.rtw.Symbols;
@@ -271,7 +272,6 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
     protected void doConfigure() throws ConfigurationException {
-        initLogging();
     }
 
     protected void postConfigure() {
@@ -373,15 +373,6 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
-    /**
-     * Load loggers for the entire runtime.
-     *
-     * <p>This looks for a section named logging in the main configuration and loads the
-     * loggers from there.</p>
-     */
-    protected void initLogging() {
-        LoggingConfigurator.configure(configuration, symbols, getAppHome());
-    }
 
 
 

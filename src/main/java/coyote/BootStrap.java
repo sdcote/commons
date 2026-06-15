@@ -44,6 +44,7 @@ import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.daemonjob.CommandResponder;
 import coyote.commons.rtw.daemonjob.StatusResponder;
 import coyote.commons.snap.JobLoader;
+import coyote.commons.snap.LoggingConfigurator;
 
 /**
  * This acts as a very generic loader of classes based on configuration files.
@@ -117,19 +118,28 @@ public class BootStrap {
         // Parse the command line arguments
         parseArgs(args);
 
-        Log.info("Info logging is enabled");
-        Log.debug("Debug logging is enabled");
-        Log.trace("Trace logging is enabled");
-
         // confirm the configuration location is a valid URI
         confirmConfigurationLocation();
 
         // Read in the configuration
         readConfig();
 
+        // Initialize logging from the configuration
+        LoggingConfigurator.configure(configuration, null, getAppHome());
+
+        if (!configuration.containsIgnoreCase(ConfigTag.JOB)) {
+            Log.fatal("No Job was found in the configuration to run.");
+            System.exit(1);
+        }
+
+        Log.info("Info logging is enabled");
+        Log.debug("Debug logging is enabled");
+        Log.trace("Trace logging is enabled");
+
         List<ScheduledJob> jobs = null;
         try {
             jobs = JobLoader.loadJobs(configuration);
+            Log.debug("Loaded " + jobs.size() + " jobs");
         } catch (ConfigurationException e) {
             Log.fatal(String.format("Could not load/configure jobs: %s: %s", e.getClass().getSimpleName(), e.getMessage()));
             System.exit(6);

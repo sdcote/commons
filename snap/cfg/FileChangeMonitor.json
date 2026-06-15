@@ -1,14 +1,16 @@
 {
-  "class": "coyote.RtwJob",
-  "configuration": {
-    "Reader": {
-      "class": "DirectoryTripwireReader",
-      "directory": "C:\\Users\\scote\\Downloads"
-    },
-    "Writer": {
-      "class": "ConsoleWriter",
-      "format": "json",
-      "indent": true
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "C:\\Users\\scote\\Downloads"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
+      }
     }
   },
   "logging": [

@@ -32,9 +32,8 @@ public class JobLoaderTest {
         subCfg.put("TestKey", "TestValue");
         cfg.put("RtwJob", subCfg);
 
-        SnapJob job = JobLoader.loadJob(cfg);
-        assertNotNull(job);
-        assertTrue(job instanceof RtwJob);
-        assertEquals("TestValue", ((RtwJob)job).getConfig().getString("TestKey"));
+        assertThrows(ConfigurationException.class, () -> {
+            JobLoader.loadJob(cfg);
+        });
     }
 }

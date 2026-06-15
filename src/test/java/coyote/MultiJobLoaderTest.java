@@ -17,16 +17,14 @@ public class MultiJobLoaderTest {
         String json = "{\n" +
                 "  \"Job\": [\n" +
                 "    {\n" +
-                "      \"RtwJob\": {\n" +
-                "        \"name\": \"Job1\"\n" +
-                "      }\n" +
+                "      \"class\": \"RtwJob\",\n" +
+                "      \"name\": \"Job1\"\n" +
                 "    },\n" +
                 "    {\n" +
-                "      \"RtwJob\": {\n" +
-                "        \"name\": \"Job2\",\n" +
-                "        \"schedule\": {\n" +
-                "          \"millis\": 1000\n" +
-                "        }\n" +
+                "      \"class\": \"RtwJob\",\n" +
+                "      \"name\": \"Job2\",\n" +
+                "      \"schedule\": {\n" +
+                "        \"millis\": 1000\n" +
                 "      }\n" +
                 "    }\n" +
                 "  ]\n" +
@@ -43,10 +41,11 @@ public class MultiJobLoaderTest {
     @Test
     public void testRepeatTrue() throws ConfigurationException {
         String json = "{\n" +
-                "  \"RtwJob\": {\n" +
-                "    \"name\": \"RepeatJob\"\n" +
-                "  },\n" +
-                "  \"repeat\": true\n" +
+                "  \"Job\": {\n" +
+                "    \"class\": \"RtwJob\",\n" +
+                "    \"name\": \"RepeatJob\",\n" +
+                "    \"repeat\": true\n" +
+                "  }\n" +
                 "}";
         Config cfg = new Config(json);
         List<ScheduledJob> jobs = JobLoader.loadJobs(cfg);

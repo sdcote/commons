@@ -41,15 +41,6 @@ public class JobLoader {
             if (jobConfig == null) {
                 jobConfig = config;
             }
-        } else {
-            // Fallback to legacy behavior: first attribute name is the class name
-            DataField configField = config.getField(0);
-            if (configField != null && StringUtil.isNotEmpty(configField.getName())) {
-                className = configField.getName();
-                if (configField.isFrame()) {
-                    jobConfig = new Config((DataFrame) configField.getObjectValue());
-                }
-            }
         }
 
         if (StringUtil.isEmpty(className)) {
@@ -115,9 +106,6 @@ public class JobLoader {
                     retval.add(createScheduledJob(jobSection));
                 }
             }
-        } else {
-            // Try loading it as a single job
-            retval.add(createScheduledJob(cfg));
         }
         return retval;
     }
@@ -126,15 +114,6 @@ public class JobLoader {
     private static ScheduledJob createScheduledJob(Config config) throws ConfigurationException {
         ScheduledJob retval = null;
         Config jobConfig = config;
-
-        // If the config has a first field that is a frame and it's not "schedule", 
-        // "server", etc., it might be the job class name (legacy format)
-        if (!config.containsIgnoreCase(ConfigTag.CLASS) && config.getFieldCount() > 0) {
-            DataField field = config.getField(0);
-            if (field.isFrame() && !ConfigTag.SCHEDULE.equalsIgnoreCase(field.getName())) {
-                jobConfig = new Config((DataFrame) field.getObjectValue());
-            }
-        }
 
         List<Config> scheduleConfig = jobConfig.getSections(ConfigTag.SCHEDULE);
         if (scheduleConfig.isEmpty()) {
