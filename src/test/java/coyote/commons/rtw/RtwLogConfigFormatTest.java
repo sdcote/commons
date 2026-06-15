@@ -4,6 +4,7 @@ import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.log.Log;
 import coyote.commons.snap.AbstractSnapJob;
+import coyote.commons.snap.LoggingConfigurator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -35,6 +36,8 @@ public class RtwLogConfigFormatTest {
                 "]}";
         Config cfg = new Config(json);
         
+        LoggingConfigurator.configure(cfg, null, null);
+        
         TestJob job = new TestJob();
         job.configure(cfg);
         
@@ -64,6 +67,8 @@ public class RtwLogConfigFormatTest {
                 "\"StandardOutput\": { \"name\": \"old_default\", \"target\": \"STDOUT\", \"categories\": \"info, notice,debug,trace\" }" +
                 "}}";
         Config cfg = new Config(json);
+
+        LoggingConfigurator.configure(cfg, null, null);
 
         TestJob job = new TestJob();
         job.configure(cfg);
