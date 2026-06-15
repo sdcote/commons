@@ -177,7 +177,7 @@ public class CsvReader extends AbstractFrameReader implements FrameReader, Confi
                 Log.error("Using a source file of NULL_REF");
             }
             // resolve the source file
-            sourceFile = resolveFile(sourceFile);
+            sourceFile = resolveFile(source);
             Log.debug("Using an absolute source file of " + sourceFile.getAbsolutePath());
 
             // Basic checks

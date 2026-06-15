@@ -64,7 +64,7 @@ public abstract class AbstractFrameFileReader extends AbstractFrameReader implem
             }
 
             // resolve the source file
-            sourceFile = resolveFile(sourceFile);
+            sourceFile = resolveFile(source);
 
             if (sourceFile.exists() && sourceFile.canRead()) {
                 lines = FileUtil.lineIterator(sourceFile);

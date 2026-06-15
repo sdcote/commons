@@ -35,6 +35,9 @@ public class TransactionContext extends OperationalContext {
 
     public TransactionContext(TransformContext context) {
         this.parent = context;
+        if (context != null) {
+            setSymbols(context.getSymbols());
+        }
     }
 
 

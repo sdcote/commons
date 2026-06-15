@@ -58,7 +58,7 @@ public class Combine extends AbstractFileTask implements TransformTask {
 
     // Get our source directory
     String sourcedir = getString(ConfigTag.DIRECTORY);
-    directory = new File(sourcedir);
+    directory = resolveFile(sourcedir);
     if (!directory.exists()) {
       String msg = String.format( "Task.source_directory_does_not_exist", getClass().getName(), directory.getAbsolutePath()).toString();
       if (haltOnError()) {

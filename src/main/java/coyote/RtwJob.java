@@ -9,6 +9,7 @@ package coyote;
 
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
+import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
@@ -51,12 +52,31 @@ public class RtwJob extends AbstractSnapJob {
         } catch (NumberFormatException ignore) {
         }
         determineName();
+
+        Config rtwConfig = getConfig();
+        if (configuration.containsIgnoreCase(ConfigTag.CONFIGURATION)) {
+            Config section = configuration.getSection(ConfigTag.CONFIGURATION);
+            if (section != null) {
+                rtwConfig = section;
+            }
+        }
+
         TransformEngineFactory.setSymbols(symbols);
-        engine = TransformEngineFactory.getInstance(getConfig());
-        if (StringUtil.isBlank(engine.getName())) {
-            Log.trace("Job.unnamed_engine_configured");
-        } else {
+        engine = TransformEngineFactory.getInstance(rtwConfig);
+
+        // Propagate name if not set in engine config but present in job
+        if (StringUtil.isNotBlank(rtwConfig.getName())) {
+            engine.setName(rtwConfig.getName());
+        } else if (StringUtil.isNotBlank(getName())) {
+            engine.setName(getName());
+        }
+
+        engine.contextInit();
+
+        if (StringUtil.isNotBlank(engine.getName())) {
             Log.trace("Job.engine_configured: " + engine.getName());
+        } else {
+            Log.trace("Job.unnamed_engine_configured");
         }
     }
 
@@ -73,7 +93,7 @@ public class RtwJob extends AbstractSnapJob {
         Log.trace(String.format("Starting %s",this.getClass().getSimpleName()));
 
         if (engine != null) {
-            Log.trace("Job.running: " + engine.getName());
+            Log.info("Job.running: " + engine.getName());
 
             try {
                 engine.run();
@@ -112,9 +132,13 @@ public class RtwJob extends AbstractSnapJob {
      * will normally result in {@code close()} being invoked at some point.</p>
      */
     @Override
-    public void stop() {
-        repeat = false;
-        engine.shutdown();
+    public void setName(String name) {
+        super.setName(name);
+        if (engine != null && StringUtil.isNotBlank(name)) {
+            engine.setName(name);
+            // Re-initialize context if name was used to determine directory
+            engine.contextInit();
+        }
     }
 
 

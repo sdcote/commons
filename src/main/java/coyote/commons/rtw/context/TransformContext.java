@@ -13,6 +13,7 @@ import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.rtw.Symbols;
 import coyote.commons.rtw.TransformEngine;
+import coyote.commons.template.SymbolTable;
 import coyote.commons.template.Template;
 
 import java.util.HashMap;
@@ -131,10 +132,17 @@ public class TransformContext extends OperationalContext {
      */
     @SuppressWarnings("unchecked")
     public void open() {
+        SymbolTable symbols = getSymbols();
+        if (engine != null && symbols != engine.getSymbolTable()) {
+            setSymbols(engine.getSymbolTable());
+            symbols = getSymbols();
+        }
 
         // Increment the run count
         openCount++;
-        engine.getSymbolTable().put(Symbols.RUN_COUNT, openCount);
+        if (symbols != null) {
+            symbols.put(Symbols.RUN_COUNT, openCount);
+        }
 
         // If we have a configuration...
         if (configuration != null) {
@@ -142,8 +150,10 @@ public class TransformContext extends OperationalContext {
             for (final DataField field : configuration.getFields()) {
                 if (!field.isFrame() && StringUtil.isNotBlank(field.getName()) && !field.isNull()) {
                     final String token = field.getStringValue();
-                    final String value = Template.resolve(token, engine.getSymbolTable());
-                    engine.getSymbolTable().put(field.getName(), value);
+                    final String value = Template.resolve(token, symbols);
+                    if (symbols != null) {
+                        symbols.put(field.getName(), value);
+                    }
                     set(field.getName(), value);
                 } //name-value check
             } // for
@@ -535,6 +545,9 @@ public class TransformContext extends OperationalContext {
      */
     public void setEngine(final TransformEngine engine) {
         this.engine = engine;
+        if (engine != null && getSymbols() != engine.getSymbolTable()) {
+            setSymbols(engine.getSymbolTable());
+        }
     }
 
 

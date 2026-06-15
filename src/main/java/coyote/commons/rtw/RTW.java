@@ -170,7 +170,7 @@ public class RTW {
             if (symbols != null) {
                 String jobDir = symbols.getString(Symbols.JOB_DIRECTORY);
                 if (StringUtil.isNotBlank(jobDir)) {
-                    retval = new File(jobDir, file.getPath());
+                    return new File(jobDir, file.getPath());
                 }
             }
 

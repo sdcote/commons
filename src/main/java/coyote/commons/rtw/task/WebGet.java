@@ -59,7 +59,7 @@ public class WebGet extends AbstractFileTask {
         try {
             url = new URL(source);
         } catch (MalformedURLException e) {
-            final String msg = String.format("Task.webget.could_not_parse_url: %s", source);
+            final String msg = String.format("Could not parse URL: %s", source);
             Log.error(msg);
             if (haltOnError) {
                 getContext().setError(msg);
@@ -73,7 +73,7 @@ public class WebGet extends AbstractFileTask {
             httpConn = (HttpURLConnection) url.openConnection();
             responseCode = httpConn.getResponseCode();
         } catch (IOException e) {
-            final String msg = String.format("Task.webget.could_not_connect %s %s", source, e.getMessage());
+            final String msg = String.format("Could not connect to %s: %s", source, e.getMessage());
             if (haltOnError) {
                 throw new TaskException(msg);
             } else {
@@ -100,18 +100,15 @@ public class WebGet extends AbstractFileTask {
                 fileName = target;
             }
 
-            File targetFile = new File(fileName);
-
-            if (!targetFile.isAbsolute()) {
-                if (StringUtil.isNotBlank(directory)) {
-                    targetFile = new File(directory, fileName);
-                } else {
-                    // use the JobDir
-                    targetFile = new File(getJobDir(), fileName);
-                }
+            File targetFile;
+            if (StringUtil.isNotBlank(directory)) {
+                File dir = resolveFile(directory);
+                targetFile = new File(dir, fileName);
+            } else {
+                targetFile = resolveFile(fileName);
             }
 
-            Log.debug("WebGet retrieving " + source + " to " + targetFile.getAbsolutePath() + ", Content Type: " + httpConn.getContentType() + ", Content Length: " + httpConn.getContentLength());
+            Log.debug(String.format("WebGet retrieving %s to %s, Content Type: %s, Content Length: %d", source, targetFile.getAbsolutePath(), httpConn.getContentType(), httpConn.getContentLength()));
 
             try {
                 int bytesTotal = 0;
@@ -123,9 +120,9 @@ public class WebGet extends AbstractFileTask {
                         bytesTotal += bytesRead;
                     }
                 }
-                Log.debug("Downloaded " + FileUtil.formatSizeBytes(bytesTotal) + " from " + source + " to " + targetFile.getAbsolutePath());
+                Log.debug(String.format("Downloaded %s from %s to %s", FileUtil.formatSizeBytes(bytesTotal), source, targetFile.getAbsolutePath()));
             } catch (IOException e) {
-                final String msg = String.format("Task.webget.could_not_retrieve_file %s - %s", e.getClass().getSimpleName(), e.getMessage());
+                final String msg = String.format("Could not retrieve file: %s - %s", e.getClass().getSimpleName(), e.getMessage());
                 if (haltOnError) {
                     throw new TaskException(msg);
                 } else {
@@ -133,7 +130,7 @@ public class WebGet extends AbstractFileTask {
                 }
             }
         } else {
-            final String msg = String.format("Task.webget.could_not_retrieve_resource %s - %s", responseCode, source);
+            final String msg = String.format("Could not retrieve resource: %d - %s", responseCode, source);
             if (haltOnError) {
                 throw new TaskException(msg);
             } else {
