@@ -6,7 +6,6 @@ import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.FrameReader;
-import coyote.commons.rtw.RTW;
 import coyote.commons.rtw.context.TransactionContext;
 import coyote.commons.rtw.context.TransformContext;
 
@@ -112,10 +111,7 @@ public class DirectoryChangeReader extends AbstractFrameReader implements FrameR
             return;
         }
 
-        directoryToMonitor = new File(source);
-        if (!directoryToMonitor.isAbsolute()) {
-            directoryToMonitor = RTW.resolveFile(directoryToMonitor, getContext());
-        }
+        directoryToMonitor = resolveFile(source);
 
         if (directoryToMonitor == null || !directoryToMonitor.exists() || !directoryToMonitor.isDirectory() || !directoryToMonitor.canRead()) {
             String msg = "DirectoryChangeReader: Could not read from source directory - " +

@@ -48,10 +48,10 @@ public class SaveContextValue extends AbstractFileTask {
       final String target = getTargetOrFile();
 
       if (StringUtil.isNotBlank(target)) {
-        Log.debug("Using a filename of '" + target + "'");;
+        Log.debug(String.format("Using a filename of '%s'", target));
 
         final File file = getAbsoluteFile(target);
-        Log.debug("Using absolute filename of '" + file.getAbsolutePath() + "'");
+        Log.debug(String.format("Using absolute filename of '%s'", file.getAbsolutePath()));
 
         String contextVariable = getContext().getAsString(source);
         if (StringUtil.isNotEmpty(contextVariable)) {
@@ -59,9 +59,9 @@ public class SaveContextValue extends AbstractFileTask {
           String resolvedValue = Template.resolve(contextVariable, getContext().getSymbols());
 
           if (FileUtil.stringToFile(resolvedValue, file.getAbsolutePath())) {
-            Log.debug("Wrote context variable '" + source + "' ( " + resolvedValue.length() + "chars) to " + file.getAbsolutePath());
+            Log.debug(String.format("Wrote context variable '%s' (%d chars) to %s", source, resolvedValue.length(), file.getAbsolutePath()));
           } else {
-            final String msg = String.format( "%s failed: Write failed to %s (%s)", getClass().getSimpleName(), target, file.getAbsolutePath()).toString();
+            final String msg = String.format("%s failed: Write failed to %s (%s)", getClass().getSimpleName(), target, file.getAbsolutePath());
             if (haltOnError) {
               throw new TaskException(msg);
             } else {
@@ -70,7 +70,7 @@ public class SaveContextValue extends AbstractFileTask {
             }
           }
         } else {
-          final String msg = String.format( "%s failed: Context did not contain a value for '%s'", getClass().getSimpleName(), source).toString();
+          final String msg = String.format("%s failed: Context did not contain a value for '%s'", getClass().getSimpleName(), source);
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -80,7 +80,7 @@ public class SaveContextValue extends AbstractFileTask {
         }
       }
     } else {
-      final String msg = String.format( "%s failed: No source (context key) configured", getClass().getSimpleName()).toString();
+      final String msg = String.format("%s failed: No source (context key) configured", getClass().getSimpleName());
       if (haltOnError) {
         throw new TaskException(msg);
       } else {

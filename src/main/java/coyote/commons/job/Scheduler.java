@@ -150,17 +150,22 @@ public class Scheduler extends ThreadJob {
               // Only run jobs which are enabled, otherwise reschedule them if 
               // necessary
               if (target.isEnabled()) {
-                Log.append(SCHED, "Running " + target + " in threadpool");
-
-                // Run the Scheduled Job in the ExecutorService
-                if (executor != null) {
-                  executor.execute(target);
+                if (target.isActive()) {
+                  Log.append(SCHED, "Job " + target + " is already active, skipping execution");
                 } else {
-                  Log.append(SCHED, "ExecutorService not initialized, cannot run job: " + target);
-                }
+                  Log.append(SCHED, "Running " + target + " in threadpool");
 
-                // Increment the execution counter
-                target.incrementExecutionCount();
+                  // Run the Scheduled Job in the ExecutorService
+                  if (executor != null) {
+                    target.setActiveFlag(true);
+                    executor.execute(target);
+                  } else {
+                    Log.append(SCHED, "ExecutorService not initialized, cannot run job: " + target);
+                  }
+
+                  // Increment the execution counter
+                  target.incrementExecutionCount();
+                }
               } else {
                 Log.append(SCHED, "Did not run disabled job " + target + " in threadpool");
               }

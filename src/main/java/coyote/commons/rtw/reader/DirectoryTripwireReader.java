@@ -80,6 +80,7 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
      */
     private File getDirectoryToMonitor() {
         String source = getSource();
+        if (source == null) return null;
         File dir = new File(source);
         if (!dir.isAbsolute()) {
             dir = coyote.commons.rtw.RTW.resolveFile(dir, getContext());
@@ -123,6 +124,9 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
                     Log.info("DirectoryTripwireReader: Interrupted while waiting for changes.");
                     Thread.currentThread().interrupt();
                     return null;
+                } catch (Exception e) {
+                    Log.error("DirectoryTripwireReader: Error during scan: " + e.getMessage());
+                    return null;
                 }
             } else {
                 currentStateMap = newStateMap;
@@ -130,6 +134,9 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
         }
 
         TripwireChange change = tripwirePendingChanges.poll();
+        if (change == null) {
+            return null;
+        }
         DataFrame frame = new DataFrame();
         frame.add(FILENAME_FIELD, change.path);
         frame.add(CHANGE_FIELD, change.type);
@@ -170,7 +177,9 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
      */
     private Map<String, FileInfo> scanDirectoryWithInfo(File root) {
         Map<String, FileInfo> results = new HashMap<>();
-        doScanWithInfo(root, results, isRecursive());
+        if (root != null) {
+            doScanWithInfo(root, results, isRecursive());
+        }
         return results;
     }
 
@@ -196,6 +205,7 @@ public class DirectoryTripwireReader extends DirectoryChangeReader {
      * @param recursive true to scan subdirectories, false otherwise.
      */
     private void doScanWithInfo(File dir, Map<String, FileInfo> results, boolean recursive) {
+        if (dir == null) return;
         File[] entries = dir.listFiles();
         if (entries != null) {
             for (File entry : entries) {

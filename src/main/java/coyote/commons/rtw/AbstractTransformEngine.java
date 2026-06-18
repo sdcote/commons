@@ -196,10 +196,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
     @SuppressWarnings("unchecked")
     @Override
     public void run() {
-        // Initialize the context
-        contextInit();
-
-        Log.info("Engine '" + getName() + "' (" + getInstanceId() + ") running...");
+        Log.info("Engine '" + getName() + "' (" + getInstanceId() + ") running..."); 
         int transactionErrors = 0;
         Log.trace("Engine '" + getName() + "' starting transform");
 
@@ -870,37 +867,37 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
      */
     private void determineJobDirectory() {
         File jobDir;
+        String name = getName();
 
-        if (getJobDirectory() == null) {
+        if (getWorkDirectory() == null) {
+            determineWorkDirectory();
+        }
 
-            if (getWorkDirectory() == null) {
-                Log.debug("The work directory is not set, calculating...");
-                determineWorkDirectory();
-            }
-            Log.debug("Job directory will be set in the working directory of " + getWorkDirectory().getAbsolutePath());
+        if (StringUtil.isNotBlank(name)) {
+            Log.debug("Using a job name of \"" + name + "\" to determine the job directory.");
+            String dirname = name.trim().replaceAll("[^a-zA-Z0-9.-]", "_");
+            jobDir = new File(getWorkDirectory(), dirname);
 
-            String name = getName();
-            if (StringUtil.isNotBlank(name)) {
-                Log.debug("Using a job name of \"" + name + "\" to determine the job directory.");
-
-                // replace the illegal filename characters by only allowing simple names
-                String dirname = name.trim().replaceAll("[^a-zA-Z0-9.-]", "_");
-                jobDir = new File(getWorkDirectory(), dirname);
-
+            if (getJobDirectory() == null || !getJobDirectory().getAbsolutePath().equals(jobDir.getAbsolutePath())) {
                 try {
                     jobDir.mkdirs();
                     setJobDirectory(jobDir);
-                    setWorkDirectory(jobDir.getParentFile());
+                    symbols.put(Symbols.JOB_DIRECTORY, jobDir.getAbsolutePath());
                     Log.debug(String.format("Engine calculated job directory as %s - %s", jobDir.getAbsolutePath(), getName()));
                 } catch (final Exception e) {
                     Log.error(e.getMessage());
                 }
             } else {
-                Log.debug("Unnamed jobs must use the current directory");
-                jobDir = new File(System.getProperty("user.dir"));
+                // directory is the same, but ensure symbols are set just in case they were cleared
+                symbols.put(Symbols.JOB_DIRECTORY, jobDir.getAbsolutePath());
+            }
+        } else {
+            if (getJobDirectory() == null) {
+                Log.debug("Unnamed jobs must use the common work directory");
+                jobDir = getWorkDirectory();
                 setJobDirectory(jobDir);
-                setWorkDirectory(jobDir);
-                Log.debug("Set both the Job directory and the working directory to " + jobDir.getAbsolutePath());
+                symbols.put(Symbols.JOB_DIRECTORY, jobDir.getAbsolutePath());
+                Log.debug("Set the Job directory to " + jobDir.getAbsolutePath());
             }
         }
     }
@@ -924,7 +921,7 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
 
         // Make sure we have a work directory
         if (StringUtil.isBlank(System.getProperty(SnapJob.APP_WORK))) {
-            System.setProperty(SnapJob.APP_WORK, System.getProperty(BootStrap.APP_HOME) + System.getProperty("file.separator") + "wrk");
+            System.setProperty(SnapJob.APP_WORK, new File(System.getProperty(BootStrap.APP_HOME), "wrk").getAbsolutePath());
             Log.debug("APP.WORK is not set, setting it to " + System.getProperty(SnapJob.APP_WORK));
         }
         workDir = new File(System.getProperty(SnapJob.APP_WORK));
@@ -1246,6 +1243,30 @@ public abstract class AbstractTransformEngine extends AbstractConfigurableCompon
     @Override
     public SymbolTable getSymbolTable() {
         return symbols;
+    }
+
+
+    @Override
+    public List<TransformTask> getPreProcessTasks() {
+        return preProcesses;
+    }
+
+
+    @Override
+    public List<TransformTask> getPostProcessTasks() {
+        return postProcesses;
+    }
+
+
+    @Override
+    public List<FrameTransform> getTransformers() {
+        return transformers;
+    }
+
+
+    @Override
+    public List<FrameWriter> getWriters() {
+        return writers;
     }
 
 

@@ -1,28 +1,46 @@
 {
-  "DaemonJob": {
-    "Job": [
-      {
-        "RtwJob": {
-          "Name": "ThreeMinuteJob",
-          "Schedule": { "minutes": "*/3" },
-          "Reader": { "class": "StaticReader", "fields": { "JobName": "ThreeMinuteJob", "Time": "[#$time#]", "RunId": "[#$UUID#]", "Timestamp": "[#$iso8601date#]" } },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
+  "Job": [
+    {
+      "class": "RtwJob",
+      "Name": "ThreeMinuteJob",
+      "Schedule": { "minutes": "*/3" },
+      "Reader": {
+        "class": "StaticReader",
+        "fields": {
+          "JobName": "ThreeMinuteJob",
+          "Time": "[#$time#]",
+          "RunId": "[#$UUID#]",
+          "Timestamp": "[#$iso8601date#]"
         }
       },
-      {
-        "RtwJob": {
-          "Name": "TwoMinuteJob",
-          "Schedule": { "minutes": "*/2" },
-          "Reader": { "class": "StaticReader", "fields": { "JobName": "TwoMinuteJob", "Time": "[#$time#]", "RunId": "[#$UUID#]", "Timestamp": "[#$iso8601date#]" } },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
-        }
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
       }
-    ],
-
-    "Logging": [
-      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace, scheduler", "enabled": false } }
-    ]
-
-  }
+    },
+    {
+      "class": "RtwJob",
+      "Name": "TwoMinuteJob",
+      "Schedule": { "minutes": "*/2" },
+      "Reader": {
+        "class": "StaticReader",
+        "fields": {
+          "JobName": "TwoMinuteJob",
+          "Time": "[#$time#]",
+          "RunId": "[#$UUID#]",
+          "Timestamp": "[#$iso8601date#]"
+        }
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
+      }
+    }
+  ],
+  "logging": [
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace, scheduler", "enabled": false } }
+  ]
 }

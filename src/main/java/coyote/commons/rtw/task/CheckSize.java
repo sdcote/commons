@@ -27,21 +27,21 @@ public class CheckSize extends AbstractFileTask {
   protected void performTask() throws TaskException {
     final String source = getSourceOrFile();
     if (StringUtil.isNotBlank(source)) {
-      Log.debug(getClass().getSimpleName() + " using a filename of '" + source + "'");
+      Log.debug(String.format("%s using a filename of '%s'", getClass().getSimpleName(), source));
       final File file = getExistingFile(source);
-      Log.debug(getClass().getSimpleName() + " using absolute filename of '" + file.getAbsolutePath() + "'");
+      Log.debug(String.format("%s using absolute filename of '%s'", getClass().getSimpleName(), file.getAbsolutePath()));
 
       if (file.exists()) {
         String attrName = getConfiguration().getString(ConfigTag.CONTEXT);
 
         String value = getContext().getAsString(attrName);
-        Log.info("Size should be " + value);
+        Log.info(String.format("Size should be %s", value));
         long size;
 
         try {
           size = Long.parseLong(value);
         } catch (NumberFormatException e) {
-          final String msg = String.format( "%s failed: Context attribute %s does not contain a valid numeric (%s)", getClass().getSimpleName(), attrName, value).toString();
+          final String msg = String.format("%s failed: Context attribute %s does not contain a valid numeric (%s)", getClass().getSimpleName(), attrName, value);
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -52,9 +52,9 @@ public class CheckSize extends AbstractFileTask {
 
         if (file.length() > 0) {
           if (file.length() == size) {
-            Log.info("File size verified for " + file.getAbsolutePath());
+            Log.info(String.format("File size verified for %s", file.getAbsolutePath()));
           } else {
-            final String msg = String.format( "File size verification failed for '%s'  expecting %d was actually %d", source, file.getAbsolutePath(), size, file.length()).toString();
+            final String msg = String.format("File size verification failed for '%s' expecting %d was actually %d", file.getAbsolutePath(), size, file.length());
             if (haltOnError) {
               throw new TaskException(msg);
             } else {
@@ -66,7 +66,7 @@ public class CheckSize extends AbstractFileTask {
           Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
         }
       } else {
-        final String msg = String.format( "Task.failed_file_does_not_exist", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();
+        final String msg = String.format("%s failed: File does not exist: %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
@@ -75,7 +75,7 @@ public class CheckSize extends AbstractFileTask {
         }
       }
     } else {
-      final String msg = String.format( "%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE).toString();
+      final String msg = String.format("%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE);
       if (haltOnError) {
         throw new TaskException(msg);
       } else {

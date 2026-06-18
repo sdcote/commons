@@ -1,23 +1,27 @@
 {
-  "RtwJob":{
-
-    "Vault": { "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote.vault", "password": "[#$env.vault.password#]" },
-
-    "Reader" : {
-      "class" : "DirectoryReader",
-      "directory" : "/Volumes/PRO-G40/Media/Pictures1",
-      "pattern1" : ".*",
-      "pattern2" : "(?i)^IMG_.*..*$",
-      "pattern" : "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
-    },
-
-    "Writer": { "class": "ConsoleWriter", "format": "json" },
-
-    "Logging": {
-      "StandardError": { "categories": "warn, error, fatal" },
-      "StandardOutput": { "categories": "debug, trace, info, notice" }
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "name": "DirectoryReaderJob",
+      "Vault": {
+        "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote2.vault",
+        "password": "[#$env.vault.password#]"
+      },
+      "Reader": {
+        "class": "DirectoryReader",
+        "directory": "/Volumes/PRO-G40/Media/Pictures",
+        "pattern1": ".*",
+        "pattern2": "(?i)^IMG_.*..*$",
+        "pattern": "(?i)^\\\\d+_\\\\d+\\\\.[a-z0-9]+$"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json"
+      }
     }
-
-  }
-
+  },
+  "logging": [
+    { "StandardError": { "categories": "warn, error, fatal" } },
+    { "StandardOutput": { "categories": "debug, trace, info, notice" } }
+  ]
 }

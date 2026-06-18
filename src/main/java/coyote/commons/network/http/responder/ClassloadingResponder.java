@@ -16,6 +16,7 @@ import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
@@ -51,15 +52,23 @@ public class ClassloadingResponder extends DefaultResponder {
         String coreRequest = HTTPDRouter.normalizeUri(session.getUri());
 
         // find the portion of the URI which differs from the base
-        for (int index = 0; index < Math.min(baseUri.length(), coreRequest.length()); index++) {
-            if (baseUri.charAt(index) != coreRequest.charAt(index)) {
-                coreRequest = HTTPDRouter.normalizeUri(coreRequest.substring(index));
-                break;
+        if (coreRequest.startsWith(HTTPDRouter.normalizeUri(baseUri))) {
+            coreRequest = coreRequest.substring(HTTPDRouter.normalizeUri(baseUri).length());
+        } else {
+            for (int index = 0; index < Math.min(baseUri.length(), coreRequest.length()); index++) {
+                if (baseUri.charAt(index) != coreRequest.charAt(index)) {
+                    coreRequest = coreRequest.substring(index);
+                    break;
+                }
             }
         }
+        coreRequest = HTTPDRouter.normalizeUri(coreRequest);
 
         // Retrieve the base directory in the classpath for our search
         String parentdirectory = resource.initParameter(String.class);
+        if (parentdirectory == null) {
+            parentdirectory = "";
+        }
 
         // make sure we are configured with a properly formatted parent directory
         if (!parentdirectory.endsWith("/")) {
@@ -75,16 +84,17 @@ public class ClassloadingResponder extends DefaultResponder {
 
         // A blank request indicates a request for our root directory; see if there
         // is an index file in the root
-        if (StringUtil.isBlank(coreRequest) || coreRequest.endsWith("/")) {
+        if (StringUtil.isBlank(coreRequest) || coreRequest.endsWith("/") || coreRequest.isEmpty()) {
             localPath = getDirectoryIndexRequest(localPath);
 
             // If we did not get a new local path, it means there is no index file in
             // the directory
             if (StringUtil.isBlank(localPath)) {
-                if (StringUtil.isBlank(coreRequest)) {
+                if (StringUtil.isBlank(coreRequest) || coreRequest.isEmpty()) {
                     Log.append(HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath.");
                 }
                 Log.append(HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'");
+                // System.out.println("[DEBUG_LOG] ClassloadingResponder: No index file found for directory request: '" + coreRequest + "'");
                 return new Error404Responder().get(resource, urlParams, session);
             }
         }
@@ -95,13 +105,21 @@ public class ClassloadingResponder extends DefaultResponder {
         if (rsc == null) {
             // couldn't find the resource
             Log.append(HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath);
+            // System.out.println("[DEBUG_LOG] ClassloadingResponder: 404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath);
             return new Error404Responder().get(resource, urlParams, session);
         } else {
             // Success - Found the resource -
             // Hopefully it is not a directory...
             // <sigh/> not sure how to detect those with a class loader TODO
             try {
-                return Response.createChunkedResponse(getStatus(), HTTPD.getMimeTypeForFile(localPath), cLoader.getResourceAsStream(localPath));
+                // System.out.println("[DEBUG_LOG] ClassloadingResponder: Found resource " + localPath + " at " + rsc);
+                InputStream stream = cLoader.getResourceAsStream(localPath);
+                if (stream == null) {
+                    Log.append(HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath + " (Stream was null)");
+                    // System.out.println("[DEBUG_LOG] ClassloadingResponder: Stream was null for " + localPath);
+                    return new Error404Responder().get(resource, urlParams, session);
+                }
+                return Response.createChunkedResponse(getStatus(), HTTPD.getMimeTypeForFile(localPath), stream);
             } catch (final Exception ioe) {
                 return Response.createFixedLengthResponse(Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null);
             }

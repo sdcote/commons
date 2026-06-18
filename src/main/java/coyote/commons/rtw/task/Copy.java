@@ -68,12 +68,12 @@ public class Copy extends AbstractFileTask {
 
     if (StringUtil.isNotBlank(source)) {
       // file based copy
-      final String src = resolveArgument(source);
+      final String src = resolveFile(source).getAbsolutePath();
 
       if (StringUtil.isNotBlank(target)) {
         // this is a file to file copy
-        final String tgt = resolveArgument(target);
-        Log.debug(String.format( "Task.copy_file_to_file", src, tgt));
+        final String tgt = resolveFile(target).getAbsolutePath();
+        Log.debug(String.format("Copying file %s to %s", src, tgt));
 
         try {
           FileUtil.copyFile(src, tgt);
@@ -86,8 +86,8 @@ public class Copy extends AbstractFileTask {
 
       } else if (StringUtil.isNotBlank(toDir)) {
         // this is a file to directory copy
-        final String tgt = resolveArgument(toDir);
-        Log.debug(String.format( "Task.Copying file named {%s} to directory named {%s}", src, tgt));
+        final String tgt = resolveFile(toDir).getAbsolutePath();
+        Log.debug(String.format("Copying file %s to directory %s", src, tgt));
 
         try {
           FileUtil.copyFileToDir(src, tgt);
@@ -110,18 +110,20 @@ public class Copy extends AbstractFileTask {
 
       if (StringUtil.isNotBlank(toDir)) {
         // this is a directory to directory copy
-        Log.debug(String.format( "Task.copying_directory", fromDir, toDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename));
+        final String fDir = resolveFile(fromDir).getAbsolutePath();
+        final String tDir = resolveFile(toDir).getAbsolutePath();
+        Log.debug(String.format("Copying directory %s to %s (pattern: %s, recurse: %b, preserve: %b, keepDate: %b, overwrite: %b, rename: %b)", fDir, tDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename));
 
         try {
-          FileUtil.copyDirectory(fromDir, toDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename);
+          FileUtil.copyDirectory(fDir, tDir, pattern, recurse, preserveHierarchy, keepDate, overwrite, rename);
         } catch (final IOException e) {
           if (haltOnError) {
-            getContext().setError(String.format("Copy operation '%s' to '%s' failed: %s", fromDir, toDir, e.getMessage()));
+            getContext().setError(String.format("Copy operation '%s' to '%s' failed: %s", fDir, tDir, e.getMessage()));
             return;
           }
         }
       } else {
-        String msg = String.format( "Task.copy_target_directory_missing").toString();
+        String msg = "Copy target directory missing";
         Log.warn(msg);
 
         if (haltOnError) {

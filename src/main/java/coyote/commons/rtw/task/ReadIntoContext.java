@@ -90,12 +90,12 @@ public class ReadIntoContext extends AbstractFileTask {
     final String delimiter = getDelimiter();
     final String source = getSourceOrFile();
     if (StringUtil.isNotBlank(source)) {
-      Log.debug("Using a filename of '" + source + "'");;
+      Log.debug(String.format("Using a filename of '%s'", source));
       final File file = getExistingFile(source);
       if (file == null) {
         throw new TaskException("Cannot read file into context - does not exist: " + source);
       } else {
-        Log.debug("Using absolute filename of '" + file.getAbsolutePath() + "'");;
+        Log.debug(String.format("Using absolute filename of '%s'", file.getAbsolutePath()));
       }
       if (file.exists()) {
         if (file.canRead()) {
@@ -108,16 +108,16 @@ public class ReadIntoContext extends AbstractFileTask {
                 if (isPopulatingSymbols()) {
                   getContext().getSymbols().put(kvp[0], kvp[1]);
                 }
-                Log.debug("Recording '" + kvp[0] + "' in context as '" + kvp[1] + "'");
+                Log.debug(String.format("Recording '%s' in context as '%s'", kvp[0], kvp[1]));
               } else {
-                Log.warn("No delimiter for line: '" + line + "'");
+                Log.warn(String.format("No delimiter for line: '%s'", line));
               }
             }
           } else {
             Log.warn(String.format("%s did not read any data from %s - empty file (%s)", getClass().getSimpleName(), source, file.getAbsolutePath()));
           }
         } else {
-          final String msg = String.format( "Task.failed_file_cannot_be_read", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();
+          final String msg = String.format("%s failed: File cannot be read %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
           if (haltOnError) {
             throw new TaskException(msg);
           } else {
@@ -126,7 +126,7 @@ public class ReadIntoContext extends AbstractFileTask {
           }
         }
       } else {
-        final String msg = String.format( "Task.failed_file_does_not_exist", getClass().getSimpleName(), source, file.getAbsolutePath()).toString();
+        final String msg = String.format("%s failed: File does not exist: %s (%s)", getClass().getSimpleName(), source, file.getAbsolutePath());
         if (haltOnError) {
           throw new TaskException(msg);
         } else {
@@ -135,7 +135,7 @@ public class ReadIntoContext extends AbstractFileTask {
         }
       }
     } else {
-      final String msg = String.format( "%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE).toString();
+      final String msg = String.format("%s failed: No data in %s configuration attribute", getClass().getSimpleName(), ConfigTag.SOURCE);
       if (haltOnError) {
         throw new TaskException(msg);
       } else {

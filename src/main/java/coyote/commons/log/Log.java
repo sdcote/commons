@@ -136,6 +136,29 @@ public final class Log {
     }
 
     /**
+     * Common settings for standard operation.
+     *
+     * <p>Creates a console appender as the default appender using the default
+     * formatter and logging Fatal, Error, Informational, and Notice categories.</p>
+     */
+    public static void initDefaultLogging(){
+        addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.FATAL_EVENTS | Log.ERROR_EVENTS | Log.INFO_EVENTS | Log.NOTICE_EVENTS));
+        getDefaultLogger().setFormatter(new DefaultFormatter());
+    }
+
+    /**
+     * Common settings for simple console output.
+     *
+     * <p>Creates a console appender as the default appender using a 
+     * minimalistic formatter to keep the console clean, and logging Fatal, 
+     * Error, Informational, and Notice categories.</p>
+     */
+    public static void initConsoleLogging(){
+        addLogger(Log.DEFAULT_LOGGER_NAME, new ConsoleAppender(Log.FATAL_EVENTS | Log.ERROR_EVENTS | Log.INFO_EVENTS | Log.NOTICE_EVENTS));
+        getDefaultLogger().setFormatter(new ConsoleFormatter());
+    }
+
+    /**
      * Access how deep formatters should go into the stack to find the actual
      * source of the event.
      *

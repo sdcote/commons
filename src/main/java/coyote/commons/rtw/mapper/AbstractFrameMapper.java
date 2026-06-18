@@ -14,7 +14,6 @@ import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataField;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
-import coyote.commons.log.LogMsg;
 import coyote.commons.rtw.AbstractConfigurableComponent;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.context.TransformContext;
@@ -64,7 +63,7 @@ public abstract class AbstractFrameMapper extends AbstractConfigurableComponent 
                 }
             }
         } else {
-            Log.warn(LogMsg.createMsg("Mapper.no_section_in_configuration"));
+            Log.warn("No fields section found in configuration");
         }
 
     }

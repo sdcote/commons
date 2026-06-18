@@ -7,7 +7,7 @@
  */
 package coyote.commons.rtw.daemonjob;
 
-import coyote.DaemonJob;
+import coyote.BootStrap;
 import coyote.commons.StringUtil;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.network.http.HTTPSession;
@@ -20,7 +20,7 @@ import coyote.commons.network.http.responder.ServiceResponder;
 import java.util.Map;
 
 /**
- * CommandResponder handles control commands for the DaemonJob.
+ * CommandResponder handles control commands for the BootStrap loader.
  *
  * <p>It expects a POST request with a JSON body containing a "command" field.
  * Valid commands are "start", "stop", and "shutdown".</p>
@@ -38,10 +38,10 @@ public class CommandResponder extends ServiceResponder {
      */
     @Override
     public Response post(Resource resource, Map<String, String> urlParams, HTTPSession session) {
-        DaemonJob job = resource.initParameter(DaemonJob.class);
+        BootStrap job = resource.initParameter(BootStrap.class);
         if (job == null) {
             return Response.createFixedLengthResponse(Status.INTERNAL_ERROR, getMimeType(),
-                    new DataFrame().set("error", "DaemonJob not initialized in responder").toString());
+                    new DataFrame().set("error", "BootStrap not initialized in responder").toString());
         }
 
         DataFrame body = marshalBody(session);

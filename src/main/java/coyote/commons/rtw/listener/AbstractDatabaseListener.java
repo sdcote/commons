@@ -13,7 +13,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import coyote.commons.CipherUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.cfg.Config;
@@ -480,7 +479,7 @@ public abstract class AbstractDatabaseListener extends AbstractListener implemen
           try {
             stmt.close();
           } catch (Exception e) {
-            Log.warn(String.format("Problems closing create {} statement: {}", table, e.getMessage()));
+            Log.warn(String.format("Problems closing create %s statement: %s", table, e.getMessage()));
           }
         }
 

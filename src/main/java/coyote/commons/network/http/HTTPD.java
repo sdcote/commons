@@ -11,6 +11,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
@@ -618,26 +619,19 @@ public abstract class HTTPD {
    * @throws IOException if the socket is in use.
    */
   public void start(final int timeout, final boolean daemon) throws IOException {
+    if (myPort < 0 || myPort > 65535) {
+      throw new IOException("Port out of range: " + myPort);
+    }
     myServerSocket = getServerSocketFactory().create();
     myServerSocket.setReuseAddress(true);
+    myServerSocket.bind(hostname != null ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
 
     final ServerRunnable serverRunnable = createServerRunnable(timeout);
+    serverRunnable.isBoundToPort = true;
     myThread = new Thread(serverRunnable);
     myThread.setDaemon(daemon);
     myThread.setName("HTTPD Listener");
     myThread.start();
-    while (!serverRunnable.isBoundToPort && (serverRunnable.bindException == null)) {
-      try {
-        Thread.sleep(10L);
-      } catch (final Throwable e) {
-        // on some platforms (e.g. mobile devices) this may not be allowed, 
-        // that is why we catch throwable. This should happen right away 
-        // because we are just waiting for the socket to bind.
-      }
-    }
-    if (serverRunnable.bindException != null) {
-      throw serverRunnable.bindException;
-    }
   }
 
 

@@ -129,10 +129,8 @@ public abstract class AbstractFrameFileWriter extends AbstractFrameWriter implem
                 }
 
                 if (targetFile != null) {
-                    // if not absolute, use the current job directory
-                    if (!targetFile.isAbsolute()) {
-                        targetFile = new File(getJobDirectory(), targetFile.getPath());
-                    }
+                    // resolve the target file using the job directory as default
+                    targetFile = resolveFile(targetFile);
                     Log.debug(String.format("%s using target file %s", getClass().getSimpleName(), targetFile.getAbsolutePath()));
 
                     // Determine the size of the file if it exists

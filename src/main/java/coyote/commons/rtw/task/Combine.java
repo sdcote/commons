@@ -58,9 +58,9 @@ public class Combine extends AbstractFileTask implements TransformTask {
 
     // Get our source directory
     String sourcedir = getString(ConfigTag.DIRECTORY);
-    directory = new File(sourcedir);
+    directory = resolveFile(sourcedir);
     if (!directory.exists()) {
-      String msg = String.format( "Task.source_directory_does_not_exist", getClass().getName(), directory.getAbsolutePath()).toString();
+      String msg = String.format("Source directory does not exist: %s", directory.getAbsolutePath());
       if (haltOnError()) {
         context.setError(msg);
         return;
@@ -69,7 +69,7 @@ public class Combine extends AbstractFileTask implements TransformTask {
       }
     }
     if (!directory.isDirectory()) {
-      String msg = String.format( "Task.source_is_not_directory", getClass().getName(), directory.getAbsolutePath()).toString();
+      String msg = String.format("Source is not a directory: %s", directory.getAbsolutePath());
       if (haltOnError()) {
         context.setError(msg);
         return;
@@ -78,7 +78,7 @@ public class Combine extends AbstractFileTask implements TransformTask {
       }
     }
     if (!directory.canRead()) {
-      String msg = String.format( "Task.source_directory_not_readable", getClass().getName(), directory.getAbsolutePath()).toString();
+      String msg = String.format("Source directory not readable: %s", directory.getAbsolutePath());
       if (haltOnError()) {
         context.setError(msg);
         return;
@@ -96,13 +96,13 @@ public class Combine extends AbstractFileTask implements TransformTask {
     if (configuration.containsIgnoreCase(ConfigTag.APPEND)) {
       append = getBoolean(ConfigTag.APPEND);
     }
-    Log.debug("Append flag is set to " + append);
+    Log.debug(String.format("Append flag is set to %b", append));
 
     // if we don't already have a printwriter, set one up based on the configuration
     if (printwriter == null) {
       // check for a target in our configuration
       String target = getString(ConfigTag.TARGET);
-      Log.debug(String.format( "%s using target '%s'", this.getClass().getSimpleName(), target));
+      Log.debug(String.format("%s using target '%s'", this.getClass().getSimpleName(), target));
 
       // Make sure we have a target
       if (StringUtil.isNotBlank(target)) {
@@ -135,25 +135,23 @@ public class Combine extends AbstractFileTask implements TransformTask {
           targetFile = new File(target);
         }
 
-        // if not absolute, use the current job directory
+        // if we have a target file, resolve it
         if (targetFile != null) {
-          if (!targetFile.isAbsolute()) {
-            targetFile = new File(getJobDirectory(), targetFile.getPath());
-          }
-          Log.debug("Using a target file of " + targetFile.getAbsolutePath());
+          targetFile = resolveFile(targetFile);
+          Log.debug(String.format("Using a target file of %s", targetFile.getAbsolutePath()));
 
           try {
             final Writer fwriter = new FileWriter(targetFile, append);
             printwriter = new PrintWriter(fwriter);
 
           } catch (final Exception e) {
-            Log.error("Could not create writer: " + e.getMessage());
+            Log.error(String.format("Could not create writer: %s", e.getMessage()));
             context.setError(e.getMessage());
           }
         }
       } else {
         Log.error("No target specified");
-        context.setError(getClass().getName() + " could not determine target");
+        context.setError(String.format("%s could not determine target", getClass().getName()));
       }
     }
 

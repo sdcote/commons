@@ -13,7 +13,7 @@ The Coyote HTTP Server is a lightweight, embeddable HTTP/1.1 server designed for
 - **IP ACL**: Access Control Lists based on IP addresses.
 - **DoS Protection**: Basic Denial of Service protection based on request frequency.
 - **SSL/HTTPS**: Support for secure connections using SSL/TLS.
-- **Remote Control**: The `DaemonJob` can be controlled remotely via an HTTP server (see [DaemonJob HTTP Server Guide](daemonjob-http-server.md)).
+- **Remote Control**: The `BootStrap` loader can be controlled remotely via an HTTP server (see [BootStrap HTTP Server Guide](bootstrap-http-server.md)).
 
 ## Creating an HTTP File Server
 

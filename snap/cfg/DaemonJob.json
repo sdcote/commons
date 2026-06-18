@@ -1,33 +1,49 @@
 {
-  "DaemonJob": {
-    "Server": {
-      "Port": 8080,
-      "Users": {
-        "User": {
-          "Name": "admin",
-          "Password": "adminPassword",
-          "Groups": "admin"
-        }
+  "name": "DaemonJob",
+  "Server": {
+    "Port": 8080,
+    "Users": {
+      "User": {
+        "Name": "admin",
+        "Password": "adminPassword",
+        "Groups": "admin"
+      }
+    }
+  },
+  "Job": [
+    {
+      "name": "DownloadsWatch",
+      "class": "RtwJob",
+      "repeat": true,
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "/Users/sdcote/Downloads"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
       }
     },
-    "Job": [
-      {
-        "RtwJob": {
-          "Reader": { "class": "DirectoryTripwireReader", "directory": "/Users/sdcote/Downloads" },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
-        }
+    {
+      "name": "LogWatch",
+      "class": "RtwJob",
+      "repeat": true,
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "/var/log"
       },
-      {
-        "RtwJob": {
-          "Reader": { "class": "DirectoryTripwireReader", "directory": "/var/log" },
-          "Writer": { "class": "ConsoleWriter", "format": "json", "indent": true }
-        }
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
       }
-    ],
-    "Logging": [
-      { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
-      { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace, scheduler" } }
-    ]
-  }
+    }
+  ],
+  "logging": [
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "scheduler" }
+    }
+  ]
 }
 

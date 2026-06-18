@@ -1,31 +1,20 @@
 package coyote.commons.snap;
 
-import coyote.BootStrap;
+import coyote.commons.CoyoteEnvironment;
 import coyote.commons.FileUtil;
 import coyote.commons.Log;
 import coyote.commons.StringUtil;
-import coyote.commons.UriUtil;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
-import coyote.commons.dataframe.DataField;
-import coyote.commons.dataframe.DataFrame;
+import coyote.commons.rtw.ConfigTag;
 import coyote.commons.i13n.StatBoard;
 import coyote.commons.i13n.StatBoardImpl;
-import coyote.commons.log.Logger;
-import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.Symbols;
 import coyote.commons.rtw.context.OperationalContext;
 import coyote.commons.template.SymbolTable;
-import coyote.commons.template.Template;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.io.IOException;
 
 /**
  * Base implementation of a SnapJob providing common functionality.
@@ -47,6 +36,9 @@ public abstract class AbstractSnapJob implements SnapJob {
     /** A symbol table to support basic template functions */
     protected final SymbolTable symbols = new SymbolTable();
     /** Our configuration */
+    public static final String OVERRIDE_WORK_DIR_ARG = "-owd";
+    protected static final String DEFAULT_HOME = System.getProperty("user.dir");
+
     protected Config configuration = new Config();
     /** The command line arguments used to invoke the loader */
     protected String[] commandLineArguments = null;
@@ -67,11 +59,11 @@ public abstract class AbstractSnapJob implements SnapJob {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread("JobHook") {
                 public void run() {
-                    Log.debug("Runtime_terminating");
+                    Log.debug("Runtime terminating");
                     if (job != null) {
                         job.stop();
                     }
-                    Log.debug("Runtime_terminated");
+                    Log.debug("Runtime terminated");
                 }
             });
         } catch (Exception e) {
@@ -89,26 +81,10 @@ public abstract class AbstractSnapJob implements SnapJob {
      * system properties or null if neither are defined.
      */
     protected static String getAppHome() {
-        return getVariable(BootStrap.APP_HOME);
+        return CoyoteEnvironment.getHomeDirectory();
     }
 
 
-    /**
-     * Returns the value from either the environment variables or the system
-     * properties with the system properties taking precedence over environment
-     * variables.
-     *
-     * @param variable the name of the variable to lookup
-     * @return The value from either the environment variables or system
-     * properties or null if neither are defined.
-     */
-    private static String getVariable(String variable) {
-        String retval = System.getenv().get(variable);
-        if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
-            retval = System.getProperties().getProperty(variable);
-        }
-        return retval;
-    }
 
 
     /**
@@ -137,6 +113,131 @@ public abstract class AbstractSnapJob implements SnapJob {
 
 
     /**
+     * Determine the value of the "app.home" system property.
+     *
+     * <p>If the app home property is already set, it is preserved and normalized.
+     * If there is no value, this attempts to determine the location
+     * of the configuration file used to configure this job (via command-line arguments)
+     * and if found, uses that directory as the home directory of all operations.
+     * The reasoning is that all artifacts should be kept together.</p>
+     *
+     * <p>If it cannot be determined from arguments, it defaults to the current working directory.</p>
+     */
+    protected void determineHomeDirectory() {
+        if (System.getProperty(CoyoteEnvironment.APP_HOME) == null) {
+            if (getCommandLineArguments() != null && getCommandLineArguments().length > 0) {
+                File cfgFile = new File(getCommandLineArguments()[0]);
+                if (cfgFile.exists()) {
+                    if (cfgFile.getParentFile() != null) {
+                        System.setProperty(CoyoteEnvironment.APP_HOME, cfgFile.getParentFile().getAbsolutePath());
+                    } else {
+                        System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+                    }
+                } else {
+                    System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+                }
+            } else {
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+            }
+        } else {
+            if (System.getProperty(CoyoteEnvironment.APP_HOME).trim().equals(".")) {
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+            } else if (StringUtil.isBlank(System.getProperty(CoyoteEnvironment.APP_HOME))) {
+                System.setProperty(CoyoteEnvironment.APP_HOME, DEFAULT_HOME);
+            }
+        }
+        System.setProperty(CoyoteEnvironment.APP_HOME, FileUtil.normalizePath(System.getProperty(CoyoteEnvironment.APP_HOME)));
+        Log.debug(String.format("Job home directory set to %s", System.getProperty(CoyoteEnvironment.APP_HOME)));
+    }
+
+    /**
+     * Determine and initialize the work directory.
+     *
+     * <p>The logic follows these steps:
+     * <ol>
+     *     <li>Check for the {@code -owd} command line argument to override the work directory with the configuration directory or current directory.</li>
+     *     <li>Check the {@code app.work} system property.</li>
+     *     <li>Check for a {@code wrk} directory under {@code app.home}.</li>
+     *     <li>Default to the current working directory.</li>
+     * </ol>
+     * The resulting path is normalized and set in the {@code app.work} system property.</p>
+     */
+    protected void determineWorkDirectory() {
+        File result = null;
+        if (commandLineArguments != null) {
+            for (int x = 0; x < commandLineArguments.length; x++) {
+                if (OVERRIDE_WORK_DIR_ARG.equalsIgnoreCase(commandLineArguments[x])) {
+                    String path = getConfigDir();
+                    if (path == null) {
+                        path = System.getProperty("user.dir");
+                    }
+                    Log.debug("Overriding APP.WORK of '" + System.getProperties().getProperty(CoyoteEnvironment.APP_WORK) + "' with '" + path + "'");
+                    System.setProperty(CoyoteEnvironment.APP_WORK, path);
+                    break;
+                }
+            }
+        }
+        String path = System.getProperties().getProperty(CoyoteEnvironment.APP_WORK);
+        if (StringUtil.isNotBlank(path)) {
+            Log.debug("Initializing APP.WORK directory '" + path + "'");
+            String workDir = FileUtil.normalizePath(path);
+            File workingDir = new File(workDir);
+            if (workingDir.exists()) {
+                Log.debug("APP.WORK directory '" + path + "' already exists");
+                if (workingDir.isDirectory()) {
+                    if (workingDir.canWrite()) {
+                        result = workingDir;
+                    } else {
+                        Log.warn("The app.work property specified an un-writable (permissions) directory: " + workDir);
+                    }
+                } else {
+                    Log.warn("The app.work property does not specify a directory: " + workDir);
+                }
+            } else {
+                Log.debug("Creating APP.WORK directory '" + path + "'");
+                try {
+                    FileUtil.makeDirectory(workingDir);
+                    result = workingDir;
+                } catch (IOException e) {
+                    Log.error("Could not create APP.WORK directory '" + path + "' - " + e.getMessage());
+                }
+            }
+        }
+        if (result == null) {
+            String home = System.getProperty(CoyoteEnvironment.APP_HOME);
+            if (StringUtil.isNotBlank(home)) {
+                File workingDir = new File(home, "wrk");
+                if (!workingDir.exists()) {
+                    try {
+                        FileUtil.makeDirectory(workingDir);
+                        result = workingDir;
+                    } catch (IOException e) {
+                        Log.error("Could not create APP.WORK directory in APP.HOME '" + path + "' - " + e.getMessage());
+                    }
+                } else {
+                    result = workingDir;
+                }
+            }
+        }
+        if (result == null) {
+            result = new File(System.getProperty("user.dir"));
+        }
+        System.setProperty(CoyoteEnvironment.APP_WORK, result.getAbsolutePath());
+        Log.debug("APP.WORK set to " + System.getProperty(CoyoteEnvironment.APP_WORK));
+    }
+
+    protected String getConfigDir() {
+        String retval = null;
+        if (commandLineArguments != null && commandLineArguments.length > 0) {
+            File cfgFile = new File(commandLineArguments[0]);
+            if (cfgFile.exists()) {
+                retval = cfgFile.getParent();
+            }
+        }
+        return retval;
+    }
+
+    /**
      * Configure the job with the provided configuration.
      *
      * <p>This method initializes the symbol table, pre-processes the configuration
@@ -146,41 +247,34 @@ public abstract class AbstractSnapJob implements SnapJob {
      * @param cfg The configuration for the job.
      * @throws ConfigurationException If there is a problem with the configuration or initialization.
      */
-    public void configure(Config cfg) throws ConfigurationException {
+    public final void configure(Config cfg) throws ConfigurationException {
         if (cfg != null) configuration = cfg;
-        else configuration = new Config(); // prevent null configurations
+        else configuration = new Config();
 
-        // Fill the symbol table with runtime values
+        determineHomeDirectory();
+        determineWorkDirectory();
+
+        preConfigure();
+        doConfigure();
+        postConfigure();
+    }
+
+    protected void preConfigure() {
         symbols.readEnvironmentVariables();
-
-        // System properties override environment variables
         symbols.readSystemProperties();
-
-        // store the command line arguments in our symbol table
         if (commandLineArguments != null) {
             for (int x = 0; x < commandLineArguments.length; x++) {
                 symbols.put(Symbols.COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
             }
         }
+        symbols.put(Symbols.JOB_DIRECTORY, System.getProperty(CoyoteEnvironment.APP_HOME));
+        symbols.put(Symbols.WORK_DIRECTORY, System.getProperty(CoyoteEnvironment.APP_WORK));
+    }
 
-        // DO NOT pre-process configuration - Let the components do that themselves otherwise some values will be locked in at
-        // configuration time, not when the components run as is the case with the DaemonJob.
-        String rawConfiguration = configuration.toString();
+    protected void doConfigure() throws ConfigurationException {
+    }
 
-        if(System.getProperty("os.name").toLowerCase().contains("win")){
-            // (?<!\\) -> Negative lookbehind: not preceded by a backslash
-            // \\      -> The literal backslash to find
-            // (?!\\)  -> Negative lookahead: not followed by a backslash
-            String regex = "(?<!\\\\)\\\\(?!\\\\)";
-            rawConfiguration = rawConfiguration.replaceAll(regex, "\\\\\\\\");
-        }
-
-
-        // Replace all values in the configuration with symbols - runtime variables
-        configuration = new Config(rawConfiguration);
-
-        // setup logging as soon as we can
-        initLogging();
+    protected void postConfigure() {
     }
 
 
@@ -232,6 +326,18 @@ public abstract class AbstractSnapJob implements SnapJob {
 
 
 
+    @Override
+    public String getName() {
+        return instanceName;
+    }
+
+
+    @Override
+    public void setName(String name) {
+        instanceName = name;
+    }
+
+
     /**
      * @return the configuration for this job.
      */
@@ -267,228 +373,8 @@ public abstract class AbstractSnapJob implements SnapJob {
     }
 
 
-    /**
-     * Load loggers for the entire runtime.
-     *
-     * <p>This looks for a section named logging in the main configuration and loads the
-     * loggers from there.</p>
-     */
-    protected void initLogging() {
-        List<Config> loggers = configuration.getSections(ConfigTag.LOGGING);
-
-        // There is a logger section, remove all the existing loggers and start
-        // from scratch so we don't wind up with duplicate messages. Even if it is
-        // empty, assume the configuration contains the exact state of logging
-        // desired.
-        if (loggers.size() > 0) {
-            coyote.commons.log.Log.removeAllLoggers();
-        }
-
-        // for each of the logger sections
-        for (Config cfg : loggers) {
-            // Find the individual loggers
-            for (DataField field : cfg.getFields()) {
-                // each logger is a frame
-                if (field.isFrame()) {
-                    DataFrame cfgFrame = (DataFrame) field.getObjectValue();
-                    String className = field.getName();
-
-                    // If the name is blank, it's an array of objects like [{"Logger":{...}}, ...]
-                    // In this case, the first field of the frame is the logger class name
-                    if (StringUtil.isBlank(className) && cfgFrame.getFieldCount() > 0) {
-                        DataField firstField = cfgFrame.getField(0);
-                        if (firstField.isFrame()) {
-                            className = firstField.getName();
-                            cfgFrame = (DataFrame) firstField.getObjectValue();
-                        }
-                    }
-
-                    if (StringUtil.isNotBlank(className)) {
-                        // start building the configuration for logger
-                        Config loggerConfiguration = new Config();
-
-                        // Make sure the class is fully qualified
-                        if (StringUtil.countOccurrencesOf(className, ".") < 1) {
-                            className = LOGGER_PKG + "." + className;
-                        }
-
-                        // put the name of the class in the logger configuration
-                        loggerConfiguration.put(ConfigTag.CLASS, className);
-
-                        // add each of the fields in the config frame to the logger config
-                        for (DataField lfield : cfgFrame.getFields()) {
-                            // handle the target...make sure it is relative to ????
-                            if (ConfigTag.TARGET.equalsIgnoreCase(lfield.getName())) {
-                                String cval = lfield.getStringValue();
-                                if (StringUtil.isNotEmpty(cval)) {
-                                    cval = Template.preProcess(cval, symbols);
-                                }
-
-                                // the targets for loggers MUST be a URI
-                                if (!("stdout".equalsIgnoreCase(cval) || "stderr".equalsIgnoreCase(cval))) {
-                                    URI testTarget = UriUtil.parse(cval);
-
-                                    if (testTarget != null) {
-                                        if (testTarget.getScheme() == null) {
-                                            cval = "file://" + cval;
-                                        }
-                                    } else {
-                                        File file = new File(cval);
-                                        URI fileUri = FileUtil.getFileURI(file);
-                                        if (fileUri != null) {
-                                            cval = fileUri.toString();
-                                        }
-                                    }
-
-                                    URI testUri = UriUtil.parse(cval);
-                                    if (testUri != null) {
-                                        if (UriUtil.isFile(testUri)) {
-                                            File logfile = UriUtil.getFile(testUri);
-
-                                            // make it absolute to our job directory
-                                            if (!logfile.isAbsolute()) {
-
-                                                // as a loader, we use app.home as our home directory
-                                                // and therefore logging should be in a "log" directory
-                                                // off of app.home
-                                                String path = getAppHome();
-
-                                                // If no app.home, try the directory the configuration file is in
-                                                if (StringUtil.isBlank(path)) {
-
-                                                    String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
-                                                    if (StringUtil.isNotBlank(cfgUri) && cfgUri.startsWith("file:")) {
-                                                        try {
-                                                            File cfgFile = UriUtil.getFile(new URI(cfgUri));
-                                                            if (cfgFile != null && cfgFile.exists()) {
-                                                                path = cfgFile.getParent();
-                                                            } else {
-                                                                // should not happen
-                                                                path = System.getProperties().getProperty("user.dir").concat("/snap/log");
-                                                            }
-                                                        } catch (URISyntaxException e) {
-                                                            // should not happen
-                                                            path = System.getProperties().getProperty("user.dir").concat("/snap/log");
-                                                        }
-                                                    } else {
-                                                        // probably a configuration file read across the network
-                                                        path = System.getProperties().getProperty("user.dir").concat("/snap/log");
-                                                    }
-                                                } else {
-                                                    path = path.concat("/log");
-                                                }
-
-                                                File logdir = new File(path);
-                                                logfile = new File(logdir, logfile.getPath());
-                                                testUri = FileUtil.getFileURI(logfile);
-                                                cval = testUri.toString();
-                                            }
-                                        }
-
-                                    } else {
-                                        System.out.println("Bad target URI '" + cval + "'");
-                                        System.exit(11);
-                                    }
-                                }
-
-                                // set the validated URI in the target field
-                                loggerConfiguration.put(ConfigTag.TARGET, cval);
-                            } else if (ConfigTag.CATEGORIES.equalsIgnoreCase(lfield.getName())) {
-                                // Categories should be normalized to upper case
-                                String cval = lfield.getStringValue();
-                                if (StringUtil.isNotEmpty(cval)) {
-                                    cval = cval.toUpperCase();
-                                    loggerConfiguration.put(ConfigTag.CATEGORIES, cval);
-                                }
-                            } else {
-                                // pass the rest of the attributes unmolested
-                                loggerConfiguration.add(lfield);
-                            }
-                        }
-
-                        // create the logger
-                        Logger logger = createLogger(loggerConfiguration);
-                        String name = null;
-                        if (logger != null) {
-                            // Get the name of the logger
-                            name = loggerConfiguration.getString(ConfigTag.NAME);
-
-                            // If there is no name, try looking for an ID
-                            if (StringUtil.isBlank(name)) {
-                                name = loggerConfiguration.getString(ConfigTag.ID);
-                            }
-
-                            //If no name or ID, assign it a name
-                            if (StringUtil.isBlank(name)) {
-                                name = UUID.randomUUID().toString();
-                            }
-
-                            try {
-                                coyote.commons.log.Log.addLogger(name, logger);
-                            } catch (Exception e) {
-                                System.out.println(String.format( "Could not add configured logger '%s' (%s): %s", name, logger.getClass().getName(), e.getMessage()));
-                                System.exit(11);
-                            }
-                        } else {
-                            System.err.println(String.format( "Could not create an instance of the specified logger '%s'", name));
-                            System.exit(11);
-                        }
-
-                    } else {
-                        System.err.println(String.format( "No logger classname specified in configuration: %s", cfgFrame.toString()));
-                        System.exit(11);
-                    }
-                } else {
-                    System.err.println(String.format("Invalid logger configuration section"));
-                    System.exit(11);
-                } // must be a frame/section
-
-            } // for each logger
-
-        } // for each logger section
-
-        coyote.commons.log.Log.debug(String.format( "Logging initiated %tF %<tT.%<tL", new Date()));
-    }
 
 
 
-    /**
-     * Create a logger from the given configuration.
-     *
-     * @param cfg The configuration for the logger.
-     * @return The created logger, or null if it could not be created.
-     */
-    private static Logger createLogger(Config cfg) {
-        Logger retval = null;
-        if (cfg != null) {
-            if (cfg.contains(ConfigTag.CLASS)) {
-                String className = cfg.getAsString(ConfigTag.CLASS);
-
-                try {
-                    Class<?> clazz = Class.forName(className);
-                    Constructor<?> ctor = clazz.getConstructor();
-                    Object object = ctor.newInstance();
-
-                    if (object instanceof Logger) {
-                        retval = (Logger) object;
-                        try {
-                            retval.setConfig(cfg);
-                        } catch (Exception e) {
-                            coyote.commons.log.Log.error(String.format( "Could not configure logger %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
-                        }
-                    } else {
-                        coyote.commons.log.Log.warn(String.format( "Instance of %s is not a logger", className));
-                    }
-                } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
-                         InvocationTargetException e) {
-                    coyote.commons.log.Log.error(String.format( "Error instantiating logger %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
-                }
-            } else {
-                coyote.commons.log.Log.error(String.format("Logger configuration did not contain a classname"));
-            }
-        }
-
-        return retval;
-    }
 
 }

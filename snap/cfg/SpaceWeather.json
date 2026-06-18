@@ -1,0 +1,39 @@
+{
+  "Job": {
+    "class": "coyote.RtwJob",
+    "schedule": { "minutes": "*/30" },
+    "configuration": {
+      "name": "SunSpot Activity",
+      "Preprocess": [
+        {
+          "class": "WebGet",
+          "source": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+          "target": "space_weather.json"
+        }
+      ],
+      "Reader": {
+        "class": "JsonReader",
+        "source": "space_weather.json",
+        "selector": "*"
+      },
+      "Transform": [
+        {
+          "class": "Timestamp",
+          "field": "ObservationTime"
+        }
+      ],
+      "Writer": [
+        {
+          "class": "CsvWriter",
+          "target": "space_weather_history.csv",
+          "append": true,
+          "header": true
+        }
+      ]
+    }
+  },
+  "logging": [
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
+  ]
+}

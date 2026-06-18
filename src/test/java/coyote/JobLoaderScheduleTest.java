@@ -4,18 +4,18 @@ import coyote.commons.CronEntry;
 import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.rtw.ConfigTag;
+import coyote.commons.snap.JobLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DaemonJobTest {
+public class JobLoaderScheduleTest {
 
     @Test
     public void testParseSchedulePattern() throws ConfigurationException {
-        DaemonJob job = new DaemonJob();
         Config cfg = new Config();
         cfg.add(ConfigTag.PATTERN, "1 2 3 4 5");
-        CronEntry entry = job.parseSchedule(cfg);
+        CronEntry entry = JobLoader.parseSchedule(cfg);
         assertEquals("1", entry.getMinutePattern());
         assertEquals("2", entry.getHourPattern());
         assertEquals("3", entry.getDayPattern());
@@ -25,14 +25,13 @@ public class DaemonJobTest {
 
     @Test
     public void testParseScheduleIndividualFields() throws ConfigurationException {
-        DaemonJob job = new DaemonJob();
         Config cfg = new Config();
         cfg.add(ConfigTag.MINUTES, "10");
         cfg.add(ConfigTag.HOURS, "11");
         cfg.add(ConfigTag.DAYS, "12");
         cfg.add(ConfigTag.MONTHS, "11");
         cfg.add(ConfigTag.DAYS_OF_WEEK, "1");
-        CronEntry entry = job.parseSchedule(cfg);
+        CronEntry entry = JobLoader.parseSchedule(cfg);
         assertEquals("10", entry.getMinutePattern());
         assertEquals("11", entry.getHourPattern());
         assertEquals("12", entry.getDayPattern());
@@ -42,24 +41,22 @@ public class DaemonJobTest {
 
     @Test
     public void testParseScheduleOverwrite() throws ConfigurationException {
-        DaemonJob job = new DaemonJob();
         Config cfg = new Config();
         cfg.add(ConfigTag.PATTERN, "* * * * *");
         cfg.add(ConfigTag.MINUTES, "30");
-        CronEntry entry = job.parseSchedule(cfg);
+        CronEntry entry = JobLoader.parseSchedule(cfg);
         // The last one wins because it iterates through fields
         assertEquals("30", entry.getMinutePattern());
         
         cfg = new Config();
         cfg.add(ConfigTag.MINUTES, "30");
         cfg.add(ConfigTag.PATTERN, "1 1 1 1 1");
-        entry = job.parseSchedule(cfg);
+        entry = JobLoader.parseSchedule(cfg);
         assertEquals("1", entry.getMinutePattern());
     }
 
     @Test
     public void testParseScheduleComplexPatterns() throws ConfigurationException {
-        DaemonJob job = new DaemonJob();
         Config cfg = new Config();
         
         // Test ranges
@@ -73,7 +70,7 @@ public class DaemonJobTest {
         // Test range with divisor
         cfg.add(ConfigTag.DAYS_OF_WEEK, "1-5/2");
         
-        CronEntry entry = job.parseSchedule(cfg);
+        CronEntry entry = JobLoader.parseSchedule(cfg);
         assertEquals("0-15", entry.getMinutePattern());
         assertEquals("*/2", entry.getHourPattern());
         assertEquals("*", entry.getDayPattern());

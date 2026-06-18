@@ -12,7 +12,6 @@ import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;
 import coyote.commons.rtw.FrameReader;
-import coyote.commons.rtw.RTW;
 import coyote.commons.rtw.context.TransactionContext;
 import coyote.commons.rtw.context.TransformContext;
 
@@ -78,10 +77,7 @@ public class DirectoryReader extends AbstractFrameReader implements FrameReader 
             return;
         }
 
-        File sourceDir = new File(source);
-        if (!sourceDir.isAbsolute()) {
-            sourceDir = RTW.resolveFile(sourceDir, getContext());
-        }
+        File sourceDir = resolveFile(source);
 
         if (sourceDir == null || !sourceDir.exists() || !sourceDir.isDirectory() || !sourceDir.canRead()) {
             String msg = "Reader.could_not_read_from_source " + getClass().getName() + " - " +

@@ -1,17 +1,30 @@
 {
-  "RtwJob": {
-    "Reader": {
-      "class": "DirectoryTripwireReader",
-      "directory": "C:\\Users\\scote\\Downloads"
+  "Job": {
+    "class": "coyote.RtwJob",
+    "configuration": {
+      "Reader": {
+        "class": "DirectoryTripwireReader",
+        "directory": "C:\\Users\\scote\\Downloads"
+      },
+      "Writer": {
+        "class": "ConsoleWriter",
+        "format": "json",
+        "indent": true
+      }
+    }
+  },
+  "logging": [
+    {
+      "StandardError": {
+        "name": "error",
+        "categories": "error, fatal, warn"
+      }
     },
-    "Writer": {
-      "class": "ConsoleWriter",
-      "format": "json",
-      "indent": true
-    },
-    "Logging": [
-      {"StandardError": { "name": "error", "categories": "error, fatal, warn" }},
-      {"StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" }}
-    ]
-  }
+    {
+      "StandardOutput": {
+        "name": "default",
+        "categories": "info, notice, debug, trace"
+      }
+    }
+  ]
 }

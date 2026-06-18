@@ -49,8 +49,8 @@ public class Process extends AbstractTransformTask {
       Result result = CommandLineProcess.exec(commandLine);
 
       if (Log.isLogging(Log.DEBUG_EVENTS)) {
-        Log.debug("Executed '" + commandLine + "' - exit code: " + result.getExitCode() + "  " + result.getDuration() + "ms");
-        StringBuffer b = new StringBuffer("STDOUT:\n");
+        Log.debug(String.format("Executed '%s' - exit code: %d  %dms", commandLine, result.getExitCode(), result.getDuration()));
+        StringBuilder b = new StringBuilder("STDOUT:\n");
         String[] output = result.getOutput();
         for (int x = 0; x < output.length; x++) {
           b.append(output[x]);
@@ -58,7 +58,7 @@ public class Process extends AbstractTransformTask {
             b.append("\n");
           }
         }
-        Log.debug(b);
+        Log.debug(b.toString());
       }
 
       String contextKey;
@@ -75,7 +75,7 @@ public class Process extends AbstractTransformTask {
       getContext().set(contextKey + DELIMITER + ERROR, result.getError());
 
       if (result.getExitCode() != 0) {
-        StringBuffer b = new StringBuffer("Error running '");
+        StringBuilder b = new StringBuilder("Error running '");
         b.append(commandLine);
         b.append("'");
         String[] errors = result.getError();
@@ -92,7 +92,7 @@ public class Process extends AbstractTransformTask {
         if (haltOnError) {
           throw new TaskException(b.toString());
         } else {
-          Log.error(b);
+          Log.error(b.toString());
           return;
         }
       }

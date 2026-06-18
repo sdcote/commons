@@ -8,7 +8,6 @@
 package coyote.commons.rtw.reader;
 
 import coyote.commons.Glob;
-import coyote.commons.StringUtil;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
 import coyote.commons.rtw.ConfigTag;

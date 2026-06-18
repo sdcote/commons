@@ -1,6 +1,6 @@
 # Scheduler Documentation
 
-The `coyote.commons.job.Scheduler` is a background service designed to execute tasks (`Runnable` or `ScheduledJob`) at specific times or intervals. It leverages a thread pool for parallel execution and manages a priority-ordered queue of jobs.
+The `coyote.commons.job.Scheduler` is a background service designed to execute tasks (`Runnable` or `ScheduledJob`) at specific times or intervals. It leverages a thread pool for parallel execution and manages a priority-ordered queue of jobs. `BootStrap` uses an internal `Scheduler` instance to manage multi-job and repeating job execution.
 
 ## User Documentation
 

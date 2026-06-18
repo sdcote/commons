@@ -15,8 +15,8 @@ import coyote.commons.cfg.Config;
 import coyote.commons.cfg.ConfigurationException;
 import coyote.commons.dataframe.DataFrame;
 import coyote.commons.log.Log;
-import coyote.commons.log.LogMsg;
 import coyote.commons.rtw.context.TransformContext;
+import coyote.commons.template.SymbolTable;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -36,11 +36,6 @@ public class RTW {
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
     public static final String DEFAULT_FRAMEPATH_NAME = "framePath";
     public static final String JSON_EXT = ".json";
-
-    public static final LogMsg.BundleBaseName MSG;
-    static {
-        MSG = new LogMsg.BundleBaseName("RtwMsg");
-    }
 
 
     public static enum Sort {
@@ -72,20 +67,20 @@ public class RTW {
                         try {
                             ((ConfigurableComponent)object).setConfiguration(new Config(cfg));
                         } catch (ConfigurationException e) {
-                            Log.error(LogMsg.createMsg(RTW.MSG, "DX.configuration_error", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            Log.error(String.format("Could not configure class %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        Log.warn(LogMsg.createMsg(RTW.MSG, "DX.instance_not_configurable", className));
+                        Log.warn(String.format("Instance of %s is not configurable", className));
                     }
                 }
 
                 retval = object;
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                      InvocationTargetException e) {
-                Log.error(LogMsg.createMsg(RTW.MSG, "DX.instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                Log.error(String.format("Could not instantiate class %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
             }
         } else {
-            Log.error(LogMsg.createMsg(RTW.MSG, "DX.config_frame_did_not_contain_a_class"));
+            Log.error("Configuration frame did not contain a class name");
         }
 
         return retval;
@@ -118,17 +113,17 @@ public class RTW {
                         try {
                             ((ConfigurableComponent)object).setConfiguration(new Config(cfg));
                         } catch (ConfigurationException e) {
-                            Log.error(LogMsg.createMsg(RTW.MSG, "DX.configuration_error", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+                            Log.error(String.format("Could not configure class %s - %s: %s", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
                         }
                     } else {
-                        Log.warn(LogMsg.createMsg(RTW.MSG, "DX.instance_not_configurable", className));
+                        Log.warn(String.format("Instance of %s is not configurable", className));
                     }
                     retval = object;
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    Log.error(LogMsg.createMsg(RTW.MSG, "DX.instantiation_error", className, e.getClass().getName(), e.getMessage()));
+                    Log.error(String.format("Could not instantiate class %s - %s: %s", className, e.getClass().getName(), e.getMessage()));
                 }
             } else {
-                Log.error(LogMsg.createMsg(RTW.MSG, "DX.config_frame_did_not_contain_a_class"));
+                Log.error("Configuration frame did not contain a class name");
             }
         }
 
@@ -155,10 +150,10 @@ public class RTW {
      * locations.
      *
      * <p>Search for the file in the following locations:<ol>
-     * <li>Users current working directory
+     * <li>Job directory
      * <li>Configuration location, if it is a file system directory
      * <li>Work directory (from system properties)
-     * <li>Job directory</ol>
+     * <li>Users current working directory</ol>
      *
      * @param file the file to resolve
      * @param context the transform context containing the different file
@@ -169,7 +164,17 @@ public class RTW {
     public static File resolveFile(File file, TransformContext context) {
         File retval = file;
         if (file != null && !file.isAbsolute()) {
-            retval = new File(System.getProperty(System.getProperty("user.dir"), file.getPath()));
+            SymbolTable symbols = (context != null) ? context.getSymbols() : null;
+
+            // Priority 1: Job Directory
+            if (symbols != null) {
+                String jobDir = symbols.getString(Symbols.JOB_DIRECTORY);
+                if (StringUtil.isNotBlank(jobDir)) {
+                    return new File(jobDir, file.getPath());
+                }
+            }
+
+            // Priority 2: Configuration Location
             if (!retval.exists()) {
                 String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
                 if (StringUtil.isNotBlank(cfgUri)) {
@@ -185,12 +190,19 @@ public class RTW {
                         // The configuration may have come from the network
                     }
                 }
-                if (!retval.exists()) {
-                    retval = new File(context.getSymbols().getString(Symbols.WORK_DIRECTORY), file.getPath());
-                    if (!retval.exists()) {
-                        retval = new File(context.getSymbols().getString(Symbols.JOB_DIRECTORY), file.getPath());
-                    }
+            }
+
+            // Priority 3: Work Directory
+            if (!retval.exists() && symbols != null) {
+                String workDir = symbols.getString(Symbols.WORK_DIRECTORY);
+                if (StringUtil.isNotBlank(workDir)) {
+                    retval = new File(workDir, file.getPath());
                 }
+            }
+
+            // Priority 4: Current Working Directory
+            if (!retval.exists()) {
+                retval = new File(System.getProperty("user.dir"), file.getPath());
             }
         }
 

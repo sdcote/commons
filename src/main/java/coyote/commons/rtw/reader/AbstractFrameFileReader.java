@@ -63,10 +63,8 @@ public abstract class AbstractFrameFileReader extends AbstractFrameReader implem
                 Log.debug(String.format( "Reader.using_source_file", sourceFile.getAbsolutePath()));
             }
 
-            // if not absolute, use the CDX fixture to attemt to resolve the relative file
-            if (!sourceFile.isAbsolute()) {
-                sourceFile = RTW.resolveFile(sourceFile, getContext());
-            }
+            // resolve the source file
+            sourceFile = resolveFile(source);
 
             if (sourceFile.exists() && sourceFile.canRead()) {
                 lines = FileUtil.lineIterator(sourceFile);

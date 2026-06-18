@@ -207,6 +207,7 @@ public class NetUtil {
    * @return the next available port on the given address.
    */
   public static int getNextAvailablePort( InetAddress address, int port ) {
+    if (port < 0) port = 1; // Start from 1 if port is negative
     ServerSocket socket = getNextServerSocket( address, port, 0 );
     int retval = -1;
 
@@ -295,25 +296,20 @@ public class NetUtil {
     // No cached result, figure it out and cache it for later
     InetAddress addr = null;
 
-    // Make sure we get the IP Address by which the rest of the world knows
-    // us
-    // or at least, our host's default network interface
+    // Make sure we get the IP Address by which the rest of the world knows us
     try {
-      // This helps insure that we do not get localhost (127.0.0.1)
       addr = InetAddress.getByName( InetAddress.getLocalHost().getHostName() );
-    } catch ( UnknownHostException e ) {
-      // Aaaaww Phooey! DNS is not working or we are not in it.
+    } catch ( Exception e ) {
       addr = null;
     }
 
-    // If it looks like a unique address, return it, otherwise try again
+    // If it looks like a unique address, return it
     if ( ( addr != null ) && !addr.getHostAddress().equals( "127.0.0.1" ) && !addr.getHostAddress().equals( "0.0.0.0" ) ) {
       localAddress = addr;
-
       return addr;
     }
 
-    // Try it the way it's supposed to work
+    // Fall back to the loopback address if nothing else works
     try {
       addr = InetAddress.getLocalHost();
     } catch ( Exception ex ) {
@@ -321,7 +317,6 @@ public class NetUtil {
     }
 
     localAddress = addr;
-
     return addr;
   }
 
@@ -724,6 +719,9 @@ public class NetUtil {
    *         host address.
    */
   public static String getQualifiedHostName( InetAddress addr ) {
+    if ( addr == null ) {
+      return null;
+    }
     String name = null;
 
     try {
@@ -779,7 +777,10 @@ public class NetUtil {
    * @return lowercase representation of the hostname for the given address or null if it does not resolve
    */
   public static String getRelativeHostName( InetAddress addr ) {
-    return addr.getHostName().toLowerCase();
+    if ( addr != null ) {
+      return addr.getHostName().toLowerCase();
+    }
+    return null;
   }
 
 

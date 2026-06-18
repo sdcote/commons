@@ -74,42 +74,23 @@ public abstract class AbstractFileTask extends AbstractTransformTask {
 
   /**
    * Get a file reference which should exist.
-   * 
-   * @param source the name of the file to create
-   * @return a fully-qualified file, possibly created in the job directory if it is not fully-qualified
+   *
+   * @param source the name of the file to resolve
+   * @return a fully-qualified file, possibly resolved in the job directory if it is not absolute
    */
   protected File getExistingFile(String source) {
-    final File file = new File(source);
-    File retval = null;
-    if (!file.exists()) {
-      if (!file.isAbsolute()) {
-        retval = new File(getJobDir(), source);
-      }
-    } else {
-      retval = file;
-    }
-    return retval;
+    return resolveFile(source);
   }
 
-
-
-
   /**
-   * Get a file reference and resolve it to the job directory if it is not 
+   * Get a file reference and resolve it to the job directory if it is not
    * absolute.
-   * 
-   * @param name the file name to create
-   * @return a fully-qualified file, possibly created in the job directory if it is not fully-qualified
+   *
+   * @param name the file name to resolve
+   * @return a fully-qualified file, possibly resolved in the job directory if it is not absolute
    */
   protected File getAbsoluteFile(String name) {
-    final File file = new File(name);
-    File retval = null;
-    if (!file.isAbsolute()) {
-      retval = new File(getJobDir(), name);
-    } else {
-      retval = file;
-    }
-    return retval;
+    return resolveFile(name);
   }
 
 }

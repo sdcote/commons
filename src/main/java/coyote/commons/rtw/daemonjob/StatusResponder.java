@@ -7,8 +7,7 @@
  */
 package coyote.commons.rtw.daemonjob;
 
-import coyote.DaemonJob;
-import coyote.commons.dataframe.DataFrame;
+import coyote.BootStrap;
 import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
@@ -18,7 +17,7 @@ import coyote.commons.network.http.responder.Resource;
 import java.util.Map;
 
 /**
- * StatusResponder returns the current status of the DaemonJob.
+ * StatusResponder returns the current status of the BootStrap loader.
  */
 public class StatusResponder extends AbstractJsonResponder {
 
@@ -32,16 +31,12 @@ public class StatusResponder extends AbstractJsonResponder {
      */
     @Override
     public Response get(Resource resource, Map<String, String> urlParams, HTTPSession session) {
-        DaemonJob job = resource.initParameter(DaemonJob.class);
+        BootStrap job = resource.initParameter(BootStrap.class);
         if (job == null) {
-            results.set("error", "DaemonJob not initialized in responder");
+            results.set("error", "BootStrap not initialized in responder");
             setStatus(Status.INTERNAL_ERROR);
         } else {
-            if (job.getContext() != null) {
-                results.set("startTime", job.getContext().getStartTime());
-                results.set("elapsed", job.getContext().getElapsed());
-                results.set("state", job.getContext().getState());
-            }
+            // results.set("startTime", ...); // BootStrap doesn't have context yet
             setStatus(Status.OK);
         }
         return Response.createFixedLengthResponse(getStatus(), getMimeType(), getText());

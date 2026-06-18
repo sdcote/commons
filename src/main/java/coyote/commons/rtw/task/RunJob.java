@@ -242,9 +242,9 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
   @Override
   protected void performTask() throws TaskException {
     final String filename = getString(ConfigTag.FILE);
-    Log.debug("Reading configuration file " + filename);
+    Log.debug(String.format("Reading configuration file %s", filename));
     final URI cfgUri = confirmConfigurationLocation(filename);
-    Log.debug("Calculated URI of " + cfgUri);
+    Log.debug(String.format("Calculated URI of %s", cfgUri));
 
     if (cfgUri != null) {
       try {
@@ -276,7 +276,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
 
         Config params = getConfiguration().getSection(ConfigTag.PARAMETERS);
         if (params != null) {
-          Log.warn("The configuration section '" + ConfigTag.PARAMETERS + "' has been deprecated. use '" + ConfigTag.CONTEXT + "' instead");
+          Log.warn(String.format("The configuration section '%s' has been deprecated. use '%s' instead", ConfigTag.PARAMETERS, ConfigTag.CONTEXT));
         } else {
           params = getConfiguration().getSection(ConfigTag.CONTEXT);
         }
@@ -298,7 +298,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
               Object obj = getContext().resolveToValue(parameterValue);
               if (obj != null) {
                 childContext.set(parameterName, obj);
-                Log.debug("Runjob setting parameter '" + parameterName + "' to context reference " + obj.toString());
+                Log.debug(String.format("Runjob setting parameter '%s' to context reference %s", parameterName, obj.toString()));
               } else {
                 // perform a simple context resolve
                 String resolvedValue = getContext().resolveToString(parameterValue);
@@ -311,11 +311,11 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
                 // preprocess - so any unresolved variables will be resolved in the child job
                 String pval = Template.preProcess(resolvedValue, getContext().getSymbols());
                 childContext.set(parameterName, pval);
-                Log.debug("Runjob setting parameter '" + parameterName + "' to '" + pval + "'");
+                Log.debug(String.format("Runjob setting parameter '%s' to '%s'", parameterName, pval));
               }
             } else {
               childContext.set(parameterName, field.getObjectValue());
-              Log.debug("Runjob setting parameter '" + parameterName + "' to " + field.getStringValue());
+              Log.debug(String.format("Runjob setting parameter '%s' to %s", parameterName, field.getStringValue()));
             }
           } // for each parameter
 
@@ -325,8 +325,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
         try {
           engine.run();
         } catch (NullPointerException npe) {
-          String errMsg = "Processing exception (NPE) running Job: " + npe.getMessage();
-          errMsg = errMsg.concat(ExceptionUtil.stackTrace(npe));
+          String errMsg = String.format("Processing exception (NPE) running Job: %s%s", npe.getMessage(), ExceptionUtil.stackTrace(npe));
 
           if (haltOnError) {
             throw new TaskException(errMsg);
@@ -336,7 +335,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
           }
 
         } catch (final Throwable t) {
-          String errMsg = "Processing exception running Job: " + t.getMessage();
+          String errMsg = String.format("Processing exception running Job: %s", t.getMessage());
           if (haltOnError) {
             throw new TaskException(errMsg);
           } else {
@@ -350,7 +349,7 @@ public class RunJob extends AbstractTransformTask implements TransformTask {
           getContext().set(contextKey, engine.getContext().toMap());
         }
       } catch (IOException | ConfigurationException e) {
-        final String errMsg = "Could not read configuration from " + cfgUri + " - " + e.getMessage();
+        final String errMsg = String.format("Could not read configuration from %s - %s", cfgUri, e.getMessage());
         if (haltOnError) {
           throw new TaskException(errMsg);
         } else {

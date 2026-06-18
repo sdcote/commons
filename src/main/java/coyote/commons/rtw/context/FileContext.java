@@ -19,7 +19,6 @@ import coyote.commons.dataframe.DataFrame;
 import coyote.commons.dataframe.marshal.JSONMarshaler;
 import coyote.commons.dataframe.marshal.MarshalException;
 import coyote.commons.log.Log;
-import coyote.commons.log.LogMsg;
 import coyote.commons.rtw.RTW;
 import coyote.commons.rtw.Symbols;
 

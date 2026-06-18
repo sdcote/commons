@@ -15,6 +15,7 @@ import coyote.commons.template.SymbolTable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -235,4 +236,10 @@ public interface TransformEngine extends RunnableComponent {
 
 
     void close() throws IOException;
+    public List<TransformTask> getPreProcessTasks();
+
+    public List<TransformTask> getPostProcessTasks();
+    public List<FrameTransform> getTransformers();
+
+    public List<FrameWriter> getWriters();
 }

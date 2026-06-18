@@ -56,12 +56,12 @@ public class Archive extends AbstractFileTask {
     //boolean overwrite = getBoolean(ConfigTag.OVERWRITE);
 
     if (StringUtil.isNotBlank(source)) {
-      File sourceFile = new File(source);
+      File sourceFile = resolveFile(source);
       if (sourceFile.exists()) {
         File targetFile;
 
         if (StringUtil.isNotBlank(target)) {
-          targetFile = new File(target);
+          targetFile = resolveFile(target);
         } else {
           targetFile = new File(sourceFile.getAbsolutePath() + SUFFIX);
         }
