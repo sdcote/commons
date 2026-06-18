@@ -1,12 +1,9 @@
 {
-  "name": "SpaceWeather",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "SpaceWeather",
-    "schedule": {
-      "minutes": "*/30"
-    },
+    "schedule": { "minutes": "*/30" },
     "configuration": {
+      "name": "SunSpot Activity",
       "Preprocess": [
         {
           "class": "WebGet",
@@ -36,17 +33,7 @@
     }
   },
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "categories": "info, notice, debug, trace"
-      }
-    }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
   ]
 }

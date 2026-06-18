@@ -30,9 +30,6 @@ import java.io.IOException;
  */
 public class RtwJob extends AbstractSnapJob {
 
-    private static final String WORK_DIR_NAME = "wrk";
-    public static final String LOG_DIR_NAME = "log";
-
     /**
      * The transformation engine that performs the actual data processing.
      */

@@ -1,12 +1,9 @@
 {
-  "name": "WeatherForecast",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "WeatherForecast",
-    "schedule": {
-      "minutes": "*/2"
-    },
+    "schedule": { "minutes": "*/2" },
     "configuration": {
+      "name": "HilliardWeather",
       "Preprocess": [
         {
           "class": "WebGet",

@@ -1,14 +1,9 @@
 {
-  "name": "DatabaseWriter",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "DatabaseWriter",
     "configuration": {
-      "Reader": {
-        "class": "CSVReader",
-        "source": "[#$app.home#]/demo/users.csv",
-        "header": true
-      },
+      "name": "DatabaseWriter",
+      "Reader": { "class": "CSVReader", "source": "[#$app.home#]/demo/users.csv", "header": true },
       "Writer": {
         "class": "JdbcWriter",
         "target": "jdbc:h2:[#$jobdir#]/demodb;MODE=Oracle",
@@ -20,11 +15,7 @@
         "password": "",
         "batch": 100
       },
-      "Listeners": {
-        "ContextLogger": {
-          "target": "file://ContextLogger.log"
-        }
-      }
+      "Listeners": { "ContextLogger": { "target": "file://ContextLogger.log" } }
     }
   }
 }

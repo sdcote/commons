@@ -6,20 +6,13 @@
         "This is considered good practice for multi-line documentation in JSON.",
         "The description is not used by the framework."
       ],
-      "Vault": {
-        "filename": "demo.vault",
-        "password": "[#$env.vault.password#]"
-      },
+      "Vault": { "filename": "demo.vault", "password": "[#$env.vault.password#]" },
       "Preprocess": {},
       "Reader": {},
       "Filter": {},
       "Mapper": {},
       "Writer": {},
-      "Listener": {
-        "DataProfiler": {
-          "target": "[#$sys.user.dir#][#$sys.file.separator#]dataprofile.txt"
-        }
-      },
+      "Listener": { "DataProfiler": { "target": "[#$sys.user.dir#][#$sys.file.separator#]dataprofile.txt" } },
       "Postprocess": {}
     }
   },

@@ -1,9 +1,8 @@
 {
-  "name": "DirectoryReaderJob",
   "Job": {
-    "name": "DirectoryReaderJob",
     "class": "coyote.RtwJob",
     "configuration": {
+      "name": "DirectoryReaderJob",
       "Vault": {
         "filename": "[#$sys.app.home#][#$sys.file.separator#]sdcote2.vault",
         "password": "[#$env.vault.password#]"
@@ -22,15 +21,7 @@
     }
   },
   "logging": [
-    {
-      "StandardError": {
-        "categories": "warn, error, fatal"
-      }
-    },
-    {
-      "StandardOutput": {
-        "categories": "debug, trace, info, notice"
-      }
-    }
+    { "StandardError": { "categories": "warn, error, fatal" } },
+    { "StandardOutput": { "categories": "debug, trace, info, notice" } }
   ]
 }

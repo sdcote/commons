@@ -43,19 +43,7 @@
     }
   },
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "target": "STDERR",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "target": "STDOUT",
-        "categories": "info, notice, httpd, debug,trace"
-      }
-    }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, httpd, debug,trace" } }
   ]
 }

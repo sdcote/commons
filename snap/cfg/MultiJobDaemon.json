@@ -1,5 +1,4 @@
 {
-  "name": "MultiJobDaemon",
   "Job": [
     {
       "class": "RtwJob",
@@ -23,9 +22,7 @@
     {
       "class": "RtwJob",
       "Name": "TwoMinuteJob",
-      "Schedule": {
-        "minutes": "*/2"
-      },
+      "Schedule": { "minutes": "*/2" },
       "Reader": {
         "class": "StaticReader",
         "fields": {

@@ -1,9 +1,8 @@
 {
-  "name": "Simple",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "Simple",
     "configuration": {
+      "name": "Simple",
       "Reader": {
         "class": "StaticReader",
         "fields": {
@@ -15,12 +14,7 @@
         }
       },
       "Writer": [
-        {
-          "enabled": false,
-          "class": "ConsoleWriter",
-          "format": "json",
-          "indent": true
-        },
+        { "class": "ConsoleWriter", "format": "json", "indent": true, "enabled": false},
         {
           "class": "JdbcWriter",
           "target": "jdbc:h2:[#$jobdir#]/demodb;MODE=Oracle",
@@ -36,17 +30,7 @@
     }
   },
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "categories": "info, notice, debug, trace"
-      }
-    }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
   ]
 }

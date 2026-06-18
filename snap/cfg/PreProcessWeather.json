@@ -1,9 +1,8 @@
 {
-  "name": "WeatherForecast",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "WeatherForecast",
     "configuration": {
+      "name": "WeatherForecast",
       "Preprocess": [
         {
           "class": "WebGet",
@@ -14,17 +13,7 @@
     }
   },
   "logging": [
-    {
-      "StandardError": {
-        "name": "error",
-        "categories": "error, fatal, warn"
-      }
-    },
-    {
-      "StandardOutput": {
-        "name": "default",
-        "categories": "info, notice, debug, trace"
-      }
-    }
+    { "StandardError": { "name": "error", "categories": "error, fatal, warn" } },
+    { "StandardOutput": { "name": "default", "categories": "info, notice, debug, trace" } }
   ]
 }

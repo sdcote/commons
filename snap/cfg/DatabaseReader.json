@@ -1,9 +1,8 @@
 {
-  "name": "DatabaseReader",
   "Job": {
     "class": "coyote.RtwJob",
-    "name": "DatabaseReader",
     "configuration": {
+      "name": "DatabaseReader",
       "Description": "Demonstrate reading from a database.",
       "Reader": {
         "class": "JdbcReader",
@@ -14,24 +13,11 @@
         "password": "",
         "query": "select Role, Username, License from sa.user"
       },
-      "Writer": {
-        "class": "ConsoleWriter",
-        "format": "json",
-        "indent": false,
-        "message": "Record [#$CurrentFrame#] received."
-      }
+      "Writer": { "class": "ConsoleWriter", "format": "json", "indent": false, "message": "Record [#$CurrentFrame#] received." }
     }
   },
   "logging": [
-    {
-      "StandardOutput": {
-        "categories": "info, notice"
-      }
-    },
-    {
-      "StandardError": {
-        "categories": "error, fatal, warn"
-      }
-    }
+    { "StandardOutput": { "categories": "info, notice" } },
+    { "StandardError": { "categories": "error, fatal, warn" } }
   ]
 }
