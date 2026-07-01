@@ -29,6 +29,47 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JSONMarshalTest {
 
     @Test
+    public void testTwoStringsWithEscapes() throws Exception {
+        String json = "{\"field1\":\"a\\\"b\", \"field2\":\"c\\\"d\"}";
+        List<DataFrame> results = JSONMarshaler.marshal(json);
+        assertEquals(1, results.size());
+        DataFrame frame = results.get(0);
+        assertEquals("a\"b", frame.getAsString("field1"));
+        assertEquals("c\"d", frame.getAsString("field2"));
+    }
+
+    @Test
+    public void testManyEscapes() throws Exception {
+        String json = "{\"f1\":\"\\\"\", \"f2\":\"\\\\\", \"f3\":\"a\\\"\", \"f4\":\"\\\"b\", \"f5\":\"a\\\"b\"}";
+        List<DataFrame> results = JSONMarshaler.marshal(json);
+        DataFrame frame = results.get(0);
+        assertEquals("\"", frame.getAsString("f1"));
+        assertEquals("\\", frame.getAsString("f2"));
+        assertEquals("a\"", frame.getAsString("f3"));
+        assertEquals("\"b", frame.getAsString("f4"));
+        assertEquals("a\"b", frame.getAsString("f5"));
+    }
+
+    @Test
+    public void testEscapedDoubleQuotes() throws Exception {
+        String json = "{\"field\":\"<div class=\\\"wrapper\\\">text</div>\"}";
+        List<DataFrame> results = JSONMarshaler.marshal(json);
+        assertEquals(1, results.size());
+        DataFrame frame = results.get(0);
+        assertEquals("<div class=\"wrapper\">text</div>", frame.getAsString("field"));
+    }
+
+    @Test
+    public void testDataFrameToStringEscaping() throws Exception {
+        DataFrame frame = new DataFrame();
+        frame.add("field", "<div class=\"wrapper\">text</div>");
+        String json = frame.toString();
+        // This used to fail because toString() generated: {"field":"<div class="wrapper">text</div>"}
+        List<DataFrame> results = new coyote.commons.dataframe.marshal.json.JsonFrameParser(json).parse();
+        assertEquals("<div class=\"wrapper\">text</div>", results.get(0).getAsString("field"));
+    }
+
+    @Test
     public void testObject() throws Exception {
         String json = "{}";
         System.out.println(json);

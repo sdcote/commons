@@ -1344,6 +1344,8 @@ public class DataFrame implements Cloneable {
         } else if (field.getType() == DataField.STRING) {
           b.append('"');
           String retval =field.getStringValue();
+          retval=retval.replace("\\", "\\\\");
+          retval=retval.replace("\"", "\\\"");
           retval=retval.replace("\n", "\\n");
           retval=retval.replace("\r", "\\r");
           retval=retval.replace("\t", "\\t");
