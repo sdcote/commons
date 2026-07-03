@@ -51,3 +51,4 @@ csharp/
 *.zip
 !gradle/wrapper/gradle-wrapper.jar
 /.nb-gradle/profiles/private/
+/.junie/memory/
