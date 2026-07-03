@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A security scanning engine that analyzes file content for vulnerabilities using multiple registered {@link DetectionStrategy} instances.
+ * A security scanning engine that analyzes file content for vulnerabilities
+ * using multiple registered {@link DetectionStrategy} instances.
  */
 public class Scanner {
     private final List<DetectionStrategy> strategies;
 
     /**
-     * Constructs a new {@code Scanner} with an empty list of detection strategies.
+     * Constructs a new {@code Scanner} with an empty list of detection
+     * strategies.
      */
     public Scanner() {
         this.strategies = new ArrayList<>();
@@ -23,9 +25,11 @@ public class Scanner {
      */
     public void addStrategy(DetectionStrategy strategy) {
         if (strategy != null) {
+            strategy.setScanner(this);
             this.strategies.add(strategy);
         }
     }
+
 
     /**
      * Audits the provided HTML content using all registered strategies.
@@ -45,4 +49,5 @@ public class Scanner {
 
         return allIssues;
     }
+
 }
