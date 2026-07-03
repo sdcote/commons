@@ -10,4 +10,4 @@
 
 ### Unit Testing
 * All generated code must contain full unit testing coverage
-* All unit tests must be written in JUnit 5
+* All unit tests must be written in JUnit 6
