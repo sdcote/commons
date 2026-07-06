@@ -10,4 +10,5 @@
 
 ### Unit Testing
 * All generated code must contain full unit testing coverage
-* All unit tests must be written in JUnit 6
+* All unit tests must be written in JUnit 6.
+* Use Mockito 5 in Unit tests when appropriate.
