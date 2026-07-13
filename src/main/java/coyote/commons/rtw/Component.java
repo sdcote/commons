@@ -22,8 +22,8 @@ import java.io.Closeable;
  * The Component class models a type which can be queried for a variety of
  * information to aid in the management of a runtime.
  *
- * <p>Components provide data to the environment in which they run, but do not
- * expose any methods which allow them to be managed.</p>
+ * <p>Components provide data to the environment in which they run but do not
+ * expose any methods that allow them to be managed.</p>
  */
 public interface Component extends Closeable {
 
