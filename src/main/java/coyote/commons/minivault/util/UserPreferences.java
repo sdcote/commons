@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is a utility class which allows a component to save user-related configuration settings in the users home
+ * This is a utility class that allows a component to save user-related configuration settings in the users' home
  * directory.
  *
  * <p>It is possible that multiple components will use the same file for user preferences. This class allows each

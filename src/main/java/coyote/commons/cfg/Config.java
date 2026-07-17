@@ -115,7 +115,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
      * <p>This assumes a UTF-8 JSON formatted stream of bytes.</p>
      *
      * @param configStream the input stream from which to read
-     * @return a configuration filled with the
+     * @return a configuration filled with the contents of the file.
      * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the stream.
      */
     public static Config read(final InputStream configStream) throws ConfigurationException {
@@ -416,6 +416,30 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
     /**
+     * Return the first section with the given name or create the named section
+     * and return the new value.
+     *
+     * <p>If there is no section with the given name, a new section will be
+     * created, placed in the configuration under the given name, and returned.</p>
+     *
+     * <p>This performs a case-insensitive search for the section.</p>
+     *
+     * @param tag The name of the section for which to search
+     * @return The first section with a matching name or the new section that was created if no section with that name existed.
+     */
+    public Config getOrCreateSection(final String tag) {
+        Config retval = getSection(tag);
+        if (retval == null) {
+            retval = new Config();
+            if (StringUtil.isNotBlank(tag)) {
+                put(tag, retval);
+            }
+        }
+        return retval;
+    }
+
+
+    /**
      * Return all the configuration sections within this section
      *
      * <p>This will not return scalar attributes, just the embedded sections.
@@ -458,7 +482,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
             for (final DataField field : getFields()) {
                 if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
                     final Config cfg = new Config();
-                    if(field.isNotNull() && field.isFrame()) {
+                    if (field.isNotNull() && field.isFrame()) {
                         cfg.populate((DataFrame) field.getObjectValue());
                     }
                     retval.add(cfg);

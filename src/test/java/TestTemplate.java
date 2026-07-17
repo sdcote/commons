@@ -1,5 +1,3 @@
-package cookbook;
-
 import org.junit.jupiter.api.*;
 
 public class TestTemplate {
