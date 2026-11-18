@@ -19,6 +19,7 @@ public class NationalIdStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("US Social Security Number (SSN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(16, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 36), issues.get(0).getContext());
     }
 
     @Test
@@ -29,6 +30,7 @@ public class NationalIdStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("US Social Security Number (SSN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(3, issues.get(0).getOffset());
+        assertEquals(content, issues.get(0).getContext());
     }
 
     @Test
@@ -57,6 +59,7 @@ public class NationalIdStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("UK National Insurance Number (NINO) detected", issues.get(0).getNatureOfIssue());
         assertEquals(13, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 33), issues.get(0).getContext());
     }
 
     @Test
@@ -67,6 +70,7 @@ public class NationalIdStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("UK National Insurance Number (NINO) detected", issues.get(0).getNatureOfIssue());
         assertEquals(5, issues.get(0).getOffset());
+        assertEquals(content, issues.get(0).getContext());
     }
 
     @Test

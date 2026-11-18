@@ -30,7 +30,7 @@ public class CryptographicKeyStrategy implements DetectionStrategy {
 
         Matcher matcher = PRIVATE_KEY_PATTERN.matcher(fileContent);
         while (matcher.find()) {
-            issues.add(new ScanIssue(matcher.start(), "Cryptographic Private Key detected"));
+            issues.add(new ScanIssue(matcher.start(), "Cryptographic Private Key detected", extractContext(fileContent, matcher.start())));
         }
 
         return issues;

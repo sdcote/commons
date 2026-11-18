@@ -46,7 +46,7 @@ public class EntropyStrategy implements DetectionStrategy {
             int offset = matcher.start(2);
 
             if (isHighEntropy(value)) {
-                issues.add(new ScanIssue(offset, "High entropy string detected (possible key/secret)"));
+                issues.add(new ScanIssue(offset, "High entropy string detected (possible key/secret)", extractContext(fileContent, offset)));
             }
         }
 

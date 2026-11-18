@@ -20,6 +20,7 @@ public class CicdTokenStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("GitHub Token detected", issue.getNatureOfIssue());
         assertEquals(17, issue.getOffset());
+        assertEquals(content.substring(0, 37), issue.getContext());
     }
 
     @Test
@@ -31,6 +32,7 @@ public class CicdTokenStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Slack Webhook URL detected", issue.getNatureOfIssue());
         assertEquals(21, issue.getOffset());
+        assertEquals(content.substring(1, 41), issue.getContext());
     }
 
     @Test
@@ -41,6 +43,7 @@ public class CicdTokenStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Jira API Token detected", issues.get(0).getNatureOfIssue());
         assertEquals(28, issues.get(0).getOffset());
+        assertEquals(content.substring(8, 48), issues.get(0).getContext());
     }
 
     @Test
@@ -51,6 +54,7 @@ public class CicdTokenStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Jira API Token detected", issues.get(0).getNatureOfIssue());
         assertEquals(7, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 27), issues.get(0).getContext());
     }
 
     @Test

@@ -20,6 +20,7 @@ public class CryptographicKeyStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Cryptographic Private Key detected", issue.getNatureOfIssue());
         assertEquals(15, issue.getOffset()); // starts at "-----BEGIN RSA PRIVATE KEY-----"
+        assertEquals(content.substring(0, 35), issue.getContext());
     }
 
     @Test
@@ -31,6 +32,7 @@ public class CryptographicKeyStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Cryptographic Private Key detected", issue.getNatureOfIssue());
         assertEquals(12, issue.getOffset());
+        assertEquals(content.substring(0, 32), issue.getContext());
     }
 
     @Test
@@ -41,6 +43,7 @@ public class CryptographicKeyStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Cryptographic Private Key detected", issues.get(0).getNatureOfIssue());
         assertEquals(22, issues.get(0).getOffset());
+        assertEquals(content.substring(2, 42), issues.get(0).getContext());
     }
 
     @Test
@@ -51,6 +54,7 @@ public class CryptographicKeyStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Cryptographic Private Key detected", issues.get(0).getNatureOfIssue());
         assertEquals(0, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 20), issues.get(0).getContext());
     }
 
     @Test
@@ -61,6 +65,7 @@ public class CryptographicKeyStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Cryptographic Private Key detected", issues.get(0).getNatureOfIssue());
         assertEquals(22, issues.get(0).getOffset());
+        assertEquals(content.substring(2, 42), issues.get(0).getContext());
     }
 
     @Test

@@ -20,6 +20,7 @@ public class DBConnectStringStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Database Connection String (URI with credentials) detected", issue.getNatureOfIssue());
         assertEquals(27, issue.getOffset()); // starts at "mongodb+srv://..."
+        assertEquals(content.substring(7, 47), issue.getContext());
     }
 
     @Test
@@ -31,6 +32,7 @@ public class DBConnectStringStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Database Connection String (URI with credentials) detected", issue.getNatureOfIssue());
         assertEquals(15, issue.getOffset());
+        assertEquals(content.substring(0, 35), issue.getContext());
     }
 
     @Test
@@ -41,6 +43,7 @@ public class DBConnectStringStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Database Connection String (JDBC with password) detected", issues.get(0).getNatureOfIssue());
         assertEquals(9, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 29), issues.get(0).getContext());
     }
 
     @Test
@@ -51,6 +54,7 @@ public class DBConnectStringStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Database Connection String (ODBC with password) detected", issues.get(0).getNatureOfIssue());
         assertEquals(11, issues.get(0).getOffset()); // starts at "Driver="
+        assertEquals(content.substring(0, 31), issues.get(0).getContext());
     }
 
     @Test

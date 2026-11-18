@@ -21,6 +21,7 @@ public class CreditCardStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Credit Card Number (PAN) detected", issue.getNatureOfIssue());
         assertEquals(27, issue.getOffset());
+        assertEquals(content.substring(7, 47), issue.getContext());
     }
 
     @Test
@@ -32,6 +33,7 @@ public class CreditCardStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Credit Card Number (PAN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(4, issues.get(0).getOffset());
+        assertEquals(content, issues.get(0).getContext());
     }
 
     @Test
@@ -43,6 +45,7 @@ public class CreditCardStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Credit Card Number (PAN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(10, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 30), issues.get(0).getContext());
     }
 
     @Test
@@ -54,6 +57,7 @@ public class CreditCardStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Credit Card Number (PAN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(10, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 30), issues.get(0).getContext());
     }
 
     @Test

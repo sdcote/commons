@@ -102,7 +102,7 @@ public class PinStrategy implements DetectionStrategy {
             }
 
             if (nearAnchor) {
-                issues.add(new ScanIssue(tokenStart, ISSUE_NATURE));
+                issues.add(new ScanIssue(tokenStart, ISSUE_NATURE, extractContext(fileContent, tokenStart)));
             }
         }
 

@@ -30,6 +30,7 @@ public class PinStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Personal Identification Number (PIN) detected", issue.getNatureOfIssue());
         assertEquals(17, issue.getOffset());
+        assertEquals(content.substring(0, 37), issue.getContext());
     }
 
     @Test
@@ -41,6 +42,7 @@ public class PinStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Personal Identification Number (PIN) detected", issue.getNatureOfIssue());
         assertEquals(23, issue.getOffset());
+        assertEquals(content.substring(3, 28), issue.getContext());
     }
 
     @Test
@@ -52,6 +54,7 @@ public class PinStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Personal Identification Number (PIN) detected", issue.getNatureOfIssue());
         assertEquals(15, issue.getOffset());
+        assertEquals(content.substring(0, 35), issue.getContext());
     }
 
     @Test
@@ -63,6 +66,7 @@ public class PinStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("Personal Identification Number (PIN) detected", issue.getNatureOfIssue());
         assertEquals(22, issue.getOffset());
+        assertEquals(content.substring(2, 26), issue.getContext());
     }
 
     @Test

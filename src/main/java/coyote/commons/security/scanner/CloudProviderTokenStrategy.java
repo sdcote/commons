@@ -48,7 +48,7 @@ public class CloudProviderTokenStrategy implements DetectionStrategy {
     private void findMatches(String content, Pattern pattern, String issueNature, List<ScanIssue> issues) {
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
-            issues.add(new ScanIssue(matcher.start(), issueNature));
+            issues.add(new ScanIssue(matcher.start(), issueNature, extractContext(content, matcher.start())));
         }
     }
 }

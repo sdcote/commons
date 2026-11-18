@@ -20,6 +20,7 @@ public class BankAccountStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("ABA Routing Transit Number detected", issues.get(0).getNatureOfIssue());
         assertEquals(27, issues.get(0).getOffset());
+        assertEquals("transfer to routing 021000021 today.", issues.get(0).getContext());
     }
 
     @Test
@@ -41,6 +42,7 @@ public class BankAccountStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("International Bank Account Number (IBAN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(11, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 31), issues.get(0).getContext());
     }
 
     @Test
@@ -51,6 +53,7 @@ public class BankAccountStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("International Bank Account Number (IBAN) detected", issues.get(0).getNatureOfIssue());
         assertEquals(5, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 25), issues.get(0).getContext());
     }
 
     @Test

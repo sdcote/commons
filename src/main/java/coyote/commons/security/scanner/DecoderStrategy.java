@@ -63,7 +63,7 @@ public class DecoderStrategy implements DetectionStrategy {
                     if (!decoded.equals(match) && isPrintable(decoded)) {
                         List<ScanIssue> nestedIssues = scanner.scan(decoded);
                         for (ScanIssue issue : nestedIssues) {
-                            issues.add(new ScanIssue(b64Matcher.start(), "Nested issue in Base64 block: " + issue.getNatureOfIssue()));
+                            issues.add(new ScanIssue(b64Matcher.start(), "Nested issue in Base64 block: " + issue.getNatureOfIssue(), extractContext(fileContent, b64Matcher.start())));
                         }
                     }
                 } catch (IllegalArgumentException e) {
@@ -80,7 +80,7 @@ public class DecoderStrategy implements DetectionStrategy {
                     if (!decoded.equals(match) && isPrintable(decoded)) {
                         List<ScanIssue> nestedIssues = scanner.scan(decoded);
                         for (ScanIssue issue : nestedIssues) {
-                            issues.add(new ScanIssue(urlMatcher.start(), "Nested issue in URL-encoded block: " + issue.getNatureOfIssue()));
+                            issues.add(new ScanIssue(urlMatcher.start(), "Nested issue in URL-encoded block: " + issue.getNatureOfIssue(), extractContext(fileContent, urlMatcher.start())));
                         }
                     }
                 } catch (Exception e) {
@@ -104,7 +104,7 @@ public class DecoderStrategy implements DetectionStrategy {
                         if (!decoded.equals(match) && isPrintable(decoded)) {
                             List<ScanIssue> nestedIssues = scanner.scan(decoded);
                             for (ScanIssue issue : nestedIssues) {
-                                issues.add(new ScanIssue(hexMatcher.start(), "Nested issue in Hex-encoded block: " + issue.getNatureOfIssue()));
+                                issues.add(new ScanIssue(hexMatcher.start(), "Nested issue in Hex-encoded block: " + issue.getNatureOfIssue(), extractContext(fileContent, hexMatcher.start())));
                             }
                         }
                     }
@@ -122,7 +122,7 @@ public class DecoderStrategy implements DetectionStrategy {
                     if (!decoded.equals(match) && isPrintable(decoded)) {
                         List<ScanIssue> nestedIssues = scanner.scan(decoded);
                         for (ScanIssue issue : nestedIssues) {
-                            issues.add(new ScanIssue(htmlMatcher.start(), "Nested issue in HTML-encoded block: " + issue.getNatureOfIssue()));
+                            issues.add(new ScanIssue(htmlMatcher.start(), "Nested issue in HTML-encoded block: " + issue.getNatureOfIssue(), extractContext(fileContent, htmlMatcher.start())));
                         }
                     }
                 } catch (Exception e) {

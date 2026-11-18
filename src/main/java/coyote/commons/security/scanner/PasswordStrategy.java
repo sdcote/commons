@@ -25,10 +25,13 @@ public class PasswordStrategy implements DetectionStrategy {
     @Override
     public List<ScanIssue> analyze(String fileContent) {
         List<ScanIssue> issues = new ArrayList<>();
+        if (fileContent == null || fileContent.isEmpty()) {
+            return issues;
+        }
         Matcher matcher = PASSWORD_PATTERN.matcher(fileContent);
 
         while (matcher.find()) {
-            issues.add(new ScanIssue(matcher.start(), "Potential hardcoded password/credential detected"));
+            issues.add(new ScanIssue(matcher.start(), "Potential hardcoded password/credential detected", extractContext(fileContent, matcher.start())));
         }
         return issues;
     }

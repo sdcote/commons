@@ -50,7 +50,7 @@ public class UrlParameterStrategy implements DetectionStrategy {
                 
                 if (isSensitiveKey(key)) {
                     int offset = queryStartOffset + paramMatcher.start();
-                    issues.add(new ScanIssue(offset, "Sensitive URL/URI query parameter detected: " + key));
+                    issues.add(new ScanIssue(offset, "Sensitive URL/URI query parameter detected: " + key, extractContext(fileContent, offset)));
                 }
             }
         }

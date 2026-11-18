@@ -36,7 +36,7 @@ public class CreditCardStrategy implements DetectionStrategy {
             String cleanNumber = match.replaceAll("[ -]", "");
             
             if (isValidIssuerAndLength(cleanNumber) && passesLuhnCheck(cleanNumber)) {
-                issues.add(new ScanIssue(matcher.start(), "Credit Card Number (PAN) detected"));
+                issues.add(new ScanIssue(matcher.start(), "Credit Card Number (PAN) detected", extractContext(fileContent, matcher.start())));
             }
         }
 

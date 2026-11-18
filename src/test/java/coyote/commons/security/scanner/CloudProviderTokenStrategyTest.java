@@ -21,6 +21,7 @@ public class CloudProviderTokenStrategyTest {
         assertEquals("AWS Access Key ID detected", issue.getNatureOfIssue());
         // AKIA is at index 40 in the string
         assertEquals(40, issue.getOffset());
+        assertEquals(content.substring(20, 60), issue.getContext());
     }
 
     @Test
@@ -32,6 +33,7 @@ public class CloudProviderTokenStrategyTest {
         ScanIssue issue = issues.get(0);
         assertEquals("AWS Secret Access Key detected", issue.getNatureOfIssue());
         assertEquals(7, issue.getOffset()); // starts at "AWS_SECRET_ACCESS_KEY"
+        assertEquals(content.substring(0, 27), issue.getContext());
     }
 
     @Test
@@ -42,6 +44,10 @@ public class CloudProviderTokenStrategyTest {
         assertEquals(2, issues.size());
         assertEquals("GCP Service Account key detected", issues.get(0).getNatureOfIssue());
         assertEquals("GCP Service Account key detected", issues.get(1).getNatureOfIssue());
+        for (ScanIssue issue : issues) {
+            int off = issue.getOffset();
+            assertEquals(content.substring(Math.max(0, off - 20), Math.min(content.length(), off + 20)), issue.getContext());
+        }
     }
 
     @Test
@@ -52,6 +58,7 @@ public class CloudProviderTokenStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("Azure Connection String detected", issues.get(0).getNatureOfIssue());
         assertEquals(20, issues.get(0).getOffset()); // starts at "DefaultEndpointsProtocol"
+        assertEquals(content.substring(0, 40), issues.get(0).getContext());
     }
 
     @Test

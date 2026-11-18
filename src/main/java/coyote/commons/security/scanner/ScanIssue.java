@@ -7,16 +7,19 @@ package coyote.commons.security.scanner;
 public class ScanIssue {
     private final int offset;
     private final String natureOfIssue;
+    private final String context;
 
     /**
      * Constructs a new {@code ScanIssue} with the specified offset and nature of the issue.
      *
      * @param offset        the character position in the content where the issue starts
      * @param natureOfIssue a description of the type of security issue found
+     * @param context       the data surrounding the error
      */
-    public ScanIssue(int offset, String natureOfIssue) {
+    public ScanIssue(int offset, String natureOfIssue, String context) {
         this.offset = offset;
         this.natureOfIssue = natureOfIssue;
+        this.context = context;
     }
 
     /**
@@ -37,8 +40,17 @@ public class ScanIssue {
         return natureOfIssue;
     }
 
+    /**
+     * Gets the surrounding context where this issue was found.
+     *
+     * @return the context string surrounding the issue
+     */
+    public String getContext() {
+        return context;
+    }
+
     @Override
     public String toString() {
-        return "Issue Found [Offset: " + offset + ", Nature: " + natureOfIssue + "]";
+        return "Issue Found [Offset: " + offset + ", Nature: " + natureOfIssue + ", Context: " + context + "]";
     }
 }

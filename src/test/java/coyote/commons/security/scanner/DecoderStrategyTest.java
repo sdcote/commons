@@ -31,6 +31,7 @@ public class DecoderStrategyTest {
         // Ensure the offset matches the start of the Base64 block
         assertEquals(17, issues.get(0).getOffset());
         assertTrue(issues.get(0).getNatureOfIssue().contains("Base64 block"));
+        assertEquals(content.substring(0, 37), issues.get(0).getContext());
     }
 
     @Test
@@ -43,6 +44,7 @@ public class DecoderStrategyTest {
         // offset of "url?password%3Dsupersecret" is 8
         assertEquals(8, issues.get(0).getOffset());
         assertTrue(issues.get(0).getNatureOfIssue().contains("URL-encoded block"));
+        assertEquals(content.substring(0, 28), issues.get(0).getContext());
     }
 
     @Test
@@ -54,6 +56,7 @@ public class DecoderStrategyTest {
         assertFalse(issues.isEmpty(), "Should detect password inside Hex string");
         assertEquals(10, issues.get(0).getOffset());
         assertTrue(issues.get(0).getNatureOfIssue().contains("Hex-encoded block"));
+        assertEquals(content.substring(0, 30), issues.get(0).getContext());
     }
 
     @Test
@@ -66,6 +69,7 @@ public class DecoderStrategyTest {
         // It matches the whole non-whitespace string "<div>password&#61;supersecret</div>"
         assertEquals(0, issues.get(0).getOffset());
         assertTrue(issues.get(0).getNatureOfIssue().contains("HTML-encoded block"));
+        assertEquals(content.substring(0, 20), issues.get(0).getContext());
     }
 
     @Test

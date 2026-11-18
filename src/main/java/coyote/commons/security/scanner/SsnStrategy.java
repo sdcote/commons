@@ -22,10 +22,13 @@ public class SsnStrategy implements DetectionStrategy {
     @Override
     public List<ScanIssue> analyze(String fileContent) {
         List<ScanIssue> issues = new ArrayList<>();
+        if (fileContent == null || fileContent.isEmpty()) {
+            return issues;
+        }
         Matcher matcher = SSN_PATTERN.matcher(fileContent);
 
         while (matcher.find()) {
-            issues.add(new ScanIssue(matcher.start(), "SSN detected"));
+            issues.add(new ScanIssue(matcher.start(), "SSN detected", extractContext(fileContent, matcher.start())));
         }
         return issues;
     }

@@ -22,6 +22,8 @@ public class UrlParameterStrategyTest {
         // Assert the exact offset matches the start of "token=SECURE123"
         String expectedMatch = "token=SECURE123";
         assertEquals(expectedMatch, content.substring(issues.get(0).getOffset(), issues.get(0).getOffset() + expectedMatch.length()));
+        int off = issues.get(0).getOffset();
+        assertEquals(content.substring(off - 20, off + 20), issues.get(0).getContext());
     }
 
     @Test
@@ -34,6 +36,8 @@ public class UrlParameterStrategyTest {
         
         String expectedMatch = "apiKey=abcdef123456";
         assertEquals(expectedMatch, content.substring(issues.get(0).getOffset(), issues.get(0).getOffset() + expectedMatch.length()));
+        int off = issues.get(0).getOffset();
+        assertEquals(content.substring(off - 20, content.length()), issues.get(0).getContext());
     }
 
     @Test

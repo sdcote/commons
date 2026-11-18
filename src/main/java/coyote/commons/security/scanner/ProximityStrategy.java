@@ -68,7 +68,7 @@ public class ProximityStrategy implements DetectionStrategy {
             }
 
             if (nearAnchor && isHighEntropy(token)) {
-                issues.add(new ScanIssue(tokenStart, "High-entropy token found near anchor keyword"));
+                issues.add(new ScanIssue(tokenStart, "High-entropy token found near anchor keyword", extractContext(fileContent, tokenStart)));
             }
         }
 

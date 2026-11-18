@@ -47,7 +47,7 @@ public class BankAccountStrategy implements DetectionStrategy {
         while (matcher.find()) {
             String match = matcher.group();
             if (isValidAbaRoutingNumber(match)) {
-                issues.add(new ScanIssue(matcher.start(), "ABA Routing Transit Number detected"));
+                issues.add(new ScanIssue(matcher.start(), "ABA Routing Transit Number detected", extractContext(content, matcher.start())));
             }
         }
     }
@@ -58,7 +58,7 @@ public class BankAccountStrategy implements DetectionStrategy {
             String match = matcher.group();
             String cleanMatch = match.replaceAll("[\\s\\-]+", "").toUpperCase();
             if (isValidIban(cleanMatch)) {
-                issues.add(new ScanIssue(matcher.start(), "International Bank Account Number (IBAN) detected"));
+                issues.add(new ScanIssue(matcher.start(), "International Bank Account Number (IBAN) detected", extractContext(content, matcher.start())));
             }
         }
     }

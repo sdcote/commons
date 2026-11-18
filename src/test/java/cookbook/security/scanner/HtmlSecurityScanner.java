@@ -7,7 +7,17 @@ import coyote.commons.security.scanner.SsnStrategy;
 
 import java.util.List;
 
+/**
+ * Example demonstrating how to use the security {@link Scanner} on HTML content
+ * to detect sensitive data exposures such as SSNs and hardcoded credentials.
+ */
 public class HtmlSecurityScanner {
+
+    /**
+     * Entry point for running the HTML security scan example.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         // Sample HTML content containing exposure risks
         String mockHtmlContent = "<html>\n" +
@@ -33,6 +43,7 @@ public class HtmlSecurityScanner {
         for (ScanIssue issue : report) {
             System.out.println("Line/Offset character position: " + issue.getOffset());
             System.out.println("Nature of vulnerability: " + issue.getNatureOfIssue());
+            System.out.println("Context: " + issue.getContext());
             System.out.println("---");
         }
     }

@@ -21,6 +21,7 @@ public class EntropyStrategyTest {
         assertEquals(1, issues.size(), "Should detect high entropy hex string");
         assertEquals("High entropy string detected (possible key/secret)", issues.get(0).getNatureOfIssue());
         assertEquals(14, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 34), issues.get(0).getContext());
     }
 
     @Test
@@ -42,6 +43,7 @@ public class EntropyStrategyTest {
         
         assertEquals(1, issues.size(), "Should detect high entropy base64 string");
         assertEquals(13, issues.get(0).getOffset());
+        assertEquals(content.substring(0, 33), issues.get(0).getContext());
     }
 
     @Test

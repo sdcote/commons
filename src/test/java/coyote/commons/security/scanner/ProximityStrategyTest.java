@@ -19,6 +19,7 @@ public class ProximityStrategyTest {
         assertEquals(1, issues.size());
         assertEquals("High-entropy token found near anchor keyword", issues.get(0).getNatureOfIssue());
         assertEquals(22, issues.get(0).getOffset());
+        assertEquals(content.substring(2, 42), issues.get(0).getContext());
     }
 
     @Test
